@@ -81,10 +81,12 @@ class AuthController
         $this->session->delete('flash_error');
         $this->session->delete('flash_old');
 
-        return $this->view->render('auth/registro', [
-            'erro'  => $erro,
-            'dados' => $dados,
-        ]);
+        return $this->view->renderWithLayout(
+            'auth/registro',
+            ['erro' => $erro, 'dados' => $dados],
+            'layouts/main',
+            ['title' => 'Cadastro de Lojista']
+        );
     }
 
     /**

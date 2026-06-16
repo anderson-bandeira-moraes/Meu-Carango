@@ -124,7 +124,7 @@ class Router
                 }
 
                 $this->execute($route['callback'], $params, $request);
-                return;
+                return; 
             }
         }
 

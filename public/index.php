@@ -122,14 +122,54 @@ $container->set(App\Controller\AuthController::class, function($c) {
     );
 });
 
+// Middleware de administrador
+$container->set(App\Middleware\AdminMiddleware::class, function($c) {
+    return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
+});
+
+// Repositório de administrador
+$container->set(App\Repository\AdministradorRepository::class, function($c) {
+    return new App\Repository\AdministradorRepository($c->get(PDO::class));
+});
+
+// Service de autenticação de admin
+$container->set(App\Service\AdminAuthService::class, function($c) {
+    return new App\Service\AdminAuthService(
+        $c->get(App\Repository\AdministradorRepository::class),
+        $c->get(SessionInterface::class)
+    );
+});
+
+// Controller de admin
+$container->set(App\Controller\AdminAuthController::class, function($c) {
+    return new App\Controller\AdminAuthController(
+        $c->get(App\Service\AdminAuthService::class),
+        $c->get(App\Core\ViewRenderer::class),
+        $c->get(SessionInterface::class)
+    );
+});
+
 // ============== ROTEADOR ==============
 use App\Core\Router;
 use App\Core\Request;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\CsrfMiddleware;
+use App\Middleware\AdminMiddleware;
 
 $router  = new Router($container);
 $request = new Request(); 
+
+// ============== ROTAS ADMINISTRATIVAS ==============
+$router->get('/admin/login', 'AdminAuthController@formLogin');
+$router->post('/admin/login', 'AdminAuthController@login');
+$router->get('/admin/logout', 'AdminAuthController@logout');
+
+$adminMiddleware = $container->get(App\Middleware\AdminMiddleware::class);
+
+$router->group('/admin', function(Router $router) use ($container) {
+    $router->middleware($container->get(AdminMiddleware::class));
+    $router->get('', 'AdminAuthController@index');
+});
 
 // ---------- Rotas públicas ----------
 $router->get('/', 'HomeController@index');
@@ -144,7 +184,8 @@ $router->get('/registro', 'AuthController@formRegistro');
 $router->post('/registro', 'AuthController@registrar');
 
 // ---------- Rotas protegidas (dashboard) ----------
-$router->group('/dashboard', function(Router $router) {
+$router->group('/dashboard', function(Router $router) use ($container) {
+    $router->middleware($container->get(AuthMiddleware::class));
     $router->get('', 'DashboardController@index');
     $router->get('/veiculos', 'VeiculoController@listar');
     $router->get('/veiculos/criar', 'VeiculoController@formCriar');
@@ -152,8 +193,7 @@ $router->group('/dashboard', function(Router $router) {
     $router->get('/anuncios', 'AnuncioController@listar');
     $router->get('/anuncios/criar', 'AnuncioController@formCriar');
     $router->post('/anuncios/criar', 'AnuncioController@criar');
-    // ... demais rotas
-})->middleware($container->get(AuthMiddleware::class));
+});
 
 // ============== DISPATCH COM TRATAMENTO DE EXCEÇÕES ==============
 try {

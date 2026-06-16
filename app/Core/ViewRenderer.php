@@ -40,4 +40,30 @@ class ViewRenderer
         include $file;
         return ob_get_clean();
     }
+
+    /**
+     * Renderiza uma view dentro de um layout principal.
+     *
+     * @param string $view   Caminho relativo da view específica (ex: 'auth/login')
+     * @param array  $data   Dados passados para a view específica
+     * @param string $layout Caminho relativo do layout (ex: 'layouts/main')
+     * @param array  $layoutData Dados extras para o layout (ex: ['title' => 'Login'])
+     *
+     * @return string HTML renderizado com layout.
+     */
+    public function renderWithLayout(
+        string $view,
+        array $data = [],
+        string $layout = 'layouts/main',
+        array $layoutData = []
+    ): string {
+        // Renderiza a view específica
+        $content = $this->render($view, $data);
+
+        // Adiciona o conteúdo aos dados do layout
+        $layoutData['content'] = $content;
+
+        // Renderiza o layout passando os dados combinados
+        return $this->render($layout, $layoutData);
+    }
 }
