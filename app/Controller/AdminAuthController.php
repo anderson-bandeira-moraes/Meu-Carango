@@ -43,10 +43,22 @@ class AdminAuthController
      */
     public function login(Request $request): void
     {
-        $email = trim($request->getPost('email') ?? '');
-        $senha = $request->getPost('senha') ?? '';
+        // Se for AJAX, lê o corpo JSON
+        if ($request->isAjax()) {
+            $data = $request->getJson();
+            $email = trim($data['email'] ?? '');
+            $senha = $data['senha'] ?? '';
+        } else {
+            $email = trim($request->getPost('email') ?? '');
+            $senha = $request->getPost('senha') ?? '';
+        }
 
         if ($email === '' || $senha === '') {
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => false, 'erro' => 'Preencha e-mail e senha.']);
+                exit;
+            }
             $this->session->set('flash_admin_error', 'Preencha e-mail e senha.');
             header('Location: /admin/login');
             exit;
@@ -55,7 +67,18 @@ class AdminAuthController
         $resultado = $this->adminAuthService->login($email, $senha);
 
         if ($resultado['sucesso']) {
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => true, 'redirect' => '/admin']);
+                exit;
+            }
             header('Location: /admin');
+            exit;
+        }
+
+        if ($request->isAjax()) {
+            header('Content-Type: application/json');
+            echo json_encode(['sucesso' => false, 'erro' => $resultado['erro']]);
             exit;
         }
 

@@ -186,14 +186,26 @@ $router  = new Router($container);
 $request = new Request(); 
 
 // ============== ROTAS ADMINISTRATIVAS ==============
-$router->get('/admin/login', 'AdminAuthController@formLogin');
-$router->post('/admin/login', 'AdminAuthController@login');
+
+// Grupo /admin/login (com CSRF para GET e POST)
+$router->group('/admin/login', function(Router $router) use ($container) {
+    // Gera o token CSRF (para exibir no formulário)
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    // Valida o token em requisições POST (e outros métodos que alteram estado)
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    
+    $router->get('', 'AdminAuthController@formLogin');
+    $router->post('', 'AdminAuthController@login');
+});
+
+// Logout (GET, sem CSRF)
 $router->get('/admin/logout', 'AdminAuthController@logout');
 
-$adminMiddleware = $container->get(App\Middleware\AdminMiddleware::class);
-
+// Grupo /admin protegido (autenticação + CSRF)
 $router->group('/admin', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
     $router->middleware($container->get(AdminMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
     $router->get('', 'AdminAuthController@index');
 });
 
@@ -202,16 +214,27 @@ $router->get('/', 'HomeController@index');
 $router->get('/loja/{slug}', 'VitrineController@listar');
 $router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
 
-// ---------- Rotas de autenticação ----------
-$router->get('/login', 'AuthController@formLogin');
-$router->post('/login', 'AuthController@login');
-$router->get('/logout', 'AuthController@logout');
-$router->get('/registro', 'AuthController@formRegistro');
-$router->post('/registro', 'AuthController@registrar');
+// ---------- Rotas de autenticação (com CSRF) ----------
+$router->group('/login', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->get('', 'AuthController@formLogin');
+    $router->post('', 'AuthController@login');
+});
 
-// ---------- Rotas protegidas (dashboard) ----------
+$router->group('/registro', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->get('', 'AuthController@formRegistro');
+    $router->post('', 'AuthController@registrar');
+});
+
+$router->get('/logout', 'AuthController@logout');
+
+// ---------- Rotas protegidas (dashboard) com CSRF ----------
 $router->group('/dashboard', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
     $router->middleware($container->get(AuthMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    
     $router->get('', 'DashboardController@index');
     $router->get('/veiculos', 'VeiculoController@listar');
     $router->get('/veiculos/criar', 'VeiculoController@formCriar');
@@ -226,14 +249,29 @@ try {
     $router->dispatch($request);
 } catch (\App\Exception\HttpNotFoundException $e) {
     http_response_code(404);
+    if ($request->isAjax()) {
+        header('Content-Type: application/json');
+        echo json_encode(['erro' => 'Página não encontrada.', 'status' => 404]);
+        exit;
+    }
     $view = $container->get(App\Core\ViewRenderer::class);
     echo $view->render('erros/404', ['mensagem' => $e->getMessage()]);
 } catch (\App\Exception\ForbiddenException $e) {
     http_response_code(403);
+    if ($request->isAjax()) {
+        header('Content-Type: application/json');
+        echo json_encode(['erro' => 'A página expirou. Recarregue e tente novamente.', 'status' => 403]);
+        exit;
+    }
     $view = $container->get(App\Core\ViewRenderer::class);
     echo $view->render('erros/403', ['mensagem' => $e->getMessage()]);
 } catch (\Throwable $e) {
     http_response_code(500);
+    if ($request->isAjax()) {
+        header('Content-Type: application/json');
+        echo json_encode(['erro' => 'Erro interno do servidor.', 'status' => 500]);
+        exit;
+    }
     if ($env === 'development') {
         echo '<h1>Erro 500</h1><pre>' . $e->getMessage() . '</pre>';
     } else {

@@ -1,8 +1,12 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Painel Administrativo</h4>
+                <!-- Botão de logout -->
+                <a href="/admin/logout" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i> Sair
+                </a>
             </div>
             <div class="card-body">
                 <p>Bem-vindo, <strong><?= htmlspecialchars($admin['nome'] ?? 'Administrador') ?></strong>!</p>

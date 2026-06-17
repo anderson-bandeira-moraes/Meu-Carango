@@ -40,6 +40,9 @@ class AdminAuthService
         $this->session->set('admin_nome', $admin['nome']);
         $this->session->set('admin_email', $admin['email']);
 
+        // Regenera o token CSRF (evita fixação de token)
+        $this->session->set('csrf_token', bin2hex(random_bytes(32)));
+
         return ['sucesso' => true];
     }
 
