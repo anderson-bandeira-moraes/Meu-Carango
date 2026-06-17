@@ -37,6 +37,9 @@ Session::start([
     'use_strict_mode' => true,
 ]);
 
+// ============== CARREGAR HELPERS ==============
+require_once ROOT_DIR . '/app/Helpers/csrf.php';
+
 // ============== CONEXÃO COM BANCO ==============
 use App\Core\Database;
 
@@ -52,6 +55,10 @@ Database::init([
 use App\Core\Container;
 use App\Core\Contracts\SessionInterface;
 use App\Core\SessionWrapper;
+use App\Core\Contracts\CsrfTokenGeneratorInterface;  
+use App\Core\Security\CsrfTokenGenerator;             
+use App\Middleware\CsrfTokenMiddleware;                
+use App\Middleware\CsrfValidationMiddleware;           
 
 $container = new Container();
 
@@ -101,6 +108,28 @@ $container->set(SessionInterface::class, function() {
     return new SessionWrapper();
 });
 
+// ============== CSRF ==============
+// Gerador de token CSRF (abstração)
+$container->set(CsrfTokenGeneratorInterface::class, function() {
+    return new CsrfTokenGenerator();
+});
+
+// Middleware de geração do token
+$container->set(CsrfTokenMiddleware::class, function($c) {
+    return new CsrfTokenMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(CsrfTokenGeneratorInterface::class)
+    );
+});
+
+// Middleware de validação do token
+$container->set(CsrfValidationMiddleware::class, function($c) {
+    return new CsrfValidationMiddleware(
+        $c->get(SessionInterface::class)
+    );
+});
+
+// ============== AUTENTICAÇÃO (LOJISTA) ==============
 $container->set(App\Middleware\AuthMiddleware::class, function($c) {
     return new App\Middleware\AuthMiddleware(
         $c->get(SessionInterface::class)
@@ -110,7 +139,7 @@ $container->set(App\Middleware\AuthMiddleware::class, function($c) {
 $container->set(App\Service\AuthService::class, function($c) {
     return new App\Service\AuthService(
         $c->get(App\Repository\UsuarioRepository::class),
-        $c->get(SessionInterface::class)   // <-- agora via interface
+        $c->get(SessionInterface::class)
     );
 });
 
@@ -122,17 +151,15 @@ $container->set(App\Controller\AuthController::class, function($c) {
     );
 });
 
-// Middleware de administrador
+// ============== ADMINISTRAÇÃO ==============
 $container->set(App\Middleware\AdminMiddleware::class, function($c) {
     return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
 });
 
-// Repositório de administrador
 $container->set(App\Repository\AdministradorRepository::class, function($c) {
     return new App\Repository\AdministradorRepository($c->get(PDO::class));
 });
 
-// Service de autenticação de admin
 $container->set(App\Service\AdminAuthService::class, function($c) {
     return new App\Service\AdminAuthService(
         $c->get(App\Repository\AdministradorRepository::class),
@@ -140,7 +167,6 @@ $container->set(App\Service\AdminAuthService::class, function($c) {
     );
 });
 
-// Controller de admin
 $container->set(App\Controller\AdminAuthController::class, function($c) {
     return new App\Controller\AdminAuthController(
         $c->get(App\Service\AdminAuthService::class),
