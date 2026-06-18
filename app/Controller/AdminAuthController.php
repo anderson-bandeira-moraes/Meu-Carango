@@ -31,7 +31,7 @@ class AdminAuthController
         $this->session->delete('flash_admin_error');
 
         return $this->view->renderWithLayout(
-            'admin/login',      // <-- corrigido: antes estava 'auth/login'
+            'admin/login',
             ['erro' => $erro],
             'layouts/main',
             ['title' => 'Admin - Login']
@@ -43,6 +43,9 @@ class AdminAuthController
      */
     public function login(Request $request): void
     {
+        // Obtém o IP do cliente (para logs)
+        $clientIp = $request->getClientIp();
+
         // Se for AJAX, lê o corpo JSON
         if ($request->isAjax()) {
             $data = $request->getJson();
@@ -64,7 +67,8 @@ class AdminAuthController
             exit;
         }
 
-        $resultado = $this->adminAuthService->login($email, $senha);
+        // Passa o IP para o service
+        $resultado = $this->adminAuthService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
             if ($request->isAjax()) {
@@ -92,7 +96,9 @@ class AdminAuthController
      */
     public function logout(Request $request): void
     {
-        $this->adminAuthService->logout();
+        // Obtém o IP do cliente e passa para o service
+        $clientIp = $request->getClientIp();
+        $this->adminAuthService->logout($clientIp);
         header('Location: /admin/login');
         exit;
     }

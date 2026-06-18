@@ -14,6 +14,7 @@ Proteger a aplicação contra ataques CSRF, garantindo que requisições que alt
 - **Helper global `csrf_token()`:** usado nas views para exibir o token no campo hidden dos formulários.
 - **Regeneração após login:** o token é renovado automaticamente após o login (lojista e administrador).
 - **Suporte a AJAX:** o token pode ser enviado via cabeçalho `X-CSRF-TOKEN` (além do campo hidden).
+- **Logs de segurança:** tentativas de CSRF inválidas são registradas com nível `WARNING`, incluindo IP, URI e método HTTP.
 
 ---
 
@@ -32,12 +33,12 @@ Proteger a aplicação contra ataques CSRF, garantindo que requisições que alt
 4. **Usuário submete o formulário** (ou faz requisição AJAX).
 5. **`CsrfValidationMiddleware`** é executado:
    - Obtém o token enviado (via POST `csrf_token` ou cabeçalho `X-CSRF-TOKEN`).
-   - Compara com o token armazenado na sessão.
+   - Compara com o token armazenado na sessão usando `hash_equals()` (timing-safe).
    - Se **válido** → requisição prossegue para o controller.
-   - Se **inválido** → lança `ForbiddenException` (erro 403).
+   - Se **inválido** → registra log `WARNING` com IP, URI e método; lança `ForbiddenException` (erro 403).
 6. **Resposta**:
    - Sucesso: ação é executada (ex: login, criação de veículo).
-   - Erro: view `erros/403.php` é renderizada com mensagem amigável.
+   - Erro: view `erros/403.php` é renderizada com mensagem amigável (ou JSON para AJAX).
 
 ---
 
@@ -50,24 +51,46 @@ Proteger a aplicação contra ataques CSRF, garantindo que requisições que alt
 **Por que isso é importante?**
 - O token usado no formulário de login é substituído por um novo após autenticação, tornando-o inútil para um eventual atacante que o tenha interceptado antes do login.
 
+**Comportamento com múltiplas abas:**
+- O token é compartilhado entre abas (mesma sessão).
+- Após regeneração (login em uma aba), o token antigo em outras abas é invalidado, resultando em erro 403 ao tentar enviar formulários sem recarregar a página.
+
 ---
 
-## 🧰 Como Adicionar CSRF em Novas Rotas
+## 📝 Implementação Técnica
 
-### 1. Aplicar os middlewares aos grupos de rotas (no `index.php`)
+### Arquivos criados/modificados
+
+| Arquivo | Responsabilidade |
+|---------|------------------|
+| `app/Middleware/CsrfTokenMiddleware.php` | Geração condicional do token. |
+| `app/Middleware/CsrfValidationMiddleware.php` | Validação do token (com log). |
+| `app/Helpers/csrf.php` | Helper global `csrf_token()`. |
+| `app/Core/Contracts/CsrfTokenGeneratorInterface.php` | Interface para geração de token (abstração). |
+| `app/Core/Security/CsrfTokenGenerator.php` | Implementação concreta usando `random_bytes()`. |
+| `app/View/admin/login.php` | Campo hidden no formulário de login + modal de escolha (POST/AJAX). |
+| `app/View/erros/403.php` | Página de erro amigável. |
+
+### Registro no container (`index.php`)
 
 ```php
-$router->group('/novo-grupo', function(Router $router) use ($container) {
-    // 1. Geração do token
-    $router->middleware($container->get(CsrfTokenMiddleware::class));
-    
-    // 2. Autenticação (se necessário)
-    $router->middleware($container->get(AuthMiddleware::class));
-    
-    // 3. Validação do token (apenas POST, PUT, DELETE)
-    $router->middleware($container->get(CsrfValidationMiddleware::class));
-    
-    // Suas rotas aqui
-    $router->get('/formulario', 'Controller@form');
-    $router->post('/formulario', 'Controller@processar');
+use Monolog\Logger;
+
+// CSRF Middlewares
+$container->set(CsrfTokenGeneratorInterface::class, function() {
+    return new CsrfTokenGenerator();
+});
+
+$container->set(CsrfTokenMiddleware::class, function($c) {
+    return new CsrfTokenMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(CsrfTokenGeneratorInterface::class)
+    );
+});
+
+$container->set(CsrfValidationMiddleware::class, function($c) {
+    return new CsrfValidationMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(Logger::class) // Logger injetado para logs de CSRF
+    );
 });

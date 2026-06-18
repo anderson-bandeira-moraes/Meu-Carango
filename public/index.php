@@ -58,7 +58,10 @@ use App\Core\SessionWrapper;
 use App\Core\Contracts\CsrfTokenGeneratorInterface;  
 use App\Core\Security\CsrfTokenGenerator;             
 use App\Middleware\CsrfTokenMiddleware;                
-use App\Middleware\CsrfValidationMiddleware;           
+use App\Middleware\CsrfValidationMiddleware;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Processor\WebProcessor;           
 
 $container = new Container();
 
@@ -122,10 +125,11 @@ $container->set(CsrfTokenMiddleware::class, function($c) {
     );
 });
 
-// Middleware de validação do token
+// Middleware de validação do token (agora com Logger)
 $container->set(CsrfValidationMiddleware::class, function($c) {
     return new CsrfValidationMiddleware(
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(Logger::class) // Logger injetado
     );
 });
 
@@ -163,7 +167,8 @@ $container->set(App\Repository\AdministradorRepository::class, function($c) {
 $container->set(App\Service\AdminAuthService::class, function($c) {
     return new App\Service\AdminAuthService(
         $c->get(App\Repository\AdministradorRepository::class),
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)  
     );
 });
 
@@ -175,11 +180,33 @@ $container->set(App\Controller\AdminAuthController::class, function($c) {
     );
 });
 
+// Carrega a configuração de logging
+$logConfig = require CONFIG_DIR . '/logging.php';
+
+// Registra o Logger no container
+$container->set(\Monolog\Logger::class, function() use ($logConfig) {
+    $logger = new \Monolog\Logger($logConfig['channel']);
+    
+    // Handler com rotação diária
+    $handler = new RotatingFileHandler(
+        $logConfig['path'],
+        $logConfig['days'],
+        $logConfig['level']
+    );
+    $logger->pushHandler($handler);
+    
+    // Adiciona os processadores configurados
+    foreach ($logConfig['processors'] as $processorClass) {
+        $logger->pushProcessor(new $processorClass());
+    }
+    
+    return $logger;
+});
+
 // ============== ROTEADOR ==============
 use App\Core\Router;
 use App\Core\Request;
 use App\Middleware\AuthMiddleware;
-use App\Middleware\CsrfMiddleware;
 use App\Middleware\AdminMiddleware;
 
 $router  = new Router($container);
@@ -249,6 +276,19 @@ try {
     $router->dispatch($request);
 } catch (\App\Exception\HttpNotFoundException $e) {
     http_response_code(404);
+
+    // --- LOG 404 ---
+    try {
+        $logger = $container->get(\Monolog\Logger::class);
+        $logger->warning('Página não encontrada', [
+            'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+            'message'=> $e->getMessage(),
+        ]);
+    } catch (\Throwable $logError) {
+        error_log('404: ' . ($_SERVER['REQUEST_URI'] ?? 'unknown'));
+    }
+
     if ($request->isAjax()) {
         header('Content-Type: application/json');
         echo json_encode(['erro' => 'Página não encontrada.', 'status' => 404]);
@@ -258,6 +298,19 @@ try {
     echo $view->render('erros/404', ['mensagem' => $e->getMessage()]);
 } catch (\App\Exception\ForbiddenException $e) {
     http_response_code(403);
+
+    // --- LOG 403 ---
+    try {
+        $logger = $container->get(\Monolog\Logger::class);
+        $logger->warning('Acesso negado (CSRF ou permissão)', [
+            'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+            'message'=> $e->getMessage(),
+        ]);
+    } catch (\Throwable $logError) {
+        error_log('403: ' . ($_SERVER['REQUEST_URI'] ?? 'unknown'));
+    }
+
     if ($request->isAjax()) {
         header('Content-Type: application/json');
         echo json_encode(['erro' => 'A página expirou. Recarregue e tente novamente.', 'status' => 403]);
@@ -267,16 +320,27 @@ try {
     echo $view->render('erros/403', ['mensagem' => $e->getMessage()]);
 } catch (\Throwable $e) {
     http_response_code(500);
-    if ($request->isAjax()) {
-        header('Content-Type: application/json');
-        echo json_encode(['erro' => 'Erro interno do servidor.', 'status' => 500]);
-        exit;
+
+    // --- LOG 500 COM MONOLOG ---
+    try {
+        $logger = $container->get(\Monolog\Logger::class);
+        $logger->error($e->getMessage(), [
+            'file'  => $e->getFile(),
+            'line'  => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+            'uri'   => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'method'=> $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+        ]);
+    } catch (\Throwable $logError) {
+        error_log('Falha ao registrar log com Monolog: ' . $logError->getMessage());
+        error_log($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
     }
+    // --- FIM DO LOG ---
+
     if ($env === 'development') {
         echo '<h1>Erro 500</h1><pre>' . $e->getMessage() . '</pre>';
     } else {
         $view = $container->get(App\Core\ViewRenderer::class);
         echo $view->render('erros/500', []);
     }
-    error_log($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
 }

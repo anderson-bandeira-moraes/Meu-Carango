@@ -7,6 +7,7 @@ namespace App\Middleware;
 use App\Core\Request;
 use App\Core\Contracts\SessionInterface;
 use App\Exception\ForbiddenException;
+use Monolog\Logger;
 
 /**
  * Middleware responsável por validar o token CSRF em requisições que alteram o estado.
@@ -14,7 +15,10 @@ use App\Exception\ForbiddenException;
  */
 class CsrfValidationMiddleware
 {
-    public function __construct(private SessionInterface $session) {}
+    public function __construct(
+        private SessionInterface $session,
+        private Logger $logger,
+    ) {}
 
     /**
      * Valida o token CSRF para métodos que alteram estado (POST, PUT, DELETE, PATCH).
@@ -39,6 +43,13 @@ class CsrfValidationMiddleware
 
         // Validação timing-safe: compara os tokens em tempo constante
         if (!$token || !$sessionToken || !hash_equals($token, $sessionToken)) {
+            // Registra log específico para CSRF inválido
+            $this->logger->warning('CSRF token inválido', [
+                'ip'     => $request->getClientIp(),
+                'uri'    => $request->getPath(),
+                'method' => $request->getMethod(),
+            ]);
+
             throw new ForbiddenException('Token CSRF inválido. Recarregue a página e tente novamente.');
         }
     }
