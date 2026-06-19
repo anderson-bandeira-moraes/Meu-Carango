@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Core\Contracts\SessionInterface;
 use App\Repository\AdministradorRepository;
+use App\Repository\LoginAttemptRepository;
 use Monolog\Logger;
 
 class AdminAuthService
@@ -14,6 +15,7 @@ class AdminAuthService
         private AdministradorRepository $adminRepository,
         private SessionInterface $session,
         private Logger $logger,
+        private LoginAttemptRepository $attemptRepository, 
     ) {}
 
     /**
@@ -26,10 +28,38 @@ class AdminAuthService
      */
     public function login(string $email, string $senha, string $clientIp): array
     {
+        // --- 4.6 Verificar se o bloqueio expirou e resetar automaticamente ---
+        $attemptData = $this->attemptRepository->getAttempts($email, $clientIp);
+        if ($attemptData && $attemptData['blocked_until'] !== null && strtotime($attemptData['blocked_until']) < time()) {
+            // Bloqueio expirou → resetar contador e logar
+            $this->attemptRepository->resetAttempts($email, $clientIp);
+            $this->logger->info('Bloqueio expirado, contador de tentativas resetado', [
+                'email' => $email,
+                'ip'    => $clientIp,
+                'previous_attempts' => $attemptData['attempts'],
+            ]);
+            // Após resetar, a verificação de bloqueio (próximo passo) será false
+        }
+
+        // --- 4.2 Verificar bloqueio antes da consulta ao banco ---
+        if ($this->attemptRepository->isBlocked($email, $clientIp)) {
+            $this->logger->warning('Tentativa de login durante bloqueio ativo', [
+                'email' => $email,
+                'ip'    => $clientIp,
+            ]);
+            return [
+                'sucesso' => false,
+                'erro'    => 'Muitas tentativas de login. Tente novamente mais tarde.',
+            ];
+        }
+
         $admin = $this->adminRepository->findByEmail($email);
 
         // --- Falha de login (credenciais inválidas) ---
         if (!$admin || !password_verify($senha, $admin['senha_hash'])) {
+            // --- 4.3 Registrar falha ---
+            $this->attemptRepository->recordFailedAttempt($email, $clientIp);
+
             $this->logger->warning('Tentativa de login falhou (admin)', [
                 'email'  => $email,
                 'ip'     => $clientIp,
@@ -53,6 +83,12 @@ class AdminAuthService
 
         // Regenera o token CSRF (evita fixação de token)
         $this->session->set('csrf_token', bin2hex(random_bytes(32)));
+
+        // --- 4.4 Resetar tentativas em caso de sucesso ---
+        $this->attemptRepository->resetAttempts($email, $clientIp);
+
+        // Limpeza de registros antigos (a cada login bem-sucedido)
+        $this->attemptRepository->deleteOldRecords();
 
         // Log de sucesso
         $this->logger->info('Login de administrador bem-sucedido', [

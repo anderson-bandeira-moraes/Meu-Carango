@@ -125,11 +125,11 @@ $container->set(CsrfTokenMiddleware::class, function($c) {
     );
 });
 
-// Middleware de validação do token (agora com Logger)
+// Middleware de validação do token
 $container->set(CsrfValidationMiddleware::class, function($c) {
     return new CsrfValidationMiddleware(
         $c->get(SessionInterface::class),
-        $c->get(Logger::class) // Logger injetado
+        $c->get(Logger::class) 
     );
 });
 
@@ -156,22 +156,35 @@ $container->set(App\Controller\AuthController::class, function($c) {
 });
 
 // ============== ADMINISTRAÇÃO ==============
+
+// Middleware de administrador
 $container->set(App\Middleware\AdminMiddleware::class, function($c) {
     return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
 });
 
+// Repositórios
 $container->set(App\Repository\AdministradorRepository::class, function($c) {
     return new App\Repository\AdministradorRepository($c->get(PDO::class));
 });
 
+$container->set(App\Repository\LoginAttemptRepository::class, function($c) {
+    return new App\Repository\LoginAttemptRepository(
+        $c->get(PDO::class),
+        $c->get(\Monolog\Logger::class)
+    );
+});
+
+// Services
 $container->set(App\Service\AdminAuthService::class, function($c) {
     return new App\Service\AdminAuthService(
         $c->get(App\Repository\AdministradorRepository::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)  
+        $c->get(\Monolog\Logger::class),
+        $c->get(App\Repository\LoginAttemptRepository::class)
     );
 });
 
+// Controllers
 $container->set(App\Controller\AdminAuthController::class, function($c) {
     return new App\Controller\AdminAuthController(
         $c->get(App\Service\AdminAuthService::class),
@@ -296,13 +309,37 @@ try {
     }
     $view = $container->get(App\Core\ViewRenderer::class);
     echo $view->render('erros/404', ['mensagem' => $e->getMessage()]);
+
+} catch (\App\Exception\CsrfException $e) {
+    http_response_code(403);
+
+    // --- LOG ESPECÍFICO PARA CSRF ---
+    try {
+        $logger = $container->get(\Monolog\Logger::class);
+        $logger->warning('Acesso negado por CSRF', [
+            'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+            'message'=> $e->getMessage(),
+        ]);
+    } catch (\Throwable $logError) {
+        error_log('CSRF: ' . ($_SERVER['REQUEST_URI'] ?? 'unknown'));
+    }
+
+    if ($request->isAjax()) {
+        header('Content-Type: application/json');
+        echo json_encode(['erro' => $e->getMessage(), 'status' => 403]);
+        exit;
+    }
+    $view = $container->get(App\Core\ViewRenderer::class);
+    echo $view->render('erros/403', ['mensagem' => $e->getMessage()]);
+
 } catch (\App\Exception\ForbiddenException $e) {
     http_response_code(403);
 
-    // --- LOG 403 ---
+    // --- LOG ESPECÍFICO PARA PERMISSÃO (não CSRF) ---
     try {
         $logger = $container->get(\Monolog\Logger::class);
-        $logger->warning('Acesso negado (CSRF ou permissão)', [
+        $logger->warning('Acesso negado por permissão', [
             'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
             'message'=> $e->getMessage(),
@@ -313,11 +350,12 @@ try {
 
     if ($request->isAjax()) {
         header('Content-Type: application/json');
-        echo json_encode(['erro' => 'A página expirou. Recarregue e tente novamente.', 'status' => 403]);
+        echo json_encode(['erro' => $e->getMessage(), 'status' => 403]);
         exit;
     }
     $view = $container->get(App\Core\ViewRenderer::class);
     echo $view->render('erros/403', ['mensagem' => $e->getMessage()]);
+
 } catch (\Throwable $e) {
     http_response_code(500);
 

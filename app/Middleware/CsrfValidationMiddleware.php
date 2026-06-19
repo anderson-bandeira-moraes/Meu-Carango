@@ -6,7 +6,7 @@ namespace App\Middleware;
 
 use App\Core\Request;
 use App\Core\Contracts\SessionInterface;
-use App\Exception\ForbiddenException;
+use App\Exception\CsrfException;
 use Monolog\Logger;
 
 /**
@@ -21,12 +21,12 @@ class CsrfValidationMiddleware
     ) {}
 
     /**
-     * Valida o token CSRF para métodos que alteram estado (POST, PUT, DELETE, PATCH).
-     *
-     * @param Request $request
-     * @return void
-     * @throws ForbiddenException Se o token estiver ausente ou for inválido.
-     */
+    * Valida o token CSRF para métodos que alteram estado (POST, PUT, DELETE, PATCH).
+    *
+    * @param Request $request
+    * @return void
+    * @throws CsrfException Se o token estiver ausente ou for inválido.
+    */
     public function handle(Request $request): void
     {
         // Aplica apenas a métodos que alteram o estado do servidor
@@ -50,7 +50,7 @@ class CsrfValidationMiddleware
                 'method' => $request->getMethod(),
             ]);
 
-            throw new ForbiddenException('Token CSRF inválido. Recarregue a página e tente novamente.');
+            throw new CsrfException('A página expirou. Recarregue e tente novamente.');
         }
     }
 }
