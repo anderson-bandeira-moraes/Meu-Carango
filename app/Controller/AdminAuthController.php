@@ -71,6 +71,23 @@ class AdminAuthController
         $resultado = $this->adminAuthService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
+            // Se 2FA for necessário, redireciona para /admin/2fa
+            if (isset($resultado['2fa_required']) && $resultado['2fa_required'] === true) {
+                $redirectTo = $resultado['redirect'] ?? '/admin/2fa';
+                if ($request->isAjax()) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'sucesso' => true,
+                        '2fa_required' => true,
+                        'redirect' => $redirectTo,
+                    ]);
+                    exit;
+                }
+                header('Location: ' . $redirectTo);
+                exit;
+            }
+
+            // Login completo (sem 2FA)
             if ($request->isAjax()) {
                 header('Content-Type: application/json');
                 echo json_encode(['sucesso' => true, 'redirect' => '/admin']);

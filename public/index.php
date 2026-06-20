@@ -61,9 +61,37 @@ use App\Middleware\CsrfTokenMiddleware;
 use App\Middleware\CsrfValidationMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Processor\WebProcessor;           
+use Monolog\Processor\WebProcessor;   
+use App\Repository\TwoFactorRepository;
+use App\Service\MailService;
+use App\Service\TwoFactorService;
+use App\Middleware\TwoFactorMiddleware;
+use App\Controller\TwoFactorController;        
 
 $container = new Container();
+
+// Carrega a configuração de logging
+$logConfig = require CONFIG_DIR . '/logging.php';
+
+// Registra o Logger no container
+$container->set(\Monolog\Logger::class, function() use ($logConfig) {
+    $logger = new \Monolog\Logger($logConfig['channel']);
+    
+    // Handler com rotação diária
+    $handler = new RotatingFileHandler(
+        $logConfig['path'],
+        $logConfig['days'],
+        $logConfig['level']
+    );
+    $logger->pushHandler($handler);
+    
+    // Adiciona os processadores configurados
+    foreach ($logConfig['processors'] as $processorClass) {
+        $logger->pushProcessor(new $processorClass());
+    }
+    
+    return $logger;
+});
 
 // Registra serviços comuns
 $container->set(PDO::class, function() {
@@ -96,13 +124,26 @@ $container->set(App\Helper\ImagemHelper::class, function() {
     return new App\Helper\ImagemHelper($_ENV['UPLOAD_DIR']);
 });
 
-// Services
+// ============== SERVIÇOS ==============
 $container->set(App\Service\CriarAnuncioService::class, function($c) {
     return new App\Service\CriarAnuncioService(
         $c->get(App\Repository\VeiculoRepository::class),
         $c->get(App\Repository\AnuncioRepository::class),
         $c->get(App\Repository\FotoRepository::class),
         $c->get(App\Helper\ImagemHelper::class)
+    );
+});
+
+$container->set(App\Service\MailService::class, function($c) {
+    return new App\Service\MailService($c->get(\Monolog\Logger::class));
+});
+
+$container->set(App\Service\TwoFactorService::class, function($c) {
+    return new App\Service\TwoFactorService(
+        $c->get(App\Repository\TwoFactorRepository::class),
+        $c->get(App\Service\MailService::class),
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
     );
 });
 
@@ -130,6 +171,13 @@ $container->set(CsrfValidationMiddleware::class, function($c) {
     return new CsrfValidationMiddleware(
         $c->get(SessionInterface::class),
         $c->get(Logger::class) 
+    );
+});
+
+$container->set(App\Middleware\TwoFactorMiddleware::class, function($c) {
+    return new App\Middleware\TwoFactorMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
     );
 });
 
@@ -174,17 +222,22 @@ $container->set(App\Repository\LoginAttemptRepository::class, function($c) {
     );
 });
 
+$container->set(App\Repository\TwoFactorRepository::class, function($c) {
+    return new App\Repository\TwoFactorRepository($c->get(PDO::class), $c->get(\Monolog\Logger::class));
+});
+
 // Services
 $container->set(App\Service\AdminAuthService::class, function($c) {
     return new App\Service\AdminAuthService(
         $c->get(App\Repository\AdministradorRepository::class),
         $c->get(SessionInterface::class),
         $c->get(\Monolog\Logger::class),
-        $c->get(App\Repository\LoginAttemptRepository::class)
+        $c->get(App\Repository\LoginAttemptRepository::class),
+        $c->get(App\Service\TwoFactorService::class)
     );
 });
 
-// Controllers
+// ============== CONTROLLERS ==============
 $container->set(App\Controller\AdminAuthController::class, function($c) {
     return new App\Controller\AdminAuthController(
         $c->get(App\Service\AdminAuthService::class),
@@ -193,27 +246,13 @@ $container->set(App\Controller\AdminAuthController::class, function($c) {
     );
 });
 
-// Carrega a configuração de logging
-$logConfig = require CONFIG_DIR . '/logging.php';
-
-// Registra o Logger no container
-$container->set(\Monolog\Logger::class, function() use ($logConfig) {
-    $logger = new \Monolog\Logger($logConfig['channel']);
-    
-    // Handler com rotação diária
-    $handler = new RotatingFileHandler(
-        $logConfig['path'],
-        $logConfig['days'],
-        $logConfig['level']
+$container->set(App\Controller\TwoFactorController::class, function($c) {
+    return new App\Controller\TwoFactorController(
+        $c->get(App\Service\TwoFactorService::class),
+        $c->get(App\Core\ViewRenderer::class),
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
     );
-    $logger->pushHandler($handler);
-    
-    // Adiciona os processadores configurados
-    foreach ($logConfig['processors'] as $processorClass) {
-        $logger->pushProcessor(new $processorClass());
-    }
-    
-    return $logger;
 });
 
 // ============== ROTEADOR ==============
@@ -224,6 +263,11 @@ use App\Middleware\AdminMiddleware;
 
 $router  = new Router($container);
 $request = new Request(); 
+
+// ============== ROTAS 2FA ==============
+$router->get('/admin/2fa', 'TwoFactorController@form');
+$router->post('/admin/2fa/verify', 'TwoFactorController@verify');
+$router->post('/admin/2fa/resend', 'TwoFactorController@resend');
 
 // ============== ROTAS ADMINISTRATIVAS ==============
 
@@ -245,6 +289,7 @@ $router->get('/admin/logout', 'AdminAuthController@logout');
 $router->group('/admin', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfTokenMiddleware::class));
     $router->middleware($container->get(AdminMiddleware::class));
+    $router->middleware($container->get(TwoFactorMiddleware::class));
     $router->middleware($container->get(CsrfValidationMiddleware::class));
     $router->get('', 'AdminAuthController@index');
 });

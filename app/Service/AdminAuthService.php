@@ -24,21 +24,19 @@ class AdminAuthService
      * @param string $email
      * @param string $senha (plain text)
      * @param string $clientIp IP do cliente (para logs)
-     * @return array{sucesso: bool, erro?: string}
+     * @return array{sucesso: bool, erro?: string, 2fa_required?: bool}
      */
     public function login(string $email, string $senha, string $clientIp): array
     {
         // --- 4.6 Verificar se o bloqueio expirou e resetar automaticamente ---
         $attemptData = $this->attemptRepository->getAttempts($email, $clientIp);
         if ($attemptData && $attemptData['blocked_until'] !== null && strtotime($attemptData['blocked_until']) < time()) {
-            // Bloqueio expirou → resetar contador e logar
             $this->attemptRepository->resetAttempts($email, $clientIp);
             $this->logger->info('Bloqueio expirado, contador de tentativas resetado', [
                 'email' => $email,
                 'ip'    => $clientIp,
                 'previous_attempts' => $attemptData['attempts'],
             ]);
-            // Após resetar, a verificação de bloqueio (próximo passo) será false
         }
 
         // --- 4.2 Verificar bloqueio antes da consulta ao banco ---
@@ -57,46 +55,58 @@ class AdminAuthService
 
         // --- Falha de login (credenciais inválidas) ---
         if (!$admin || !password_verify($senha, $admin['senha_hash'])) {
-            // --- 4.3 Registrar falha ---
             $this->attemptRepository->recordFailedAttempt($email, $clientIp);
-
             $this->logger->warning('Tentativa de login falhou (admin)', [
                 'email'  => $email,
                 'ip'     => $clientIp,
                 'motivo' => 'Credenciais inválidas',
             ]);
-
             return [
                 'sucesso' => false,
                 'erro'    => 'E-mail ou senha inválidos.',
             ];
         }
 
-        // --- Login bem-sucedido ---
-        // Regenera o ID da sessão (segurança)
-        $this->session->regenerate();
+        // --- Senha correta: inicia fluxo 2FA ---
+        // Armazena dados pendentes na sessão
+        $this->session->set('pending_admin_id', $admin['id']);
+        $this->session->set('pending_admin_email', $admin['email']);
+        $this->session->set('pending_admin_nome', $admin['nome']);
 
-        // Armazena dados do administrador na sessão
-        $this->session->set('admin_id', $admin['id']);
-        $this->session->set('admin_nome', $admin['nome']);
-        $this->session->set('admin_email', $admin['email']);
+        // Gera e envia código 2FA
+        $result = $this->twoFactorService->generateAndSend($admin['email']);
 
-        // Regenera o token CSRF (evita fixação de token)
-        $this->session->set('csrf_token', bin2hex(random_bytes(32)));
+        if (!$result['success']) {
+            // Limpa pendências em caso de falha
+            $this->session->delete('pending_admin_id');
+            $this->session->delete('pending_admin_email');
+            $this->session->delete('pending_admin_nome');
 
-        // --- 4.4 Resetar tentativas em caso de sucesso ---
+            $this->logger->error('Falha ao enviar código 2FA', [
+                'email' => $admin['email'],
+                'error' => $result['error'] ?? 'unknown',
+            ]);
+
+            return [
+                'sucesso' => false,
+                'erro'    => 'Erro ao enviar código de verificação. Tente novamente.',
+            ];
+        }
+
+        // Reseta tentativas de login (sucesso parcial)
         $this->attemptRepository->resetAttempts($email, $clientIp);
-
-        // Limpeza de registros antigos (a cada login bem-sucedido)
         $this->attemptRepository->deleteOldRecords();
 
-        // Log de sucesso
-        $this->logger->info('Login de administrador bem-sucedido', [
+        $this->logger->info('Login parcial: 2FA iniciado', [
             'email' => $admin['email'],
             'ip'    => $clientIp,
         ]);
 
-        return ['sucesso' => true];
+        return [
+            'sucesso'       => true,
+            '2fa_required'  => true,
+            'redirect'      => '/admin/2fa',
+        ];
     }
 
     /**
