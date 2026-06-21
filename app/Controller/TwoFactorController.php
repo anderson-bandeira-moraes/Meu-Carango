@@ -64,6 +64,8 @@ class TwoFactorController
         $erro = $this->getFlash('flash_2fa_error');
         $sucesso = $this->getFlash('flash_2fa_success');
 
+        $expiryMinutes = (int) ($_ENV['TWO_FACTOR_EXPIRY_MINUTES'] ?? 5);
+
         // Renderiza view
         return $this->view->renderWithLayout(
             'admin/2fa',
@@ -72,7 +74,7 @@ class TwoFactorController
                 'erro'    => $erro,
                 'sucesso' => $sucesso,
                 'status'  => $status,
-                'getTimeRemaining' => [$this, 'getTimeRemaining'], // ou passe o valor calculado
+                'expiryMinutes' => $expiryMinutes,
             ],
             'layouts/main',
             ['title' => 'Verificação em Duas Etapas']
@@ -224,21 +226,5 @@ class TwoFactorController
         return $value;
     }
 
-    /**
-     * Calcula o tempo restante para expiração em formato HH:MM:SS.
-     *
-     * @param string $expiresAt
-     * @return string
-     */
-    private function getTimeRemaining(string $expiresAt): string
-    {
-        $diff = strtotime($expiresAt) - time();
-        if ($diff <= 0) {
-            return 'Expirado';
-        }
-        $hours = floor($diff / 3600);
-        $minutes = floor(($diff % 3600) / 60);
-        $seconds = $diff % 60;
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-    }
+    
 }

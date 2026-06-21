@@ -15,7 +15,8 @@ class AdminAuthService
         private AdministradorRepository $adminRepository,
         private SessionInterface $session,
         private Logger $logger,
-        private LoginAttemptRepository $attemptRepository, 
+        private LoginAttemptRepository $attemptRepository,
+        private TwoFactorService $twoFactorService, 
     ) {}
 
     /**

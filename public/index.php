@@ -14,7 +14,7 @@ require ROOT_DIR . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(ROOT_DIR);
-$dotenv->safeLoad(); // não falha se .env não existir, útil em produção com vars de ambiente reais
+$dotenv->safeLoad(); 
 
 // ============== CONFIGURAÇÃO DE ERROS ==============
 $env = $_ENV['APP_ENV'] ?? 'production';

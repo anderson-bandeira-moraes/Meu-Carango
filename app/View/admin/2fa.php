@@ -29,15 +29,13 @@
                     <strong><?= htmlspecialchars($email) ?></strong>
                 </p>
 
-                <!-- Status do código -->
+                <!-- Status do código (sem contagem regressiva) -->
                 <?php if (isset($status) && $status['exists']): ?>
                     <div class="mb-3 text-center small">
-                        <?php if (isset($status['expires_at'])): ?>
-                            <span class="badge bg-warning text-dark me-2">
-                                <i class="bi bi-clock me-1"></i>
-                                Expira em: <span id="expiryTimer"><?= $this->getTimeRemaining($status['expires_at']) ?></span>
-                            </span>
-                        <?php endif; ?>
+                        <p class="text-muted small">
+                            <i class="bi bi-clock me-1"></i>
+                            O código é válido por <strong><?= htmlspecialchars($expiryMinutes ?? 5) ?> minutos</strong>.
+                        </p>
 
                         <?php if (isset($status['attempts_left']) && $status['attempts_left'] > 0): ?>
                             <span class="badge bg-info text-dark">
@@ -141,31 +139,6 @@
             }
         });
 
-        // Contagem regressiva para expiração (se existir)
-        const expiryElement = document.getElementById('expiryTimer');
-        if (expiryElement) {
-            const expiryText = expiryElement.textContent.trim();
-            const match = expiryText.match(/(\d+):(\d+):(\d+)/);
-            if (match) {
-                let seconds = parseInt(match[1]) * 3600 + parseInt(match[2]) * 60 + parseInt(match[3]);
-                const timer = setInterval(function() {
-                    if (seconds <= 0) {
-                        clearInterval(timer);
-                        expiryElement.textContent = 'Expirado';
-                        expiryElement.closest('.badge')?.classList.remove('bg-warning');
-                        expiryElement.closest('.badge')?.classList.add('bg-danger');
-                        // Recarregar página para forçar novo estado (opcional)
-                        // window.location.reload();
-                        return;
-                    }
-                    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
-                    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-                    const secs = String(seconds % 60).padStart(2, '0');
-                    expiryElement.textContent = `${hrs}:${mins}:${secs}`;
-                    seconds--;
-                }, 1000);
-            }
-        }
-
+        // Contagem regressiva removida – exibimos apenas a mensagem estática.
     })();
 </script>
