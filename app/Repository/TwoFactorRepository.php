@@ -35,7 +35,6 @@ class TwoFactorRepository
                     code = VALUES(code),
                     expires_at = VALUES(expires_at),
                     attempts = 0,
-                    resend_count = 0,
                     blocked_until = NULL,
                     updated_at = CURRENT_TIMESTAMP
             ';

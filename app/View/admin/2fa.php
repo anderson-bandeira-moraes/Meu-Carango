@@ -36,20 +36,14 @@
                             <i class="bi bi-clock me-1"></i>
                             O código é válido por <strong><?= htmlspecialchars($expiryMinutes ?? 5) ?> minutos</strong>.
                         </p>
+                    </div>
+                <?php endif; ?>
 
-                        <?php if (isset($status['attempts_left']) && $status['attempts_left'] > 0): ?>
-                            <span class="badge bg-info text-dark">
-                                <i class="bi bi-repeat me-1"></i>
-                                Tentativas restantes: <?= $status['attempts_left'] ?>
-                            </span>
-                        <?php endif; ?>
-
-                        <?php if (isset($status['is_blocked']) && $status['is_blocked'] === true): ?>
-                            <span class="badge bg-danger">
-                                <i class="bi bi-ban me-1"></i>
-                                Reenvio bloqueado até <?= date('H:i', strtotime($status['blocked_until'])) ?>
-                            </span>
-                        <?php endif; ?>
+                <!-- Alerta de bloqueio de reenvio (usando $resendBlocked) -->
+                <?php if ($resendBlocked ?? false): ?>
+                    <div class="alert alert-warning text-center" role="alert">
+                        <i class="bi bi-ban me-2"></i>
+                        Reenvio bloqueado por 30 minutos. Tente novamente mais tarde.
                     </div>
                 <?php endif; ?>
 
@@ -69,6 +63,7 @@
                                inputmode="numeric"
                                autocomplete="off"
                                autofocus
+                               <?= (isset($formBlocked) && $formBlocked === true) ? 'disabled' : '' ?>
                                required>
                         <div class="form-text text-center">
                             Digite os 6 dígitos recebidos por e-mail.
@@ -76,7 +71,8 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn">
+                        <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn"
+                            <?= (isset($formBlocked) && $formBlocked === true) ? 'disabled' : '' ?>>
                             <i class="bi bi-check-lg me-2"></i>Verificar
                         </button>
                     </div>
@@ -89,13 +85,9 @@
                     <form method="POST" action="/admin/2fa/resend" id="resendForm" class="d-inline">
                         <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                         <button type="submit" class="btn btn-link p-0 text-decoration-none" id="resendBtn"
-                            <?= (isset($status['is_blocked']) && $status['is_blocked'] === true) ? 'disabled' : '' ?>>
+                            <?= ($resendBlocked ?? false) ? 'disabled' : '' ?>>
                             <i class="bi bi-arrow-clockwise me-1"></i>
-                            <?php if (isset($status['is_blocked']) && $status['is_blocked'] === true): ?>
-                                Reenvio bloqueado
-                            <?php else: ?>
-                                Reenviar código
-                            <?php endif; ?>
+                            <?= ($resendBlocked ?? false) ? 'Reenvio bloqueado' : 'Reenviar código' ?>
                         </button>
                     </form>
 
@@ -104,13 +96,6 @@
                     </a>
                 </div>
 
-                <?php if (isset($status['is_blocked']) && $status['is_blocked'] === true): ?>
-                    <div class="mt-2 text-center small text-muted">
-                        <i class="bi bi-info-circle me-1"></i>
-                        O reenvio está bloqueado até <?= date('H:i:s', strtotime($status['blocked_until'])) ?>.
-                        Tente novamente após esse horário.
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>

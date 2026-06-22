@@ -52,12 +52,25 @@ class TwoFactorController
             'status' => $status,
         ]);
 
-        // Se não há registro ativo (expirado ou removido), redireciona para login
+        // --- Se o registro existe e está bloqueado ---
+        if ($status['exists'] && isset($status['is_blocked']) && $status['is_blocked'] === true) {
+            $blockedUntil = $status['blocked_until'];
+            $minutesLeft = ceil((strtotime($blockedUntil) - time()) / 60);
+            $mensagem = "Reenvio bloqueado. Aguarde {$minutesLeft} minutos para solicitar um novo código.";
+            $this->session->set('flash_2fa_error', $mensagem);
+            // Não limpa pendências – mantém o usuário na página 2FA
+        }
+
+        // --- Se não há registro ativo (expirado ou removido) ---
         if (!$status['exists']) {
-            $this->session->set('flash_2fa_error', 'Código expirado. Faça login novamente.');
-            $this->clearPendingSession();
-            header('Location: /admin/login');
-            exit;
+            // Verifica se o reenvio está bloqueado
+            if ($this->twoFactorService->isResendBlocked($email)) {
+                $mensagem = 'Código expirado e você atingiu o limite de reenvios. Aguarde 30 minutos para solicitar um novo código.';
+            } else {
+                $mensagem = 'Código expirado. Clique em "Reenviar" para obter um novo código.';
+            }
+            $this->session->set('flash_2fa_error', $mensagem);
+            // Não limpa pendências – mantém o usuário na página 2FA
         }
 
         // Recupera mensagens flash
@@ -66,15 +79,20 @@ class TwoFactorController
 
         $expiryMinutes = (int) ($_ENV['TWO_FACTOR_EXPIRY_MINUTES'] ?? 5);
 
+        // Verifica se o reenvio está bloqueado (para a view)
+        $resendBlocked = $this->twoFactorService->isResendBlocked($email);
+
         // Renderiza view
         return $this->view->renderWithLayout(
             'admin/2fa',
             [
-                'email'   => $email,
-                'erro'    => $erro,
-                'sucesso' => $sucesso,
-                'status'  => $status,
-                'expiryMinutes' => $expiryMinutes,
+                'email'          => $email,
+                'erro'           => $erro,
+                'sucesso'        => $sucesso,
+                'status'         => $status,
+                'expiryMinutes'  => $expiryMinutes,
+                'resendBlocked'  => $resendBlocked,
+                'formBlocked'    => isset($status['exists']) && $status['exists'] && isset($status['is_blocked']) && $status['is_blocked'] === true, // NOVO
             ],
             'layouts/main',
             ['title' => 'Verificação em Duas Etapas']
@@ -106,6 +124,24 @@ class TwoFactorController
         }
 
         try {
+            // Primeiro, verifica se o código ainda existe e não expirou
+            $record = $this->twoFactorService->getRecord($email);
+
+            if (!$record) {
+                // Registro não existe (já foi removido ou nunca foi criado)
+                $this->session->set('flash_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
+                header('Location: /admin/2fa');
+                exit;
+            }
+
+            if (strtotime($record['expires_at']) < time()) {
+                // Código expirado - não remove pendências
+                $this->logger->warning('Código 2FA expirado durante verificação', ['email' => $email]);
+                $this->session->set('flash_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
+                header('Location: /admin/2fa');
+                exit;
+            }
+
             $result = $this->twoFactorService->verify($email, $code);
 
             if ($result['success']) {
@@ -131,17 +167,37 @@ class TwoFactorController
                 exit;
             }
 
-            // --- Falha na verificação ---
+            // --- Falha na verificação (código inválido) com tentativas restantes ---
             if (isset($result['attempts_left']) && $result['attempts_left'] > 0) {
                 $this->session->set('flash_2fa_error', "Código inválido. Você tem {$result['attempts_left']} tentativa(s) restante(s).");
                 header('Location: /admin/2fa');
                 exit;
             }
 
-            // --- Esgotou tentativas ou erro fatal ---
-            $this->session->set('flash_2fa_error', $result['error'] ?? 'Erro na verificação. Faça login novamente.');
-            $this->clearPendingSession();
-            header('Location: /admin/login');
+            // --- Esgotou tentativas (exhausted) ---
+            if (isset($result['exhausted']) && $result['exhausted'] === true) {
+                // Verifica se o reenvio está bloqueado
+                $resendBlocked = $this->twoFactorService->isResendBlocked($email);
+                if ($resendBlocked) {
+                    $mensagem = 'Você esgotou as tentativas de verificação e o reenvio está bloqueado. Aguarde 30 minutos para tentar novamente.';
+                } else {
+                    $mensagem = 'Você esgotou as tentativas. Clique em "Reenviar" para obter um novo código.';
+                }
+                // NÃO limpa pendências – mantém o usuário na página 2FA
+                $this->session->set('flash_2fa_error', $mensagem);
+                header('Location: /admin/2fa');
+                exit;
+            }
+
+            // --- Outros erros (fallback) ---
+            $this->session->set('flash_2fa_error', $result['error'] ?? 'Erro na verificação. Tente novamente.');
+            // Se for erro de expiração, mantém pendências; caso contrário, limpa
+            if (strpos($result['error'] ?? '', 'expirou') !== false) {
+                // Mantém pendências
+            } else {
+                $this->clearPendingSession();
+            }
+            header('Location: /admin/2fa');
             exit;
 
         } catch (\Throwable $e) {

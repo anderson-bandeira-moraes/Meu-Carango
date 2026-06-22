@@ -84,30 +84,31 @@ class TwoFactorService
             if (!$record) {
                 return [
                     'success' => false,
-                    'error' => 'Nenhum código ativo encontrado. Faça login novamente.',
+                    'error' => 'Nenhum código ativo encontrado.',
                 ];
             }
 
-            // Verifica expiração
+            // Verifica expiração (mantém reset, pois é expiração)
             if (strtotime($record['expires_at']) < time()) {
                 $this->repository->reset($email);
                 $this->logger->warning('Código 2FA expirado', ['email' => $email]);
                 return [
                     'success' => false,
-                    'error' => 'Código expirado. Faça login novamente para obter um novo código.',
+                    'error' => 'Código expirado. Clique em "Reenviar" para obter um novo código.',
                 ];
             }
 
             // Verifica se já excedeu o limite de tentativas
             if ((int) $record['attempts'] >= $this->maxAttempts) {
-                $this->repository->reset($email);
+                // Mantém o registro, não remove
                 $this->logger->warning('Tentativas de verificação 2FA excedidas', [
                     'email' => $email,
                     'attempts' => $record['attempts'],
                 ]);
                 return [
-                    'success' => false,
-                    'error' => 'Número máximo de tentativas excedido. Faça login novamente.',
+                    'success'   => false,
+                    'error'     => 'Número máximo de tentativas excedido.',
+                    'exhausted' => true,
                 ];
             }
 
@@ -116,15 +117,15 @@ class TwoFactorService
                 $this->repository->incrementAttempts($email);
                 $attemptsLeft = $this->maxAttempts - ((int) $record['attempts'] + 1);
 
-                // Se após incrementar atingir o limite, remover registro
+                // Se após incrementar atingir o limite, mantém o registro
                 if ($attemptsLeft <= 0) {
-                    $this->repository->reset($email);
                     $this->logger->warning('Tentativas de verificação 2FA esgotadas', [
                         'email' => $email,
                     ]);
                     return [
-                        'success' => false,
-                        'error' => 'Número máximo de tentativas excedido. Faça login novamente.',
+                        'success'   => false,
+                        'error'     => 'Número máximo de tentativas excedido.',
+                        'exhausted' => true,
                     ];
                 }
 
@@ -135,7 +136,7 @@ class TwoFactorService
 
                 return [
                     'success' => false,
-                    'error' => 'Código inválido.',
+                    'error' => "Código inválido. Você tem {$attemptsLeft} tentativa(s) restante(s).",
                     'attempts_left' => $attemptsLeft,
                 ];
             }
@@ -205,25 +206,18 @@ class TwoFactorService
                 ];
             }
 
-            // Verifica se o bloqueio foi ativado após o reenvio
+            // Registra o reenvio bem-sucedido (sem aviso de bloqueio)
             $record = $this->repository->findByEmail($email);
-            $blockedUntil = $record['blocked_until'] ?? null;
-
             $this->logger->info('Código 2FA reenviado com sucesso', [
                 'email' => $email,
                 'resend_count' => $record['resend_count'] ?? '?',
-                'blocked_until' => $blockedUntil,
+                'blocked_until' => $record['blocked_until'] ?? null,
             ]);
 
-            $response = ['success' => true, 'message' => 'Novo código enviado.'];
-
-            if ($blockedUntil && strtotime($blockedUntil) > time()) {
-                $minutesLeft = $this->calculateRemainingMinutes($blockedUntil);
-                $response['blocked_until'] = $blockedUntil;
-                $response['message'] = "Novo código enviado. Você atingiu o limite de reenvios. Aguarde {$minutesLeft} minutos para novos reenvios.";
-            }
-
-            return $response;
+            return [
+                'success' => true,
+                'message' => 'Novo código enviado. Verifique sua caixa de e-mail.',
+            ];
 
         } catch (\Throwable $e) {
             $this->logger->error('Erro ao reenviar código 2FA', [
@@ -253,14 +247,12 @@ class TwoFactorService
             }
 
             $attempts = (int) $record['attempts'];
-            $attemptsLeft = max(0, $this->maxAttempts - $attempts);
             $isBlocked = $record['blocked_until'] !== null && strtotime($record['blocked_until']) > time();
 
             return [
                 'exists' => true,
                 'expires_at' => $record['expires_at'],
                 'attempts' => $attempts,
-                'attempts_left' => $attemptsLeft,
                 'is_blocked' => $isBlocked,
                 'blocked_until' => $record['blocked_until'],
             ];
@@ -341,5 +333,38 @@ class TwoFactorService
     {
         $diff = strtotime($blockedUntil) - time();
         return max(0, (int) ceil($diff / 60));
+    }
+
+    /**
+     * Obtém o registro 2FA completo para o e-mail informado.
+     *
+     * Este método é útil para verificar o status atual do código (expiração,
+     * tentativas, bloqueio) sem remover pendências ou alterar o estado.
+     *
+     * @param string $email E-mail do administrador
+     * @return array|null Retorna o registro como array associativo ou null se não encontrado
+     */
+    public function getRecord(string $email): ?array
+    {
+        try {
+            return $this->repository->findByEmail($email);
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao buscar registro 2FA', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Verifica se o reenvio de código 2FA está bloqueado para o e-mail informado.
+     *
+     * @param string $email
+     * @return bool
+     */
+    public function isResendBlocked(string $email): bool
+    {
+        return $this->repository->isBlockedFromResend($email);
     }
 }
