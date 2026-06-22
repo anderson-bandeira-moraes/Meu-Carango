@@ -33,6 +33,7 @@ class TwoFactorService
 
     /**
      * Gera um código 2FA, salva no banco e envia por e-mail.
+     * Cada geração (login) conta como uma tentativa de envio para o bloqueio.
      *
      * @param string $email E-mail do administrador
      * @return array{success: bool, error?: string}
@@ -40,9 +41,25 @@ class TwoFactorService
     public function generateAndSend(string $email): array
     {
         try {
+            // Verifica se o bloqueio expirou e, se sim, reseta o contador
+            $this->resetCounterIfBlockedExpired($email);
+
             $code = $this->generateCode();
+
+            // Salva o código no banco (preserva resend_count)
             $this->repository->save($email, $code, $this->expiryMinutes);
 
+            // Incrementa o contador de envios (login conta como 1 envio)
+            $this->repository->incrementResendCount($email, $this->maxResend, $this->resendBlockMinutes);
+
+            // --- LOG: resend_count incrementado (login) ---
+            $record = $this->repository->findByEmail($email);
+            $this->logger->debug('resend_count incrementado (login)', [
+                'email' => $email,
+                'new_count' => $record['resend_count'] ?? 'unknown',
+            ]);
+
+            // Envia o e-mail
             $sent = $this->mailService->sendTwoFactorCode($email, $code, $this->expiryMinutes);
 
             if (!$sent) {
@@ -90,7 +107,6 @@ class TwoFactorService
 
             // Verifica expiração (mantém reset, pois é expiração)
             if (strtotime($record['expires_at']) < time()) {
-                $this->repository->reset($email);
                 $this->logger->warning('Código 2FA expirado', ['email' => $email]);
                 return [
                     'success' => false,
@@ -171,6 +187,9 @@ class TwoFactorService
     public function resend(string $email): array
     {
         try {
+            // Verifica se o bloqueio expirou e, se sim, reseta o contador
+            $this->resetCounterIfBlockedExpired($email);
+
             // Verifica se está bloqueado para reenvio
             if ($this->repository->isBlockedFromResend($email)) {
                 $blockedUntil = $this->getBlockedUntil($email);
@@ -194,6 +213,13 @@ class TwoFactorService
 
             // Incrementa contador de reenvios
             $this->repository->incrementResendCount($email, $this->maxResend, $this->resendBlockMinutes);
+
+            // --- LOG: resend_count incrementado (reenvio) ---
+            $record = $this->repository->findByEmail($email);
+            $this->logger->debug('resend_count incrementado (reenvio)', [
+                'email' => $email,
+                'new_count' => $record['resend_count'] ?? 'unknown',
+            ]);
 
             // Envia e-mail
             $sent = $this->mailService->sendTwoFactorCode($email, $newCode, $this->expiryMinutes);
@@ -366,5 +392,37 @@ class TwoFactorService
     public function isResendBlocked(string $email): bool
     {
         return $this->repository->isBlockedFromResend($email);
+    }
+
+    /**
+     * Verifica se o bloqueio de reenvio expirou e, se sim, reseta o contador.
+     * Esta lógica é centralizada para ser reutilizada em generateAndSend() e resend().
+     *
+     * @param string $email
+     * @return void
+     */
+    private function resetCounterIfBlockedExpired(string $email): void
+    {
+        try {
+            $record = $this->repository->findByEmail($email);
+            if (!$record) {
+                return;
+            }
+
+            $blockedUntil = $record['blocked_until'] ?? null;
+            if ($blockedUntil !== null && strtotime($blockedUntil) < time()) {
+                $this->repository->resetResendCounter($email);
+                $this->logger->info('Bloqueio de reenvio expirado, contador resetado para 0', [
+                    'email' => $email,
+                    'blocked_until' => $blockedUntil,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao verificar expiração do bloqueio de reenvio', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+            // Não relançamos a exceção para não quebrar o fluxo
+        }
     }
 }

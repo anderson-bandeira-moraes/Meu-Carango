@@ -248,4 +248,43 @@ class TwoFactorRepository
             return 0;
         }
     }
+
+    /**
+     * Reseta o contador de reenvios e remove o bloqueio para o e-mail informado.
+     * Mantém o registro ativo, mas zera resend_count e blocked_until.
+     *
+     * @param string $email
+     * @return void
+     */
+    public function resetResendCounter(string $email): void
+    {
+        try {
+            $stmt = $this->pdo->prepare('
+                UPDATE two_factor_codes
+                SET resend_count = 0,
+                    blocked_until = NULL,
+                    updated_at = NOW()
+                WHERE email = ?
+            ');
+            $stmt->execute([$email]);
+
+            $affected = $stmt->rowCount();
+            if ($affected > 0) {
+                $this->logger->info('Contador de reenvios resetado para 0 (bloqueio expirado)', [
+                    'email' => $email,
+                ]);
+            } else {
+                $this->logger->debug('Nenhum registro encontrado para resetar contador', [
+                    'email' => $email,
+                ]);
+            }
+
+        } catch (PDOException $e) {
+            $this->logger->error('Falha ao resetar contador de reenvios', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+            throw new RuntimeException('Erro ao resetar contador de reenvios: ' . $e->getMessage());
+        }
+    }
 }

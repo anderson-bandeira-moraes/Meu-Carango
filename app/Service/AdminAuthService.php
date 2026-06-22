@@ -71,6 +71,12 @@ class AdminAuthService
         // --- Verifica se há bloqueio de reenvio ativo na tabela two_factor_codes ---
         $twoFactorRecord = $this->twoFactorService->getRecord($email);
         if ($twoFactorRecord && $twoFactorRecord['blocked_until'] !== null && strtotime($twoFactorRecord['blocked_until']) > time()) {
+            // --- LOG OPCIONAL (DEBUG) para rastreamento ---
+            $this->logger->debug('Bloqueio de reenvio detectado antes do login', [
+                'email' => $email,
+                'blocked_until' => $twoFactorRecord['blocked_until'],
+            ]);
+
             $minutesLeft = ceil((strtotime($twoFactorRecord['blocked_until']) - time()) / 60);
             $this->logger->warning('Tentativa de login durante bloqueio de reenvio 2FA', [
                 'email' => $email,
