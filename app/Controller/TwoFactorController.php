@@ -62,10 +62,13 @@ class TwoFactorController
             $this->session->set('flash_2fa_error', $mensagem);
         }
 
+        // Recupera a flag do modal (se existir)
+        $showModal = $this->session->get('show_blocked_modal', false);
+        $this->session->delete('show_blocked_modal'); // Limpa após recuperar
+
         // Recupera mensagens flash
         $erro = $this->getFlash('flash_2fa_error');
         $sucesso = $this->getFlash('flash_2fa_success');
-        $warning = $this->getFlash('flash_2fa_warning'); // Nova variável
 
         $expiryMinutes = (int) ($_ENV['TWO_FACTOR_EXPIRY_MINUTES'] ?? 5);
 
@@ -78,10 +81,10 @@ class TwoFactorController
                 'email'         => $email,
                 'erro'          => $erro,
                 'sucesso'       => $sucesso,
-                'warning'       => $warning, // Nova variável passada para a view
                 'status'        => $status,
                 'expiryMinutes' => $expiryMinutes,
                 'resendBlocked' => $resendBlocked,
+                'showModal'     => $showModal,
             ],
             'layouts/main',
             ['title' => 'Verificação em Duas Etapas']
@@ -225,7 +228,8 @@ class TwoFactorController
             } else {
                 // Verifica se o erro é de bloqueio (blocked_until presente)
                 if (isset($result['blocked_until'])) {
-                    $this->session->set('flash_2fa_warning', $result['error'] ?? 'Reenvio bloqueado por 30 minutos.');
+                    // Define a flag para exibir o modal de bloqueio
+                    $this->session->set('show_blocked_modal', true);
                     $this->logger->info('Tentativa de reenvio bloqueada', [
                         'email' => $email,
                         'blocked_until' => $result['blocked_until'],
@@ -251,7 +255,7 @@ class TwoFactorController
             header('Location: /admin/2fa');
             exit;
         }
-    }
+    }  
 
     /**
      * Limpa os dados pendentes da sessão.

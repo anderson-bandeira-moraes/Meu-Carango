@@ -27,24 +27,13 @@ class AdminAuthController
             exit;
         }
 
-        // Verifica se o parâmetro de expiração do bloqueio foi passado
-        if ($request->getQuery('blockage_expired')) {
-            $this->session->set('flash_admin_success', 'O bloqueio de 30 minutos expirou. Você pode tentar fazer login novamente.');
-        }
-
         // Recupera mensagens flash
         $erro = $this->session->get('flash_admin_error', null);
         $this->session->delete('flash_admin_error');
 
-        $sucesso = $this->session->get('flash_admin_success', null);
-        $this->session->delete('flash_admin_success');
-
         return $this->view->renderWithLayout(
             'admin/login',
-            [
-                'erro'   => $erro,
-                'sucesso' => $sucesso,
-            ],
+            ['erro' => $erro],
             'layouts/main',
             ['title' => 'Admin - Login']
         );

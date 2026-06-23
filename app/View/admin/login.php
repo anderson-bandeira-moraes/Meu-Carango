@@ -6,13 +6,6 @@
             </div>
             <div class="card-body p-4">
                 <!-- Área de mensagens (para erro/sucesso) -->
-                <?php if (!empty($sucesso)): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <?= htmlspecialchars($sucesso) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                    </div>
-                <?php endif; ?>
                 <div id="messageArea">
                     <?php if (!empty($erro)): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
