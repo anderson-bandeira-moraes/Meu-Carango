@@ -251,7 +251,7 @@ class TwoFactorRepository
 
     /**
      * Reseta o contador de reenvios e remove o bloqueio para o e-mail informado.
-     * Mantém o registro ativo, mas zera resend_count e blocked_until.
+     * Mantém o registro ativo, mas zera resend_count, blocked_until e atualiza created_at.
      *
      * @param string $email
      * @return void
@@ -263,14 +263,15 @@ class TwoFactorRepository
                 UPDATE two_factor_codes
                 SET resend_count = 0,
                     blocked_until = NULL,
-                    updated_at = NOW()
+                    updated_at = NOW(),
+                    created_at = NOW()
                 WHERE email = ?
             ');
             $stmt->execute([$email]);
 
             $affected = $stmt->rowCount();
             if ($affected > 0) {
-                $this->logger->info('Contador de reenvios resetado para 0 (bloqueio expirado)', [
+                $this->logger->info('Contador de reenvios resetado para 0 (bloqueio expirado ou código antigo)', [
                     'email' => $email,
                 ]);
             } else {
@@ -285,6 +286,38 @@ class TwoFactorRepository
                 'error' => $e->getMessage(),
             ]);
             throw new RuntimeException('Erro ao resetar contador de reenvios: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Retorna o número de minutos decorridos desde a criação do registro (created_at) até o momento atual.
+     * Utiliza TIMESTAMPDIFF do MySQL para garantir consistência de fuso horário.
+     *
+     * @param string $email
+     * @return int|null Número de minutos ou null se não houver registro.
+     */
+    public function getMinutesSinceCreation(string $email): ?int
+    {
+        try {
+            $stmt = $this->pdo->prepare('
+                SELECT TIMESTAMPDIFF(MINUTE, created_at, NOW()) AS minutes_ago
+                FROM two_factor_codes
+                WHERE email = ?
+            ');
+            $stmt->execute([$email]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                return null;
+            }
+
+            return (int) $row['minutes_ago'];
+        } catch (PDOException $e) {
+            $this->logger->error('Falha ao obter minutos desde criação do código', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+            return null; // Em caso de erro, retorna null (considera como sem registro)
         }
     }
 }

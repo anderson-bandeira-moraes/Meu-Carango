@@ -44,6 +44,21 @@ class TwoFactorService
             // Verifica se o bloqueio expirou e, se sim, reseta o contador
             $this->resetCounterIfBlockedExpired($email);
 
+            // --- NOVA VERIFICAÇÃO: resetar se o código foi gerado há mais de 30 minutos (usando SQL) ---
+            $minutesSinceCreation = $this->repository->getMinutesSinceCreation($email);
+            $this->logger->debug('Minutos desde criação do código', [
+                'email' => $email,
+                'minutes' => $minutesSinceCreation,
+            ]);
+
+            if ($minutesSinceCreation === null || $minutesSinceCreation >= 30) {
+                $this->repository->resetResendCounter($email);
+                $this->logger->info('Contador de reenvios resetado (último código > 30 min)', [
+                    'email' => $email,
+                    'minutes_since_creation' => $minutesSinceCreation,
+                ]);
+            }
+
             $code = $this->generateCode();
 
             // Salva o código no banco (preserva resend_count)
