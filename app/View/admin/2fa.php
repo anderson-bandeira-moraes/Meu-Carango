@@ -128,6 +128,7 @@
             // Se o estado mudou de bloqueado (true) para desbloqueado (false),
             // significa que o bloqueio expirou → redireciona para login com mensagem
             if (previousBlocked === 'true' && currentBlocked === false) {
+                sessionStorage.removeItem('2fa_resend_blocked');
                 window.location.href = '/admin/login?blockage_expired=1';
                 return; // Interrompe a execução para evitar outras ações
             }
