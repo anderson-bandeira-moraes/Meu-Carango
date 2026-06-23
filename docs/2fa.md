@@ -1,4 +1,4 @@
-# 2FA – Autenticação em Duas Etapas (Administrador)
+# Módulo 2FA (Autenticação em Duas Etapas) – Administrador
 
 ## 📌 Objetivo
 
@@ -6,74 +6,117 @@ Adicionar uma camada extra de segurança ao login do administrador, exigindo um 
 
 ---
 
-## 🧩 Visão Geral
-
-O 2FA é ativado automaticamente após o administrador digitar a senha correta. Um código de 6 dígitos é gerado e enviado para o e-mail cadastrado. O administrador deve inserir esse código em uma página de verificação para concluir o login.
-
-**Características principais:**
-
-- Código de 6 dígitos numéricos (gerado aleatoriamente).
-- Expiração configurável (padrão: 5 minutos).
-- Limite de tentativas de verificação (padrão: 3).
-- Reenvio de código com limite (padrão: 3 reenvios) e bloqueio após exceder (30 minutos).
-- Armazenamento em banco de dados (tabela `two_factor_codes`).
-- Logs de auditoria para todas as etapas.
-- Proteção de rotas via middleware (`TwoFactorMiddleware`).
-
----
-
 ## 🔄 Fluxo Completo
 
-### 1. Login (senha correta)
+### Ciclo de vida de uma requisição 2FA:
 
-- O administrador insere e-mail e senha no formulário `/admin/login`.
-- O `AdminAuthService::login()` valida as credenciais.
-- Se a senha estiver correta:
-  - Armazena dados pendentes na sessão (`pending_admin_id`, `pending_admin_email`, `pending_admin_nome`).
-  - Gera um código 2FA via `TwoFactorService::generateAndSend()`.
-  - Envia o código por e-mail.
-  - Retorna `['sucesso' => true, '2fa_required' => true, 'redirect' => '/admin/2fa']`.
-
-### 2. Exibição do formulário 2FA
-
-- O administrador é redirecionado para `/admin/2fa`.
-- O `TwoFactorController::form()` exibe o formulário com:
-  - Campo para o código de 6 dígitos.
-  - E-mail do destinatário.
-  - Status atual (tentativas restantes, tempo de expiração, bloqueio de reenvio).
-  - Link para reenviar o código.
-
-### 3. Verificação do código
-
-- O administrador insere o código e submete o formulário (POST `/admin/2fa/verify`).
-- O `TwoFactorController::verify()` chama `TwoFactorService::verify()`.
-- Se o código estiver **correto** (não expirado, dentro do limite de tentativas):
-  - Remove o registro da tabela `two_factor_codes`.
-  - Remove pendências da sessão.
-  - Regenera o ID da sessão.
-  - Define `admin_id`, `admin_nome`, `admin_email` e `2fa_verified = true` na sessão.
-  - Redireciona para `/admin` (dashboard).
-
-### 4. Se o código estiver **incorreto**:
-
-- Incrementa o contador de tentativas no banco.
-- Se o número de tentativas atingir o limite (3), o registro é removido e o usuário é redirecionado para `/admin/login` (forçando novo login).
-- Caso contrário, exibe mensagem de erro com o número de tentativas restantes.
-
-### 5. Reenvio de código
-
-- O administrador pode solicitar um novo código via POST `/admin/2fa/resend`.
-- O `TwoFactorController::resend()` chama `TwoFactorService::resend()`.
-- Se o limite de reenvios não foi atingido e não há bloqueio ativo:
-  - Gera novo código.
-  - Atualiza o registro no banco (nova expiração, incrementa `resend_count`).
-  - Envia o novo código por e-mail.
-  - Se o limite de reenvios for atingido (3), define `blocked_until = NOW() + 30 minutos`.
-  - Exibe mensagem de sucesso (ou aviso de bloqueio).
+1. **Login com credenciais corretas** (`/admin/login`) → `AdminAuthService::login()` valida a senha.
+2. **Início do fluxo 2FA** → Dados do admin são armazenados na sessão (`pending_admin_*`).
+3. **Geração do código** → `TwoFactorService::generateAndSend()`:
+   - Verifica se o bloqueio expirou (`resetCounterIfBlockedExpired`).
+   - Verifica se o último código foi gerado há mais de 30 minutos (via SQL `TIMESTAMPDIFF`). Se sim, reseta `resend_count`.
+   - Gera código de 6 dígitos, salva no banco (`TwoFactorRepository::save`).
+   - Incrementa `resend_count` (login conta como 1 envio).
+   - Envia e-mail via `MailService::sendTwoFactorCode`.
+4. **Redirecionamento para `/admin/2fa`** → Usuário vê o formulário para inserir o código.
+5. **Verificação do código** (`POST /admin/2fa/verify`) → `TwoFactorService::verify()`:
+   - Verifica se o registro existe e não expirou.
+   - Verifica se o código coincide.
+   - Se válido → remove o registro, define `admin_id` e `2fa_verified` na sessão, redireciona para `/admin`.
+   - Se inválido → incrementa `attempts`. Após 3 tentativas, retorna `exhausted` (sem remover o registro).
+6. **Reenvio de código** (`POST /admin/2fa/resend`) → `TwoFactorService::resend()`:
+   - Verifica se o bloqueio expirou (`resetCounterIfBlockedExpired`).
+   - Verifica se `blocked_until` está ativo (`isBlockedFromResend`).
+   - Se permitido, gera novo código, incrementa `resend_count` e reenvia e-mail.
+   - Se `resend_count >= 3`, ativa bloqueio de 30 minutos (`blocked_until`).
+7. **Bloqueio de reenvio** – Ao clicar em "Reenviar" durante o bloqueio (4ª tentativa), exibe **modal com contagem regressiva** e redireciona para `/admin/login`.
 
 ---
 
-## 🧠 Regras de Negócio
+## 🗄️ Estrutura de Dados
+
+### Tabela: `two_factor_codes`
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | int unsigned | Chave primária. |
+| `email` | varchar(100) | E-mail do administrador (único). |
+| `code` | varchar(6) | Código de 6 dígitos. |
+| `expires_at` | datetime | Data/hora de expiração do código. |
+| `attempts` | tinyint unsigned | Número de tentativas de verificação (máx. 3). |
+| `resend_count` | tinyint unsigned | Número de reenvios realizados (máx. 3). |
+| `blocked_until` | datetime | Data/hora até quando o reenvio está bloqueado. |
+| `created_at` | datetime | Data/hora de criação do registro (geração do código). |
+| `updated_at` | datetime | Data/hora da última atualização. |
+
+**Índices:**
+- `PRIMARY KEY (id)`
+- `UNIQUE KEY email (email)`
+- `KEY expires_at (expires_at)`
+
+---
+
+## 🧩 Componentes do Módulo
+
+### 1. Repositório (`TwoFactorRepository`)
+
+**Arquivo:** `app/Repository/TwoFactorRepository.php`
+
+**Responsabilidade:** Persistência e consultas à tabela `two_factor_codes`.
+
+| Método | Descrição |
+|--------|-----------|
+| `save(string $email, string $code, int $expiryMinutes)` | Insere ou atualiza (upsert) o código. |
+| `findByEmail(string $email): ?array` | Busca o registro ativo para o e-mail. |
+| `incrementAttempts(string $email)` | Incrementa o contador de tentativas de verificação. |
+| `incrementResendCount(string $email, int $maxResend, int $blockMinutes)` | Incrementa reenvios e ativa bloqueio se limite atingido. |
+| `reset(string $email)` | Remove o registro (após login bem-sucedido). |
+| `deleteExpired()` | Remove registros expirados (limpeza automática). |
+| `isBlockedFromResend(string $email): bool` | Verifica se o reenvio está bloqueado. |
+| `getAttempts(string $email): int` | Retorna o número atual de tentativas. |
+| `resetResendCounter(string $email)` | Zera `resend_count`, remove `blocked_until` e atualiza `created_at`. |
+| `getMinutesSinceCreation(string $email): ?int` | Retorna minutos decorridos desde a criação do registro (via SQL `TIMESTAMPDIFF`). |
+
+---
+
+### 2. Serviço de E-mail (`MailService`)
+
+**Arquivo:** `app/Service/MailService.php`
+
+**Responsabilidade:** Encapsular o envio de e-mails via SMTP (PHPMailer).
+
+| Método | Descrição |
+|--------|-----------|
+| `send(string $to, string $subject, string $body, bool $isHtml): bool` | Envia e-mail genérico. |
+| `sendTwoFactorCode(string $to, string $code, int $expiryMinutes): bool` | Envia e-mail específico para 2FA com template HTML. |
+| `isConfigured(): bool` | Verifica se as configurações SMTP estão completas. |
+
+**Template do e-mail:**
+- Corpo HTML com CSS nativo (sem Bootstrap).
+- Exibe o código de 6 dígitos em destaque.
+- Informa o tempo de validade (configurável via `.env`).
+- Mensagem de segurança: "Se você não solicitou este código, ignore este e-mail."
+
+---
+
+### 3. Serviço 2FA (`TwoFactorService`)
+
+**Arquivo:** `app/Service/TwoFactorService.php`
+
+**Responsabilidade:** Lógica de negócio do 2FA (geração, verificação, reenvio, status).
+
+| Método | Descrição |
+|--------|-----------|
+| `generateAndSend(string $email): array` | Gera código, salva no banco, incrementa `resend_count` e envia e-mail. |
+| `verify(string $email, string $code): array` | Valida o código com controle de tentativas (`attempts`). |
+| `resend(string $email): array` | Gera novo código, incrementa `resend_count` e gerencia bloqueio. |
+| `getStatus(string $email): array` | Retorna status atual (existe, expiração, tentativas, bloqueio). |
+| `reset(string $email)` | Remove o registro manualmente. |
+| `cleanup()` | Remove registros expirados. |
+| `getRecord(string $email): ?array` | Retorna o registro completo. |
+| `isResendBlocked(string $email): bool` | Verifica se o reenvio está bloqueado. |
+
+**Regras de negócio:**
 
 | Regra | Valor | Configurável via `.env` |
 |-------|-------|--------------------------|
@@ -82,56 +125,115 @@ O 2FA é ativado automaticamente após o administrador digitar a senha correta. 
 | Máximo de reenvios permitidos | 3 | `TWO_FACTOR_MAX_RESEND` |
 | Bloqueio de reenvio após limite | 30 minutos | `TWO_FACTOR_RESEND_BLOCK_MINUTES` |
 
-**Comportamento detalhado:**
-
-- Após **3 tentativas de verificação** falhas, o registro é removido e o usuário deve fazer login novamente.
-- Após **3 reenvios**, o reenvio é bloqueado por **30 minutos**.
-- O código expira automaticamente após o tempo configurado.
-- Registros expirados são removidos automaticamente ao verificar ou reenviar.
+**Reset do `resend_count`:**
+- **Por expiração do bloqueio:** quando `blocked_until < NOW()`, o contador é resetado para 0.
+- **Por código antigo (> 30 min):** se `created_at` for superior a 30 minutos, o contador é resetado para 0 (via `TIMESTAMPDIFF` no SQL).
+- **Por login bem-sucedido:** o registro é removido (não apenas resetado).
 
 ---
 
-## 📦 Componentes
+### 4. Controlador 2FA (`TwoFactorController`)
 
-### Repositório (`TwoFactorRepository`)
+**Arquivo:** `app/Controller/TwoFactorController.php`
 
-| Método | Descrição |
-|--------|-----------|
-| `save(string $email, string $code, int $expiryMinutes)` | Insere ou atualiza o registro (upsert). |
-| `findByEmail(string $email): ?array` | Retorna os dados do registro para o e-mail. |
-| `incrementAttempts(string $email)` | Incrementa o contador de tentativas de verificação. |
-| `incrementResendCount(string $email, int $maxResend, int $blockMinutes)` | Incrementa reenvios e define bloqueio se limite for atingido. |
-| `reset(string $email)` | Remove o registro. |
-| `deleteExpired()` | Remove registros expirados (limpeza automática). |
-| `isBlockedFromResend(string $email): bool` | Verifica se o reenvio está bloqueado. |
-| `getAttempts(string $email): int` | Retorna o número atual de tentativas. |
-
-### Serviço (`TwoFactorService`)
-
-| Método | Descrição |
-|--------|-----------|
-| `generateAndSend(string $email): array` | Gera código, salva no banco e envia e-mail. |
-| `verify(string $email, string $code): array` | Valida o código com controle de tentativas. |
-| `resend(string $email): array` | Gera novo código, reenvia e gerencia bloqueio. |
-| `getStatus(string $email): array` | Retorna status atual (expiração, tentativas, bloqueio). |
-| `reset(string $email)` | Remove o registro manualmente. |
-| `cleanup()` | Remove registros expirados. |
-
-### Controlador (`TwoFactorController`)
+**Responsabilidade:** Orquestrar requisições HTTP para o fluxo 2FA.
 
 | Método | Rota | Função |
 |--------|------|--------|
-| `form(Request $request): string` | `GET /admin/2fa` | Exibe formulário. |
-| `verify(Request $request): void` | `POST /admin/2fa/verify` | Valida código. |
-| `resend(Request $request): void` | `POST /admin/2fa/resend` | Reenvia código. |
+| `form(Request $request): string` | `GET /admin/2fa` | Exibe formulário para inserir o código. |
+| `verify(Request $request): void` | `POST /admin/2fa/verify` | Valida o código. Se válido, conclui login. Se inválido, incrementa tentativas e redireciona. |
+| `resend(Request $request): void` | `POST /admin/2fa/resend` | Gera novo código, reenvia e gerencia bloqueio (exibe modal se bloqueado). |
 
-### Middleware (`TwoFactorMiddleware`)
+**Detalhes do `verify()`:**
+- Verifica se o código existe e não expirou.
+- Se `attempts >= 3`, retorna `exhausted` (mantém o registro).
+- Se código válido, remove registro, define `admin_id` e `2fa_verified` na sessão.
 
-| Responsabilidade | Descrição |
-|------------------|-----------|
-| Proteger rotas `/admin` | Verifica se `admin_id` e `2fa_verified` estão na sessão. |
-| Ignorar rotas públicas | `/admin/login`, `/admin/logout`, `/admin/2fa` (e sub-rotas). |
-| Logs | Registra tentativas de acesso sem 2FA. |
+**Detalhes do `resend()`:**
+- Se bloqueado (`blocked_until > NOW()`), define `show_blocked_modal = true` na sessão.
+- A view exibe o modal com contagem regressiva (5 segundos) e redireciona para `/admin/login`.
+
+---
+
+### 5. Middleware 2FA (`TwoFactorMiddleware`)
+
+**Arquivo:** `app/Middleware/TwoFactorMiddleware.php`
+
+**Responsabilidade:** Proteger todas as rotas do grupo `/admin`, garantindo que o 2FA foi concluído.
+
+| Lógica | Ação |
+|--------|------|
+| Rota ignorada (whitelist) | `/admin/login`, `/admin/logout`, `/admin/2fa` (e sub-rotas). |
+| `admin_id` não existe | Redireciona para `/admin/login`. |
+| `2fa_verified` não existe | Redireciona para `/admin/2fa`. |
+| `admin_id` e `2fa_verified` existem | Permite acesso. |
+
+**Aplicação no `index.php`:** O middleware é adicionado ao grupo `/admin`, após `AdminMiddleware`.
+
+```php
+$router->group('/admin', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->middleware($container->get(AdminMiddleware::class));
+    $router->middleware($container->get(TwoFactorMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    // ... rotas administrativas
+});
+```
+
+---
+
+### 6. View `admin/2fa.php`
+
+**Arquivo:** `app/View/admin/2fa.php`
+
+**Responsabilidade:** Exibir formulário para inserção do código e gerenciar feedback visual.
+
+**Elementos:**
+- Mensagens flash (erro/sucesso).
+- Instruções e e-mail do destinatário.
+- Campo de código com validação HTML5 (`[0-9]{6}`).
+- Botão "Verificar" (desabilitado se código expirado ou inexistente).
+- Botão "Reenviar código" (sempre clicável).
+- Botão "Login" (redireciona para `/admin/logout`).
+
+**Modal de bloqueio:**
+- Exibido quando `$showModal = true` (após clique em reenviar durante bloqueio).
+- Contagem regressiva de 5 segundos.
+- Redireciona para `/admin/login` ao final da contagem.
+- Botão "Cancelar" permite permanecer na página.
+
+---
+
+### 7. Integração com `AdminAuthService`
+
+**Arquivo:** `app/Service/AdminAuthService.php`
+
+**Modificações no método `login()`:**
+
+| Antes | Depois |
+|-------|--------|
+| Após senha correta, conclui login imediatamente. | Após senha correta, verifica se há bloqueio de reenvio ativo (`blocked_until > NOW()`). Se ativo, bloqueia login e exibe mensagem. |
+| Retorna `['sucesso' => true]`. | Se bloqueio inativo, armazena dados pendentes (`pending_admin_*`), chama `TwoFactorService::generateAndSend()` e retorna `['sucesso' => true, '2fa_required' => true]`. |
+
+**Código relevante:**
+
+```php
+// Verifica se há bloqueio de reenvio ativo na tabela two_factor_codes
+$twoFactorRecord = $this->twoFactorService->getRecord($email);
+if ($twoFactorRecord && $twoFactorRecord['blocked_until'] !== null && strtotime($twoFactorRecord['blocked_until']) > time()) {
+    $minutesLeft = ceil((strtotime($twoFactorRecord['blocked_until']) - time()) / 60);
+    return [
+        'sucesso' => false,
+        'erro'    => "Você está bloqueado para reenviar códigos de verificação. Aguarde {$minutesLeft} minutos para tentar novamente.",
+    ];
+}
+
+// Senha correta: inicia fluxo 2FA
+$this->session->set('pending_admin_id', $admin['id']);
+$this->session->set('pending_admin_email', $admin['email']);
+$this->session->set('pending_admin_nome', $admin['nome']);
+$result = $this->twoFactorService->generateAndSend($admin['email']);
+```
 
 ---
 
@@ -140,132 +242,125 @@ O 2FA é ativado automaticamente após o administrador digitar a senha correta. 
 ### Variáveis de ambiente (`.env`)
 
 ```env
-# ============== CONFIGURAÇÃO SMTP (Outlook) ==============
-MAIL_HOST=smtp.office365.com
-MAIL_PORT=587
-MAIL_USERNAME=seuemail@outlook.com
-MAIL_PASSWORD=xxxx-xxxx-xxxx-xxxx   # Senha de aplicativo
-MAIL_ENCRYPTION=tls
-MAIL_FROM=seuemail@outlook.com
-MAIL_FROM_NAME=Meu Carango
-MAIL_TIMEOUT=30
-
 # ============== CONFIGURAÇÃO 2FA ==============
 TWO_FACTOR_EXPIRY_MINUTES=5
 TWO_FACTOR_MAX_ATTEMPTS=3
 TWO_FACTOR_MAX_RESEND=3
 TWO_FACTOR_RESEND_BLOCK_MINUTES=30
-```
 
-### Configuração do Gmail (alternativa)
-
-```env
-MAIL_HOST=smtp.gmail.com
+# ============== CONFIGURAÇÃO SMTP ==============
+MAIL_HOST=smtp.gmail.com            # ou smtp.office365.com, etc.
 MAIL_PORT=587
 MAIL_USERNAME=seuemail@gmail.com
-MAIL_PASSWORD=senha_app   # Senha de aplicativo
+MAIL_PASSWORD=senha_app             # Senha de aplicativo
 MAIL_ENCRYPTION=tls
 MAIL_FROM=seuemail@gmail.com
 MAIL_FROM_NAME=Meu Carango
+MAIL_TIMEOUT=30
 ```
 
 ---
 
-## 🧪 Como Testar
+## 🔐 Segurança
 
-### Pré‑requisitos
-
-- Servidor rodando.
-- Banco de dados com a tabela `two_factor_codes`.
-- `.env` configurado com SMTP e variáveis 2FA.
-- Acesso ao e-mail do administrador.
-
-### Roteiro de testes
-
-| Cenário | Passos | Resultado esperado |
-|---------|--------|---------------------|
-| **Fluxo completo** | 1. Acesse `/admin/login`<br>2. Insira e-mail e senha corretos<br>3. Verifique o e-mail com o código<br>4. Insira o código correto em `/admin/2fa` | ✅ Redirecionado para dashboard. |
-| **Código incorreto** | 1. Faça login<br>2. Insira código errado (1ª vez) | ❌ Mensagem "Código inválido. Você tem 2 tentativa(s) restante(s)." |
-| **Código errado (3 vezes)** | Repita o passo anterior 3 vezes | ❌ Após a 3ª falha, redirecionado para `/admin/login` com mensagem "Número máximo de tentativas excedido." |
-| **Código expirado** | 1. Faça login<br>2. Aguarde 5 minutos<br>3. Insira o código | ❌ Mensagem "Código expirado. Faça login novamente." |
-| **Reenvio (dentro do limite)** | 1. Faça login<br>2. Clique em "Reenviar código" | ✅ Novo código enviado por e-mail. |
-| **Reenvio bloqueado** | 1. Faça login<br>2. Clique em "Reenviar" 3 vezes<br>3. Tente reenviar novamente | ❌ Mensagem "Reenvio bloqueado. Tente novamente em 30 minutos." |
-| **Acesso a /admin sem 2FA** | 1. Faça login (senha correta)<br>2. Não complete o 2FA<br>3. Tente acessar `/admin/dashboard` diretamente | ❌ Redirecionado para `/admin/2fa`. |
+| Prática | Implementação |
+|---------|---------------|
+| **CSRF** | Campos hidden `csrf_token` nos formulários POST, middleware `CsrfValidationMiddleware`. |
+| **Limite de tentativas** | Máximo de 3 tentativas de verificação; após esgotar, retorna `exhausted` sem remover registro. |
+| **Bloqueio de reenvio** | Máximo de 3 reenvios; bloqueio de 30 minutos. |
+| **Persistência do bloqueio** | `blocked_until` é mantido no banco; login é bloqueado enquanto ativo. |
+| **Reset do contador** | `resend_count` é resetado após 30 minutos de inatividade (`TIMESTAMPDIFF` no SQL). |
+| **Logs** | Todos os eventos (sucesso, falha, bloqueio) são registrados com níveis `INFO`, `WARNING`, `ERROR`, `DEBUG`. |
+| **Mensagens genéricas** | Erros não expõem detalhes internos (ex: "Código inválido", "Reenvio bloqueado"). |
+| **Sessão segura** | Cookies com `HttpOnly`, `Secure`, `SameSite`, regeneração de ID após login. |
+| **E-mail seguro** | Senhas não são logadas; envio via SMTP com TLS. |
 
 ---
 
-## 📊 Logs
-
-### Níveis e eventos
+## 📊 Logs e Monitoramento
 
 | Evento | Nível | Contexto |
 |--------|-------|----------|
-| Código 2FA gerado e enviado | `INFO` | email |
-| Falha ao enviar código 2FA | `ERROR` | email, error |
-| Verificação bem-sucedida | `INFO` | email |
+| Código 2FA gerado/enviado | `INFO` | email |
 | Código inválido | `WARNING` | email, attempts_left |
-| Excedeu tentativas | `WARNING` | email |
-| Reenvio solicitado | `INFO` | email |
-| Reenvio bloqueado | `WARNING` | email, blocked_until |
+| Tentativas esgotadas | `WARNING` | email |
+| Reenvio bem-sucedido | `INFO` | email, resend_count |
+| Reenvio bloqueado (modal) | `INFO` | email, blocked_until |
+| Tentativa de reenvio durante bloqueio | `WARNING` | email, blocked_until |
+| Login durante bloqueio de reenvio | `WARNING` | email, blocked_until, minutes_left |
+| Verificação bem-sucedida | `INFO` | email |
+| Login concluído com 2FA | `INFO` | email |
+| Contador resetado (bloqueio expirado) | `INFO` | email, blocked_until |
+| Contador resetado (código > 30 min) | `INFO` | email, minutes_since_creation |
 | Acesso negado (2FA pendente) | `WARNING` | uri, admin_id |
-| Acesso permitido (2FA ok) | `DEBUG` | uri, admin_id |
+| Acesso permitido via 2FA | `DEBUG` | uri, admin_id |
 
 ---
 
-## 🔧 Solução de Problemas
+## 🧪 Testes Validados
 
-| Problema | Causa provável | Solução |
-|----------|----------------|---------|
-| Não recebo o e-mail | Configuração SMTP incorreta | Verifique `.env` (host, porta, senha de aplicativo). Teste com um script simples. |
-| Erro "Configuração SMTP incompleta" | Variáveis `MAIL_*` faltando | Verifique se todas estão definidas no `.env`. |
-| "Código expirado" | O usuário demorou mais de 5 minutos | Faça login novamente para gerar novo código. |
-| "Reenvio bloqueado" | Limite de 3 reenvios foi atingido | Aguarde 30 minutos ou faça login novamente. |
-| Tela branca em `/admin/2fa` | Exceção não capturada | Verifique os logs (`storage/logs/app-*.log`). |
-| Middleware redirecionando em loop | Rota `/admin/2fa` não está na whitelist | Verifique `TwoFactorMiddleware::shouldIgnore()`. |
+| Fase | Teste | Status |
+|------|-------|--------|
+| 1 | Fluxo de sucesso (login com 2FA) | ✅ |
+| 1 | Login via AJAX com 2FA | ✅ |
+| 2 | Código inválido (1ª, 2ª, 3ª tentativas) | ✅ |
+| 2 | Esgotamento de tentativas | ✅ |
+| 3 | Código expira (reenvio disponível) | ✅ |
+| 3 | Código expira (reenvio bloqueado) | ✅ |
+| 4 | Reenvio (1º, 2º, 3º) | ✅ |
+| 4 | Quarto reenvio (bloqueado – modal) | ✅ |
+| 4 | Reenvio após bloqueio expirar | ✅ |
+| 5 | Login durante bloqueio ativo | ✅ |
+| 5 | Login após bloqueio expirar | ✅ |
+| 6 | Força bruta (múltiplas tentativas) | ✅ |
+| 6 | Código reutilizado | ✅ |
+| 6 | Código exposto em logs | ✅ |
+| 7 | Formulário durante bloqueio | ✅ |
+| 7 | Mensagens flash claras | ✅ |
+| 7 | Cancelar verificação | ✅ |
+| 7 | Foco automático no campo de código | ✅ |
+| 8 | Login com credenciais inválidas | ✅ |
+| 8 | Login com credenciais corretas (2FA ativo) | ✅ |
+| 8 | Login após logout | ✅ |
+| 9 | Logs (geração, inválido, esgotamento, bloqueio, login, verificação) | ✅ |
+| 10 | Registro expirado – limpeza automática | ✅ |
+| 10 | Registro removido após sucesso | ✅ |
 
 ---
 
 ## 📂 Arquivos Relacionados
 
+### Diretos (criados para o 2FA)
+
 | Arquivo | Responsabilidade |
 |---------|------------------|
-| `app/Repository/TwoFactorRepository.php` | Persistência dos códigos 2FA. |
-| `app/Service/MailService.php` | Envio de e-mails via SMTP. |
-| `app/Service/TwoFactorService.php` | Lógica de negócio 2FA. |
 | `app/Controller/TwoFactorController.php` | Controlador HTTP. |
+| `app/Service/TwoFactorService.php` | Lógica de negócio 2FA. |
+| `app/Service/MailService.php` | Envio de e-mails via SMTP. |
+| `app/Repository/TwoFactorRepository.php` | Persistência no banco. |
 | `app/Middleware/TwoFactorMiddleware.php` | Proteção de rotas. |
-| `app/View/admin/2fa.php` | Formulário de verificação. |
-| `public/index.php` | Registro de serviços, rotas e middlewares. |
+| `app/View/admin/2fa.php` | View do formulário e modal. |
+| `docs/2fa.md` | Documentação (este arquivo). |
+
+### Indiretos (modificados ou dependentes)
+
+| Arquivo | Modificação / Dependência |
+|---------|---------------------------|
+| `app/Service/AdminAuthService.php` | Integração com 2FA (início do fluxo). |
+| `app/Controller/AdminAuthController.php` | Ajuste para redirecionar para `/admin/2fa`. |
+| `app/View/admin/login.php` | Remoção de mensagens obsoletas. |
+| `public/index.php` | Registro de serviços, rotas e middleware. |
+| `config/logging.php` | Configuração de logs (já existente). |
+| `app/Helpers/csrf.php` | Uso nas views. |
 | `.env` | Configurações SMTP e 2FA. |
-| `docs/admin-authentication.md` | Documentação principal de autenticação (a ser atualizada). |
-| `storage/logs/app-*.log` | Logs de eventos. |
-
----
-
-## ✅ Critérios de Aceitação (verificação)
-
-- [ ] Tabela `two_factor_codes` criada.
-- [ ] `TwoFactorRepository` com todos os métodos.
-- [ ] `MailService` funcional (envia e-mails).
-- [ ] `TwoFactorService` com regras de negócio completas.
-- [ ] `AdminAuthService` inicia fluxo 2FA.
-- [ ] `TwoFactorController` com verificação e reenvio.
-- [ ] `TwoFactorMiddleware` protegendo `/admin`.
-- [ ] Rotas 2FA registradas.
-- [ ] View `2fa.php` com feedback e status.
-- [ ] `.env` com todas as variáveis.
-- [ ] Logs gerados corretamente.
-- [ ] Testes manuais validados (após execução).
+| `composer.json` / `composer.lock` | Inclusão de `phpmailer/phpmailer`. |
 
 ---
 
 ## 📌 Observações Finais
 
-- O 2FA é **obrigatório** para o administrador – não há opção de desativá-lo via `.env` (conforme sua decisão).
-- O código é armazenado em banco de dados, permitindo persistência entre requisições.
-- O reenvio e as tentativas são controlados para evitar abuso.
-- Os logs permitem auditoria completa do fluxo.
-
----
-
-**Próximo passo:** executar os testes manuais e, se necessário, ajustar a documentação com base nos resultados. 😊
+- **Token por sessão, armazenado no banco:** o código 2FA é persistido, permitindo que o usuário saia e retorne sem perder o estado.
+- **`resend_count` é preservado entre ciclos:** o login não reseta o contador; apenas a expiração do código (5 min) ou inatividade > 30 min o faz.
+- **Modal com contagem regressiva:** substitui avisos fixos, oferecendo feedback claro e redirecionamento automático.
+- **Logs completos:** todas as ações são registradas, facilitando auditoria e depuração.
+- **Middleware 2FA:** protege todas as rotas administrativas, garantindo que o 2FA seja concluído antes do acesso.
