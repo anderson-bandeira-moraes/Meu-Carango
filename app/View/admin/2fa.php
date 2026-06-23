@@ -23,27 +23,28 @@
                     </div>
                 <?php endif; ?>
 
+                <!-- Mensagem de aviso (amarela) – exibida apenas quando o reenvio é bloqueado -->
+                <?php if (!empty($warning)): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <?= htmlspecialchars($warning) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Instruções -->
                 <p class="text-muted text-center">
                     Um código de 6 dígitos foi enviado para o e-mail:
                     <strong><?= htmlspecialchars($email) ?></strong>
                 </p>
 
-                <!-- Status do código (sem contagem regressiva) -->
+                <!-- Status do código -->
                 <?php if (isset($status) && $status['exists']): ?>
                     <div class="mb-3 text-center small">
                         <p class="text-muted small">
                             <i class="bi bi-clock me-1"></i>
                             O código é válido por <strong><?= htmlspecialchars($expiryMinutes ?? 5) ?> minutos</strong>.
                         </p>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Alerta de bloqueio de reenvio (usando $resendBlocked) -->
-                <?php if ($resendBlocked ?? false): ?>
-                    <div class="alert alert-warning text-center" role="alert">
-                        <i class="bi bi-ban me-2"></i>
-                        Reenvio bloqueado por 30 minutos. Tente novamente mais tarde.
                     </div>
                 <?php endif; ?>
 
@@ -63,7 +64,12 @@
                                inputmode="numeric"
                                autocomplete="off"
                                autofocus
-                               <?= (isset($formBlocked) && $formBlocked === true) ? 'disabled' : '' ?>
+                               <?php
+                               $codeExists = isset($status['exists']) && $status['exists'] === true;
+                               $codeExpired = isset($status['expires_at']) && strtotime($status['expires_at']) < time();
+                               $formDisabled = !$codeExists || $codeExpired;
+                               echo $formDisabled ? 'disabled' : '';
+                               ?>
                                required>
                         <div class="form-text text-center">
                             Digite os 6 dígitos recebidos por e-mail.
@@ -72,7 +78,7 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn"
-                            <?= (isset($formBlocked) && $formBlocked === true) ? 'disabled' : '' ?>>
+                            <?= $formDisabled ? 'disabled' : '' ?>>
                             <i class="bi bi-check-lg me-2"></i>Verificar
                         </button>
                     </div>
@@ -84,15 +90,16 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
                     <form method="POST" action="/admin/2fa/resend" id="resendForm" class="d-inline">
                         <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
-                        <button type="submit" class="btn btn-link p-0 text-decoration-none" id="resendBtn"
-                            <?= ($resendBlocked ?? false) ? 'disabled' : '' ?>>
-                            <i class="bi bi-arrow-clockwise me-1"></i>
-                            <?= ($resendBlocked ?? false) ? 'Reenvio bloqueado' : 'Reenviar código' ?>
-                        </button>
+                        <!-- Wrapper para o tooltip funcionar em botão desabilitado -->
+                        <span class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="Reenvio bloqueado por 30 minutos">
+                            <button type="submit" class="btn btn-link p-0 text-decoration-none" id="resendBtn" style="pointer-events: auto;">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Reenviar código
+                            </button>
+                        </span>
                     </form>
 
-                    <a href="/admin/logout" class="btn btn-link text-danger text-decoration-none" onclick="return confirm('Cancelar verificação e voltar ao login?');">
-                        <i class="bi bi-box-arrow-left me-1"></i>Cancelar
+                    <a href="/admin/logout" class="btn btn-primary" onclick="return confirm('Deseja voltar à página de login?');">
+                        <i class="bi bi-box-arrow-left me-1"></i>Login
                     </a>
                 </div>
 
@@ -105,25 +112,72 @@
     (function() {
         'use strict';
 
-        // Foco automático no campo de código
-        document.getElementById('code')?.focus();
+        // ========== PASSO 1: Expor estado do bloqueio ao JavaScript ==========
+        window.__2fa_state = {
+            resendBlocked: <?= json_encode($resendBlocked) ?>
+        };
 
-        // Prevenir envio duplicado
+        // ========== PASSO 2: Lógica de comparação e redirecionamento ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Estado atual do bloqueio (vindo do servidor)
+            const currentBlocked = window.__2fa_state?.resendBlocked ?? false;
+
+            // Estado anterior (armazenado no sessionStorage)
+            const previousBlocked = sessionStorage.getItem('2fa_resend_blocked');
+
+            // Se o estado mudou de bloqueado (true) para desbloqueado (false),
+            // significa que o bloqueio expirou → redireciona para login com mensagem
+            if (previousBlocked === 'true' && currentBlocked === false) {
+                window.location.href = '/admin/login?blockage_expired=1';
+                return; // Interrompe a execução para evitar outras ações
+            }
+
+            // Atualiza o sessionStorage com o estado atual (sempre)
+            sessionStorage.setItem('2fa_resend_blocked', String(currentBlocked));
+
+            // ========== Lógica existente (tooltip, foco, etc.) ==========
+            const warningElement = document.querySelector('.alert-warning');
+            const resendBtn = document.getElementById('resendBtn');
+
+            if (warningElement) {
+                const warningText = warningElement.textContent.trim();
+                if (warningText.includes('bloqueado') || warningText.includes('Reenvio bloqueado')) {
+                    if (resendBtn) {
+                        resendBtn.disabled = true;
+                        const wrapper = resendBtn.closest('span');
+                        if (wrapper) {
+                            const tooltip = new bootstrap.Tooltip(wrapper, {
+                                trigger: 'hover focus',
+                                title: 'Reenvio bloqueado por 30 minutos',
+                                container: 'body'
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Foco automático no campo de código (se habilitado)
+            const codeInput = document.getElementById('code');
+            if (codeInput && !codeInput.disabled) {
+                codeInput.focus();
+            }
+        });
+
+        // Prevenir envio duplicado do formulário de verificação
         document.getElementById('verifyForm')?.addEventListener('submit', function(e) {
             const btn = document.getElementById('verifyBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verificando...';
         });
 
-        // Reenvio com confirmação (opcional)
+        // Desabilitar temporariamente o botão de reenvio para evitar múltiplos cliques
         document.getElementById('resendForm')?.addEventListener('submit', function(e) {
             const btn = document.getElementById('resendBtn');
             if (btn && !btn.disabled) {
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...';
                 btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...';
             }
         });
 
-        // Contagem regressiva removida – exibimos apenas a mensagem estática.
     })();
 </script>

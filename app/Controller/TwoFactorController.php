@@ -52,47 +52,36 @@ class TwoFactorController
             'status' => $status,
         ]);
 
-        // --- Se o registro existe e está bloqueado ---
-        if ($status['exists'] && isset($status['is_blocked']) && $status['is_blocked'] === true) {
-            $blockedUntil = $status['blocked_until'];
-            $minutesLeft = ceil((strtotime($blockedUntil) - time()) / 60);
-            $mensagem = "Reenvio bloqueado. Aguarde {$minutesLeft} minutos para solicitar um novo código.";
-            $this->session->set('flash_2fa_error', $mensagem);
-            // Não limpa pendências – mantém o usuário na página 2FA
-        }
-
         // --- Se não há registro ativo (expirado ou removido) ---
         if (!$status['exists']) {
-            // Verifica se o reenvio está bloqueado
             if ($this->twoFactorService->isResendBlocked($email)) {
-                $mensagem = 'Código expirado e você atingiu o limite de reenvios. Aguarde 30 minutos para solicitar um novo código.';
+                $mensagem = 'Código expirado. O reenvio está bloqueado por 30 minutos.';
             } else {
                 $mensagem = 'Código expirado. Clique em "Reenviar" para obter um novo código.';
             }
             $this->session->set('flash_2fa_error', $mensagem);
-            // Não limpa pendências – mantém o usuário na página 2FA
         }
 
         // Recupera mensagens flash
         $erro = $this->getFlash('flash_2fa_error');
         $sucesso = $this->getFlash('flash_2fa_success');
+        $warning = $this->getFlash('flash_2fa_warning'); // Nova variável
 
         $expiryMinutes = (int) ($_ENV['TWO_FACTOR_EXPIRY_MINUTES'] ?? 5);
 
         // Verifica se o reenvio está bloqueado (para a view)
         $resendBlocked = $this->twoFactorService->isResendBlocked($email);
 
-        // Renderiza view
         return $this->view->renderWithLayout(
             'admin/2fa',
             [
-                'email'          => $email,
-                'erro'           => $erro,
-                'sucesso'        => $sucesso,
-                'status'         => $status,
-                'expiryMinutes'  => $expiryMinutes,
-                'resendBlocked'  => $resendBlocked,
-                'formBlocked'    => isset($status['exists']) && $status['exists'] && isset($status['is_blocked']) && $status['is_blocked'] === true, // NOVO
+                'email'         => $email,
+                'erro'          => $erro,
+                'sucesso'       => $sucesso,
+                'warning'       => $warning, // Nova variável passada para a view
+                'status'        => $status,
+                'expiryMinutes' => $expiryMinutes,
+                'resendBlocked' => $resendBlocked,
             ],
             'layouts/main',
             ['title' => 'Verificação em Duas Etapas']
@@ -234,11 +223,20 @@ class TwoFactorController
                 $this->session->set('flash_2fa_success', $message);
                 $this->logger->info('Código 2FA reenviado', ['email' => $email]);
             } else {
-                $this->session->set('flash_2fa_error', $result['error'] ?? 'Falha ao reenviar código.');
-                $this->logger->warning('Falha ao reenviar código 2FA', [
-                    'email' => $email,
-                    'error' => $result['error'] ?? 'unknown',
-                ]);
+                // Verifica se o erro é de bloqueio (blocked_until presente)
+                if (isset($result['blocked_until'])) {
+                    $this->session->set('flash_2fa_warning', $result['error'] ?? 'Reenvio bloqueado por 30 minutos.');
+                    $this->logger->info('Tentativa de reenvio bloqueada', [
+                        'email' => $email,
+                        'blocked_until' => $result['blocked_until'],
+                    ]);
+                } else {
+                    $this->session->set('flash_2fa_error', $result['error'] ?? 'Falha ao reenviar código.');
+                    $this->logger->warning('Falha ao reenviar código 2FA', [
+                        'email' => $email,
+                        'error' => $result['error'] ?? 'unknown',
+                    ]);
+                }
             }
 
             header('Location: /admin/2fa');
