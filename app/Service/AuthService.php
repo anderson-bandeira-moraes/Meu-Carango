@@ -6,128 +6,171 @@ namespace App\Service;
 
 use App\Core\Contracts\SessionInterface;
 use App\Repository\UsuarioRepository;
+use App\Repository\LoginAttemptRepository;
+use App\Service\UserTwoFactorService;
+use Monolog\Logger;
 
 /**
- * Serviço de autenticação e gestão de usuários (lojistas).
- * Contém todas as regras de negócio relacionadas a login, registro e logout.
+ * Serviço de autenticação para lojistas.
+ * Gerencia login, logout, verificação de status, limite de tentativas e 2FA.
  */
 class AuthService
 {
     public function __construct(
         private UsuarioRepository $usuarioRepository,
         private SessionInterface $session,
+        private Logger $logger,
+        private LoginAttemptRepository $attemptRepository,
+        private UserTwoFactorService $twoFactorService,
     ) {}
 
     /**
-     * Tenta realizar o login do usuário.
+     * Tenta realizar o login do lojista.
      *
      * @param string $email
      * @param string $senha (plain text)
-     * @return array{sucesso: bool, erro?: string, usuario?: array}
+     * @param string $clientIp IP do cliente (para logs)
+     * @return array{sucesso: bool, erro?: string, 2fa_required?: bool}
      */
-    public function login(string $email, string $senha): array
+    public function login(string $email, string $senha, string $clientIp): array
     {
-        // Busca o usuário pelo e-mail
-        $usuario = $this->usuarioRepository->findByEmail($email);
+        // --- Verificar se o bloqueio expirou e resetar automaticamente ---
+        $attemptData = $this->attemptRepository->getAttempts($email, $clientIp);
+        if ($attemptData && $attemptData['blocked_until'] !== null && strtotime($attemptData['blocked_until']) < time()) {
+            $this->attemptRepository->resetAttempts($email, $clientIp);
+            $this->logger->info('Bloqueio expirado, contador de tentativas resetado', [
+                'email' => $email,
+                'ip'    => $clientIp,
+                'previous_attempts' => $attemptData['attempts'],
+            ]);
+        }
 
-        // Verifica credenciais
-        if (!$usuario || !password_verify($senha, $usuario['senha_hash'])) {
+        // --- Verificar bloqueio antes da consulta ao banco ---
+        if ($this->attemptRepository->isBlocked($email, $clientIp)) {
+            $this->logger->warning('Tentativa de login durante bloqueio ativo', [
+                'email' => $email,
+                'ip'    => $clientIp,
+            ]);
+            return [
+                'sucesso' => false,
+                'erro'    => 'Muitas tentativas de login. Tente novamente mais tarde.',
+            ];
+        }
+
+        // --- Busca o lojista pelo e-mail ---
+        $user = $this->usuarioRepository->findByEmail($email);
+
+        // --- Falha de login (credenciais inválidas) ---
+        if (!$user || !password_verify($senha, $user['senha_hash'])) {
+            $this->attemptRepository->recordFailedAttempt($email, $clientIp);
+            $this->logger->warning('Tentativa de login falhou (lojista)', [
+                'email'  => $email,
+                'ip'     => $clientIp,
+                'motivo' => 'Credenciais inválidas',
+            ]);
             return [
                 'sucesso' => false,
                 'erro'    => 'E-mail ou senha inválidos.',
             ];
         }
 
-        // Verifica se o usuário está ativo
-        if (($usuario['status'] ?? '') !== 'ativo') {
+        // --- Verifica se o lojista está ativo ---
+        if (($user['status'] ?? '') !== 'ativo') {
+            $this->attemptRepository->recordFailedAttempt($email, $clientIp);
+            $this->logger->warning('Tentativa de login bloqueada (conta inativa)', [
+                'email'  => $email,
+                'ip'     => $clientIp,
+                'status' => $user['status'] ?? 'unknown',
+            ]);
             return [
                 'sucesso' => false,
-                'erro'    => 'Sua conta não está ativa. Entre em contato com o suporte.',
+                'erro'    => 'Conta inativa. Entre em contato com o suporte.',
             ];
         }
 
-        // Regenera o ID da sessão (segurança)
-        $this->session->regenerate();
+        // --- Verifica se há bloqueio de reenvio ativo na tabela two_factor_codes ---
+        $twoFactorRecord = $this->twoFactorService->getRecord($email);
+        if ($twoFactorRecord && $twoFactorRecord['blocked_until'] !== null && strtotime($twoFactorRecord['blocked_until']) > time()) {
+            $minutesLeft = ceil((strtotime($twoFactorRecord['blocked_until']) - time()) / 60);
+            $this->logger->warning('Tentativa de login durante bloqueio de reenvio 2FA (lojista)', [
+                'email' => $email,
+                'blocked_until' => $twoFactorRecord['blocked_until'],
+                'minutes_left' => $minutesLeft,
+            ]);
+            return [
+                'sucesso' => false,
+                'erro'    => "Você está bloqueado para reenviar códigos de verificação. Aguarde {$minutesLeft} minutos para tentar novamente.",
+            ];
+        }
 
-        // Armazena dados do usuário na sessão
-        $this->session->set('user_id', $usuario['id']);
-        $this->session->set('user_nome', $usuario['nome']);
-        $this->session->set('user_email', $usuario['email']);
-        $this->session->set('user_slug', $usuario['slug']);
+        // --- Senha correta: inicia fluxo 2FA ---
+        // Armazena dados pendentes na sessão
+        $this->session->set('pending_user_id', $user['id']);
+        $this->session->set('pending_user_email', $user['email']);
+        $this->session->set('pending_user_nome', $user['nome']);
+        $this->session->set('pending_user_slug', $user['slug']);
 
-        // Atualiza último login (opcional)
-        $this->usuarioRepository->updateLastLogin($usuario['id']);
+        // Gera e envia código 2FA
+        $result = $this->twoFactorService->generateAndSend($user['email']);
+
+        if (!$result['success']) {
+            // Limpa pendências em caso de falha
+            $this->session->delete('pending_user_id');
+            $this->session->delete('pending_user_email');
+            $this->session->delete('pending_user_nome');
+            $this->session->delete('pending_user_slug');
+
+            $this->logger->error('Falha ao enviar código 2FA (lojista)', [
+                'email' => $user['email'],
+                'error' => $result['error'] ?? 'unknown',
+            ]);
+
+            return [
+                'sucesso' => false,
+                'erro'    => 'Erro ao enviar código de verificação. Tente novamente.',
+            ];
+        }
+
+        // Atualiza o último login (sucesso parcial)
+        $this->usuarioRepository->updateLastLogin($user['id']);
+
+        // Reseta tentativas de login (sucesso parcial)
+        $this->attemptRepository->resetAttempts($email, $clientIp);
+        $this->attemptRepository->deleteOldRecords();
+
+        $this->logger->info('Login parcial: 2FA iniciado (lojista)', [
+            'email' => $user['email'],
+            'ip'    => $clientIp,
+        ]);
 
         return [
-            'sucesso' => true,
-            'usuario' => $usuario,
+            'sucesso'       => true,
+            '2fa_required'  => true,
+            'redirect'      => '/logista/2fa',
         ];
     }
 
     /**
-     * Registra um novo usuário (lojista).
+     * Realiza logout (destrói a sessão) e registra a ação.
      *
-     * @param array $dados Dados esperados: nome, email, senha, nome_loja, slug, telefone
-     * @return array{sucesso: bool, erro?: string, id?: int}
+     * @param string $clientIp IP do cliente (para logs)
      */
-    public function registrar(array $dados): array
+    public function logout(string $clientIp): void
     {
-        // Validações de negócio (duplicidade)
-        if ($this->usuarioRepository->emailExists($dados['email'])) {
-            return [
-                'sucesso' => false,
-                'erro'    => 'E-mail já cadastrado.',
-            ];
-        }
+        // Obtém o email do lojista antes de destruir a sessão
+        $userEmail = $this->session->get('user_email') ?? 'unknown';
 
-        if ($this->usuarioRepository->slugExists($dados['slug'])) {
-            return [
-                'sucesso' => false,
-                'erro'    => 'Este slug já está em uso. Escolha outro.',
-            ];
-        }
+        // Log de logout
+        $this->logger->info('Logout de lojista', [
+            'email' => $userEmail,
+            'ip'    => $clientIp,
+        ]);
 
-        // Prepara os dados para inserção
-        $hash = password_hash($dados['senha'], PASSWORD_DEFAULT);
-
-        $novoUsuario = [
-            'nome'       => $dados['nome'],
-            'email'      => $dados['email'],
-            'senha_hash' => $hash,
-            'nome_loja'  => $dados['nome_loja'],
-            'slug'       => $dados['slug'],
-            'telefone'   => $dados['telefone'],
-            'plano'      => 'teste',      // plano padrão
-            'status'     => 'ativo',      // ativo por padrão
-        ];
-
-        $id = $this->usuarioRepository->create($novoUsuario);
-
-        if (!$id) {
-            return [
-                'sucesso' => false,
-                'erro'    => 'Erro ao criar conta. Tente novamente mais tarde.',
-            ];
-        }
-
-        return [
-            'sucesso' => true,
-            'id'      => $id,
-        ];
-    }
-
-    /**
-     * Realiza logout (destrói a sessão).
-     *
-     * @return void
-     */
-    public function logout(): void
-    {
         $this->session->destroy();
     }
 
     /**
-     * Verifica se o usuário está autenticado (sessão ativa).
+     * Verifica se o lojista está autenticado.
      *
      * @return bool
      */
@@ -137,7 +180,7 @@ class AuthService
     }
 
     /**
-     * Retorna os dados do usuário logado atualmente (da sessão).
+     * Retorna os dados do lojista logado atualmente (da sessão).
      *
      * @return array|null
      */
@@ -153,16 +196,5 @@ class AuthService
             'email' => $this->session->get('user_email'),
             'slug'  => $this->session->get('user_slug'),
         ];
-    }
-
-    /**
-     * Busca um usuário pelo ID (caso precise de dados completos do banco).
-     *
-     * @param int $id
-     * @return array|null
-     */
-    public function getUserById(int $id): ?array
-    {
-        return $this->usuarioRepository->findById($id);
     }
 }

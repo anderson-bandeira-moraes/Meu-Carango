@@ -6,152 +6,151 @@ namespace App\Controller;
 
 use App\Core\Request;
 use App\Core\ViewRenderer;
-use App\Core\Contracts\SessionInterface;  // <-- importa a interface
+use App\Core\Contracts\SessionInterface;
 use App\Service\AuthService;
 
 /**
- * Controlador de autenticação (login, registro, logout).
+ * Controlador de autenticação do lojista.
+ * Gerencia login, logout e dashboard do lojista.
  */
 class AuthController
 {
     public function __construct(
         private AuthService $authService,
         private ViewRenderer $view,
-        private SessionInterface $session,   // <-- nova dependência injetada
+        private SessionInterface $session,
     ) {}
 
     /**
-     * Exibe o formulário de login.
+     * Exibe o formulário de login do lojista.
+     *
+     * @param Request $request
+     * @return string
      */
     public function formLogin(Request $request): string
     {
+        // Se já estiver logado, redireciona para o dashboard
         if ($this->authService->check()) {
-            header('Location: /dashboard');
+            header('Location: /logista/dashboard');
             exit;
         }
 
-        $erro = $this->session->get('flash_error', null);
-        $this->session->delete('flash_error');
-
-        return $this->view->render('auth/login', [
-            'erro' => $erro,
-        ]);
-    }
-
-    /**
-     * Processa o login.
-     */
-    public function login(Request $request): void
-    {
-        $email = trim($request->getPost('email') ?? '');
-        $senha = $request->getPost('senha') ?? '';
-
-        if ($email === '' || $senha === '') {
-            $this->session->set('flash_error', 'Preencha e-mail e senha.');
-            header('Location: /login');
-            exit;
-        }
-
-        $resultado = $this->authService->login($email, $senha);
-
-        if ($resultado['sucesso']) {
-            $redirectTo = $this->session->get('intended_url', '/dashboard');
-            $this->session->delete('intended_url');
-            header('Location: ' . $redirectTo);
-            exit;
-        }
-
-        $this->session->set('flash_error', $resultado['erro']);
-        header('Location: /login');
-        exit;
-    }
-
-    /**
-     * Exibe o formulário de registro.
-     */
-    public function formRegistro(Request $request): string
-    {
-        if ($this->authService->check()) {
-            header('Location: /dashboard');
-            exit;
-        }
-
-        $erro = $this->session->get('flash_error', null);
-        $dados = $this->session->get('flash_old', []);
-        $this->session->delete('flash_error');
-        $this->session->delete('flash_old');
+        // Recupera mensagens flash
+        $erro = $this->session->get('flash_user_error', null);
+        $this->session->delete('flash_user_error');
 
         return $this->view->renderWithLayout(
-            'auth/registro',
-            ['erro' => $erro, 'dados' => $dados],
+            'logista/login',
+            ['erro' => $erro],
             'layouts/main',
-            ['title' => 'Cadastro de Lojista']
+            ['title' => 'Login - Meu Carango']
         );
     }
 
     /**
-     * Processa o registro de um novo lojista.
+     * Processa o login do lojista.
+     *
+     * @param Request $request
+     * @return void
      */
-    public function registrar(Request $request): void
+    public function login(Request $request): void
     {
-        $dados = [
-            'nome'      => trim($request->getPost('nome') ?? ''),
-            'email'     => trim($request->getPost('email') ?? ''),
-            'senha'     => $request->getPost('senha') ?? '',
-            'nome_loja' => trim($request->getPost('nome_loja') ?? ''),
-            'slug'      => trim($request->getPost('slug') ?? ''),
-            'telefone'  => trim($request->getPost('telefone') ?? ''),
-        ];
+        // Obtém o IP do cliente (para logs e limite de tentativas)
+        $clientIp = $request->getClientIp();
 
-        $erros = [];
-
-        if (empty($dados['nome'])) {
-            $erros[] = 'Nome é obrigatório.';
-        }
-        if (empty($dados['email']) || !filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            $erros[] = 'E-mail inválido.';
-        }
-        if (empty($dados['senha']) || strlen($dados['senha']) < 6) {
-            $erros[] = 'Senha deve ter pelo menos 6 caracteres.';
-        }
-        if (empty($dados['nome_loja'])) {
-            $erros[] = 'Nome da loja é obrigatório.';
-        }
-        if (empty($dados['slug']) || !preg_match('/^[a-z0-9-]+$/', $dados['slug'])) {
-            $erros[] = 'Slug deve conter apenas letras minúsculas, números e hífens.';
-        }
-        if (empty($dados['telefone'])) {
-            $erros[] = 'Telefone é obrigatório.';
+        // Se for AJAX, lê o corpo JSON
+        if ($request->isAjax()) {
+            $data = $request->getJson();
+            $email = trim($data['email'] ?? '');
+            $senha = $data['senha'] ?? '';
+        } else {
+            $email = trim($request->getPost('email') ?? '');
+            $senha = $request->getPost('senha') ?? '';
         }
 
-        if (!empty($erros)) {
-            $this->session->set('flash_error', implode('<br>', $erros));
-            $this->session->set('flash_old', $dados);
-            header('Location: /registro');
+        // Validação básica
+        if ($email === '' || $senha === '') {
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => false, 'erro' => 'Preencha e-mail e senha.']);
+                exit;
+            }
+            $this->session->set('flash_user_error', 'Preencha e-mail e senha.');
+            header('Location: /logista/login');
             exit;
         }
 
-        $resultado = $this->authService->registrar($dados);
+        // Chama o service com o IP
+        $resultado = $this->authService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
-            $this->session->set('flash_success', 'Conta criada com sucesso! Faça login.');
-            header('Location: /login');
+            // Se 2FA for necessário, redireciona para /logista/2fa
+            if (isset($resultado['2fa_required']) && $resultado['2fa_required'] === true) {
+                $redirectTo = $resultado['redirect'] ?? '/logista/2fa';
+                if ($request->isAjax()) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'sucesso' => true,
+                        '2fa_required' => true,
+                        'redirect' => $redirectTo,
+                    ]);
+                    exit;
+                }
+                header('Location: ' . $redirectTo);
+                exit;
+            }
+
+            // Login completo (sem 2FA)
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => true, 'redirect' => '/logista/dashboard']);
+                exit;
+            }
+            header('Location: /logista/dashboard');
             exit;
         }
 
-        $this->session->set('flash_error', $resultado['erro']);
-        $this->session->set('flash_old', $dados);
-        header('Location: /registro');
+        // Falha no login
+        if ($request->isAjax()) {
+            header('Content-Type: application/json');
+            echo json_encode(['sucesso' => false, 'erro' => $resultado['erro']]);
+            exit;
+        }
+
+        $this->session->set('flash_user_error', $resultado['erro']);
+        header('Location: /logista/login');
         exit;
     }
 
     /**
-     * Logout do usuário.
+     * Logout do lojista.
+     *
+     * @param Request $request
+     * @return void
      */
     public function logout(Request $request): void
     {
-        $this->authService->logout();
-        header('Location: /login');
+        $clientIp = $request->getClientIp();
+        $this->authService->logout($clientIp);
+        header('Location: /logista/login');
         exit;
+    }
+
+    /**
+     * Dashboard do lojista (página inicial protegida).
+     *
+     * @param Request $request
+     * @return string
+     */
+    public function index(Request $request): string
+    {
+        $user = $this->authService->getCurrentUser();
+
+        return $this->view->renderWithLayout(
+            'logista/dashboard',
+            ['user' => $user],
+            'layouts/main',
+            ['title' => 'Dashboard - Meu Carango']
+        );
     }
 }
