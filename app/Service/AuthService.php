@@ -109,6 +109,7 @@ class AuthService
         $this->session->set('pending_user_email', $user['email']);
         $this->session->set('pending_user_nome', $user['nome']);
         $this->session->set('pending_user_slug', $user['slug']);
+        $this->session->set('user_status', $user['status']); // <-- ADICIONADO
 
         // Gera e envia código 2FA
         $result = $this->twoFactorService->generateAndSend($user['email']);
@@ -119,6 +120,7 @@ class AuthService
             $this->session->delete('pending_user_email');
             $this->session->delete('pending_user_nome');
             $this->session->delete('pending_user_slug');
+            $this->session->delete('user_status'); // Limpa também o status
 
             $this->logger->error('Falha ao enviar código 2FA (lojista)', [
                 'email' => $user['email'],

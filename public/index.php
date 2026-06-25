@@ -66,7 +66,11 @@ use App\Repository\TwoFactorRepository;
 use App\Service\MailService;
 use App\Service\TwoFactorService;
 use App\Middleware\TwoFactorMiddleware;
-use App\Controller\TwoFactorController;        
+use App\Controller\TwoFactorController; 
+use App\Middleware\UserTwoFactorMiddleware;
+use App\Service\UserTwoFactorService;
+use App\Controller\UserTwoFactorController;
+use App\Repository\UsuarioRepository; 
 
 $container = new Container();
 
@@ -147,6 +151,15 @@ $container->set(App\Service\TwoFactorService::class, function($c) {
     );
 });
 
+$container->set(App\Service\UserTwoFactorService::class, function($c) {
+    return new App\Service\UserTwoFactorService(
+        $c->get(App\Repository\TwoFactorRepository::class),
+        $c->get(App\Service\MailService::class),
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
+    );
+});
+
 // Registra o wrapper da sessão (substitui o acesso direto estático)
 $container->set(SessionInterface::class, function() {
     return new SessionWrapper();
@@ -181,17 +194,28 @@ $container->set(App\Middleware\TwoFactorMiddleware::class, function($c) {
     );
 });
 
+$container->set(App\Middleware\UserTwoFactorMiddleware::class, function($c) {
+    return new App\Middleware\UserTwoFactorMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
+    );
+});
+
 // ============== AUTENTICAÇÃO (LOJISTA) ==============
 $container->set(App\Middleware\AuthMiddleware::class, function($c) {
     return new App\Middleware\AuthMiddleware(
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
     );
 });
 
 $container->set(App\Service\AuthService::class, function($c) {
     return new App\Service\AuthService(
         $c->get(App\Repository\UsuarioRepository::class),
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class),                    
+        $c->get(App\Repository\LoginAttemptRepository::class), 
+        $c->get(App\Service\UserTwoFactorService::class)      
     );
 });
 
@@ -255,6 +279,15 @@ $container->set(App\Controller\TwoFactorController::class, function($c) {
     );
 });
 
+$container->set(App\Controller\UserTwoFactorController::class, function($c) {
+    return new App\Controller\UserTwoFactorController(
+        $c->get(App\Service\UserTwoFactorService::class),
+        $c->get(App\Core\ViewRenderer::class),
+        $c->get(SessionInterface::class),
+        $c->get(\Monolog\Logger::class)
+    );
+});
+
 // ============== ROTEADOR ==============
 use App\Core\Router;
 use App\Core\Request;
@@ -264,10 +297,16 @@ use App\Middleware\AdminMiddleware;
 $router  = new Router($container);
 $request = new Request(); 
 
-// ============== ROTAS 2FA ==============
+// ============== ROTAS 2FA ADMIN ==============
+// GET sem CSRF (apenas exibição)
 $router->get('/admin/2fa', 'TwoFactorController@form');
-$router->post('/admin/2fa/verify', 'TwoFactorController@verify');
-$router->post('/admin/2fa/resend', 'TwoFactorController@resend');
+
+// POST com CSRF
+$router->group('/admin/2fa', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    $router->post('/verify', 'TwoFactorController@verify');
+    $router->post('/resend', 'TwoFactorController@resend');
+});
 
 // ============== ROTAS ADMINISTRATIVAS ==============
 
@@ -294,39 +333,49 @@ $router->group('/admin', function(Router $router) use ($container) {
     $router->get('', 'AdminAuthController@index');
 });
 
-// ---------- Rotas públicas ----------
-$router->get('/', 'HomeController@index');
-$router->get('/loja/{slug}', 'VitrineController@listar');
-$router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
-
-// ---------- Rotas de autenticação (com CSRF) ----------
-$router->group('/login', function(Router $router) use ($container) {
+// Grupo /logista protegido (autenticação + 2FA + CSRF)
+$router->group('/logista', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfTokenMiddleware::class));
-    $router->get('', 'AuthController@formLogin');
-    $router->post('', 'AuthController@login');
-});
-
-$router->group('/registro', function(Router $router) use ($container) {
-    $router->middleware($container->get(CsrfTokenMiddleware::class));
-    $router->get('', 'AuthController@formRegistro');
-    $router->post('', 'AuthController@registrar');
-});
-
-$router->get('/logout', 'AuthController@logout');
-
-// ---------- Rotas protegidas (dashboard) com CSRF ----------
-$router->group('/dashboard', function(Router $router) use ($container) {
-    $router->middleware($container->get(CsrfTokenMiddleware::class));
-    $router->middleware($container->get(AuthMiddleware::class));
+    $router->middleware($container->get(AuthMiddleware::class));           
+    $router->middleware($container->get(UserTwoFactorMiddleware::class));   
     $router->middleware($container->get(CsrfValidationMiddleware::class));
-    
-    $router->get('', 'DashboardController@index');
+
+    $router->get('/dashboard', 'AuthController@index');
     $router->get('/veiculos', 'VeiculoController@listar');
     $router->get('/veiculos/criar', 'VeiculoController@formCriar');
     $router->post('/veiculos/criar', 'VeiculoController@criar');
     $router->get('/anuncios', 'AnuncioController@listar');
     $router->get('/anuncios/criar', 'AnuncioController@formCriar');
     $router->post('/anuncios/criar', 'AnuncioController@criar');
+});
+
+// ---------- Rotas públicas ----------
+$router->get('/', 'HomeController@index');
+$router->get('/loja/{slug}', 'VitrineController@listar');
+$router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
+
+// ============== ROTAS LOJISTA ==============
+
+// Rotas de login (públicas, com CSRF)
+$router->group('/logista/login', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    $router->get('', 'AuthController@formLogin');
+    $router->post('', 'AuthController@login');
+});
+
+// Logout (GET, sem CSRF)
+$router->get('/logista/logout', 'AuthController@logout');
+
+// ============== ROTAS 2FA LOJISTA ==============
+// GET sem CSRF (apenas exibição)
+$router->get('/logista/2fa', 'UserTwoFactorController@form');
+
+// POST com CSRF
+$router->group('/logista/2fa', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+    $router->post('/verify', 'UserTwoFactorController@verify');
+    $router->post('/resend', 'UserTwoFactorController@resend');
 });
 
 // ============== DISPATCH COM TRATAMENTO DE EXCEÇÕES ==============
