@@ -7,16 +7,16 @@ namespace App\Service;
 use App\Core\Contracts\SessionInterface;
 use App\Repository\AdministradorRepository;
 use App\Repository\LoginAttemptRepository;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class AdminAuthService
 {
     public function __construct(
         private AdministradorRepository $adminRepository,
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
         private LoginAttemptRepository $attemptRepository,
-        private TwoFactorService $twoFactorService, 
+        private TwoFactorService $twoFactorService,
     ) {}
 
     /**
