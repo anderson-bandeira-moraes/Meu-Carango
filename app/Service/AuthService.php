@@ -60,8 +60,36 @@ class AuthService
         // --- Busca o lojista pelo e-mail ---
         $user = $this->usuarioRepository->findByEmail($email);
 
-        // --- Falha de login (credenciais inválidas) ---
-        if (!$user || !password_verify($senha, $user['senha_hash'])) {
+        // --- Usuário não encontrado: registra falha e retorna erro ---
+        if (!$user) {
+            $this->attemptRepository->recordFailedAttempt($email, $clientIp);
+            $this->logger->warning('Tentativa de login falhou (lojista)', [
+                'email'  => $email,
+                'ip'     => $clientIp,
+                'motivo' => 'Usuário não encontrado',
+            ]);
+            return [
+                'sucesso' => false,
+                'erro'    => 'E-mail ou senha inválidos.',
+            ];
+        }
+
+        // --- Verifica se o lojista está ativo (ANTES de validar a senha) ---
+        if (($user['status'] ?? '') !== 'ativo') {
+            $this->logger->warning('Tentativa de login bloqueada (conta inativa)', [
+                'email'  => $email,
+                'ip'     => $clientIp,
+                'status' => $user['status'] ?? 'unknown',
+            ]);
+            // NÃO registra tentativa falha para contas inativas
+            return [
+                'sucesso' => false,
+                'erro'    => 'Conta inativa. Entre em contato com o suporte.',
+            ];
+        }
+
+        // --- Valida a senha (usuário ativo) ---
+        if (!password_verify($senha, $user['senha_hash'])) {
             $this->attemptRepository->recordFailedAttempt($email, $clientIp);
             $this->logger->warning('Tentativa de login falhou (lojista)', [
                 'email'  => $email,
@@ -71,20 +99,6 @@ class AuthService
             return [
                 'sucesso' => false,
                 'erro'    => 'E-mail ou senha inválidos.',
-            ];
-        }
-
-        // --- Verifica se o lojista está ativo ---
-        if (($user['status'] ?? '') !== 'ativo') {
-            $this->attemptRepository->recordFailedAttempt($email, $clientIp);
-            $this->logger->warning('Tentativa de login bloqueada (conta inativa)', [
-                'email'  => $email,
-                'ip'     => $clientIp,
-                'status' => $user['status'] ?? 'unknown',
-            ]);
-            return [
-                'sucesso' => false,
-                'erro'    => 'Conta inativa. Entre em contato com o suporte.',
             ];
         }
 
@@ -103,13 +117,13 @@ class AuthService
             ];
         }
 
-        // --- Senha correta: inicia fluxo 2FA ---
+        // --- Senha correta e conta ativa: inicia fluxo 2FA ---
         // Armazena dados pendentes na sessão
         $this->session->set('pending_user_id', $user['id']);
         $this->session->set('pending_user_email', $user['email']);
         $this->session->set('pending_user_nome', $user['nome']);
         $this->session->set('pending_user_slug', $user['slug']);
-        $this->session->set('user_status', $user['status']); // <-- ADICIONADO
+        $this->session->set('user_status', $user['status']);
 
         // Gera e envia código 2FA
         $result = $this->twoFactorService->generateAndSend($user['email']);
@@ -120,7 +134,7 @@ class AuthService
             $this->session->delete('pending_user_email');
             $this->session->delete('pending_user_nome');
             $this->session->delete('pending_user_slug');
-            $this->session->delete('user_status'); // Limpa também o status
+            $this->session->delete('user_status');
 
             $this->logger->error('Falha ao enviar código 2FA (lojista)', [
                 'email' => $user['email'],

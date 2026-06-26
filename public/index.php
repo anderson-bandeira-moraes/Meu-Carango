@@ -61,7 +61,8 @@ use App\Middleware\CsrfTokenMiddleware;
 use App\Middleware\CsrfValidationMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Processor\WebProcessor;   
+use Monolog\Processor\WebProcessor;
+use Psr\Log\LoggerInterface;   // <-- ADICIONADO
 use App\Repository\TwoFactorRepository;
 use App\Service\MailService;
 use App\Service\TwoFactorService;
@@ -77,8 +78,8 @@ $container = new Container();
 // Carrega a configuração de logging
 $logConfig = require CONFIG_DIR . '/logging.php';
 
-// Registra o Logger no container
-$container->set(\Monolog\Logger::class, function() use ($logConfig) {
+// Registra o Logger no container com DUAS chaves (ETAPA 0)
+$loggerFactory = function() use ($logConfig) {
     $logger = new \Monolog\Logger($logConfig['channel']);
     
     // Handler com rotação diária
@@ -95,7 +96,12 @@ $container->set(\Monolog\Logger::class, function() use ($logConfig) {
     }
     
     return $logger;
-});
+};
+
+// Registra com a chave concreta (Monolog\Logger)
+$container->set(\Monolog\Logger::class, $loggerFactory);
+// Registra com a chave da interface (PSR-3) - em paralelo
+$container->set(LoggerInterface::class, $loggerFactory);
 
 // Registra serviços comuns
 $container->set(PDO::class, function() {
@@ -108,7 +114,10 @@ $container->set(App\Core\ViewRenderer::class, function() {
 
 // Repositórios
 $container->set(App\Repository\UsuarioRepository::class, function($c) {
-    return new App\Repository\UsuarioRepository($c->get(PDO::class));
+    return new App\Repository\UsuarioRepository(
+        $c->get(PDO::class),
+        $c->get(\Monolog\Logger::class)
+    );
 });
 
 $container->set(App\Repository\VeiculoRepository::class, function($c) {
