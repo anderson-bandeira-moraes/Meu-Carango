@@ -7,7 +7,7 @@ namespace App\Repository;
 use PDO;
 use PDOException;
 use RuntimeException;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Repositório para gerenciar tentativas de login (bloqueio por brute force).
@@ -20,7 +20,7 @@ class LoginAttemptRepository
 
     public function __construct(
         private PDO $pdo,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {
         $this->maxAttempts = (int) ($_ENV['MAX_LOGIN_ATTEMPTS'] ?? 5);
         $this->blockDurationMinutes = (int) ($_ENV['BLOCK_DURATION_MINUTES'] ?? 60);
