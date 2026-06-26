@@ -62,7 +62,7 @@ use App\Middleware\CsrfValidationMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Processor\WebProcessor;
-use Psr\Log\LoggerInterface;   // <-- ADICIONADO
+use Psr\Log\LoggerInterface;
 use App\Repository\TwoFactorRepository;
 use App\Service\MailService;
 use App\Service\TwoFactorService;
@@ -116,7 +116,7 @@ $container->set(App\Core\ViewRenderer::class, function() {
 $container->set(App\Repository\UsuarioRepository::class, function($c) {
     return new App\Repository\UsuarioRepository(
         $c->get(PDO::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -148,7 +148,7 @@ $container->set(App\Service\CriarAnuncioService::class, function($c) {
 });
 
 $container->set(App\Service\MailService::class, function($c) {
-    return new App\Service\MailService($c->get(\Monolog\Logger::class));
+    return new App\Service\MailService($c->get(LoggerInterface::class));
 });
 
 $container->set(App\Service\TwoFactorService::class, function($c) {
@@ -156,7 +156,7 @@ $container->set(App\Service\TwoFactorService::class, function($c) {
         $c->get(App\Repository\TwoFactorRepository::class),
         $c->get(App\Service\MailService::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -165,7 +165,7 @@ $container->set(App\Service\UserTwoFactorService::class, function($c) {
         $c->get(App\Repository\TwoFactorRepository::class),
         $c->get(App\Service\MailService::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -192,21 +192,21 @@ $container->set(CsrfTokenMiddleware::class, function($c) {
 $container->set(CsrfValidationMiddleware::class, function($c) {
     return new CsrfValidationMiddleware(
         $c->get(SessionInterface::class),
-        $c->get(Logger::class) 
+        $c->get(LoggerInterface::class)
     );
 });
 
 $container->set(App\Middleware\TwoFactorMiddleware::class, function($c) {
     return new App\Middleware\TwoFactorMiddleware(
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
 $container->set(App\Middleware\UserTwoFactorMiddleware::class, function($c) {
     return new App\Middleware\UserTwoFactorMiddleware(
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -214,7 +214,7 @@ $container->set(App\Middleware\UserTwoFactorMiddleware::class, function($c) {
 $container->set(App\Middleware\AuthMiddleware::class, function($c) {
     return new App\Middleware\AuthMiddleware(
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -222,7 +222,7 @@ $container->set(App\Service\AuthService::class, function($c) {
     return new App\Service\AuthService(
         $c->get(App\Repository\UsuarioRepository::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class),                    
+        $c->get(LoggerInterface::class),                    
         $c->get(App\Repository\LoginAttemptRepository::class), 
         $c->get(App\Service\UserTwoFactorService::class)      
     );
@@ -251,12 +251,12 @@ $container->set(App\Repository\AdministradorRepository::class, function($c) {
 $container->set(App\Repository\LoginAttemptRepository::class, function($c) {
     return new App\Repository\LoginAttemptRepository(
         $c->get(PDO::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
 $container->set(App\Repository\TwoFactorRepository::class, function($c) {
-    return new App\Repository\TwoFactorRepository($c->get(PDO::class), $c->get(\Monolog\Logger::class));
+    return new App\Repository\TwoFactorRepository($c->get(PDO::class), $c->get(LoggerInterface::class));
 });
 
 // Services
@@ -264,7 +264,7 @@ $container->set(App\Service\AdminAuthService::class, function($c) {
     return new App\Service\AdminAuthService(
         $c->get(App\Repository\AdministradorRepository::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class),
+        $c->get(LoggerInterface::class),
         $c->get(App\Repository\LoginAttemptRepository::class),
         $c->get(App\Service\TwoFactorService::class)
     );
@@ -284,7 +284,7 @@ $container->set(App\Controller\TwoFactorController::class, function($c) {
         $c->get(App\Service\TwoFactorService::class),
         $c->get(App\Core\ViewRenderer::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -293,7 +293,7 @@ $container->set(App\Controller\UserTwoFactorController::class, function($c) {
         $c->get(App\Service\UserTwoFactorService::class),
         $c->get(App\Core\ViewRenderer::class),
         $c->get(SessionInterface::class),
-        $c->get(\Monolog\Logger::class)
+        $c->get(LoggerInterface::class)
     );
 });
 
@@ -395,7 +395,7 @@ try {
 
     // --- LOG 404 ---
     try {
-        $logger = $container->get(\Monolog\Logger::class);
+        $logger = $container->get(LoggerInterface::class);
         $logger->warning('Página não encontrada', [
             'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
@@ -418,7 +418,7 @@ try {
 
     // --- LOG ESPECÍFICO PARA CSRF ---
     try {
-        $logger = $container->get(\Monolog\Logger::class);
+        $logger = $container->get(LoggerInterface::class);
         $logger->warning('Acesso negado por CSRF', [
             'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
@@ -441,7 +441,7 @@ try {
 
     // --- LOG ESPECÍFICO PARA PERMISSÃO (não CSRF) ---
     try {
-        $logger = $container->get(\Monolog\Logger::class);
+        $logger = $container->get(LoggerInterface::class);
         $logger->warning('Acesso negado por permissão', [
             'uri'    => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
@@ -464,7 +464,7 @@ try {
 
     // --- LOG 500 COM MONOLOG ---
     try {
-        $logger = $container->get(\Monolog\Logger::class);
+        $logger = $container->get(LoggerInterface::class);
         $logger->error($e->getMessage(), [
             'file'  => $e->getFile(),
             'line'  => $e->getLine(),
