@@ -7,7 +7,7 @@ namespace App\Repository;
 use PDO;
 use PDOException;
 use RuntimeException;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Repositório para gerenciar códigos de verificação em duas etapas (2FA).
@@ -16,7 +16,7 @@ class TwoFactorRepository
 {
     public function __construct(
         private PDO $pdo,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
