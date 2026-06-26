@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
@@ -24,7 +24,7 @@ class MailService
     private string $fromName;
     private int $timeout;
 
-    public function __construct(private Logger $logger)
+    public function __construct(private LoggerInterface $logger)
     {
         // Lê as configurações do .env
         $this->host = $_ENV['MAIL_HOST'] ?? '';
