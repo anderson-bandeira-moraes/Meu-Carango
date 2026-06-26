@@ -8,7 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\TwoFactorService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controlador para autenticação em duas etapas (2FA).
@@ -20,7 +20,7 @@ class TwoFactorController
         private TwoFactorService $twoFactorService,
         private ViewRenderer $view,
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
@@ -283,6 +283,4 @@ class TwoFactorController
         }
         return $value;
     }
-
-    
 }
