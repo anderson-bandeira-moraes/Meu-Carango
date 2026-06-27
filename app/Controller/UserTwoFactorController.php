@@ -8,7 +8,6 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\UserTwoFactorService;
-use Monolog\Logger;
 
 /**
  * Controlador para autenticação em duas etapas (2FA) do lojista.
@@ -20,7 +19,6 @@ class UserTwoFactorController
         private UserTwoFactorService $twoFactorService,
         private ViewRenderer $view,
         private SessionInterface $session,
-        private Logger $logger,
     ) {}
 
     /**
@@ -47,10 +45,6 @@ class UserTwoFactorController
 
         // Recupera status atual do 2FA
         $status = $this->twoFactorService->getStatus($email);
-        $this->logger->debug('Acesso ao formulário 2FA (lojista)', [
-            'email' => $email,
-            'status' => $status,
-        ]);
 
         // --- Se não há registro ativo (expirado ou removido) ---
         if (!$status['exists']) {
@@ -128,7 +122,6 @@ class UserTwoFactorController
 
             if (strtotime($record['expires_at']) < time()) {
                 // Código expirado - não remove pendências
-                $this->logger->warning('Código 2FA expirado durante verificação (lojista)', ['email' => $email]);
                 $this->session->set('flash_user_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
                 header('Location: /logista/2fa');
                 exit;
@@ -151,8 +144,6 @@ class UserTwoFactorController
                 $this->session->set('user_nome', $userNome);
                 $this->session->set('user_email', $userEmail);
                 $this->session->set('2fa_verified_user', true);
-
-                $this->logger->info('Login concluído com 2FA (lojista)', ['email' => $userEmail]);
 
                 $this->session->set('flash_user_2fa_success', 'Verificação concluída com sucesso!');
                 header('Location: /logista/dashboard');
@@ -193,10 +184,6 @@ class UserTwoFactorController
             exit;
 
         } catch (\Throwable $e) {
-            $this->logger->error('Erro ao verificar código 2FA (lojista)', [
-                'email' => $email,
-                'error' => $e->getMessage(),
-            ]);
             $this->session->set('flash_user_2fa_error', 'Erro interno ao verificar código. Tente novamente.');
             header('Location: /logista/2fa');
             exit;
@@ -224,22 +211,13 @@ class UserTwoFactorController
             if ($result['success']) {
                 $message = $result['message'] ?? 'Novo código enviado com sucesso.';
                 $this->session->set('flash_user_2fa_success', $message);
-                $this->logger->info('Código 2FA reenviado (lojista)', ['email' => $email]);
             } else {
                 // Verifica se o erro é de bloqueio (blocked_until presente)
                 if (isset($result['blocked_until'])) {
                     // Define a flag para exibir o modal de bloqueio
                     $this->session->set('show_blocked_modal', true);
-                    $this->logger->info('Tentativa de reenvio bloqueada (lojista)', [
-                        'email' => $email,
-                        'blocked_until' => $result['blocked_until'],
-                    ]);
                 } else {
                     $this->session->set('flash_user_2fa_error', $result['error'] ?? 'Falha ao reenviar código.');
-                    $this->logger->warning('Falha ao reenviar código 2FA (lojista)', [
-                        'email' => $email,
-                        'error' => $result['error'] ?? 'unknown',
-                    ]);
                 }
             }
 
@@ -247,10 +225,6 @@ class UserTwoFactorController
             exit;
 
         } catch (\Throwable $e) {
-            $this->logger->error('Erro ao reenviar código 2FA (lojista)', [
-                'email' => $email,
-                'error' => $e->getMessage(),
-            ]);
             $this->session->set('flash_user_2fa_error', 'Erro interno ao reenviar código. Tente novamente.');
             header('Location: /logista/2fa');
             exit;
