@@ -6,7 +6,7 @@ namespace App\Service;
 
 use App\Core\Contracts\SessionInterface;
 use App\Repository\TwoFactorRepository;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Serviço responsável pela lógica de autenticação em duas etapas (2FA) para lojistas.
@@ -25,7 +25,7 @@ class UserTwoFactorService
         private TwoFactorRepository $repository,
         private MailService $mailService,
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {
         $this->expiryMinutes = (int) ($_ENV['TWO_FACTOR_EXPIRY_MINUTES'] ?? 5);
         $this->maxAttempts = (int) ($_ENV['TWO_FACTOR_MAX_ATTEMPTS'] ?? 3);
