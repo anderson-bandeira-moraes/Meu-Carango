@@ -78,7 +78,7 @@ $container = new Container();
 // Carrega a configuração de logging
 $logConfig = require CONFIG_DIR . '/logging.php';
 
-// Registra o Logger no container com DUAS chaves (ETAPA 0)
+// Registra o Logger no container (agora apenas com a interface PSR-3)
 $loggerFactory = function() use ($logConfig) {
     $logger = new \Monolog\Logger($logConfig['channel']);
     
@@ -98,9 +98,7 @@ $loggerFactory = function() use ($logConfig) {
     return $logger;
 };
 
-// Registra com a chave concreta (Monolog\Logger)
-$container->set(\Monolog\Logger::class, $loggerFactory);
-// Registra com a chave da interface (PSR-3) - em paralelo
+// Registra com a chave da interface (PSR-3)
 $container->set(LoggerInterface::class, $loggerFactory);
 
 // Registra serviços comuns
