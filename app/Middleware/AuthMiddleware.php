@@ -6,7 +6,7 @@ namespace App\Middleware;
 
 use App\Core\Request;
 use App\Core\Contracts\SessionInterface;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Middleware que protege as rotas do lojista, verificando autenticação e status da conta.
@@ -16,7 +16,7 @@ class AuthMiddleware
 {
     public function __construct(
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
