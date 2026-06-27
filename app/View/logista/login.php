@@ -24,7 +24,9 @@
                         <label for="email" class="form-label">E-mail</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input type="email" class="form-control" id="email" name="email" required autofocus>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="<?= htmlspecialchars($old['email'] ?? '') ?>" 
+                                   required autofocus>
                         </div>
                     </div>
                     <div class="mb-4">
