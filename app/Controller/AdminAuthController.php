@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\AdminAuthService;
+use App\Requests\LoginRequest;
 
 class AdminAuthController
 {
@@ -15,6 +16,7 @@ class AdminAuthController
         private AdminAuthService $adminAuthService,
         private ViewRenderer $view,
         private SessionInterface $session,
+        private LoginRequest $loginRequest, // FormRequest injetada
     ) {}
 
     /**
@@ -31,9 +33,16 @@ class AdminAuthController
         $erro = $this->session->get('flash_admin_error', null);
         $this->session->delete('flash_admin_error');
 
+        // Recupera old input para repopular o formulário
+        $old = $this->session->get('old_admin_input', []);
+        $this->session->delete('old_admin_input');
+
         return $this->view->renderWithLayout(
             'admin/login',
-            ['erro' => $erro],
+            [
+                'erro' => $erro,
+                'old'  => $old,
+            ],
             'layouts/main',
             ['title' => 'Admin - Login']
         );
@@ -44,43 +53,51 @@ class AdminAuthController
      */
     public function login(Request $request): void
     {
-        // Obtém o IP do cliente (para logs)
-        $clientIp = $request->getClientIp();
+        // Valida os dados usando a LoginRequest
+        if (!$this->loginRequest->validate()) {
+            // Obtém os erros
+            $errors = $this->loginRequest->getErrors();
+            
+            // Armazena old input (dados enviados) para repopular o formulário
+            $this->session->set('old_admin_input', $this->loginRequest->all());
 
-        // Se for AJAX, lê o corpo JSON
-        if ($request->isAjax()) {
-            $data = $request->getJson();
-            $email = trim($data['email'] ?? '');
-            $senha = $data['senha'] ?? '';
-        } else {
-            $email = trim($request->getPost('email') ?? '');
-            $senha = $request->getPost('senha') ?? '';
-        }
-
-        if ($email === '' || $senha === '') {
-            if ($request->isAjax()) {
+            // Verifica se é uma requisição AJAX
+            if ($this->loginRequest->isAjax()) {
                 header('Content-Type: application/json');
-                echo json_encode(['sucesso' => false, 'erro' => 'Preencha e-mail e senha.']);
+                echo json_encode([
+                    'sucesso' => false,
+                    'erro'    => implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.',
+                ]);
                 exit;
             }
-            $this->session->set('flash_admin_error', 'Preencha e-mail e senha.');
+
+            // Armazena erros em flash
+            $this->session->set('flash_admin_error', implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.');
             header('Location: /admin/login');
             exit;
         }
 
-        // Passa o IP para o service
+        // Obtém os dados validados (email e senha)
+        $dados = $this->loginRequest->validated();
+        $email = $dados['email'] ?? '';
+        $senha = $dados['senha'] ?? '';
+
+        // Obtém o IP do cliente (através da FormRequest, que estende Request)
+        $clientIp = $this->loginRequest->getClientIp();
+
+        // Chama o serviço de autenticação
         $resultado = $this->adminAuthService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
             // Se 2FA for necessário, redireciona para /admin/2fa
             if (isset($resultado['2fa_required']) && $resultado['2fa_required'] === true) {
                 $redirectTo = $resultado['redirect'] ?? '/admin/2fa';
-                if ($request->isAjax()) {
+                if ($this->loginRequest->isAjax()) {
                     header('Content-Type: application/json');
                     echo json_encode([
-                        'sucesso' => true,
+                        'sucesso'      => true,
                         '2fa_required' => true,
-                        'redirect' => $redirectTo,
+                        'redirect'     => $redirectTo,
                     ]);
                     exit;
                 }
@@ -89,7 +106,7 @@ class AdminAuthController
             }
 
             // Login completo (sem 2FA)
-            if ($request->isAjax()) {
+            if ($this->loginRequest->isAjax()) {
                 header('Content-Type: application/json');
                 echo json_encode(['sucesso' => true, 'redirect' => '/admin']);
                 exit;
@@ -98,7 +115,8 @@ class AdminAuthController
             exit;
         }
 
-        if ($request->isAjax()) {
+        // Falha no login: exibe erro
+        if ($this->loginRequest->isAjax()) {
             header('Content-Type: application/json');
             echo json_encode(['sucesso' => false, 'erro' => $resultado['erro']]);
             exit;
@@ -115,7 +133,7 @@ class AdminAuthController
     public function logout(Request $request): void
     {
         // Obtém o IP do cliente e passa para o service
-        $clientIp = $request->getClientIp();
+        $clientIp = $this->loginRequest->getClientIp(); // usa a FormRequest para obter o IP
         $this->adminAuthService->logout($clientIp);
         header('Location: /admin/login');
         exit;
