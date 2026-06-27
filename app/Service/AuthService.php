@@ -8,7 +8,7 @@ use App\Core\Contracts\SessionInterface;
 use App\Repository\UsuarioRepository;
 use App\Repository\LoginAttemptRepository;
 use App\Service\UserTwoFactorService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Serviço de autenticação para lojistas.
@@ -19,7 +19,7 @@ class AuthService
     public function __construct(
         private UsuarioRepository $usuarioRepository,
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
         private LoginAttemptRepository $attemptRepository,
         private UserTwoFactorService $twoFactorService,
     ) {}
