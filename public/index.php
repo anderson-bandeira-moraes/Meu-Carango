@@ -71,7 +71,11 @@ use App\Controller\TwoFactorController;
 use App\Middleware\UserTwoFactorMiddleware;
 use App\Service\UserTwoFactorService;
 use App\Controller\UserTwoFactorController;
-use App\Repository\UsuarioRepository; 
+use App\Repository\UsuarioRepository;
+// --- NOVOS USES PARA FORMREQUEST ---
+use App\Core\Request;
+use App\Requests\LoginRequest;
+use App\Requests\TwoFactorRequest;
 
 $container = new Container();
 
@@ -268,12 +272,30 @@ $container->set(App\Service\AdminAuthService::class, function($c) {
     );
 });
 
+// ============== CRIAÇÃO DA REQUEST E REGISTRO NO CONTAINER ==============
+// Cria a instância da Request (já captura os dados da requisição atual)
+$request = new Request();
+
+// Registra a Request no container para ser injetada nas FormRequests e onde mais for necessário
+$container->set(Request::class, $request);
+
+// ============== REGISTRO DAS FORMREQUESTS ==============
+// As FormRequests dependem da Request
+$container->set(LoginRequest::class, function($c) {
+    return new LoginRequest($c->get(Request::class));
+});
+
+$container->set(TwoFactorRequest::class, function($c) {
+    return new TwoFactorRequest($c->get(Request::class));
+});
+
 // ============== CONTROLLERS ==============
 $container->set(App\Controller\AdminAuthController::class, function($c) {
     return new App\Controller\AdminAuthController(
         $c->get(App\Service\AdminAuthService::class),
         $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(LoginRequest::class) // injeta LoginRequest
     );
 });
 
@@ -282,7 +304,7 @@ $container->set(App\Controller\TwoFactorController::class, function($c) {
         $c->get(App\Service\TwoFactorService::class),
         $c->get(App\Core\ViewRenderer::class),
         $c->get(SessionInterface::class),
-        $c->get(LoggerInterface::class)
+        $c->get(TwoFactorRequest::class) // substitui Logger por TwoFactorRequest
     );
 });
 
@@ -290,18 +312,18 @@ $container->set(App\Controller\UserTwoFactorController::class, function($c) {
     return new App\Controller\UserTwoFactorController(
         $c->get(App\Service\UserTwoFactorService::class),
         $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(TwoFactorRequest::class) // injeta TwoFactorRequest
     );
 });
 
 // ============== ROTEADOR ==============
 use App\Core\Router;
-use App\Core\Request;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
 
 $router  = new Router($container);
-$request = new Request(); 
+// A $request já foi criada e registrada no container; a usamos aqui para o dispatch
 
 // ============== ROTAS 2FA ADMIN ==============
 // GET sem CSRF (apenas exibição)
