@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\AuthService;
+use App\Requests\LoginRequest;
 
 /**
  * Controlador de autenticação do lojista.
@@ -19,6 +20,7 @@ class AuthController
         private AuthService $authService,
         private ViewRenderer $view,
         private SessionInterface $session,
+        private LoginRequest $loginRequest, // FormRequest injetada
     ) {}
 
     /**
@@ -39,9 +41,16 @@ class AuthController
         $erro = $this->session->get('flash_user_error', null);
         $this->session->delete('flash_user_error');
 
+        // Recupera old input para repopular o formulário
+        $old = $this->session->get('old_user_input', []);
+        $this->session->delete('old_user_input');
+
         return $this->view->renderWithLayout(
             'logista/login',
-            ['erro' => $erro],
+            [
+                'erro' => $erro,
+                'old'  => $old,
+            ],
             'layouts/main',
             ['title' => 'Login - Meu Carango']
         );
@@ -55,44 +64,51 @@ class AuthController
      */
     public function login(Request $request): void
     {
-        // Obtém o IP do cliente (para logs e limite de tentativas)
-        $clientIp = $request->getClientIp();
+        // Valida os dados usando a LoginRequest
+        if (!$this->loginRequest->validate()) {
+            // Obtém os erros
+            $errors = $this->loginRequest->getErrors();
 
-        // Se for AJAX, lê o corpo JSON
-        if ($request->isAjax()) {
-            $data = $request->getJson();
-            $email = trim($data['email'] ?? '');
-            $senha = $data['senha'] ?? '';
-        } else {
-            $email = trim($request->getPost('email') ?? '');
-            $senha = $request->getPost('senha') ?? '';
-        }
+            // Armazena old input (dados enviados) para repopular o formulário
+            $this->session->set('old_user_input', $this->loginRequest->all());
 
-        // Validação básica
-        if ($email === '' || $senha === '') {
-            if ($request->isAjax()) {
+            // Verifica se é uma requisição AJAX
+            if ($this->loginRequest->isAjax()) {
                 header('Content-Type: application/json');
-                echo json_encode(['sucesso' => false, 'erro' => 'Preencha e-mail e senha.']);
+                echo json_encode([
+                    'sucesso' => false,
+                    'erro'    => implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.',
+                ]);
                 exit;
             }
-            $this->session->set('flash_user_error', 'Preencha e-mail e senha.');
+
+            // Armazena erros em flash
+            $this->session->set('flash_user_error', implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.');
             header('Location: /logista/login');
             exit;
         }
 
-        // Chama o service com o IP
+        // Obtém os dados validados (email e senha)
+        $dados = $this->loginRequest->validated();
+        $email = $dados['email'] ?? '';
+        $senha = $dados['senha'] ?? '';
+
+        // Obtém o IP do cliente (através da FormRequest, que estende Request)
+        $clientIp = $this->loginRequest->getClientIp();
+
+        // Chama o serviço de autenticação
         $resultado = $this->authService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
             // Se 2FA for necessário, redireciona para /logista/2fa
             if (isset($resultado['2fa_required']) && $resultado['2fa_required'] === true) {
                 $redirectTo = $resultado['redirect'] ?? '/logista/2fa';
-                if ($request->isAjax()) {
+                if ($this->loginRequest->isAjax()) {
                     header('Content-Type: application/json');
                     echo json_encode([
-                        'sucesso' => true,
+                        'sucesso'      => true,
                         '2fa_required' => true,
-                        'redirect' => $redirectTo,
+                        'redirect'     => $redirectTo,
                     ]);
                     exit;
                 }
@@ -101,7 +117,7 @@ class AuthController
             }
 
             // Login completo (sem 2FA)
-            if ($request->isAjax()) {
+            if ($this->loginRequest->isAjax()) {
                 header('Content-Type: application/json');
                 echo json_encode(['sucesso' => true, 'redirect' => '/logista/dashboard']);
                 exit;
@@ -111,7 +127,7 @@ class AuthController
         }
 
         // Falha no login
-        if ($request->isAjax()) {
+        if ($this->loginRequest->isAjax()) {
             header('Content-Type: application/json');
             echo json_encode(['sucesso' => false, 'erro' => $resultado['erro']]);
             exit;
@@ -130,7 +146,7 @@ class AuthController
      */
     public function logout(Request $request): void
     {
-        $clientIp = $request->getClientIp();
+        $clientIp = $this->loginRequest->getClientIp(); // usa a FormRequest para obter o IP
         $this->authService->logout($clientIp);
         header('Location: /logista/login');
         exit;
