@@ -76,7 +76,7 @@ class UserTwoFactorController
         $resendBlocked = $this->twoFactorService->isResendBlocked($email);
 
         return $this->view->renderWithLayout(
-            'auth/2fa',
+            'logista/2fa',
             [
                 'email'         => $email,
                 'erro'          => $erro,

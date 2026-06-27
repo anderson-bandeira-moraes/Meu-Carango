@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use PDO;
 use PDOException;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Repositório para a entidade Usuário (lojista).
@@ -16,7 +16,7 @@ class UsuarioRepository
 {
     public function __construct(
         private PDO $pdo,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
