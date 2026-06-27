@@ -6,7 +6,7 @@ namespace App\Middleware;
 
 use App\Core\Request;
 use App\Core\Contracts\SessionInterface;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Middleware que protege as rotas do lojista, garantindo que o 2FA foi concluído.
@@ -22,7 +22,7 @@ class UserTwoFactorMiddleware
 
     public function __construct(
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
