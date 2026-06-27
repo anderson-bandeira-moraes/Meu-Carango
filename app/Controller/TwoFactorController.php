@@ -8,7 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\TwoFactorService;
-use Psr\Log\LoggerInterface;
+use App\Requests\TwoFactorRequest;
 
 /**
  * Controlador para autenticação em duas etapas (2FA).
@@ -20,7 +20,7 @@ class TwoFactorController
         private TwoFactorService $twoFactorService,
         private ViewRenderer $view,
         private SessionInterface $session,
-        private LoggerInterface $logger,
+        private TwoFactorRequest $twoFactorRequest, // FormRequest injetada
     ) {}
 
     /**
@@ -47,10 +47,6 @@ class TwoFactorController
 
         // Recupera status atual do 2FA
         $status = $this->twoFactorService->getStatus($email);
-        $this->logger->debug('Acesso ao formulário 2FA', [
-            'email' => $email,
-            'status' => $status,
-        ]);
 
         // --- Se não há registro ativo (expirado ou removido) ---
         if (!$status['exists']) {
@@ -106,14 +102,16 @@ class TwoFactorController
             exit;
         }
 
-        $code = trim($request->getPost('code') ?? '');
-
-        // Validação: código deve ter 6 dígitos numéricos
-        if (!preg_match('/^[0-9]{6}$/', $code)) {
-            $this->session->set('flash_2fa_error', 'Código inválido. Digite os 6 dígitos numéricos.');
+        // Valida o código usando a TwoFactorRequest
+        if (!$this->twoFactorRequest->validate()) {
+            $errors = $this->twoFactorRequest->getErrors();
+            $this->session->set('flash_2fa_error', implode('<br>', $errors['code'] ?? []) ?: 'Código inválido.');
             header('Location: /admin/2fa');
             exit;
         }
+
+        // Obtém o código validado
+        $code = $this->twoFactorRequest->validated()['code'] ?? '';
 
         try {
             // Primeiro, verifica se o código ainda existe e não expirou
@@ -128,7 +126,6 @@ class TwoFactorController
 
             if (strtotime($record['expires_at']) < time()) {
                 // Código expirado - não remove pendências
-                $this->logger->warning('Código 2FA expirado durante verificação', ['email' => $email]);
                 $this->session->set('flash_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
                 header('Location: /admin/2fa');
                 exit;
@@ -151,8 +148,6 @@ class TwoFactorController
                 $this->session->set('admin_nome', $adminNome);
                 $this->session->set('admin_email', $adminEmail);
                 $this->session->set('2fa_verified', true);
-
-                $this->logger->info('Login concluído com 2FA', ['email' => $adminEmail]);
 
                 $this->session->set('flash_2fa_success', 'Verificação concluída com sucesso!');
                 header('Location: /admin');
@@ -193,10 +188,6 @@ class TwoFactorController
             exit;
 
         } catch (\Throwable $e) {
-            $this->logger->error('Erro ao verificar código 2FA', [
-                'email' => $email,
-                'error' => $e->getMessage(),
-            ]);
             $this->session->set('flash_2fa_error', 'Erro interno ao verificar código. Tente novamente.');
             header('Location: /admin/2fa');
             exit;
@@ -224,22 +215,13 @@ class TwoFactorController
             if ($result['success']) {
                 $message = $result['message'] ?? 'Novo código enviado com sucesso.';
                 $this->session->set('flash_2fa_success', $message);
-                $this->logger->info('Código 2FA reenviado', ['email' => $email]);
             } else {
                 // Verifica se o erro é de bloqueio (blocked_until presente)
                 if (isset($result['blocked_until'])) {
                     // Define a flag para exibir o modal de bloqueio
                     $this->session->set('show_blocked_modal', true);
-                    $this->logger->info('Tentativa de reenvio bloqueada', [
-                        'email' => $email,
-                        'blocked_until' => $result['blocked_until'],
-                    ]);
                 } else {
                     $this->session->set('flash_2fa_error', $result['error'] ?? 'Falha ao reenviar código.');
-                    $this->logger->warning('Falha ao reenviar código 2FA', [
-                        'email' => $email,
-                        'error' => $result['error'] ?? 'unknown',
-                    ]);
                 }
             }
 
@@ -247,15 +229,11 @@ class TwoFactorController
             exit;
 
         } catch (\Throwable $e) {
-            $this->logger->error('Erro ao reenviar código 2FA', [
-                'email' => $email,
-                'error' => $e->getMessage(),
-            ]);
             $this->session->set('flash_2fa_error', 'Erro interno ao reenviar código. Tente novamente.');
             header('Location: /admin/2fa');
             exit;
         }
-    }  
+    }
 
     /**
      * Limpa os dados pendentes da sessão.
