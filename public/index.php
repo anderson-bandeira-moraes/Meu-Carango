@@ -292,8 +292,7 @@ $container->set(App\Controller\UserTwoFactorController::class, function($c) {
     return new App\Controller\UserTwoFactorController(
         $c->get(App\Service\UserTwoFactorService::class),
         $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class),
-        $c->get(LoggerInterface::class)
+        $c->get(SessionInterface::class)
     );
 });
 
