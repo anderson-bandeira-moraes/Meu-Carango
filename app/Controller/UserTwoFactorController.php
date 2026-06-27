@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\UserTwoFactorService;
+use App\Requests\TwoFactorRequest;
 
 /**
  * Controlador para autenticação em duas etapas (2FA) do lojista.
@@ -19,6 +20,7 @@ class UserTwoFactorController
         private UserTwoFactorService $twoFactorService,
         private ViewRenderer $view,
         private SessionInterface $session,
+        private TwoFactorRequest $twoFactorRequest, // FormRequest injetada
     ) {}
 
     /**
@@ -100,14 +102,16 @@ class UserTwoFactorController
             exit;
         }
 
-        $code = trim($request->getPost('code') ?? '');
-
-        // Validação: código deve ter 6 dígitos numéricos
-        if (!preg_match('/^[0-9]{6}$/', $code)) {
-            $this->session->set('flash_user_2fa_error', 'Código inválido. Digite os 6 dígitos numéricos.');
+        // Valida o código usando a TwoFactorRequest
+        if (!$this->twoFactorRequest->validate()) {
+            $errors = $this->twoFactorRequest->getErrors();
+            $this->session->set('flash_user_2fa_error', implode('<br>', $errors['code'] ?? []) ?: 'Código inválido.');
             header('Location: /logista/2fa');
             exit;
         }
+
+        // Obtém o código validado
+        $code = $this->twoFactorRequest->validated()['code'] ?? '';
 
         try {
             // Primeiro, verifica se o código ainda existe e não expirou
