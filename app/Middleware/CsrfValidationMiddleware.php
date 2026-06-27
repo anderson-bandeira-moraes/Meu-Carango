@@ -7,7 +7,7 @@ namespace App\Middleware;
 use App\Core\Request;
 use App\Core\Contracts\SessionInterface;
 use App\Exception\CsrfException;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Middleware responsável por validar o token CSRF em requisições que alteram o estado.
@@ -17,7 +17,7 @@ class CsrfValidationMiddleware
 {
     public function __construct(
         private SessionInterface $session,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {}
 
     /**
