@@ -88,18 +88,21 @@ abstract class FormRequest extends Request
             $value = $data[$field] ?? null;
             $isRequired = $this->isRequired($ruleString);
 
-            // Se o campo não foi enviado e não é obrigatório, ignora
-            if (!$this->fieldExists($field, $data) && !$isRequired) {
+            // Verifica se o campo foi enviado E tem valor não vazio (após sanitização)
+            $isPresent = $this->fieldExists($field, $data) && $value !== '';
+
+            // Se não foi enviado (ou está vazio) e não é obrigatório, ignora
+            if (!$isPresent && !$isRequired) {
                 continue;
             }
 
-            // Se o campo é obrigatório e não foi enviado, adiciona erro
-            if ($isRequired && !$this->fieldExists($field, $data)) {
+            // Se é obrigatório e não foi enviado (ou está vazio), adiciona erro
+            if ($isRequired && !$isPresent) {
                 $this->addError($field, 'required');
                 continue;
             }
 
-            // Aplica as regras ao valor
+            // Aplica as regras ao valor (se chegou aqui, o campo está presente e não vazio)
             if (!$this->applyRules($field, $value, $ruleString)) {
                 // Os erros já foram adicionados dentro de applyRules
             }
