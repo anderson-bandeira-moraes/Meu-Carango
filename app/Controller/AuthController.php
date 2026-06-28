@@ -66,9 +66,6 @@ class AuthController
     {
         // Valida os dados usando a LoginRequest
         if (!$this->loginRequest->validate()) {
-            // Obtém os erros
-            $errors = $this->loginRequest->getErrors();
-
             // Armazena old input (dados enviados) para repopular o formulário
             $this->session->set('old_user_input', $this->loginRequest->all());
 
@@ -77,13 +74,13 @@ class AuthController
                 header('Content-Type: application/json');
                 echo json_encode([
                     'sucesso' => false,
-                    'erro'    => implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.',
+                    'erro'    => $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.',
                 ]);
                 exit;
             }
 
             // Armazena erros em flash
-            $this->session->set('flash_user_error', implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.');
+            $this->session->set('flash_user_error', $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.');
             header('Location: /logista/login');
             exit;
         }

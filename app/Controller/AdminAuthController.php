@@ -55,9 +55,6 @@ class AdminAuthController
     {
         // Valida os dados usando a LoginRequest
         if (!$this->loginRequest->validate()) {
-            // Obtém os erros
-            $errors = $this->loginRequest->getErrors();
-            
             // Armazena old input (dados enviados) para repopular o formulário
             $this->session->set('old_admin_input', $this->loginRequest->all());
 
@@ -66,13 +63,13 @@ class AdminAuthController
                 header('Content-Type: application/json');
                 echo json_encode([
                     'sucesso' => false,
-                    'erro'    => implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.',
+                    'erro'    => $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.',
                 ]);
                 exit;
             }
 
             // Armazena erros em flash
-            $this->session->set('flash_admin_error', implode('<br>', $errors['email'] ?? []) ?: 'Dados inválidos.');
+            $this->session->set('flash_admin_error', $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.');
             header('Location: /admin/login');
             exit;
         }

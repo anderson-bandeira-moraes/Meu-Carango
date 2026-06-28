@@ -279,37 +279,37 @@ abstract class FormRequest extends Request
     }
 
     /**
-     * Valida regra min (string: mínimo de caracteres; número: valor mínimo).
+     * Valida regra min: verifica se o comprimento da string é maior ou igual ao mínimo.
+     * 
+     * Nota: Esta regra sempre conta caracteres, independentemente de o valor ser numérico.
+     * Para validação de valor numérico, use a regra 'numeric' em combinação com 'min'.
      *
-     * @param mixed $value
-     * @param mixed $min
-     * @return bool
+     * @param mixed $value O valor a ser validado (será convertido para string)
+     * @param mixed $min O comprimento mínimo (será convertido para int)
+     * @return bool True se o comprimento da string for >= $min, false caso contrário
      */
     private function validateMin(mixed $value, mixed $min): bool
     {
         $min = (int) $min;
-        if (is_numeric($value)) {
-            return (float) $value >= $min;
-        }
         return mb_strlen((string) $value) >= $min;
     }
 
     /**
-     * Valida regra max (string: máximo de caracteres; número: valor máximo).
+     * Valida regra max: verifica se o comprimento da string é menor ou igual ao máximo.
+     * 
+     * Nota: Esta regra sempre conta caracteres, independentemente de o valor ser numérico.
+     * Para validação de valor numérico, use a regra 'numeric' em combinação com 'max'.
      *
-     * @param mixed $value
-     * @param mixed $max
-     * @return bool
+     * @param mixed $value O valor a ser validado (será convertido para string)
+     * @param mixed $max O comprimento máximo (será convertido para int)
+     * @return bool True se o comprimento da string for <= $max, false caso contrário
      */
     private function validateMax(mixed $value, mixed $max): bool
     {
         $max = (int) $max;
-        if (is_numeric($value)) {
-            return (float) $value <= $max;
-        }
         return mb_strlen((string) $value) <= $max;
     }
-    
+
     /**
      * Valida regra regex.
      *
@@ -415,5 +415,20 @@ abstract class FormRequest extends Request
     public function wantsJson(): bool
     {
         return $this->isAjax() || $this->getHeader('Accept') === 'application/json';
+    }
+
+    /**
+     * Retorna todos os erros como uma única string (HTML).
+     *
+     * @param string $separator
+     * @return string
+     */
+    public function getAllErrorsAsString(string $separator = '<br>'): string
+    {
+        $allErrors = [];
+        foreach ($this->errors as $fieldErrors) {
+            $allErrors = array_merge($allErrors, $fieldErrors);
+        }
+        return implode($separator, $allErrors);
     }
 }
