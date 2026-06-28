@@ -149,11 +149,27 @@ class Request
     }
 
     /**
-     * Retorna todos os dados (GET + POST).
+     * Retorna todos os dados da requisição (GET + POST + JSON, se AJAX).
+     *
+     * Em requisições AJAX que enviam JSON no corpo da requisição,
+     * os dados são mesclados com $_GET e $_POST para que a validação
+     * funcione de forma transparente.
+     *
+     * @return array
      */
     public function all(): array
     {
-        return array_merge($this->query, $this->post);
+        $data = array_merge($this->query, $this->post);
+
+        // Se for AJAX e houver JSON, mescla com os dados existentes
+        if ($this->isAjax()) {
+            $json = $this->getJson();
+            if (is_array($json) && !empty($json)) {
+                $data = array_merge($data, $json);
+            }
+        }
+
+        return $data;
     }
 
     /**
