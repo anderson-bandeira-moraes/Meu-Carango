@@ -37,11 +37,7 @@ abstract class FormRequest extends Request
     public function __construct(Request $request)
     {
         parent::__construct(
-            $request->getQuery(),
-            $request->getPost(),
-            $request->getFile(),
-            $request->getServer(),
-            $request->getCookie()
+            
         );
     }
 
@@ -283,11 +279,12 @@ abstract class FormRequest extends Request
      * Valida regra min (string: mínimo de caracteres; número: valor mínimo).
      *
      * @param mixed $value
-     * @param int $min
+     * @param mixed $min
      * @return bool
      */
-    private function validateMin(mixed $value, int $min): bool
+    private function validateMin(mixed $value, mixed $min): bool
     {
+        $min = (int) $min;
         if (is_numeric($value)) {
             return (float) $value >= $min;
         }
@@ -298,17 +295,18 @@ abstract class FormRequest extends Request
      * Valida regra max (string: máximo de caracteres; número: valor máximo).
      *
      * @param mixed $value
-     * @param int $max
+     * @param mixed $max
      * @return bool
      */
-    private function validateMax(mixed $value, int $max): bool
+    private function validateMax(mixed $value, mixed $max): bool
     {
+        $max = (int) $max;
         if (is_numeric($value)) {
             return (float) $value <= $max;
         }
         return mb_strlen((string) $value) <= $max;
     }
-
+    
     /**
      * Valida regra regex.
      *
@@ -399,13 +397,10 @@ abstract class FormRequest extends Request
      */
     private function replacePlaceholders(string $message, array $params): string
     {
-        $replacements = [];
-        // Mapeia posição do parâmetro para placeholder
         if (isset($params[0])) {
-            $replacements[':min'] = $params[0];
-            $replacements[':max'] = $params[0];
+            $message = str_replace([':min', ':max'], $params[0], $message);
         }
-        return str_replace(array_keys($replacements), array_values($replacements), $message);
+        return $message;
     }
 
     /**

@@ -14,7 +14,7 @@ require ROOT_DIR . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(ROOT_DIR);
-$dotenv->safeLoad(); 
+$dotenv->safeLoad();
 
 // ============== CONFIGURAÇÃO DE ERROS ==============
 $env = $_ENV['APP_ENV'] ?? 'production';
@@ -55,9 +55,9 @@ Database::init([
 use App\Core\Container;
 use App\Core\Contracts\SessionInterface;
 use App\Core\SessionWrapper;
-use App\Core\Contracts\CsrfTokenGeneratorInterface;  
-use App\Core\Security\CsrfTokenGenerator;             
-use App\Middleware\CsrfTokenMiddleware;                
+use App\Core\Contracts\CsrfTokenGeneratorInterface;
+use App\Core\Security\CsrfTokenGenerator;
+use App\Middleware\CsrfTokenMiddleware;
 use App\Middleware\CsrfValidationMiddleware;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -67,7 +67,7 @@ use App\Repository\TwoFactorRepository;
 use App\Service\MailService;
 use App\Service\TwoFactorService;
 use App\Middleware\TwoFactorMiddleware;
-use App\Controller\TwoFactorController; 
+use App\Controller\TwoFactorController;
 use App\Middleware\UserTwoFactorMiddleware;
 use App\Service\UserTwoFactorService;
 use App\Controller\UserTwoFactorController;
@@ -85,7 +85,7 @@ $logConfig = require CONFIG_DIR . '/logging.php';
 // Registra o Logger no container (agora apenas com a interface PSR-3)
 $loggerFactory = function() use ($logConfig) {
     $logger = new \Monolog\Logger($logConfig['channel']);
-    
+
     // Handler com rotação diária
     $handler = new RotatingFileHandler(
         $logConfig['path'],
@@ -93,12 +93,12 @@ $loggerFactory = function() use ($logConfig) {
         $logConfig['level']
     );
     $logger->pushHandler($handler);
-    
+
     // Adiciona os processadores configurados
     foreach ($logConfig['processors'] as $processorClass) {
         $logger->pushProcessor(new $processorClass());
     }
-    
+
     return $logger;
 };
 
@@ -224,9 +224,9 @@ $container->set(App\Service\AuthService::class, function($c) {
     return new App\Service\AuthService(
         $c->get(App\Repository\UsuarioRepository::class),
         $c->get(SessionInterface::class),
-        $c->get(LoggerInterface::class),                    
-        $c->get(App\Repository\LoginAttemptRepository::class), 
-        $c->get(App\Service\UserTwoFactorService::class)      
+        $c->get(LoggerInterface::class),
+        $c->get(App\Repository\LoginAttemptRepository::class),
+        $c->get(App\Service\UserTwoFactorService::class)
     );
 });
 
@@ -234,7 +234,8 @@ $container->set(App\Controller\AuthController::class, function($c) {
     return new App\Controller\AuthController(
         $c->get(App\Service\AuthService::class),
         $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class)
+        $c->get(SessionInterface::class),
+        $c->get(LoginRequest::class)
     );
 });
 
@@ -273,11 +274,10 @@ $container->set(App\Service\AdminAuthService::class, function($c) {
 });
 
 // ============== CRIAÇÃO DA REQUEST E REGISTRO NO CONTAINER ==============
-// Cria a instância da Request (já captura os dados da requisição atual)
-$request = new Request();
-
-// Registra a Request no container para ser injetada nas FormRequests e onde mais for necessário
-$container->set(Request::class, $request);
+// A Request é registrada como uma factory para que seja criada sob demanda
+$container->set(Request::class, function() {
+    return new Request();
+});
 
 // ============== REGISTRO DAS FORMREQUESTS ==============
 // As FormRequests dependem da Request
@@ -323,7 +323,9 @@ use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
 
 $router  = new Router($container);
-// A $request já foi criada e registrada no container; a usamos aqui para o dispatch
+
+// Obtém a Request a partir do container (a mesma instância que será injetada)
+$request = $container->get(Request::class);
 
 // ============== ROTAS 2FA ADMIN ==============
 // GET sem CSRF (apenas exibição)
@@ -344,7 +346,7 @@ $router->group('/admin/login', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfTokenMiddleware::class));
     // Valida o token em requisições POST (e outros métodos que alteram estado)
     $router->middleware($container->get(CsrfValidationMiddleware::class));
-    
+
     $router->get('', 'AdminAuthController@formLogin');
     $router->post('', 'AdminAuthController@login');
 });
@@ -364,8 +366,8 @@ $router->group('/admin', function(Router $router) use ($container) {
 // Grupo /logista protegido (autenticação + 2FA + CSRF)
 $router->group('/logista', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfTokenMiddleware::class));
-    $router->middleware($container->get(AuthMiddleware::class));           
-    $router->middleware($container->get(UserTwoFactorMiddleware::class));   
+    $router->middleware($container->get(AuthMiddleware::class));
+    $router->middleware($container->get(UserTwoFactorMiddleware::class));
     $router->middleware($container->get(CsrfValidationMiddleware::class));
 
     $router->get('/dashboard', 'AuthController@index');

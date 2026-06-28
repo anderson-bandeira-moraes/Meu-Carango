@@ -22,7 +22,7 @@ class TwoFactorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|numeric|min:6|max:6',
+            'code' => 'required|regex:/^[0-9]{6}$/',
         ];
     }
 
