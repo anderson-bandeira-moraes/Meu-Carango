@@ -9,7 +9,7 @@
                 <div id="messageArea">
                     <?php if (!empty($erro)): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($erro) ?>
+                            <?= nl2br(htmlspecialchars($erro)) ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                         </div>
                     <?php endif; ?>

@@ -66,23 +66,11 @@ class AuthController
     {
         // Valida os dados usando a LoginRequest
         if (!$this->loginRequest->validate()) {
-            // Armazena old input (dados enviados) para repopular o formulário
-            $this->session->set('old_user_input', $this->loginRequest->all());
+            $errors = $this->loginRequest->getAllErrorsAsString(
+                $this->loginRequest->isAjax() ? '<br>' : "\n"
+            ) ?: 'Dados inválidos.';
 
-            // Verifica se é uma requisição AJAX
-            if ($this->loginRequest->isAjax()) {
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'sucesso' => false,
-                    'erro'    => $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.',
-                ]);
-                exit;
-            }
-
-            // Armazena erros em flash
-            $this->session->set('flash_user_error', $this->loginRequest->getAllErrorsAsString('<br>') ?: 'Dados inválidos.');
-            header('Location: /logista/login');
-            exit;
+            $this->handleLoginFailure($errors, $this->loginRequest->isAjax());
         }
 
         // Obtém os dados validados (email e senha)
@@ -123,16 +111,11 @@ class AuthController
             exit;
         }
 
-        // Falha no login
-        if ($this->loginRequest->isAjax()) {
-            header('Content-Type: application/json');
-            echo json_encode(['sucesso' => false, 'erro' => $resultado['erro']]);
-            exit;
-        }
-
-        $this->session->set('flash_user_error', $resultado['erro']);
-        header('Location: /logista/login');
-        exit;
+        // Falha no login (senha incorreta, usuário inativo, etc.)
+        $this->handleLoginFailure(
+            $resultado['erro'] ?? 'Erro ao fazer login.',
+            $this->loginRequest->isAjax()
+        );
     }
 
     /**
@@ -165,5 +148,34 @@ class AuthController
             'layouts/main',
             ['title' => 'Dashboard - Meu Carango']
         );
+    }
+
+    /**
+     * Trata uma falha no login, salvando old input e mensagem de erro.
+     *
+     * Este método centraliza o tratamento de erros durante o processo de login,
+     * seja por falha de validação ou por credenciais inválidas. Ele armazena
+     * os dados submetidos (old input) para repopulação do formulário e exibe
+     * a mensagem de erro apropriada, seja via redirecionamento com flash message
+     * ou via resposta JSON para requisições AJAX.
+     *
+     * @param string $error   Mensagem de erro a ser exibida ao usuário.
+     * @param bool   $isAjax  Indica se a requisição é AJAX, alterando o formato da resposta.
+     *
+     * @return void  Este método encerra a execução com exit() após enviar a resposta.
+     */
+    private function handleLoginFailure(string $error, bool $isAjax): void
+    {
+        $this->session->set('old_user_input', $this->loginRequest->all());
+
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['sucesso' => false, 'erro' => $error]);
+            exit;
+        }
+
+        $this->session->set('flash_user_error', $error);
+        header('Location: /logista/login');
+        exit;
     }
 }
