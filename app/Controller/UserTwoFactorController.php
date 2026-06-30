@@ -138,6 +138,9 @@ class UserTwoFactorController
                 $userId = (int) $this->session->get('pending_user_id');
                 $userNome = $this->session->get('pending_user_nome');
                 $userEmail = $this->session->get('pending_user_email');
+                
+                // Recupera o status pendente (já normalizado) com fallback seguro
+                $userStatus = $this->session->get('pending_user_status', 'inativo');
 
                 // Remove pendências
                 $this->clearPendingSession();
@@ -147,6 +150,7 @@ class UserTwoFactorController
                 $this->session->set('user_id', $userId);
                 $this->session->set('user_nome', $userNome);
                 $this->session->set('user_email', $userEmail);
+                $this->session->set('user_status', $userStatus);   // <-- GRAVA O STATUS DEFINITIVO
                 $this->session->set('2fa_verified_user', true);
 
                 $this->session->set('flash_user_2fa_success', 'Verificação concluída com sucesso!');
@@ -245,6 +249,8 @@ class UserTwoFactorController
         $this->session->delete('pending_user_id');
         $this->session->delete('pending_user_email');
         $this->session->delete('pending_user_nome');
+        $this->session->delete('pending_user_slug');
+        $this->session->delete('pending_user_status');
     }
 
     /**
