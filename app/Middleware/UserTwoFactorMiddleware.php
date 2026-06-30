@@ -48,8 +48,24 @@ class UserTwoFactorMiddleware
             exit;
         }
 
-        // Verifica se o 2FA já foi concluído
+        // [NOVO] Verifica se a conta está ativa (antes do 2FA)
         $userId = $this->session->get('user_id');
+        $userStatus = $this->session->get('user_status', 'inativo');
+        
+        if ($userStatus !== 'ativo') {
+            $this->logger->warning('Acesso negado: conta inativa (UserTwoFactorMiddleware)', [
+                'user_id' => $userId,
+                'status'  => $userStatus,
+                'uri'     => $uri,
+            ]);
+            
+            // Destroi a sessão para forçar novo login
+            $this->session->destroy();
+            header('Location: /logista/login?inativo=1');
+            exit;
+        }
+
+        // Verifica se o 2FA já foi concluído
         $twoFactorVerified = $this->session->get('2fa_verified_user', false);
 
         if (!$twoFactorVerified) {
