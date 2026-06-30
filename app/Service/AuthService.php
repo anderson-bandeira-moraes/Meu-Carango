@@ -123,6 +123,7 @@ class AuthService
         $this->session->set('pending_user_email', $user['email']);
         $this->session->set('pending_user_nome', $user['nome']);
         $this->session->set('pending_user_slug', $user['slug']);
+        $this->session->set('pending_user_nome_loja', $user['nome_loja']);
 
         // Normaliza e guarda o status (seguro)
         $userStatus = ($user['status'] ?? '') === 'ativo' ? 'ativo' : 'inativo';
@@ -138,6 +139,7 @@ class AuthService
             $this->session->delete('pending_user_nome');
             $this->session->delete('pending_user_slug');
             $this->session->delete('pending_user_status');
+            $this->session->delete('pending_user_nome_loja');
 
             $this->logger->error('Falha ao enviar código 2FA (lojista)', [
                 'email' => $user['email'],
@@ -214,6 +216,7 @@ class AuthService
             'nome'  => $this->session->get('user_nome'),
             'email' => $this->session->get('user_email'),
             'slug'  => $this->session->get('user_slug'),
+            'nome_loja' => $this->session->get('user_nome_loja'),
         ];
     }
 }

@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Informações adicionais (opcional) -->
-                <div class="mt-4 p-3 bg-light rounded-3">
+                <div class="mt-4 p-3 rounded-3">
                     <h6><i class="bi bi-info-circle me-2"></i>Informações da conta</h6>
                     <p class="mb-1"><strong>E-mail:</strong> <?= htmlspecialchars($user['email'] ?? 'Não informado') ?></p>
                     <p class="mb-1"><strong>Loja:</strong> <?= htmlspecialchars($user['nome_loja'] ?? 'Não informado') ?></p>
