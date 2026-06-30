@@ -37,8 +37,8 @@ class AuthMiddleware
             exit;
         }
 
-        // Verifica se a conta está ativa
-        $userStatus = $this->session->get('user_status', 'ativo');
+        // Verifica se a conta está ativa (fallback seguro: inativo)
+        $userStatus = $this->session->get('user_status', 'inativo'); // <-- ALTERADO
         if ($userStatus !== 'ativo') {
             $userId = $this->session->get('user_id');
             $this->logger->warning('Acesso negado: conta inativa', [
