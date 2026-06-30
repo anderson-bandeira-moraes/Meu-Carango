@@ -61,7 +61,8 @@ class UserTwoFactorMiddleware
             
             // Destroi a sessão para forçar novo login
             $this->session->destroy();
-            header('Location: /logista/login?inativo=1');
+            $this->session->set('flash_user_error', 'Sua conta está inativa. Entre em contato com o suporte.');
+            header('Location: /logista/login');
             exit;
         }
 
