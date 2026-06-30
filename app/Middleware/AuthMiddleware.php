@@ -47,10 +47,15 @@ class AuthMiddleware
                 'uri'     => $request->getPath(),
             ]);
 
-            // Destroi a sessão para forçar novo login
-            $this->session->destroy();
+            // Remove os dados de autenticação (mantém a sessão para a flash)
+            $this->session->delete('user_id');
+            $this->session->delete('user_nome');
+            $this->session->delete('user_email');
+            $this->session->delete('user_status');
+            $this->session->delete('2fa_verified_user');
+
             $this->session->set('flash_user_error', 'Sua conta está inativa. Entre em contato com o suporte.');
-            header('Location: /logista/login');            
+            header('Location: /logista/login');
             exit;
         }
 
