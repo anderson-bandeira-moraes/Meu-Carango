@@ -35,8 +35,7 @@ class VeiculoRepository
                 comprimento_mm, largura_mm, altura_mm, distancia_entre_eixos_mm, peso_ordem_marcha_kg,
                 volume_porta_malas_l, volume_cacamba_l, carga_util_kg, capacidade_reboque_kg,
                 hash_id, slug, gnv_instalado,
-                status_estoque, status_vitrine,
-                created_at, updated_at
+                status_estoque, status_vitrine
             ) VALUES (
                 :lojista_id, :marca, :modelo, :versao,
                 :ano_fabricacao, :ano_modelo, :cor, :quilometragem, :preco,
@@ -44,8 +43,7 @@ class VeiculoRepository
                 :comprimento_mm, :largura_mm, :altura_mm, :distancia_entre_eixos_mm, :peso_ordem_marcha_kg,
                 :volume_porta_malas_l, :volume_cacamba_l, :carga_util_kg, :capacidade_reboque_kg,
                 :hash_id, :slug, :gnv_instalado,
-                :status_estoque, :status_vitrine,
-                NOW(), NOW()
+                :status_estoque, :status_vitrine
             )';
 
             $stmt = $this->pdo->prepare($sql);
@@ -432,5 +430,5 @@ class VeiculoRepository
         }
     }
 
-    
+
 }
