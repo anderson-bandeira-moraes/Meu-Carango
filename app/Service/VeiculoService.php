@@ -255,14 +255,37 @@ class VeiculoService
             return false;
         }
 
-        // Antes de deletar, desativa a vitrine (opcional)
-        $updateOk = $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'inativo']);
-        if (!$updateOk) {
-            $this->logger->warning('Falha ao desativar vitrine antes de deletar', ['veiculo_id' => $veiculoId]);
-        }
+        $this->pdo->beginTransaction();
 
-        // Soft delete
-        return $this->veiculoRepo->delete($veiculoId);
+        try {
+            // Antes de deletar, desativa a vitrine
+            $updateOk = $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'inativo']);
+            if (!$updateOk) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao desativar vitrine antes de deletar', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            // Soft delete
+            $deleted = $this->veiculoRepo->delete($veiculoId);
+            if (!$deleted) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao deletar veículo', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            $this->pdo->commit();
+            $this->logger->info('Veículo deletado com sucesso', ['veiculo_id' => $veiculoId]);
+            return true;
+
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            $this->logger->error('Erro ao deletar veículo', [
+                'veiculo_id' => $veiculoId,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
 
     /**
@@ -546,5 +569,5 @@ class VeiculoService
     {
         return $this->veiculoRepo->countAtivosParaVitrine($lojistaId);
     }
-    
+
 }
