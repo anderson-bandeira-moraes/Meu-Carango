@@ -430,5 +430,57 @@ class VeiculoRepository
         }
     }
 
+    /**
+     * Lista veículos ativos de um lojista para vitrine pública.
+     *
+     * @param int $lojistaId
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function findAtivosParaVitrine(int $lojistaId, int $limit, int $offset): array
+    {
+        try {
+            $sql = 'SELECT * FROM veiculos 
+                    WHERE lojista_id = ? AND status_vitrine = "ativo" AND deleted_at IS NULL
+                    ORDER BY created_at DESC
+                    LIMIT ? OFFSET ?';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(1, $lojistaId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao listar veículos ativos para vitrine', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Conta veículos ativos de um lojista para vitrine pública.
+     *
+     * @param int $lojistaId
+     * @return int
+     */
+    public function countAtivosParaVitrine(int $lojistaId): int
+    {
+        try {
+            $sql = 'SELECT COUNT(*) FROM veiculos 
+                    WHERE lojista_id = ? AND status_vitrine = "ativo" AND deleted_at IS NULL';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$lojistaId]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao contar veículos ativos para vitrine', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return 0;
+        }
+    }
 
 }

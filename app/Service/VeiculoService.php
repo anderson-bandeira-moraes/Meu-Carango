@@ -533,22 +533,7 @@ class VeiculoService
      */
     public function listarParaVitrine(int $lojistaId, int $limite = 12, int $offset = 0): array
     {
-        // Busca todos os veículos ativos do lojista (status_vitrine = 'ativo' e deleted_at IS NULL)
-        // O repositório já filtra deleted_at, mas precisamos adicionar status_vitrine = 'ativo'
-        // Como não temos método específico, fazemos uma consulta manual ou estendemos o repositório.
-        // Por simplicidade, vamos usar o repositório com um filtro extra.
-        // Para evitar duplicação, criaremos um novo método no repositório no futuro.
-        // Por enquanto, fazemos uma consulta direta.
-        $sql = 'SELECT * FROM veiculos 
-                WHERE lojista_id = ? AND status_vitrine = "ativo" AND deleted_at IS NULL
-                ORDER BY created_at DESC
-                LIMIT ? OFFSET ?';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(1, $lojistaId, PDO::PARAM_INT);
-        $stmt->bindValue(2, $limite, PDO::PARAM_INT);
-        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->veiculoRepo->findAtivosParaVitrine($lojistaId, $limite, $offset);
     }
 
     /**
@@ -559,10 +544,7 @@ class VeiculoService
      */
     public function countParaVitrine(int $lojistaId): int
     {
-        $sql = 'SELECT COUNT(*) FROM veiculos 
-                WHERE lojista_id = ? AND status_vitrine = "ativo" AND deleted_at IS NULL';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$lojistaId]);
-        return (int) $stmt->fetchColumn();
+        return $this->veiculoRepo->countAtivosParaVitrine($lojistaId);
     }
+    
 }
