@@ -241,12 +241,26 @@ class VeiculoService
                 $this->logger->error('Falha ao salvar dados GNV (novo)', ['veiculo_id' => $veiculoId]);
                 return false;
             }
-            $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 1]);
+
+            $flagAtualizada = $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 1]);
+            if (!$flagAtualizada) {
+                $this->logger->error('Falha ao atualizar flag gnv_instalado (adição)', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
 
         } elseif (!$gnvSolicitado && $temGNV) {
             // Remover GNV
-            $this->gnvRepo->delete($veiculoId);
-            $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 0]);
+            $gnvRemovido = $this->gnvRepo->delete($veiculoId);
+            if (!$gnvRemovido) {
+                $this->logger->error('Falha ao remover dados GNV', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            $flagAtualizada = $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 0]);
+            if (!$flagAtualizada) {
+                $this->logger->error('Falha ao atualizar flag gnv_instalado (remoção)', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
 
         } elseif ($gnvSolicitado && $temGNV) {
             // Atualizar GNV
@@ -255,6 +269,7 @@ class VeiculoService
                 $this->logger->error('Falha ao atualizar dados GNV', ['veiculo_id' => $veiculoId]);
                 return false;
             }
+            // Flag já está como 1, não precisa atualizar
         }
 
         return true;
