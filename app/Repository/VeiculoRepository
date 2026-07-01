@@ -1,0 +1,436 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repository;
+
+use PDO;
+use PDOException;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Repositório para a entidade Veículo.
+ * Gerencia todas as operações de banco de dados relacionadas a veículos.
+ */
+class VeiculoRepository
+{
+    public function __construct(
+        private PDO $pdo,
+        private LoggerInterface $logger,
+    ) {}
+
+    /**
+     * Insere um novo veículo no banco de dados.
+     *
+     * @param array $dados Dados do veículo (já deve conter hash_id e slug gerados pelo Service)
+     * @return int|false O ID do veículo criado ou false em caso de erro
+     */
+    public function save(array $dados): int|false
+    {
+        try {
+            $sql = 'INSERT INTO veiculos (
+                lojista_id, marca, modelo, versao, 
+                ano_fabricacao, ano_modelo, cor, quilometragem, preco,
+                numero_portas, numero_assentos,
+                comprimento_mm, largura_mm, altura_mm, distancia_entre_eixos_mm, peso_ordem_marcha_kg,
+                volume_porta_malas_l, volume_cacamba_l, carga_util_kg, capacidade_reboque_kg,
+                hash_id, slug, gnv_instalado,
+                status_estoque, status_vitrine,
+                created_at, updated_at
+            ) VALUES (
+                :lojista_id, :marca, :modelo, :versao,
+                :ano_fabricacao, :ano_modelo, :cor, :quilometragem, :preco,
+                :numero_portas, :numero_assentos,
+                :comprimento_mm, :largura_mm, :altura_mm, :distancia_entre_eixos_mm, :peso_ordem_marcha_kg,
+                :volume_porta_malas_l, :volume_cacamba_l, :carga_util_kg, :capacidade_reboque_kg,
+                :hash_id, :slug, :gnv_instalado,
+                :status_estoque, :status_vitrine,
+                NOW(), NOW()
+            )';
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($this->prepareDados($dados));
+
+            $id = (int) $this->pdo->lastInsertId();
+
+            $this->logger->info('Veículo criado com sucesso', [
+                'veiculo_id' => $id,
+                'lojista_id' => $dados['lojista_id'],
+                'hash_id'    => $dados['hash_id'],
+                'modelo'     => $dados['modelo'] ?? 'N/A',
+            ]);
+
+            return $id;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao criar veículo', [
+                'lojista_id' => $dados['lojista_id'] ?? 'unknown',
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Busca um veículo pelo ID.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function findById(int $id): ?array
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM veiculos WHERE id = ? AND deleted_at IS NULL');
+            $stmt->execute([$id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao buscar veículo por ID', [
+                'id'    => $id,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Busca um veículo pelo hash_id.
+     *
+     * @param string $hashId
+     * @return array|null
+     */
+    public function findByHashId(string $hashId): ?array
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM veiculos WHERE hash_id = ? AND deleted_at IS NULL');
+            $stmt->execute([$hashId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao buscar veículo por hash_id', [
+                'hash_id' => $hashId,
+                'error'   => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Verifica se um hash_id já está em uso.
+     *
+     * @param string $hashId
+     * @return bool
+     */
+    public function hashIdExists(string $hashId): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT 1 FROM veiculos WHERE hash_id = ? LIMIT 1');
+            $stmt->execute([$hashId]);
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao verificar existência de hash_id', [
+                'hash_id' => $hashId,
+                'error'   => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Lista veículos de um lojista com paginação.
+     *
+     * @param int $lojistaId
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function findByLojista(int $lojistaId, int $limit = 20, int $offset = 0): array
+    {
+        try {
+            $stmt = $this->pdo->prepare(
+                'SELECT * FROM veiculos 
+                 WHERE lojista_id = ? AND deleted_at IS NULL
+                 ORDER BY created_at DESC 
+                 LIMIT ? OFFSET ?'
+            );
+            $stmt->bindValue(1, $lojistaId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->logger->debug('Listagem de veículos do lojista', [
+                'lojista_id' => $lojistaId,
+                'limit'      => $limit,
+                'offset'     => $offset,
+                'count'      => count($results),
+            ]);
+
+            return $results;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao listar veículos do lojista', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Conta o total de veículos de um lojista.
+     *
+     * @param int $lojistaId
+     * @return int
+     */
+    public function countByLojista(int $lojistaId): int
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM veiculos WHERE lojista_id = ? AND deleted_at IS NULL');
+            $stmt->execute([$lojistaId]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao contar veículos do lojista', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return 0;
+        }
+    }
+
+    /**
+     * Atualiza um veículo existente.
+     *
+     * @param int $id
+     * @param array $dados
+     * @return bool
+     */
+    public function update(int $id, array $dados): bool
+    {
+        if (empty($dados)) {
+            $this->logger->warning('Tentativa de atualizar veículo sem dados', ['veiculo_id' => $id]);
+            return false;
+        }
+
+        try {
+            $fields = [];
+            $values = [];
+
+            foreach ($dados as $coluna => $valor) {
+                $fields[] = "$coluna = ?";
+                $values[] = $valor;
+            }
+
+            // Adiciona atualização automática do updated_at
+            $fields[] = 'updated_at = NOW()';
+            $values[] = $id;
+
+            $sql = 'UPDATE veiculos SET ' . implode(', ', $fields) . ' WHERE id = ? AND deleted_at IS NULL';
+            $stmt = $this->pdo->prepare($sql);
+            $success = $stmt->execute($values);
+
+            if ($success) {
+                $this->logger->info('Veículo atualizado com sucesso', [
+                    'veiculo_id' => $id,
+                    'fields'     => array_keys($dados),
+                ]);
+            } else {
+                $this->logger->warning('Falha ao atualizar veículo (pode estar deletado)', ['veiculo_id' => $id]);
+            }
+
+            return $success;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao atualizar veículo', [
+                'veiculo_id' => $id,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Remove um veículo (soft delete).
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        try {
+            // Verifica se o veículo existe e não está deletado
+            $veiculo = $this->findById($id);
+            if (!$veiculo) {
+                $this->logger->warning('Tentativa de deletar veículo inexistente ou já deletado', ['veiculo_id' => $id]);
+                return false;
+            }
+
+            $stmt = $this->pdo->prepare('UPDATE veiculos SET deleted_at = NOW() WHERE id = ?');
+            $success = $stmt->execute([$id]);
+
+            if ($success) {
+                $this->logger->info('Veículo deletado (soft delete)', [
+                    'veiculo_id' => $id,
+                    'hash_id'    => $veiculo['hash_id'],
+                    'modelo'     => $veiculo['modelo'],
+                ]);
+            } else {
+                $this->logger->warning('Falha ao deletar veículo', ['veiculo_id' => $id]);
+            }
+
+            return $success;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao deletar veículo', [
+                'veiculo_id' => $id,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Prepara os dados para inserção, garantindo tipos e valores padrão.
+     *
+     * @param array $dados
+     * @return array
+     */
+    private function prepareDados(array $dados): array
+    {
+        return [
+            ':lojista_id'               => $dados['lojista_id'] ?? null,
+            ':marca'                    => $dados['marca'] ?? null,
+            ':modelo'                   => $dados['modelo'] ?? null,
+            ':versao'                   => $dados['versao'] ?? null,
+            ':ano_fabricacao'           => $dados['ano_fabricacao'] ?? null,
+            ':ano_modelo'               => $dados['ano_modelo'] ?? null,
+            ':cor'                      => $dados['cor'] ?? null,
+            ':quilometragem'            => $dados['quilometragem'] ?? null,
+            ':preco'                    => $dados['preco'] ?? null,
+            ':numero_portas'            => $dados['numero_portas'] ?? null,
+            ':numero_assentos'          => $dados['numero_assentos'] ?? null,
+            ':comprimento_mm'           => $dados['comprimento_mm'] ?? null,
+            ':largura_mm'               => $dados['largura_mm'] ?? null,
+            ':altura_mm'                => $dados['altura_mm'] ?? null,
+            ':distancia_entre_eixos_mm' => $dados['distancia_entre_eixos_mm'] ?? null,
+            ':peso_ordem_marcha_kg'     => $dados['peso_ordem_marcha_kg'] ?? null,
+            ':volume_porta_malas_l'     => $dados['volume_porta_malas_l'] ?? null,
+            ':volume_cacamba_l'         => $dados['volume_cacamba_l'] ?? null,
+            ':carga_util_kg'            => $dados['carga_util_kg'] ?? null,
+            ':capacidade_reboque_kg'    => $dados['capacidade_reboque_kg'] ?? null,
+            ':hash_id'                  => $dados['hash_id'] ?? null,
+            ':slug'                     => $dados['slug'] ?? null,
+            ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,
+            ':status_estoque'           => $dados['status_estoque'] ?? 'disponivel',
+            ':status_vitrine'           => $dados['status_vitrine'] ?? 'inativo',
+        ];
+    }
+
+    /**
+     * Busca um veículo pelo ID, incluindo deletados.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function findByIdIncludingDeleted(int $id): ?array
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM veiculos WHERE id = ?');
+            $stmt->execute([$id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao buscar veículo por ID (incluindo deletados)', [
+                'id'    => $id,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Lista apenas veículos deletados de um lojista com paginação.
+     *
+     * @param int $lojistaId
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function findOnlyDeletedByLojista(int $lojistaId, int $limit = 20, int $offset = 0): array
+    {
+        try {
+            $stmt = $this->pdo->prepare(
+                'SELECT * FROM veiculos 
+                 WHERE lojista_id = ? AND deleted_at IS NOT NULL
+                 ORDER BY deleted_at DESC 
+                 LIMIT ? OFFSET ?'
+            );
+            $stmt->bindValue(1, $lojistaId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao listar veículos deletados do lojista', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Conta o total de veículos deletados de um lojista.
+     *
+     * @param int $lojistaId
+     * @return int
+     */
+    public function countOnlyDeletedByLojista(int $lojistaId): int
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM veiculos WHERE lojista_id = ? AND deleted_at IS NOT NULL');
+            $stmt->execute([$lojistaId]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao contar veículos deletados do lojista', [
+                'lojista_id' => $lojistaId,
+                'error'      => $e->getMessage(),
+            ]);
+            return 0;
+        }
+    }
+
+    /**
+     * Restaura um veículo que foi deletado (soft delete).
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function restore(int $id): bool
+    {
+        try {
+            // Verifica se existe e está deletado
+            $stmt = $this->pdo->prepare('SELECT 1 FROM veiculos WHERE id = ? AND deleted_at IS NOT NULL LIMIT 1');
+            $stmt->execute([$id]);
+            if (!$stmt->fetchColumn()) {
+                $this->logger->warning('Tentativa de restaurar veículo não deletado ou inexistente', ['veiculo_id' => $id]);
+                return false;
+            }
+
+            $stmt = $this->pdo->prepare('UPDATE veiculos SET deleted_at = NULL WHERE id = ?');
+            $success = $stmt->execute([$id]);
+
+            if ($success) {
+                $this->logger->info('Veículo restaurado com sucesso', ['veiculo_id' => $id]);
+            }
+
+            return $success;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao restaurar veículo', [
+                'veiculo_id' => $id,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    
+}
