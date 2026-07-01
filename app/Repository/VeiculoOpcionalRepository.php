@@ -21,7 +21,7 @@ class VeiculoOpcionalRepository
 
     /**
      * Sincroniza os opcionais de um veículo: remove todos os existentes e insere a nova lista.
-     * A operação é feita em uma transação para garantir atomicidade.
+     * A transação deve ser gerenciada pelo Service que chama este método.
      *
      * @param int $veiculoId
      * @param array $opcionaisIds Lista de IDs de opcionais a serem associados
@@ -33,15 +33,12 @@ class VeiculoOpcionalRepository
         $opcionaisIds = array_unique(array_map('intval', $opcionaisIds));
 
         try {
-            $this->pdo->beginTransaction();
-
             // Remove todos os opcionais existentes
             $stmtDelete = $this->pdo->prepare('DELETE FROM veiculo_opcionais WHERE veiculo_id = ?');
             $stmtDelete->execute([$veiculoId]);
 
             // Se não houver opcionais, apenas confirma a remoção e retorna
             if (empty($opcionaisIds)) {
-                $this->pdo->commit();
                 $this->logger->debug('Opcionais sincronizados (vazio)', ['veiculo_id' => $veiculoId]);
                 return true;
             }
@@ -54,8 +51,6 @@ class VeiculoOpcionalRepository
                 $stmtInsert->execute([$veiculoId, $opcionalId]);
             }
 
-            $this->pdo->commit();
-
             $this->logger->info('Opcionais sincronizados com sucesso', [
                 'veiculo_id'    => $veiculoId,
                 'count'         => count($opcionaisIds),
@@ -64,7 +59,6 @@ class VeiculoOpcionalRepository
 
             return true;
         } catch (PDOException $e) {
-            $this->pdo->rollBack();
             $this->logger->error('Erro ao sincronizar opcionais', [
                 'veiculo_id'    => $veiculoId,
                 'opcionais_ids' => $opcionaisIds,
