@@ -189,31 +189,11 @@ class VeiculoService
             }
 
             // 4. Gerencia GNV
-            $gnvAtual = $this->gnvRepo->findByVeiculoId($veiculoId);
-            $temGNV = ($gnvAtual !== null);
-            $gnvSolicitado = isset($dados['gnv_instalado']) ? (int) $dados['gnv_instalado'] : $temGNV ? 1 : 0;
-
-            if ($gnvSolicitado && !$temGNV) {
-                // Adicionar GNV
-                $gnvSalvo = $this->salvarGNV($veiculoId, $dados);
-                if (!$gnvSalvo) {
-                    $this->pdo->rollBack();
-                    $this->logger->error('Falha ao salvar dados GNV (novo)', ['veiculo_id' => $veiculoId]);
-                    return false;
-                }
-                $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 1]);
-            } elseif (!$gnvSolicitado && $temGNV) {
-                // Remover GNV
-                $this->gnvRepo->delete($veiculoId);
-                $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 0]);
-            } elseif ($gnvSolicitado && $temGNV) {
-                // Atualizar GNV
-                $gnvSalvo = $this->salvarGNV($veiculoId, $dados);
-                if (!$gnvSalvo) {
-                    $this->pdo->rollBack();
-                    $this->logger->error('Falha ao atualizar dados GNV', ['veiculo_id' => $veiculoId]);
-                    return false;
-                }
+            $gnvGerenciado = $this->gerenciarGNV($veiculoId, $dados);
+            if (!$gnvGerenciado) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao gerenciar GNV', ['veiculo_id' => $veiculoId]);
+                return false;
             }
 
             // 5. Sincroniza opcionais (agora dentro da transação)
@@ -238,6 +218,46 @@ class VeiculoService
             ]);
             return false;
         }
+    }
+
+    /**
+     * Gerencia a sincronização do kit GNV de um veículo.
+     * Adiciona, remove ou atualiza conforme a flag gnv_instalado.
+     *
+     * @param int $veiculoId
+     * @param array $dados
+     * @return bool
+     */
+    private function gerenciarGNV(int $veiculoId, array $dados): bool
+    {
+        $gnvAtual = $this->gnvRepo->findByVeiculoId($veiculoId);
+        $temGNV = ($gnvAtual !== null);
+        $gnvSolicitado = isset($dados['gnv_instalado']) ? (int) $dados['gnv_instalado'] : ($temGNV ? 1 : 0);
+
+        if ($gnvSolicitado && !$temGNV) {
+            // Adicionar GNV
+            $gnvSalvo = $this->salvarGNV($veiculoId, $dados);
+            if (!$gnvSalvo) {
+                $this->logger->error('Falha ao salvar dados GNV (novo)', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+            $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 1]);
+
+        } elseif (!$gnvSolicitado && $temGNV) {
+            // Remover GNV
+            $this->gnvRepo->delete($veiculoId);
+            $this->veiculoRepo->update($veiculoId, ['gnv_instalado' => 0]);
+
+        } elseif ($gnvSolicitado && $temGNV) {
+            // Atualizar GNV
+            $gnvSalvo = $this->salvarGNV($veiculoId, $dados);
+            if (!$gnvSalvo) {
+                $this->logger->error('Falha ao atualizar dados GNV', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
