@@ -54,6 +54,14 @@ class VeiculoService
             return false;
         }
 
+        // Valida se GNV é permitido para o tipo de veículo
+        if (!empty($dados['gnv_instalado']) && $tipoVeiculo !== self::TIPO_COMBUSTAO) {
+            $this->logger->error('GNV só pode ser instalado em veículos a combustão', [
+                'tipo' => $tipoVeiculo,
+            ]);
+            return false;
+        }
+
         // Gera hash_id único
         $hashId = $this->gerarHashUnico();
         $dados['hash_id'] = $hashId;
@@ -144,6 +152,14 @@ class VeiculoService
         // Valida tipo de veículo
         if (!in_array($tipoVeiculo, [self::TIPO_COMBUSTAO, self::TIPO_ELETRICO, self::TIPO_HIBRIDO])) {
             $this->logger->error('Tipo de veículo inválido na atualização', ['tipo' => $tipoVeiculo]);
+            return false;
+        }
+
+        // Valida se GNV é permitido para o tipo de veículo
+        if (!empty($dados['gnv_instalado']) && $tipoVeiculo !== self::TIPO_COMBUSTAO) {
+            $this->logger->error('GNV só pode ser instalado em veículos a combustão', [
+                'tipo' => $tipoVeiculo,
+            ]);
             return false;
         }
 
