@@ -236,7 +236,7 @@ class VeiculoService
             return false;
         }
     }
-    
+
     /**
      * Remove um veículo (soft delete).
      *
@@ -253,7 +253,10 @@ class VeiculoService
         }
 
         // Antes de deletar, desativa a vitrine (opcional)
-        $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'inativo']);
+        $updateOk = $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'inativo']);
+        if (!$updateOk) {
+            $this->logger->warning('Falha ao desativar vitrine antes de deletar', ['veiculo_id' => $veiculoId]);
+        }
 
         // Soft delete
         return $this->veiculoRepo->delete($veiculoId);
