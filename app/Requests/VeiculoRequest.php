@@ -28,7 +28,7 @@ class VeiculoRequest extends FormRequest
             'ano_modelo'     => 'required|integer|min:1900',
             'cor'            => 'required|max:30',
             'quilometragem'  => 'required|integer|min:0',
-            'preco'          => 'required|numeric|min:0',
+            'preco'          => 'required|regex:/^(\d{1,3}(\.\d{3})*|\d+)(\,\d{1,2})?$/|numeric|min:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
@@ -95,6 +95,7 @@ class VeiculoRequest extends FormRequest
             'preco.required' => 'O preço é obrigatório.',
             'preco.numeric'  => 'O preço deve ser um número válido.',
             'preco.min'      => 'O preço não pode ser negativo.',
+            'preco.regex'    => 'Formato de preço inválido. Use o formato brasileiro (ex: 1.500,50 ou 1500,50).',
 
             // Tipo de veículo
             'tipo_veiculo.required' => 'O tipo de veículo é obrigatório.',
