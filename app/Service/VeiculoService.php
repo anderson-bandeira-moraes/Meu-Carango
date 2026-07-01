@@ -302,13 +302,39 @@ class VeiculoService
             return false;
         }
 
-        $restaurado = $this->veiculoRepo->restore($veiculoId);
-        if ($restaurado) {
+        $this->pdo->beginTransaction();
+
+        try {
+            // Restaura o veículo (remove deleted_at)
+            $restaurado = $this->veiculoRepo->restore($veiculoId);
+            if (!$restaurado) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao restaurar veículo', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
             // Restaura a vitrine para ativo (opcional)
-            $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'ativo']);
-            $this->logger->info('Veículo restaurado', ['veiculo_id' => $veiculoId]);
+            $updateOk = $this->veiculoRepo->update($veiculoId, ['status_vitrine' => 'ativo']);
+            if (!$updateOk) {
+                $this->pdo->rollBack();
+                $this->logger->warning('Falha ao reativar vitrine após restauração', ['veiculo_id' => $veiculoId]);
+                // Não é crítico, mas vamos manter consistência: se o update falhar, ainda assim consideramos restaurado?
+                // Optamos por rollback para manter consistência total.
+                return false;
+            }
+
+            $this->pdo->commit();
+            $this->logger->info('Veículo restaurado com sucesso', ['veiculo_id' => $veiculoId]);
+            return true;
+
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            $this->logger->error('Erro ao restaurar veículo', [
+                'veiculo_id' => $veiculoId,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
         }
-        return $restaurado;
     }
 
     /**
