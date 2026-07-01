@@ -154,9 +154,8 @@ class VeiculoCombustaoRequest extends FormRequest
             ];
 
             foreach ($camposFlex as $campo => $nome) {
-                if (empty($data[$campo]) && $data[$campo] !== '0') {
-                    $this->addError($campo, 'required');
-                    // Adiciona mensagem personalizada (opcional)
+                // Verifica se o campo está ausente ou vazio (permite 0)
+                if (!isset($data[$campo]) || $data[$campo] === '' || $data[$campo] === null) {
                     if (!isset($this->errors[$campo])) {
                         $this->errors[$campo] = [];
                     }
