@@ -876,4 +876,122 @@ class VeiculoService
         return true;
     }
 
+    /**
+     * Processa o upload, remoção e sincronização de imagens na atualização de um veículo.
+     *
+     * @param int $veiculoId
+     * @param string $hashId
+     * @param array $dadosImagens Deve conter: ids_manter (array), novas (array de arquivos), capa_id (int|null)
+     * @return bool
+     */
+    private function processarImagensAtualizacao(int $veiculoId, string $hashId, array $dadosImagens): bool
+    {
+        $idsManter = $dadosImagens['ids_manter'] ?? [];
+        $novas = $dadosImagens['novas'] ?? [];
+        $capaId = $dadosImagens['capa_id'] ?? null;
+
+        // Busca imagens atuais do veículo
+        $atuais = $this->veiculoImagemRepo->findByVeiculo($veiculoId);
+        $idsAtuais = array_column($atuais, 'id');
+
+        // 1. Identifica imagens a remover (que não estão em ids_manter)
+        $idsRemover = array_diff($idsAtuais, $idsManter);
+
+        // 2. Remove arquivos físicos das imagens que serão deletadas
+        if (!empty($idsRemover)) {
+            foreach ($idsRemover as $id) {
+                // Busca o caminho da imagem
+                $imagem = $this->veiculoImagemRepo->findById($id);
+                if ($imagem) {
+                    $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($imagem['caminho']);
+                    if (file_exists($caminhoAbsoluto)) {
+                        if (!unlink($caminhoAbsoluto)) {
+                            $this->logger->error('Falha ao deletar arquivo de imagem na atualização', [
+                                'imagem_id' => $id,
+                                'caminho'   => $caminhoAbsoluto,
+                            ]);
+                            return false;
+                        }
+                    } else {
+                        $this->logger->warning('Arquivo de imagem não encontrado para remoção', [
+                            'imagem_id' => $id,
+                            'caminho'   => $caminhoAbsoluto,
+                        ]);
+                    }
+                } else {
+                    $this->logger->warning('Imagem não encontrada para remoção física', ['imagem_id' => $id]);
+                }
+            }
+        }
+
+        // 3. Processa upload de novas imagens (se houver)
+        $dadosNovas = [];
+        if (!empty($novas)) {
+            // Cria a pasta se não existir
+            $pastaDestino = ROOT_DIR . '/storage/uploads/veiculos/' . $hashId . '/';
+            if (!is_dir($pastaDestino)) {
+                if (!mkdir($pastaDestino, 0755, true)) {
+                    $this->logger->error('Falha ao criar pasta de upload', ['pasta' => $pastaDestino]);
+                    return false;
+                }
+            }
+
+            foreach ($novas as $arquivo) {
+                // Validação básica do arquivo
+                if ($arquivo['error'] !== UPLOAD_ERR_OK) {
+                    $this->logger->error('Erro no upload do arquivo', [
+                        'error' => $arquivo['error'],
+                        'name'  => $arquivo['name'] ?? 'unknown',
+                    ]);
+                    return false;
+                }
+
+                // Gera nome único
+                $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
+                $nomeUnico = time() . '_' . bin2hex(random_bytes(8)) . '.' . $extensao;
+                $caminhoRelativo = 'veiculos/' . $hashId . '/' . $nomeUnico;
+                $caminhoAbsoluto = ROOT_DIR . '/storage/uploads/' . $caminhoRelativo;
+
+                // Move o arquivo
+                if (!move_uploaded_file($arquivo['tmp_name'], $caminhoAbsoluto)) {
+                    $this->logger->error('Falha ao mover arquivo de imagem', [
+                        'tmp_name' => $arquivo['tmp_name'],
+                        'destino'  => $caminhoAbsoluto,
+                    ]);
+                    return false;
+                }
+
+                // Monta dados da nova imagem
+                $dadosNovas[] = [
+                    'caminho'       => $caminhoRelativo,
+                    'nome_original' => $arquivo['name'],
+                    'mime_type'     => mime_content_type($caminhoAbsoluto) ?: $arquivo['type'] ?? 'image/jpeg',
+                    'tamanho_bytes' => filesize($caminhoAbsoluto),
+                ];
+            }
+        }
+
+        // 4. Prepara dados para sync
+        $imagensData = [
+            'ids_manter' => $idsManter,
+            'novas'      => $dadosNovas,
+            'capa_id'    => $capaId,
+        ];
+
+        // 5. Sincroniza imagens (registra alterações, atualiza capa e reordena)
+        if (!$this->veiculoImagemRepo->sync($veiculoId, $imagensData)) {
+            $this->logger->error('Falha ao sincronizar imagens na atualização', ['veiculo_id' => $veiculoId]);
+            return false;
+        }
+
+        $this->logger->info('Imagens atualizadas com sucesso', [
+            'veiculo_id'        => $veiculoId,
+            'removidas'         => count($idsRemover),
+            'novas_adicionadas' => count($dadosNovas),
+            'capa_id'           => $capaId,
+        ]);
+
+        return true;
+    }
+
 }
