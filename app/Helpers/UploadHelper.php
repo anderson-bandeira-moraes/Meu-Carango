@@ -22,6 +22,11 @@ class UploadHelper
      */
     public static function upload(array $file, string $subdir): string|false
     {
+        // Valida se o array contém as chaves necessárias
+        if (!isset($file['error'], $file['tmp_name'], $file['name'])) {
+            return false;
+        }
+
         // Validação básica do upload
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return false;
