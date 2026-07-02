@@ -914,30 +914,26 @@ class VeiculoService
             return false;
         }
 
-        // 5. Remove arquivos físicos das imagens que foram removidas (apenas após sync bem-sucedido)
+        // 5. Remove arquivos físicos das imagens removidas (agora com consulta em lote)
         if (!empty($idsRemover)) {
-            foreach ($idsRemover as $id) {
-                // Busca o caminho da imagem
-                $imagem = $this->veiculoImagemRepo->findById($id);
-                if ($imagem) {
-                    $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($imagem['caminho']);
-                    if (file_exists($caminhoAbsoluto)) {
-                        if (!unlink($caminhoAbsoluto)) {
-                            $this->logger->error('Falha ao deletar arquivo de imagem na atualização', [
-                                'imagem_id' => $id,
-                                'caminho'   => $caminhoAbsoluto,
-                            ]);
-                            // Não retornamos false, pois o sync já foi bem-sucedido.
-                            // Registramos o erro, mas continuamos.
-                        }
-                    } else {
-                        $this->logger->warning('Arquivo de imagem não encontrado para remoção', [
+            // Busca todos os caminhos de uma vez
+            $caminhos = $this->veiculoImagemRepo->findCaminhosByIds($idsRemover);
+
+            foreach ($caminhos as $id => $caminho) {
+                $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($caminho);
+                if (file_exists($caminhoAbsoluto)) {
+                    if (!unlink($caminhoAbsoluto)) {
+                        $this->logger->error('Falha ao deletar arquivo de imagem na atualização', [
                             'imagem_id' => $id,
                             'caminho'   => $caminhoAbsoluto,
                         ]);
+                        // Não retornamos false, pois o sync já foi bem-sucedido.
                     }
                 } else {
-                    $this->logger->warning('Imagem não encontrada para remoção física', ['imagem_id' => $id]);
+                    $this->logger->warning('Arquivo de imagem não encontrado para remoção', [
+                        'imagem_id' => $id,
+                        'caminho'   => $caminhoAbsoluto,
+                    ]);
                 }
             }
         }

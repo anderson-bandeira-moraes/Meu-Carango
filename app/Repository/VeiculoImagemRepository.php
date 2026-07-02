@@ -468,4 +468,32 @@ class VeiculoImagemRepository
             return false;
         }
     }
+
+    /**
+     * Busca os caminhos de múltiplas imagens por seus IDs.
+     *
+     * @param int[] $ids
+     * @return array Associativo [id => caminho]
+     */
+    public function findCaminhosByIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        try {
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $sql = "SELECT id, caminho FROM veiculo_imagens WHERE id IN ($placeholders)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($ids);
+            return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao buscar caminhos das imagens', [
+                'ids'   => $ids,
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
 }
