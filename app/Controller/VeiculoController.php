@@ -14,6 +14,7 @@ use App\Requests\VeiculoEletricoRequest;
 use App\Requests\VeiculoHibridoRequest;
 use App\Requests\VeiculoGNVRequest;
 use App\Requests\VeiculoOpcionalRequest;
+use App\Requests\VeiculoImagemRequest;
 
 /**
  * Controlador para gerenciamento de veículos do lojista.
@@ -31,6 +32,7 @@ class VeiculoController
         private VeiculoHibridoRequest $hibridoRequest,
         private VeiculoGNVRequest $gnvRequest,
         private VeiculoOpcionalRequest $opcionalRequest,
+        private VeiculoImagemRequest $veiculoImagemRequest,
     ) {}
 
     /**
