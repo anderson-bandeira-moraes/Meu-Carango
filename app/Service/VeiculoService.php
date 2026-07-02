@@ -519,13 +519,17 @@ class VeiculoService
         // Busca todos os opcionais agrupados
         $todosOpcionais = $this->opcionalRepo->findAllGrouped();
 
+        // Busca imagens do veículo
+        $imagens = $this->veiculoImagemRepo->findByVeiculo($veiculoId);
+
         return [
-            'veiculo'          => $veiculo,
-            'tipo'             => $tipo,
-            'complemento'      => $complemento,
-            'gnv'              => $gnv,
+            'veiculo'                => $veiculo,
+            'tipo'                   => $tipo,
+            'complemento'            => $complemento,
+            'gnv'                    => $gnv,
             'opcionais_selecionados' => $opcionaisIds,
-            'todos_opcionais'  => $todosOpcionais,
+            'todos_opcionais'        => $todosOpcionais,
+            'imagens'                => $imagens,
         ];
     }
 
