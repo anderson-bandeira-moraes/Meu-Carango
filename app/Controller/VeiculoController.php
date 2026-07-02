@@ -374,7 +374,21 @@ class VeiculoController
             );
         }
 
-        // 5. Chama o Service
+        // 5. Valida e processa imagens (edição)
+        if ($this->veiculoImagemRequest->hasImagensAlteracao()) {
+            if (!$this->veiculoImagemRequest->validate()) {
+                $this->handleValidationErrors(
+                    $this->veiculoImagemRequest->getErrors(),
+                    $allData
+                );
+            }
+            $dadosImagem = $this->veiculoImagemRequest->validated();
+            $dados['ids_manter'] = $dadosImagem['ids_manter'] ?? [];
+            $dados['novas'] = $_FILES['novas'] ?? [];
+            $dados['capa_id'] = $dadosImagem['capa_id'] ?? null;
+        }
+
+        // 6. Chama o Service
         $result = $this->veiculoService->atualizar($id, $dados, $opcionaisIds, $tipoVeiculo);
         if (!$result) {
             $this->redirectWithError('Falha ao atualizar veículo. Tente novamente.');
