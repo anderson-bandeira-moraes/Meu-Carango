@@ -658,4 +658,16 @@ class VeiculoService
         return $this->opcionalRepo->findAllGrouped();
     }
 
+    /**
+     * Busca um veículo pelo ID, incluindo registros com soft delete.
+     * Útil para operações de restauração ou logs.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function buscarPorIdIncluindoDeletado(int $id): ?array
+    {
+        return $this->veiculoRepo->findByIdIncludingDeleted($id);
+    }
+
 }
