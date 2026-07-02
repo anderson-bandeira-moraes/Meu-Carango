@@ -441,4 +441,31 @@ class VeiculoImagemRepository
             ':ordem'         => (int) ($dados['ordem'] ?? 0),
         ];
     }
+
+    /**
+     * Define uma imagem específica como capa de um veículo.
+     * Reseta a capa anterior antes de definir a nova.
+     *
+     * @param int $imagemId
+     * @param int $veiculoId
+     * @return bool
+     */
+    public function definirCapa(int $imagemId, int $veiculoId): bool
+    {
+        try {
+            // Reseta a capa para o veículo
+            $this->resetarCapa($veiculoId);
+
+            // Define a nova capa
+            $stmt = $this->pdo->prepare('UPDATE veiculo_imagens SET capa = 1 WHERE id = ? AND veiculo_id = ?');
+            return $stmt->execute([$imagemId, $veiculoId]);
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao definir capa', [
+                'imagem_id'  => $imagemId,
+                'veiculo_id' => $veiculoId,
+                'error'      => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
 }

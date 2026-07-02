@@ -779,4 +779,101 @@ class VeiculoService
         return ROOT_DIR . '/storage/uploads/' . $caminhoRelativo;
     }
 
+    /**
+     * Processa o upload e sincronização de imagens no cadastro de um veículo.
+     *
+     * @param int $veiculoId
+     * @param string $hashId
+     * @param array $dados Deve conter 'imagens' (array de arquivos) e 'capa_index' (opcional)
+     * @return bool
+     */
+    private function processarImagensCadastro(int $veiculoId, string $hashId, array $dados): bool
+    {
+        // Extrai dados do array
+        $arquivos = $dados['imagens'] ?? [];
+        $capaIndex = $dados['capa_index'] ?? null;
+
+        // Se não houver imagens, retorna sucesso
+        if (empty($arquivos)) {
+            return true;
+        }
+
+        // Cria a pasta de upload se não existir
+        $pastaDestino = ROOT_DIR . '/storage/uploads/veiculos/' . $hashId . '/';
+        if (!is_dir($pastaDestino)) {
+            if (!mkdir($pastaDestino, 0755, true)) {
+                $this->logger->error('Falha ao criar pasta de upload', ['pasta' => $pastaDestino]);
+                return false;
+            }
+        }
+
+        $novas = [];
+
+        foreach ($arquivos as $arquivo) {
+            // Validação básica do arquivo
+            if ($arquivo['error'] !== UPLOAD_ERR_OK) {
+                $this->logger->error('Erro no upload do arquivo', [
+                    'error' => $arquivo['error'],
+                    'name'  => $arquivo['name'] ?? 'unknown',
+                ]);
+                return false;
+            }
+
+            // Gera nome único
+            $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
+            $nomeUnico = time() . '_' . bin2hex(random_bytes(8)) . '.' . $extensao;
+            $caminhoRelativo = 'veiculos/' . $hashId . '/' . $nomeUnico;
+            $caminhoAbsoluto = ROOT_DIR . '/storage/uploads/' . $caminhoRelativo;
+
+            // Move o arquivo
+            if (!move_uploaded_file($arquivo['tmp_name'], $caminhoAbsoluto)) {
+                $this->logger->error('Falha ao mover arquivo de imagem', [
+                    'tmp_name' => $arquivo['tmp_name'],
+                    'destino'  => $caminhoAbsoluto,
+                ]);
+                return false;
+            }
+
+            // Monta dados da nova imagem
+            $novas[] = [
+                'caminho'       => $caminhoRelativo,
+                'nome_original' => $arquivo['name'],
+                'mime_type'     => mime_content_type($caminhoAbsoluto) ?: $arquivo['type'] ?? 'image/jpeg',
+                'tamanho_bytes' => filesize($caminhoAbsoluto),
+            ];
+        }
+
+        // Prepara dados para sync (ids_manter vazio, pois são todas novas)
+        $imagensData = [
+            'ids_manter' => [],
+            'novas'      => $novas,
+            'capa_id'    => null, // Será definido automaticamente como a primeira imagem
+        ];
+
+        // Sincroniza imagens
+        if (!$this->veiculoImagemRepo->sync($veiculoId, $imagensData)) {
+            $this->logger->error('Falha ao sincronizar imagens no cadastro', ['veiculo_id' => $veiculoId]);
+            return false;
+        }
+
+        // Se o usuário especificou um índice de capa, define a imagem correspondente
+        if ($capaIndex !== null && $capaIndex >= 0 && $capaIndex < count($novas)) {
+            // Busca as imagens do veículo (ordenadas por ordem)
+            $imagens = $this->veiculoImagemRepo->findByVeiculo($veiculoId);
+            if (isset($imagens[$capaIndex])) {
+                $imagemId = $imagens[$capaIndex]['id'];
+                if (!$this->veiculoImagemRepo->definirCapa($imagemId, $veiculoId)) {
+                    $this->logger->warning('Falha ao definir capa personalizada', [
+                        'veiculo_id' => $veiculoId,
+                        'imagem_id'  => $imagemId,
+                    ]);
+                    // Não retornamos false, pois as imagens foram salvas com sucesso
+                    // Apenas logamos o aviso
+                }
+            }
+        }
+
+        return true;
+    }
+
 }
