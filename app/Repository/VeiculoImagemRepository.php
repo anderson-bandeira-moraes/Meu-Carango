@@ -376,6 +376,7 @@ class VeiculoImagemRepository
 
     /**
      * Reordena sequencialmente todas as imagens de um veículo.
+     * Usa uma única query com CASE para performance.
      *
      * @param int $veiculoId
      * @return bool
@@ -383,7 +384,7 @@ class VeiculoImagemRepository
     private function reordenarSequencial(int $veiculoId): bool
     {
         try {
-            // Busca as imagens ordenadas atualmente por ordem (ou ID como fallback)
+            // Busca os IDs ordenados por ordem (ou ID como fallback)
             $sql = 'SELECT id FROM veiculo_imagens WHERE veiculo_id = ? ORDER BY ordem, id';
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$veiculoId]);
@@ -393,14 +394,15 @@ class VeiculoImagemRepository
                 return true;
             }
 
-            // Atualiza a ordem sequencialmente
-            $sql = 'UPDATE veiculo_imagens SET ordem = ? WHERE id = ?';
-            $stmt = $this->pdo->prepare($sql);
+            // Constrói o CASE para atualizar a ordem em uma única query
+            $cases = '';
             foreach ($ids as $index => $id) {
-                $stmt->execute([$index, $id]);
+                $cases .= "WHEN id = {$id} THEN {$index} ";
             }
 
-            return true;
+            $sql = "UPDATE veiculo_imagens SET ordem = CASE {$cases} ELSE ordem END WHERE veiculo_id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$veiculoId]);
         } catch (PDOException $e) {
             $this->logger->error('Erro ao reordenar imagens', [
                 'veiculo_id' => $veiculoId,
