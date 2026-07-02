@@ -897,34 +897,7 @@ class VeiculoService
         // 1. Identifica imagens a remover (que não estão em ids_manter)
         $idsRemover = array_diff($idsAtuais, $idsManter);
 
-        // 2. Remove arquivos físicos das imagens que serão deletadas
-        if (!empty($idsRemover)) {
-            foreach ($idsRemover as $id) {
-                // Busca o caminho da imagem
-                $imagem = $this->veiculoImagemRepo->findById($id);
-                if ($imagem) {
-                    $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($imagem['caminho']);
-                    if (file_exists($caminhoAbsoluto)) {
-                        if (!unlink($caminhoAbsoluto)) {
-                            $this->logger->error('Falha ao deletar arquivo de imagem na atualização', [
-                                'imagem_id' => $id,
-                                'caminho'   => $caminhoAbsoluto,
-                            ]);
-                            return false;
-                        }
-                    } else {
-                        $this->logger->warning('Arquivo de imagem não encontrado para remoção', [
-                            'imagem_id' => $id,
-                            'caminho'   => $caminhoAbsoluto,
-                        ]);
-                    }
-                } else {
-                    $this->logger->warning('Imagem não encontrada para remoção física', ['imagem_id' => $id]);
-                }
-            }
-        }
-
-        // 3. Processa upload de novas imagens (se houver)
+        // 2. Processa upload de novas imagens (se houver)
         $dadosNovas = [];
         if (!empty($novas)) {
             // Cria a pasta se não existir
@@ -971,17 +944,45 @@ class VeiculoService
             }
         }
 
-        // 4. Prepara dados para sync
+        // 3. Prepara dados para sync
         $imagensData = [
             'ids_manter' => $idsManter,
             'novas'      => $dadosNovas,
             'capa_id'    => $capaId,
         ];
 
-        // 5. Sincroniza imagens (registra alterações, atualiza capa e reordena)
+        // 4. Sincroniza imagens (registra alterações, atualiza capa e reordena)
         if (!$this->veiculoImagemRepo->sync($veiculoId, $imagensData)) {
             $this->logger->error('Falha ao sincronizar imagens na atualização', ['veiculo_id' => $veiculoId]);
             return false;
+        }
+
+        // 5. Remove arquivos físicos das imagens que foram removidas (apenas após sync bem-sucedido)
+        if (!empty($idsRemover)) {
+            foreach ($idsRemover as $id) {
+                // Busca o caminho da imagem
+                $imagem = $this->veiculoImagemRepo->findById($id);
+                if ($imagem) {
+                    $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($imagem['caminho']);
+                    if (file_exists($caminhoAbsoluto)) {
+                        if (!unlink($caminhoAbsoluto)) {
+                            $this->logger->error('Falha ao deletar arquivo de imagem na atualização', [
+                                'imagem_id' => $id,
+                                'caminho'   => $caminhoAbsoluto,
+                            ]);
+                            // Não retornamos false, pois o sync já foi bem-sucedido.
+                            // Registramos o erro, mas continuamos.
+                        }
+                    } else {
+                        $this->logger->warning('Arquivo de imagem não encontrado para remoção', [
+                            'imagem_id' => $id,
+                            'caminho'   => $caminhoAbsoluto,
+                        ]);
+                    }
+                } else {
+                    $this->logger->warning('Imagem não encontrada para remoção física', ['imagem_id' => $id]);
+                }
+            }
         }
 
         $this->logger->info('Imagens atualizadas com sucesso', [
