@@ -18,6 +18,11 @@ use App\Core\FormRequest;
 class VeiculoImagemRequest extends FormRequest
 {
     /**
+     * Limite máximo para a imagem de capa (em KB).
+     */
+    private const CAPA_MAX_KB = 300;
+
+    /**
      * {@inheritDoc}
      */
     public function rules(): array
@@ -80,7 +85,9 @@ class VeiculoImagemRequest extends FormRequest
     }
 
     /**
-     * Sobrescreve a validação para incluir validação extra de tamanho da capa.
+     * Sobrescreve a validação para incluir validação extra:
+     * - Obrigatoriedade de capa_index na criação.
+     * - Tamanho máximo da capa (≤ CAPA_MAX_KB).
      *
      * @return bool
      */
@@ -92,18 +99,23 @@ class VeiculoImagemRequest extends FormRequest
             return false;
         }
 
-        // 2. Validação extra: tamanho da capa (≤ 300 KB)
         $data = $this->validated();
-        $capaIndex = $data['capa_index'] ?? null;
 
-        // Verifica se há imagem de capa (capa_index presente e dentro do array de imagens)
+        // 2. Se houver imagens (criação), capa_index é obrigatório
+        if (!empty($data['imagens']) && !isset($data['capa_index'])) {
+            $this->addError('capa_index', 'A imagem de capa é obrigatória quando você envia imagens.');
+            return false;
+        }
+
+        // 3. Validação extra: tamanho da capa (≤ CAPA_MAX_KB)
+        $capaIndex = $data['capa_index'] ?? null;
         if ($capaIndex !== null && isset($_FILES['imagens']['tmp_name'][$capaIndex])) {
             $caminhoTemporario = $_FILES['imagens']['tmp_name'][$capaIndex];
             $tamanhoBytes = filesize($caminhoTemporario);
             $tamanhoKB = $tamanhoBytes / 1024;
 
-            if ($tamanhoKB > 300) {
-                $this->addError('capa_index', 'A imagem de capa deve ter no máximo 300 KB.');
+            if ($tamanhoKB > self::CAPA_MAX_KB) {
+                $this->addError('capa_index', 'A imagem de capa deve ter no máximo ' . self::CAPA_MAX_KB . ' KB.');
                 return false;
             }
         }
