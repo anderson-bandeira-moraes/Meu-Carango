@@ -129,13 +129,35 @@ class VeiculoImagemRepository
 
     /**
      * Remove uma imagem específica (fisicamente do banco).
+     * Opcionalmente, valida se a imagem pertence ao veículo informado.
      *
      * @param int $id
+     * @param int|null $veiculoId (opcional) Se informado, valida pertencimento antes de deletar.
      * @return bool
      */
-    public function deleteById(int $id): bool
+    public function deleteById(int $id, ?int $veiculoId = null): bool
     {
         try {
+            // Valida pertencimento se veiculoId for informado
+            if ($veiculoId !== null) {
+                $imagem = $this->findById($id);
+                if (!$imagem) {
+                    $this->logger->warning('Tentativa de deletar imagem inexistente', [
+                        'imagem_id' => $id,
+                        'veiculo_id' => $veiculoId,
+                    ]);
+                    return false;
+                }
+                if ($imagem['veiculo_id'] != $veiculoId) {
+                    $this->logger->warning('Tentativa de deletar imagem de outro veículo', [
+                        'imagem_id'       => $id,
+                        'veiculo_id'      => $veiculoId,
+                        'veiculo_imagem'  => $imagem['veiculo_id'],
+                    ]);
+                    return false;
+                }
+            }
+
             $stmt = $this->pdo->prepare('DELETE FROM veiculo_imagens WHERE id = ?');
             $success = $stmt->execute([$id]);
 
