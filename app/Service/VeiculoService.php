@@ -112,7 +112,7 @@ class VeiculoService
                 }
             }
 
-            // 4. Sincroniza opcionais (agora dentro da transação)
+            // 4. Sincroniza opcionais
             $syncOk = $this->opcionalRelRepo->sync($veiculoId, $opcionaisIds);
             if (!$syncOk) {
                 $this->pdo->rollBack();
@@ -120,7 +120,14 @@ class VeiculoService
                 return false;
             }
 
-            // 5. Commit final
+            // 5. Processa imagens do veículo
+            if (!$this->processarImagensCadastro($veiculoId, $hashId, $dados)) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao processar imagens do veículo', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            // 6. Commit final
             $this->pdo->commit();
 
             $this->logger->info('Veículo criado com sucesso', [
