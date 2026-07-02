@@ -699,4 +699,84 @@ class VeiculoService
         return $this->veiculoRepo->findByIdIncludingDeleted($id);
     }
 
+    /**
+     * Remove uma imagem específica de um veículo.
+     * 
+     * @param int $imagemId
+     * @param int $veiculoId
+     * @return bool
+     */
+    public function deletarImagem(int $imagemId, int $veiculoId): bool
+    {
+        // 1. Busca a imagem no banco
+        $imagem = $this->veiculoImagemRepo->findById($imagemId);
+        if (!$imagem) {
+            $this->logger->warning('Tentativa de deletar imagem inexistente', [
+                'imagem_id' => $imagemId,
+                'veiculo_id' => $veiculoId,
+            ]);
+            return false;
+        }
+
+        // 2. Verifica pertencimento
+        if ($imagem['veiculo_id'] != $veiculoId) {
+            $this->logger->warning('Tentativa de deletar imagem de outro veículo', [
+                'imagem_id'       => $imagemId,
+                'veiculo_id'      => $veiculoId,
+                'veiculo_imagem'  => $imagem['veiculo_id'],
+            ]);
+            return false;
+        }
+
+        // 3. Remove o arquivo físico do disco
+        $caminhoAbsoluto = $this->getCaminhoAbsolutoImagem($imagem['caminho']);
+        if (file_exists($caminhoAbsoluto)) {
+            if (!unlink($caminhoAbsoluto)) {
+                $this->logger->error('Falha ao deletar arquivo de imagem do disco', [
+                    'imagem_id' => $imagemId,
+                    'caminho'   => $caminhoAbsoluto,
+                ]);
+                // Continuamos mesmo se falhar, para remover o registro do banco?
+                // Vamos optar por retornar false para manter consistência.
+                return false;
+            }
+        } else {
+            $this->logger->warning('Arquivo de imagem não encontrado no disco', [
+                'imagem_id' => $imagemId,
+                'caminho'   => $caminhoAbsoluto,
+            ]);
+            // Se o arquivo não existe, removemos apenas o registro do banco (pode ser um dado órfão).
+            // Continuamos para deletar do banco.
+        }
+
+        // 4. Remove o registro do banco
+        $deletado = $this->veiculoImagemRepo->deleteById($imagemId, $veiculoId);
+        if (!$deletado) {
+            $this->logger->error('Falha ao deletar registro de imagem', [
+                'imagem_id' => $imagemId,
+                'veiculo_id' => $veiculoId,
+            ]);
+            return false;
+        }
+
+        $this->logger->info('Imagem deletada com sucesso', [
+            'imagem_id' => $imagemId,
+            'veiculo_id' => $veiculoId,
+            'caminho'   => $imagem['caminho'],
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Obtém o caminho absoluto de uma imagem a partir do caminho relativo.
+     *
+     * @param string $caminhoRelativo Caminho relativo à pasta storage/uploads/ (ex: 'veiculos/hash_id/imagem.jpg')
+     * @return string
+     */
+    private function getCaminhoAbsolutoImagem(string $caminhoRelativo): string
+    {
+        return ROOT_DIR . '/storage/uploads/' . $caminhoRelativo;
+    }
+
 }
