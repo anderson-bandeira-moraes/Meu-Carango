@@ -211,7 +211,7 @@ class VeiculoImagemRepository
      * @param array $imagensData Estrutura esperada:
      *   - ids_manter: int[] (IDs das imagens que devem permanecer)
      *   - novas: array[] (cada uma com veiculo_id, caminho, nome_original, mime_type, tamanho_bytes)
-     *   - capa_id: int|null (ID da imagem que será capa; se null, nenhuma será capa)
+     *   - capa_id: int|null (ID da imagem que será capa; se null, define automaticamente a primeira)
      * @return bool
      */
     public function sync(int $veiculoId, array $imagensData): bool
@@ -266,8 +266,9 @@ class VeiculoImagemRepository
                 $this->save($nova);
             }
 
-            // 7. Definir capa (se fornecido)
+            // 7. Definir capa
             if ($capaId !== null) {
+                // Capa fornecida explicitamente
                 $stmt = $this->pdo->prepare('UPDATE veiculo_imagens SET capa = 1 WHERE id = ? AND veiculo_id = ?');
                 $stmt->execute([$capaId, $veiculoId]);
                 if ($stmt->rowCount() === 0) {
@@ -275,6 +276,21 @@ class VeiculoImagemRepository
                         'veiculo_id' => $veiculoId,
                         'capa_id'    => $capaId,
                     ]);
+                }
+            } else {
+                // Capa não fornecida: definir a primeira imagem (menor ordem) como capa
+                $stmt = $this->pdo->prepare('SELECT id FROM veiculo_imagens WHERE veiculo_id = ? ORDER BY ordem LIMIT 1');
+                $stmt->execute([$veiculoId]);
+                $primeira = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($primeira) {
+                    $stmt = $this->pdo->prepare('UPDATE veiculo_imagens SET capa = 1 WHERE id = ? AND veiculo_id = ?');
+                    $stmt->execute([$primeira['id'], $veiculoId]);
+                    $this->logger->debug('Capa definida automaticamente para primeira imagem', [
+                        'veiculo_id' => $veiculoId,
+                        'imagem_id'  => $primeira['id'],
+                    ]);
+                } else {
+                    $this->logger->debug('Nenhuma imagem para definir como capa', ['veiculo_id' => $veiculoId]);
                 }
             }
 
