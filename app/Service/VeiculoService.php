@@ -13,6 +13,7 @@ use App\Repository\VeiculoHibridoRepository;
 use App\Repository\VeiculoGNVRepository;
 use App\Repository\VeiculoOpcionalRepository;
 use App\Repository\OpcionalRepository;
+use App\Repository\VeiculoImagemRepository;
 use Psr\Log\LoggerInterface;
 use PDO;
 
@@ -34,6 +35,7 @@ class VeiculoService
         private VeiculoGNVRepository $gnvRepo,
         private VeiculoOpcionalRepository $opcionalRelRepo,
         private OpcionalRepository $opcionalRepo,
+        private VeiculoImagemRepository $veiculoImagemRepo,
         private PDO $pdo,
         private LoggerInterface $logger,
     ) {}
