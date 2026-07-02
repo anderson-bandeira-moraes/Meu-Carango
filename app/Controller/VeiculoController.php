@@ -141,11 +141,14 @@ class VeiculoController
      */
     public function store(Request $request): void
     {
+        // Captura TODOS os dados enviados (principais + complementos + GNV + opcionais)
+        $allData = $request->all();
+
         // 1. Valida dados comuns
         if (!$this->veiculoRequest->validate()) {
             $this->handleValidationErrors(
                 $this->veiculoRequest->getErrors(),
-                $this->veiculoRequest->all()
+                $allData
             );
         }
 
@@ -162,7 +165,7 @@ class VeiculoController
                 if (!$this->combustaoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->combustaoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->combustaoRequest->getDadosCombustao());
@@ -171,7 +174,7 @@ class VeiculoController
                 if (!$this->eletricoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->eletricoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->eletricoRequest->getDadosEletricos());
@@ -180,7 +183,7 @@ class VeiculoController
                 if (!$this->hibridoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->hibridoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->hibridoRequest->getDadosHibridos());
@@ -194,7 +197,7 @@ class VeiculoController
             if (!$this->gnvRequest->validate()) {
                 $this->handleValidationErrors(
                     $this->gnvRequest->getErrors(),
-                    $this->veiculoRequest->all()
+                    $allData
                 );
             }
             $dados = array_merge($dados, $this->gnvRequest->getDadosGNV());
@@ -207,7 +210,7 @@ class VeiculoController
         if (!$this->opcionalRequest->validate()) {
             $this->handleValidationErrors(
                 $this->opcionalRequest->getErrors(),
-                $this->veiculoRequest->all()
+                $allData
             );
         }
         // opcionaisIds já está disponível
@@ -280,6 +283,9 @@ class VeiculoController
      */
     public function update(Request $request, int $id): void
     {
+        // Captura TODOS os dados enviados (principais + complementos + GNV + opcionais)
+        $allData = $request->all();
+
         // Verifica se o veículo existe e pertence ao lojista (opcional, mas seguro)
         $dadosEdicao = $this->veiculoService->buscarParaEdicao($id);
         if (!$dadosEdicao || $dadosEdicao['veiculo']['lojista_id'] != $this->getLojistaId()) {
@@ -290,7 +296,7 @@ class VeiculoController
         if (!$this->veiculoRequest->validate()) {
             $this->handleValidationErrors(
                 $this->veiculoRequest->getErrors(),
-                $this->veiculoRequest->all()
+                $allData
             );
         }
 
@@ -304,7 +310,7 @@ class VeiculoController
                 if (!$this->combustaoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->combustaoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->combustaoRequest->getDadosCombustao());
@@ -313,7 +319,7 @@ class VeiculoController
                 if (!$this->eletricoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->eletricoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->eletricoRequest->getDadosEletricos());
@@ -322,7 +328,7 @@ class VeiculoController
                 if (!$this->hibridoRequest->validate()) {
                     $this->handleValidationErrors(
                         $this->hibridoRequest->getErrors(),
-                        $this->veiculoRequest->all()
+                        $allData
                     );
                 }
                 $dados = array_merge($dados, $this->hibridoRequest->getDadosHibridos());
@@ -336,7 +342,7 @@ class VeiculoController
             if (!$this->gnvRequest->validate()) {
                 $this->handleValidationErrors(
                     $this->gnvRequest->getErrors(),
-                    $this->veiculoRequest->all()
+                    $allData
                 );
             }
             $dados = array_merge($dados, $this->gnvRequest->getDadosGNV());
@@ -349,7 +355,7 @@ class VeiculoController
         if (!$this->opcionalRequest->validate()) {
             $this->handleValidationErrors(
                 $this->opcionalRequest->getErrors(),
-                $this->veiculoRequest->all()
+                $allData
             );
         }
 
