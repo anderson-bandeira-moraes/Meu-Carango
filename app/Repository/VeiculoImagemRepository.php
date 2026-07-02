@@ -226,12 +226,23 @@ class VeiculoImagemRepository
         try {
             // 1. Buscar imagens atuais
             $atuais = $this->findByVeiculo($veiculoId);
-
-            // 2. Calcular imagens a remover
             $idsAtuais = array_column($atuais, 'id');
+
+            // 2. Filtrar ids_manter para garantir que todos pertencem ao veículo
+            $idsManterValidos = array_intersect($idsManter, $idsAtuais);
+            if (count($idsManterValidos) !== count($idsManter)) {
+                $idsInvalidos = array_diff($idsManter, $idsAtuais);
+                $this->logger->warning('IDs de imagens inválidos fornecidos para sync (não pertencem ao veículo)', [
+                    'veiculo_id'    => $veiculoId,
+                    'ids_invalidos' => array_values($idsInvalidos),
+                ]);
+                $idsManter = $idsManterValidos;
+            }
+
+            // 3. Calcular imagens a remover
             $idsRemover = array_diff($idsAtuais, $idsManter);
 
-            // 3. Validar limite máximo (após remoção + novas)
+            // 4. Validar limite máximo (após remoção + novas)
             $totalAposRemocao = count($idsAtuais) - count($idsRemover) + count($novas);
             if ($totalAposRemocao > self::MAX_IMAGENS) {
                 $this->logger->error('Limite de imagens excedido', [
@@ -242,7 +253,7 @@ class VeiculoImagemRepository
                 return false;
             }
 
-            // 4. Remover imagens que não estão em ids_manter
+            // 5. Remover imagens que não estão em ids_manter
             if (!empty($idsRemover)) {
                 $placeholders = implode(',', array_fill(0, count($idsRemover), '?'));
                 $sql = "DELETE FROM veiculo_imagens WHERE id IN ($placeholders)";
@@ -254,10 +265,10 @@ class VeiculoImagemRepository
                 ]);
             }
 
-            // 5. Resetar capa para todas as imagens restantes
+            // 6. Resetar capa para todas as imagens restantes
             $this->resetarCapa($veiculoId);
 
-            // 6. Inserir novas imagens
+            // 7. Inserir novas imagens
             $ordemAtual = $this->getProximaOrdem($veiculoId);
             foreach ($novas as $nova) {
                 $nova['veiculo_id'] = $veiculoId;
@@ -266,7 +277,7 @@ class VeiculoImagemRepository
                 $this->save($nova);
             }
 
-            // 7. Definir capa
+            // 8. Definir capa
             if ($capaId !== null) {
                 // Capa fornecida explicitamente
                 $stmt = $this->pdo->prepare('UPDATE veiculo_imagens SET capa = 1 WHERE id = ? AND veiculo_id = ?');
@@ -294,7 +305,7 @@ class VeiculoImagemRepository
                 }
             }
 
-            // 8. Reordenar todas as imagens restantes
+            // 9. Reordenar todas as imagens restantes
             $this->reordenarSequencial($veiculoId);
 
             $this->logger->info('Sincronização de imagens concluída', [
