@@ -217,7 +217,20 @@ class VeiculoController
         }
         // opcionaisIds já está disponível
 
-        // 6. Chama o Service
+        // 6. Valida e processa imagens (se houver upload)
+        if (isset($_FILES['imagens']) && !empty($_FILES['imagens']['tmp_name'][0])) {
+            if (!$this->veiculoImagemRequest->validate()) {
+                $this->handleValidationErrors(
+                    $this->veiculoImagemRequest->getErrors(),
+                    $allData
+                );
+            }
+            $dadosImagem = $this->veiculoImagemRequest->validated();
+            $dados['imagens'] = $_FILES['imagens'];
+            $dados['capa_index'] = $dadosImagem['capa_index'] ?? null;
+        }
+
+        // 7. Chama o Service
         $result = $this->veiculoService->salvar($dados, $opcionaisIds, $tipoVeiculo);
         if ($result === false) {
             $this->redirectWithError('Falha ao criar veículo. Tente novamente.');
