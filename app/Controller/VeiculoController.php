@@ -409,19 +409,7 @@ class VeiculoController
      */
     public function restore(Request $request, int $id): void
     {
-        // Verifica se o veículo existe (incluindo deletados) e pertence ao lojista
-        $veiculo = $this->veiculoService->buscarParaEdicao($id); // findById não inclui deletados, então precisamos verificar diretamente
-        // Melhor: buscar com findByIdIncludingDeleted (não exposto no Service). Vamos confiar no Service.
-        // Alternativa: o Service não valida pertencimento, então faremos uma verificação adicional.
-        $veiculoData = $this->veiculoService->buscarPorIdIncluindoDeletado($id); // Precisamos adicionar método no Service? Por enquanto, usamos o que temos.
-        // Para simplificar, deixamos o Service validar se existe e restaurar.
-        // O Service não verifica lojista, então faremos uma consulta para garantir.
-        $veiculoData = $this->veiculoService->buscarPorIdIncluindoDeletado($id);
-        if (!$veiculoData || $veiculoData['lojista_id'] != $this->getLojistaId()) {
-            $this->redirectWithError('Veículo não encontrado ou acesso negado.');
-        }
-
-        $result = $this->veiculoService->restaurar($id);
+        $result = $this->veiculoService->restaurar($id, $this->getLojistaId());
         if (!$result) {
             $this->redirectWithError('Falha ao restaurar veículo.');
         }

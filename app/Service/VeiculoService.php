@@ -343,13 +343,24 @@ class VeiculoService
      * Restaura um veículo deletado.
      *
      * @param int $veiculoId
+     * @param int $lojistaId ID do lojista logado (para verificação de pertencimento)
      * @return bool
      */
-    public function restaurar(int $veiculoId): bool
+    public function restaurar(int $veiculoId, int $lojistaId): bool
     {
         $veiculo = $this->veiculoRepo->findByIdIncludingDeleted($veiculoId);
         if (!$veiculo || $veiculo['deleted_at'] === null) {
             $this->logger->warning('Tentativa de restaurar veículo não deletado ou inexistente', ['veiculo_id' => $veiculoId]);
+            return false;
+        }
+
+        // Verifica pertencimento
+        if ($veiculo['lojista_id'] != $lojistaId) {
+            $this->logger->warning('Tentativa de restaurar veículo de outro lojista', [
+                'veiculo_id'   => $veiculoId,
+                'lojista_id'   => $lojistaId,
+                'veiculo_lojista_id' => $veiculo['lojista_id'],
+            ]);
             return false;
         }
 
@@ -369,8 +380,6 @@ class VeiculoService
             if (!$updateOk) {
                 $this->pdo->rollBack();
                 $this->logger->warning('Falha ao reativar vitrine após restauração', ['veiculo_id' => $veiculoId]);
-                // Não é crítico, mas vamos manter consistência: se o update falhar, ainda assim consideramos restaurado?
-                // Optamos por rollback para manter consistência total.
                 return false;
             }
 
