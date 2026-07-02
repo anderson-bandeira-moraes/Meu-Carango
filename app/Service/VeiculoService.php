@@ -647,4 +647,15 @@ class VeiculoService
         return $this->veiculoRepo->countAtivosParaVitrine($lojistaId);
     }
 
+    /**
+     * Busca todos os opcionais agrupados por categoria.
+     * Útil para renderizar o formulário de cadastro/edição.
+     *
+     * @return array
+     */
+    public function buscarOpcionaisAgrupados(): array
+    {
+        return $this->opcionalRepo->findAllGrouped();
+    }
+
 }
