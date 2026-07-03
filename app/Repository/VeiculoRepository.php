@@ -29,7 +29,7 @@ class VeiculoRepository
     {
         try {
             $sql = 'INSERT INTO veiculos (
-                lojista_id, marca, modelo, versao, 
+                lojista_id, marca_id, modelo_id, versao, 
                 ano_fabricacao, ano_modelo, cor, quilometragem, preco,
                 numero_portas, numero_assentos,
                 comprimento_mm, largura_mm, altura_mm, distancia_entre_eixos_mm, peso_ordem_marcha_kg,
@@ -37,7 +37,7 @@ class VeiculoRepository
                 hash_id, slug, gnv_instalado,
                 status_estoque, status_vitrine
             ) VALUES (
-                :lojista_id, :marca, :modelo, :versao,
+                :lojista_id, :marca_id, :modelo_id, :versao,
                 :ano_fabricacao, :ano_modelo, :cor, :quilometragem, :preco,
                 :numero_portas, :numero_assentos,
                 :comprimento_mm, :largura_mm, :altura_mm, :distancia_entre_eixos_mm, :peso_ordem_marcha_kg,
@@ -55,7 +55,8 @@ class VeiculoRepository
                 'veiculo_id' => $id,
                 'lojista_id' => $dados['lojista_id'],
                 'hash_id'    => $dados['hash_id'],
-                'modelo'     => $dados['modelo'] ?? 'N/A',
+                'marca_id'   => $dados['marca_id'] ?? null,
+                'modelo_id'  => $dados['modelo_id'] ?? null,
             ]);
 
             return $id;
