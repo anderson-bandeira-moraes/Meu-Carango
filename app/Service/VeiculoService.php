@@ -694,7 +694,7 @@ class VeiculoService
     private function filtrarDadosPrincipais(array $dados): array
     {
         $allowed = [
-            'marca', 'modelo', 'versao', 'ano_fabricacao', 'ano_modelo',
+            'marca_id', 'modelo_id', 'versao', 'ano_fabricacao', 'ano_modelo',
             'cor', 'quilometragem', 'preco', 'numero_portas', 'numero_assentos',
             'comprimento_mm', 'largura_mm', 'altura_mm', 'distancia_entre_eixos_mm',
             'peso_ordem_marcha_kg', 'volume_porta_malas_l', 'volume_cacamba_l',
