@@ -115,6 +115,10 @@ class VeiculoController
         // Busca todos os opcionais agrupados para o formulário
         $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
 
+        // Busca marcas e modelos para os selects do formulário
+        $marcas = $this->marcaRepo->findAll();
+        $modelos = $this->modeloRepo->findAll();
+
         // Recupera old input e flash
         $old = $this->session->get('old_veiculo_input', []);
         $this->session->delete('old_veiculo_input');
@@ -130,6 +134,8 @@ class VeiculoController
                 'gnv'              => null,
                 'opcionais_selecionados' => [],
                 'todos_opcionais'  => $opcionais,
+                'marcas'           => $marcas,
+                'modelos'          => $modelos,
                 'old'              => $old,
                 'error'            => $error,
                 'isEdit'           => false,
