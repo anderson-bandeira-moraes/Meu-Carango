@@ -14,6 +14,8 @@ use App\Repository\VeiculoGNVRepository;
 use App\Repository\VeiculoOpcionalRepository;
 use App\Repository\OpcionalRepository;
 use App\Repository\VeiculoImagemRepository;
+use App\Repository\MarcaRepository;
+use App\Repository\ModeloRepository;
 use App\Helpers\UploadHelper;
 use Psr\Log\LoggerInterface;
 use PDO;
@@ -37,6 +39,8 @@ class VeiculoService
         private VeiculoOpcionalRepository $opcionalRelRepo,
         private OpcionalRepository $opcionalRepo,
         private VeiculoImagemRepository $veiculoImagemRepo,
+        private MarcaRepository $marcaRepo,
+        private ModeloRepository $modeloRepo,
         private PDO $pdo,
         private LoggerInterface $logger,
     ) {}
