@@ -21,9 +21,9 @@ class VeiculoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Campos obrigatórios
-            'marca'          => 'required|max:50',
-            'modelo'         => 'required|max:50',
+            // Campos obrigatórios (IDs de marca e modelo)
+            'marca_id'       => 'required|integer|exists:marcas,id',
+            'modelo_id'      => 'required|integer|exists:modelos,id',
             'ano_fabricacao' => 'required|integer|min:1900',
             'ano_modelo'     => 'required|integer|min:1900',
             'cor'            => 'required|max:30',
@@ -66,13 +66,15 @@ class VeiculoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // Marca
-            'marca.required' => 'A marca é obrigatória.',
-            'marca.max'      => 'A marca deve ter no máximo :max caracteres.',
+            // Marca (ID)
+            'marca_id.required' => 'A marca é obrigatória.',
+            'marca_id.integer'  => 'A marca deve ser um número inteiro.',
+            'marca_id.exists'   => 'A marca selecionada não existe.',
 
-            // Modelo
-            'modelo.required' => 'O modelo é obrigatório.',
-            'modelo.max'      => 'O modelo deve ter no máximo :max caracteres.',
+            // Modelo (ID)
+            'modelo_id.required' => 'O modelo é obrigatório.',
+            'modelo_id.integer'  => 'O modelo deve ser um número inteiro.',
+            'modelo_id.exists'   => 'O modelo selecionado não existe.',
 
             // Ano
             'ano_fabricacao.required' => 'O ano de fabricação é obrigatório.',
@@ -185,28 +187,28 @@ class VeiculoRequest extends FormRequest
         $validated = $this->validated();
 
         return [
-            'marca'                => $validated['marca'] ?? '',
-            'modelo'               => $validated['modelo'] ?? '',
-            'versao'               => $validated['versao'] ?? null,
-            'ano_fabricacao'       => $validated['ano_fabricacao'] ?? null,
-            'ano_modelo'           => $validated['ano_modelo'] ?? null,
-            'cor'                  => $validated['cor'] ?? '',
-            'quilometragem'        => $validated['quilometragem'] ?? 0,
-            'preco'                => (float) ($validated['preco'] ?? 0),
-            'numero_portas'        => $validated['numero_portas'] ?? null,
-            'numero_assentos'      => $validated['numero_assentos'] ?? null,
-            'comprimento_mm'       => $validated['comprimento_mm'] ?? null,
-            'largura_mm'           => $validated['largura_mm'] ?? null,
-            'altura_mm'            => $validated['altura_mm'] ?? null,
+            'marca_id'              => $validated['marca_id'] ?? null,
+            'modelo_id'             => $validated['modelo_id'] ?? null,
+            'versao'                => $validated['versao'] ?? null,
+            'ano_fabricacao'        => $validated['ano_fabricacao'] ?? null,
+            'ano_modelo'            => $validated['ano_modelo'] ?? null,
+            'cor'                   => $validated['cor'] ?? '',
+            'quilometragem'         => $validated['quilometragem'] ?? 0,
+            'preco'                 => (float) ($validated['preco'] ?? 0),
+            'numero_portas'         => $validated['numero_portas'] ?? null,
+            'numero_assentos'       => $validated['numero_assentos'] ?? null,
+            'comprimento_mm'        => $validated['comprimento_mm'] ?? null,
+            'largura_mm'            => $validated['largura_mm'] ?? null,
+            'altura_mm'             => $validated['altura_mm'] ?? null,
             'distancia_entre_eixos_mm' => $validated['distancia_entre_eixos_mm'] ?? null,
-            'peso_ordem_marcha_kg' => $validated['peso_ordem_marcha_kg'] ?? null,
-            'volume_porta_malas_l' => $validated['volume_porta_malas_l'] ?? null,
-            'volume_cacamba_l'     => $validated['volume_cacamba_l'] ?? null,
-            'carga_util_kg'        => $validated['carga_util_kg'] ?? null,
-            'capacidade_reboque_kg'=> $validated['capacidade_reboque_kg'] ?? null,
-            'gnv_instalado'        => $validated['gnv_instalado'] ?? 0,
-            'status_estoque'       => $validated['status_estoque'] ?? 'disponivel',
-            'status_vitrine'       => $validated['status_vitrine'] ?? 'inativo',
+            'peso_ordem_marcha_kg'  => $validated['peso_ordem_marcha_kg'] ?? null,
+            'volume_porta_malas_l'  => $validated['volume_porta_malas_l'] ?? null,
+            'volume_cacamba_l'      => $validated['volume_cacamba_l'] ?? null,
+            'carga_util_kg'         => $validated['carga_util_kg'] ?? null,
+            'capacidade_reboque_kg' => $validated['capacidade_reboque_kg'] ?? null,
+            'gnv_instalado'         => $validated['gnv_instalado'] ?? 0,
+            'status_estoque'        => $validated['status_estoque'] ?? 'disponivel',
+            'status_vitrine'        => $validated['status_vitrine'] ?? 'inativo',
         ];
     }
 
