@@ -295,8 +295,8 @@ class VeiculoRepository
     {
         return [
             ':lojista_id'               => $dados['lojista_id'] ?? null,
-            ':marca'                    => $dados['marca'] ?? null,
-            ':modelo'                   => $dados['modelo'] ?? null,
+            ':marca_id'                 => $dados['marca_id'] ?? null,
+            ':modelo_id'                => $dados['modelo_id'] ?? null,
             ':versao'                   => $dados['versao'] ?? null,
             ':ano_fabricacao'           => $dados['ano_fabricacao'] ?? null,
             ':ano_modelo'               => $dados['ano_modelo'] ?? null,
