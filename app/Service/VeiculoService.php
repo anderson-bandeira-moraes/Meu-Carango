@@ -799,7 +799,8 @@ class VeiculoService
             return true;
         }
 
-        $novas = [];
+        $idsInseridos = [];
+        $ordem = 0;
 
         foreach ($arquivos as $arquivo) {
             // Upload do arquivo usando o helper
@@ -813,44 +814,50 @@ class VeiculoService
 
             $caminhoAbsoluto = ROOT_DIR . '/storage/uploads/' . $caminhoRelativo;
 
-            // Monta dados da nova imagem
-            $novas[] = [
+            // Salva a imagem no banco e obtém o ID
+            $imagemId = $this->veiculoImagemRepo->save([
+                'veiculo_id'    => $veiculoId,
                 'caminho'       => $caminhoRelativo,
                 'nome_original' => $arquivo['name'],
                 'mime_type'     => mime_content_type($caminhoAbsoluto) ?: $arquivo['type'] ?? 'image/jpeg',
                 'tamanho_bytes' => filesize($caminhoAbsoluto) ?: 0,
-            ];
+                'capa'          => 0,
+                'ordem'         => $ordem++,
+            ]);
+
+            if ($imagemId === false) {
+                $this->logger->error('Falha ao salvar imagem no banco', [
+                    'caminho' => $caminhoRelativo,
+                ]);
+                return false;
+            }
+
+            $idsInseridos[] = $imagemId;
         }
 
-        // Prepara dados para sync (ids_manter vazio, pois são todas novas)
+        // Determina o ID da capa com base no índice fornecido
+        $capaId = null;
+        if ($capaIndex !== null && $capaIndex >= 0 && $capaIndex < count($idsInseridos)) {
+            $capaId = $idsInseridos[$capaIndex];
+        }
+
+        // Sincroniza imagens (apenas reordena e define capa)
         $imagensData = [
-            'ids_manter' => [],
-            'novas'      => $novas,
-            'capa_id'    => null, // Será definido automaticamente como a primeira imagem
+            'ids_manter' => $idsInseridos,
+            'novas'      => [],
+            'capa_id'    => $capaId, // Se null, o sync define a primeira imagem como capa
         ];
 
-        // Sincroniza imagens
         if (!$this->veiculoImagemRepo->sync($veiculoId, $imagensData)) {
             $this->logger->error('Falha ao sincronizar imagens no cadastro', ['veiculo_id' => $veiculoId]);
             return false;
         }
 
-        // Se o usuário especificou um índice de capa, define a imagem correspondente
-        if ($capaIndex !== null && $capaIndex >= 0 && $capaIndex < count($novas)) {
-            // Busca as imagens do veículo (ordenadas por ordem)
-            $imagens = $this->veiculoImagemRepo->findByVeiculo($veiculoId);
-            if (isset($imagens[$capaIndex])) {
-                $imagemId = $imagens[$capaIndex]['id'];
-                if (!$this->veiculoImagemRepo->definirCapa($imagemId, $veiculoId)) {
-                    $this->logger->warning('Falha ao definir capa personalizada', [
-                        'veiculo_id' => $veiculoId,
-                        'imagem_id'  => $imagemId,
-                    ]);
-                    // Não retornamos false, pois as imagens foram salvas com sucesso
-                    // Apenas logamos o aviso
-                }
-            }
-        }
+        $this->logger->info('Imagens cadastradas com sucesso', [
+            'veiculo_id' => $veiculoId,
+            'total'      => count($idsInseridos),
+            'capa_id'    => $capaId,
+        ]);
 
         return true;
     }
