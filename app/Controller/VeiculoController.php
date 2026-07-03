@@ -563,4 +563,49 @@ class VeiculoController
         header('Location: ' . $url);
         exit;
     }
+
+    /**
+     * Remove uma imagem específica de um veículo (via AJAX ou POST).
+     *
+     * @param Request $request
+     * @param int $veiculoId
+     * @param int $imagemId
+     * @return void
+     */
+    public function deleteImagem(Request $request, int $veiculoId, int $imagemId): void
+    {
+        // Verifica se o veículo existe e pertence ao lojista
+        $veiculo = $this->veiculoService->buscarParaEdicao($veiculoId);
+        if (!$veiculo || $veiculo['veiculo']['lojista_id'] != $this->getLojistaId()) {
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => false, 'erro' => 'Veículo não encontrado ou acesso negado.']);
+                exit;
+            }
+            $this->redirectWithError('Veículo não encontrado ou acesso negado.');
+        }
+
+        // Chama o Service para deletar a imagem
+        $result = $this->veiculoService->deletarImagem($imagemId, $veiculoId);
+
+        if (!$result) {
+            if ($request->isAjax()) {
+                header('Content-Type: application/json');
+                echo json_encode(['sucesso' => false, 'erro' => 'Falha ao deletar a imagem.']);
+                exit;
+            }
+            $this->redirectWithError('Falha ao deletar a imagem.');
+        }
+
+        if ($request->isAjax()) {
+            header('Content-Type: application/json');
+            echo json_encode(['sucesso' => true]);
+            exit;
+        }
+
+        $this->session->set('flash_veiculo_success', 'Imagem removida com sucesso.');
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos/editar/' . $veiculoId));
+        exit;
+    }
+    
 }
