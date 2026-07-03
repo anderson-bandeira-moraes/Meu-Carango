@@ -1015,4 +1015,29 @@ class VeiculoService
         return true;
     }
 
+    /**
+     * Lista veículos de um lojista com os nomes da marca e modelo.
+     *
+     * @param int $lojistaId
+     * @param int $pagina
+     * @param int $porPagina
+     * @return array{veiculos: array, total: int, pagina: int, totalPaginas: int}
+     */
+    public function listarDoLojistaComNomes(int $lojistaId, int $pagina = 1, int $porPagina = 20): array
+    {
+        // Obtém a lista base com os IDs
+        $resultado = $this->listarDoLojista($lojistaId, $pagina, $porPagina);
+
+        // Enriquece cada veículo com os nomes da marca e modelo
+        foreach ($resultado['veiculos'] as &$veiculo) {
+            $marca = $this->marcaRepo->findById($veiculo['marca_id'] ?? 0);
+            $modelo = $this->modeloRepo->findById($veiculo['modelo_id'] ?? 0);
+
+            $veiculo['marca_nome'] = $marca['nome'] ?? 'N/A';
+            $veiculo['modelo_nome'] = $modelo['nome'] ?? 'N/A';
+        }
+
+        return $resultado;
+    }
+
 }
