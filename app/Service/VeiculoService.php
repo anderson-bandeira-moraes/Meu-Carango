@@ -551,6 +551,13 @@ class VeiculoService
             return null;
         }
 
+        // Busca os nomes da marca e modelo
+        $marca = $this->marcaRepo->findById($veiculo['marca_id'] ?? 0);
+        $modelo = $this->modeloRepo->findById($veiculo['modelo_id'] ?? 0);
+
+        $marcaNome = $marca['nome'] ?? null;
+        $modeloNome = $modelo['nome'] ?? null;
+
         // Busca complemento
         $complemento = null;
         $tipo = $this->detectarTipoAtual($veiculoId);
@@ -582,6 +589,8 @@ class VeiculoService
             'opcionais_selecionados' => $opcionaisIds,
             'todos_opcionais'        => $todosOpcionais,
             'imagens'                => $imagens,
+            'marca_nome'             => $marcaNome,
+            'modelo_nome'            => $modeloNome,
         ];
     }
 
