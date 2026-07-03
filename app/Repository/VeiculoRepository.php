@@ -269,7 +269,8 @@ class VeiculoRepository
                 $this->logger->info('Veículo deletado (soft delete)', [
                     'veiculo_id' => $id,
                     'hash_id'    => $veiculo['hash_id'],
-                    'modelo'     => $veiculo['modelo'],
+                    'marca_id'   => $veiculo['marca_id'],
+                    'modelo_id'  => $veiculo['modelo_id'],
                 ]);
             } else {
                 $this->logger->warning('Falha ao deletar veículo', ['veiculo_id' => $id]);
