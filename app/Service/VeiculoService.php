@@ -73,10 +73,33 @@ class VeiculoService
         $hashId = $this->gerarHashUnico();
         $dados['hash_id'] = $hashId;
 
+        // Busca os nomes da marca e modelo para gerar o slug
+        $marcaId = $dados['marca_id'] ?? null;
+        $modeloId = $dados['modelo_id'] ?? null;
+
+        if (!$marcaId || !$modeloId) {
+            $this->logger->error('Marca ou modelo não informados para geração do slug', [
+                'marca_id'  => $marcaId,
+                'modelo_id' => $modeloId,
+            ]);
+            return false;
+        }
+
+        $marca = $this->marcaRepo->findById($marcaId);
+        $modelo = $this->modeloRepo->findById($modeloId);
+
+        if (!$marca || !$modelo) {
+            $this->logger->error('Marca ou modelo não encontrados', [
+                'marca_id'  => $marcaId,
+                'modelo_id' => $modeloId,
+            ]);
+            return false;
+        }
+
         // Gera slug descritivo
         $dados['slug'] = SlugGenerator::generate(
-            $dados['marca'] ?? '',
-            $dados['modelo'] ?? '',
+            $marca['nome'],
+            $modelo['nome'],
             (int) ($dados['ano_modelo'] ?? 0)
         );
 
