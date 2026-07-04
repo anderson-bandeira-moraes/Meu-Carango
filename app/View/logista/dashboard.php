@@ -16,37 +16,95 @@
 
                 <hr>
 
-                <!-- Cards de resumo (exemplo) -->
-                <div class="row mt-4">
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center border-primary h-100">
-                            <div class="card-body">
-                                <i class="bi bi-car-front fs-1 text-primary"></i>
-                                <h5 class="card-title mt-2">Meus Veículos</h5>
-                                <p class="card-text">Gerencie os veículos anunciados.</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
+                <div class="row g-4 mb-4">
+                    <!-- Card 1: Total de Veículos -->
+                    <div class="col-xl-2 col-lg-4 col-md-6">
+                        <a href="/logista/veiculos" class="text-decoration-none text-reset d-block">
+                            <div class="card border-2 shadow h-100 card-zoom">
+                                <div class="card-body text-center">
+                                    <div class="bg-primary shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
+                                        <i class="bi bi-car-front fs-2 text-white d-block text-center"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-1">Total de Veículos</h6>
+                                    <h3 class="mb-2 fw-bold">1.247</h3>
+                                    <span class="badge shadow bg-primary bg-opacity-50 text-body rounded-pill px-3 py-1">
+                                        <i class="bi bi-arrow-up"></i> +12%
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center border-success h-100">
-                            <div class="card-body">
-                                <i class="bi bi-megaphone fs-1 text-success"></i>
-                                <h5 class="card-title mt-2">Meus Anúncios</h5>
-                                <p class="card-text">Visualize e gerencie seus anúncios.</p>
-                                <a href="#" class="btn btn-sm btn-outline-success">Ver</a>
+
+                    <!-- Card 2: Na Vitrine -->
+                    <div class="col-xl-2 col-lg-4 col-md-6">
+                        <a href="/logista/veiculos?filtro=vitrine" class="text-decoration-none text-reset d-block">
+                            <div class="card border-2 shadow h-100 card-zoom">
+                                <div class="card-body text-center">
+                                    <div class="bg-warning shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
+                                        <i class="bi bi-megaphone fs-2 text-white d-block text-center"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-1">Na Vitrine</h6>
+                                    <h3 class="mb-2 fw-bold">384</h3>
+                                    <span class="badge shadow bg-warning bg-opacity-50 text-body rounded-pill px-3 py-1">
+                                        <i class="bi bi-arrow-up"></i> +5%
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center border-warning h-100">
-                            <div class="card-body">
-                                <i class="bi bi-gear fs-1 text-warning"></i>
-                                <h5 class="card-title mt-2">Configurações</h5>
-                                <p class="card-text">Ajuste os dados da sua loja.</p>
-                                <a href="#" class="btn btn-sm btn-outline-warning">Ajustar</a>
+
+                    <!-- Card 3: Vendidos -->
+                    <div class="col-xl-2 col-lg-4 col-md-6">
+                        <a href="/logista/veiculos?filtro=vendidos" class="text-decoration-none text-reset d-block">
+                            <div class="card border-2 shadow h-100 card-zoom">
+                                <div class="card-body text-center">
+                                    <div class="bg-success shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
+                                        <i class="bi bi-cash fs-2 text-white d-block text-center"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-1">Vendidos</h6>
+                                    <h3 class="mb-2 fw-bold">312</h3>
+                                    <span class="badge shadow bg-success bg-opacity-50 text-body rounded-pill px-3 py-1">
+                                        <i class="bi bi-arrow-down"></i> -2%
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 4: Reservados -->
+                    <div class="col-xl-2 col-lg-4 col-md-6">
+                        <a href="/logista/veiculos?filtro=reservados" class="text-decoration-none text-reset d-block">
+                            <div class="card border-2 shadow h-100 card-zoom">
+                                <div class="card-body text-center">
+                                    <div class="bg-danger shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
+                                        <i class="bi bi-clock-history fs-2 text-white d-block text-center"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-1">Reservados</h6>
+                                    <h3 class="mb-2 fw-bold">89</h3>
+                                    <span class="badge shadow bg-danger bg-opacity-50 text-body rounded-pill px-3 py-1">
+                                        <i class="bi bi-dash"></i> 0%
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 5: Em Estoque -->
+                    <div class="col-xl-2 col-lg-4 col-md-6">
+                        <a href="/logista/veiculos?filtro=estoque" class="text-decoration-none text-reset d-block">
+                            <div class="card border-2 shadow h-100 card-zoom">
+                                <div class="card-body text-center">
+                                    <div class="bg-info shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
+                                        <i class="bi bi-box-seam fs-2 text-white d-block text-center"></i>
+                                    </div>
+                                    <h6 class="text-muted mb-1">Em Estoque</h6>
+                                    <h3 class="mb-2 fw-bold">462</h3>
+                                    <span class="badge shadow bg-info bg-opacity-50 text-body rounded-pill px-3 py-1">
+                                        <i class="bi bi-arrow-up"></i> +8%
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
 

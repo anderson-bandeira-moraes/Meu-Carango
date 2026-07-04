@@ -19,6 +19,16 @@
             footer {
                 margin-top: auto;
             }
+
+            /* Efeito de zoom nos cards do dashboard */
+            .card-zoom {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .card-zoom:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
+            }
         </style>
         <?php if (isset($extraCss)) echo $extraCss; ?>
     </head>
