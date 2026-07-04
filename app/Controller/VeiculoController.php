@@ -324,6 +324,9 @@ class VeiculoController
             $this->redirectWithError('Veículo não encontrado ou acesso negado.');
         }
 
+        // Define o ID da rota para validação de unicidade do slug na edição
+        $this->veiculoRequest->setRouteId($id);
+
         // 1. Valida dados comuns
         if (!$this->veiculoRequest->validate()) {
             $this->handleValidationErrors(
