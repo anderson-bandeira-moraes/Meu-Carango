@@ -545,17 +545,161 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <!-- Campos elétricos -->
+                        <!-- Tração e Transmissão -->
                         <div class="col-md-6">
-                            <label for="tracao_tipo" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
-                            <select name="tracao_tipo" id="tracao_tipo" class="form-select">
+                            <label for="tracao_tipo_eletrico" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
+                            <select name="tracao_tipo" id="tracao_tipo_eletrico" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <option value="dianteira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'dianteira') ?>>Dianteira</option>
                                 <option value="traseira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'traseira') ?>>Traseira</option>
                                 <option value="integral" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'integral') ?>>Integral</option>
                             </select>
+                            <?php if (isset($errors['tracao_tipo'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
+                            <?php endif; ?>
                         </div>
-                        <!-- Outros campos... -->
+                        <div class="col-md-6">
+                            <label for="transmissao_tipo_eletrico" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
+                            <input type="text" name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-control <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '') ?>" maxlength="30">
+                            <?php if (isset($errors['transmissao_tipo'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Motorização -->
+                        <div class="col-md-4">
+                            <label for="potencia_max_cv" class="form-label">Potência Máxima (cv) <span class="text-danger">*</span></label>
+                            <input type="number" name="potencia_max_cv" id="potencia_max_cv" class="form-control <?= isset($errors['potencia_max_cv']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['potencia_max_cv'] ?? $complemento['potencia_max_cv'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['potencia_max_cv'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['potencia_max_cv']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="torque_max_nm" class="form-label">Torque Máximo (Nm)</label>
+                            <input type="number" name="torque_max_nm" id="torque_max_nm" class="form-control <?= isset($errors['torque_max_nm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['torque_max_nm'] ?? $complemento['torque_max_nm'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['torque_max_nm'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['torque_max_nm']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="torque_max_kgfm" class="form-label">Torque Máximo (kgfm)</label>
+                            <input type="number" step="0.1" name="torque_max_kgfm" id="torque_max_kgfm" class="form-control <?= isset($errors['torque_max_kgfm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['torque_max_kgfm'] ?? $complemento['torque_max_kgfm'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['torque_max_kgfm'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['torque_max_kgfm']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Desempenho (opcionais) -->
+                        <div class="col-md-4">
+                            <label for="aceleracao_0_100_seg_eletrico" class="form-label">Aceleração 0-100 (s)</label>
+                            <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['aceleracao_0_100_seg'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="velocidade_max_kmh_eletrico" class="form-label">Velocidade Máxima (km/h)</label>
+                            <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['velocidade_max_kmh'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Bateria -->
+                        <div class="col-md-4">
+                            <label for="capacidade_liquida_kwh" class="form-label">Capacidade Líquida (kWh) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.1" name="capacidade_liquida_kwh" id="capacidade_liquida_kwh" class="form-control <?= isset($errors['capacidade_liquida_kwh']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['capacidade_liquida_kwh'] ?? $complemento['capacidade_liquida_kwh'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['capacidade_liquida_kwh'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['capacidade_liquida_kwh']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="saude_bateria_soh" class="form-label">Saúde da Bateria (SoH %) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.1" name="saude_bateria_soh" id="saude_bateria_soh" class="form-control <?= isset($errors['saude_bateria_soh']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['saude_bateria_soh'] ?? $complemento['saude_bateria_soh'] ?? '') ?>" min="0" max="100">
+                            <?php if (isset($errors['saude_bateria_soh'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['saude_bateria_soh']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="garantia_bateria" class="form-label">Garantia da Bateria</label>
+                            <input type="text" name="garantia_bateria" id="garantia_bateria" class="form-control <?= isset($errors['garantia_bateria']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['garantia_bateria'] ?? $complemento['garantia_bateria'] ?? '') ?>" maxlength="40">
+                            <?php if (isset($errors['garantia_bateria'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['garantia_bateria']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Autonomia -->
+                        <div class="col-md-4">
+                            <label for="autonomia_wltp_km" class="form-label">Autonomia WLTP (km)</label>
+                            <input type="number" name="autonomia_wltp_km" id="autonomia_wltp_km" class="form-control <?= isset($errors['autonomia_wltp_km']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['autonomia_wltp_km'] ?? $complemento['autonomia_wltp_km'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['autonomia_wltp_km'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_wltp_km']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="autonomia_inmetro_km" class="form-label">Autonomia Inmetro (km) <span class="text-danger">*</span></label>
+                            <input type="number" name="autonomia_inmetro_km" id="autonomia_inmetro_km" class="form-control <?= isset($errors['autonomia_inmetro_km']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['autonomia_inmetro_km'] ?? $complemento['autonomia_inmetro_km'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['autonomia_inmetro_km'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_inmetro_km']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Carregamento DC -->
+                        <div class="col-md-4">
+                            <label for="potencia_max_dc_kw" class="form-label">Potência Máxima DC (kW) <span class="text-danger">*</span></label>
+                            <input type="number" name="potencia_max_dc_kw" id="potencia_max_dc_kw" class="form-control <?= isset($errors['potencia_max_dc_kw']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['potencia_max_dc_kw'] ?? $complemento['potencia_max_dc_kw'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['potencia_max_dc_kw'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['potencia_max_dc_kw']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
+                            <input type="text" name="tipo_conector_dc" id="tipo_conector_dc" class="form-control <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '') ?>" maxlength="20">
+                            <?php if (isset($errors['tipo_conector_dc'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['tipo_conector_dc']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tempo_carga_dc_min" class="form-label">Tempo de Carga DC (min)</label>
+                            <input type="number" name="tempo_carga_dc_min" id="tempo_carga_dc_min" class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['tempo_carga_dc_min'] ?? $complemento['tempo_carga_dc_min'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['tempo_carga_dc_min'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['tempo_carga_dc_min']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Carregamento AC (opcional) -->
+                        <div class="col-md-4">
+                            <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
+                            <input type="text" name="tipo_conector_ac" id="tipo_conector_ac" class="form-control <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') ?>" maxlength="20">
+                            <?php if (isset($errors['tipo_conector_ac'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['tipo_conector_ac']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Consumo energético (opcional) -->
+                        <div class="col-md-4">
+                            <label for="consumo_energetico_kwh_100km" class="form-label">Consumo Energético (kWh/100km)</label>
+                            <input type="number" step="0.1" name="consumo_energetico_kwh_100km" id="consumo_energetico_kwh_100km" class="form-control <?= isset($errors['consumo_energetico_kwh_100km']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['consumo_energetico_kwh_100km'] ?? $complemento['consumo_energetico_kwh_100km'] ?? '') ?>" min="0">
+                            <?php if (isset($errors['consumo_energetico_kwh_100km'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_energetico_kwh_100km']) ?></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
