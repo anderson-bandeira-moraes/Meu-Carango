@@ -167,7 +167,6 @@ class VeiculoController
 
         $dados = $this->veiculoRequest->getDadosPrincipais();
         $tipoVeiculo = $this->veiculoRequest->getTipoVeiculo();
-        $opcionaisIds = $this->veiculoRequest->getOpcionaisIds();
 
         // 2. Adiciona lojista_id da sessão
         $dados['lojista_id'] = $this->getLojistaId();
@@ -219,14 +218,14 @@ class VeiculoController
             $dados['gnv_instalado'] = 0;
         }
 
-        // 5. Valida opcionais (redundante, mas seguro)
+        // 5. Valida e obtém os opcionais
         if (!$this->opcionalRequest->validate()) {
             $this->handleValidationErrors(
                 $this->opcionalRequest->getErrors(),
                 $allData
             );
         }
-        // opcionaisIds já está disponível
+        $opcionaisIds = $this->opcionalRequest->getOpcionaisIds();
 
         // 6. Valida e processa imagens (se houver upload)
         if (isset($_FILES['imagens']) && !empty($_FILES['imagens']['tmp_name'][0])) {
@@ -337,7 +336,6 @@ class VeiculoController
 
         $dados = $this->veiculoRequest->getDadosPrincipais();
         $tipoVeiculo = $this->veiculoRequest->getTipoVeiculo();
-        $opcionaisIds = $this->veiculoRequest->getOpcionaisIds();
 
         // 2. Valida complemento específico
         switch ($tipoVeiculo) {
@@ -386,13 +384,14 @@ class VeiculoController
             $dados['gnv_instalado'] = 0;
         }
 
-        // 4. Valida opcionais
+        // 4. Valida e obtém os opcionais
         if (!$this->opcionalRequest->validate()) {
             $this->handleValidationErrors(
                 $this->opcionalRequest->getErrors(),
                 $allData
             );
         }
+        $opcionaisIds = $this->opcionalRequest->getOpcionaisIds();
 
         // 5. Valida e processa imagens (edição)
         if ($this->veiculoImagemRequest->hasImagensAlteracao()) {
