@@ -50,8 +50,9 @@ class VeiculoController
         $lojistaId = $this->getLojistaId();
         $pagina = (int) ($request->getQuery('pagina') ?? 1);
         $porPagina = 20;
+        $filtro = $request->getQuery('filtro'); // Pode ser null
 
-        $veiculos = $this->veiculoService->listarDoLojistaComNomes($lojistaId, $pagina, $porPagina);
+        $veiculos = $this->veiculoService->listarDoLojistaComFiltro($lojistaId, $filtro, $pagina, $porPagina);
 
         // Recupera flash messages
         $success = $this->getFlash('flash_veiculo_success');
