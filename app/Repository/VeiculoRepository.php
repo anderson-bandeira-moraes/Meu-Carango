@@ -485,4 +485,96 @@ class VeiculoRepository
         }
     }
 
+    /**
+     * Busca veículos de um lojista com filtros dinâmicos e paginação.
+     *
+     * @param int $lojistaId
+     * @param array $filtros Array associativo com as condições (ex: ['status_estoque' => 'vendido'])
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function findByLojistaComFiltro(int $lojistaId, array $filtros, int $limit, int $offset): array
+    {
+        try {
+            // Monta a cláusula WHERE base (sempre inclui lojista_id e deleted_at IS NULL)
+            $whereConditions = ['lojista_id = ?', 'deleted_at IS NULL'];
+            $params = [$lojistaId];
+
+            // Adiciona os filtros dinâmicos
+            foreach ($filtros as $coluna => $valor) {
+                $whereConditions[] = "$coluna = ?";
+                $params[] = $valor;
+            }
+
+            $whereClause = implode(' AND ', $whereConditions);
+
+            $sql = "SELECT * FROM veiculos 
+                    WHERE {$whereClause}
+                    ORDER BY created_at DESC
+                    LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->logger->debug('Listagem de veículos com filtro', [
+                'lojista_id' => $lojistaId,
+                'filtros'    => $filtros,
+                'limit'      => $limit,
+                'offset'     => $offset,
+                'count'      => count($results),
+            ]);
+
+            return $results;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao listar veículos com filtro', [
+                'lojista_id' => $lojistaId,
+                'filtros'    => $filtros,
+                'error'      => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Conta o total de veículos de um lojista que atendem aos filtros.
+     *
+     * @param int $lojistaId
+     * @param array $filtros Array associativo com as condições (ex: ['status_estoque' => 'vendido'])
+     * @return int
+     */
+    public function countByLojistaComFiltro(int $lojistaId, array $filtros): int
+    {
+        try {
+            // Monta a cláusula WHERE base (sempre inclui lojista_id e deleted_at IS NULL)
+            $whereConditions = ['lojista_id = ?', 'deleted_at IS NULL'];
+            $params = [$lojistaId];
+
+            // Adiciona os filtros dinâmicos
+            foreach ($filtros as $coluna => $valor) {
+                $whereConditions[] = "$coluna = ?";
+                $params[] = $valor;
+            }
+
+            $whereClause = implode(' AND ', $whereConditions);
+
+            $sql = "SELECT COUNT(*) FROM veiculos WHERE {$whereClause}";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao contar veículos com filtro', [
+                'lojista_id' => $lojistaId,
+                'filtros'    => $filtros,
+                'error'      => $e->getMessage(),
+            ]);
+            return 0;
+        }
+    }
+
 }
