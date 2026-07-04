@@ -14,8 +14,10 @@ use App\Helpers\SlugGenerator;
  * FormRequest para validação dos campos comuns do veículo (tabela veiculos).
  *
  * Valida os campos principais, dimensões, status e flags.
- * Campos específicos (combustão, elétrico, híbrido, GNV, opcionais)
+ * Campos específicos (combustão, elétrico, híbrido, GNV)
  * são validados em requests separados.
+ * 
+ * A validação de opcionais é responsabilidade do VeiculoOpcionalRequest.
  */
 class VeiculoRequest extends FormRequest
 {
@@ -85,10 +87,6 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'   => 'nullable|boolean',
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
-
-            // Opcionais (array de IDs)
-            'opcionaisIds'    => 'nullable|array',
-            'opcionaisIds.*'  => 'integer|exists:opcionais,id',
         ];
     }
 
@@ -168,11 +166,6 @@ class VeiculoRequest extends FormRequest
             // Status
             'status_estoque.in' => 'O status de estoque deve ser disponível, vendido ou reservado.',
             'status_vitrine.in' => 'O status da vitrine deve ser ativo ou inativo.',
-
-            // Opcionais (array)
-            'opcionaisIds.array'    => 'A lista de opcionais deve ser um array.',
-            'opcionaisIds.*.integer' => 'Cada ID de opcional deve ser um número inteiro.',
-            'opcionaisIds.*.exists'  => 'Um ou mais opcionais selecionados não existem.',
         ];
     }
 
@@ -336,26 +329,5 @@ class VeiculoRequest extends FormRequest
     {
         $validated = $this->validated();
         return !empty($validated['gnv_instalado']);
-    }
-
-    /**
-     * Retorna os IDs de opcionais selecionados.
-     *
-     * @return array
-     */
-    public function getOpcionaisIds(): array
-    {
-        $validated = $this->validated();
-        return $validated['opcionaisIds'] ?? [];
-    }
-
-    /**
-     * Verifica se a requisição tem opcionais.
-     *
-     * @return bool
-     */
-    public function hasOpcionais(): bool
-    {
-        return !empty($this->getOpcionaisIds());
     }
 }
