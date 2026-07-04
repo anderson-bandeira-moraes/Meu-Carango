@@ -39,6 +39,7 @@ Session::start([
 
 // ============== CARREGAR HELPERS ==============
 require_once ROOT_DIR . '/app/Helpers/csrf.php';
+require_once ROOT_DIR . '/app/Helpers/veiculos.php';
 
 // ============== CONEXÃO COM BANCO ==============
 use App\Core\Database;
