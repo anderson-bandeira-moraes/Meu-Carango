@@ -1040,4 +1040,59 @@ class VeiculoService
         return $resultado;
     }
 
+    /**
+     * Lista veículos de um lojista com filtro, paginação e nomes de marca/modelo.
+     *
+     * @param int $lojistaId
+     * @param string|null $filtro 'vitrine', 'vendidos', 'reservados', 'estoque' ou null para todos
+     * @param int $pagina
+     * @param int $porPagina
+     * @return array{veiculos: array, total: int, pagina: int, totalPaginas: int}
+     */
+    public function listarDoLojistaComFiltro(int $lojistaId, ?string $filtro = null, int $pagina = 1, int $porPagina = 20): array
+    {
+        // Converte a string de filtro para o array de condições
+        $filtros = $this->mapearFiltro($filtro);
+
+        $offset = ($pagina - 1) * $porPagina;
+
+        // Busca os veículos e o total já filtrados
+        $veiculos = $this->veiculoRepo->findByLojistaComFiltro($lojistaId, $filtros, $porPagina, $offset);
+        $total = $this->veiculoRepo->countByLojistaComFiltro($lojistaId, $filtros);
+
+        // Enriquece cada veículo com os nomes da marca e modelo
+        foreach ($veiculos as &$veiculo) {
+            $marca = $this->marcaRepo->findById($veiculo['marca_id'] ?? 0);
+            $modelo = $this->modeloRepo->findById($veiculo['modelo_id'] ?? 0);
+
+            $veiculo['marca_nome'] = $marca['nome'] ?? 'N/A';
+            $veiculo['modelo_nome'] = $modelo['nome'] ?? 'N/A';
+        }
+        unset($veiculo); // Remove a referência para evitar efeitos colaterais
+
+        return [
+            'veiculos'      => $veiculos,
+            'total'         => $total,
+            'pagina'        => $pagina,
+            'totalPaginas'  => (int) ceil($total / $porPagina),
+        ];
+    }
+
+    /**
+     * Converte a string de filtro para o array de condições do Repository.
+     *
+     * @param string|null $filtro
+     * @return array
+     */
+    private function mapearFiltro(?string $filtro): array
+    {
+        return match ($filtro) {
+            'vitrine'   => ['status_vitrine' => 'ativo', 'status_estoque' => 'disponivel'],
+            'vendidos'  => ['status_estoque' => 'vendido'],
+            'reservados'=> ['status_estoque' => 'reservado'],
+            'estoque'   => ['status_estoque' => 'disponivel', 'status_vitrine' => 'inativo'],
+            default     => [],
+        };
+    }
+
 }
