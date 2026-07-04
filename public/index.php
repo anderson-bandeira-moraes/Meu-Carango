@@ -378,7 +378,12 @@ $container->set(TwoFactorRequest::class, function($c) {
 
 // ============== NOVAS FORMREQUESTS DE VEÍCULOS ==============
 $container->set(VeiculoRequest::class, function($c) {
-    return new VeiculoRequest($c->get(Request::class));
+    return new VeiculoRequest(
+        $c->get(Request::class),
+        $c->get(MarcaRepository::class),
+        $c->get(ModeloRepository::class),
+        $c->get(VeiculoRepository::class)
+    );
 });
 
 $container->set(VeiculoCombustaoRequest::class, function($c) {
