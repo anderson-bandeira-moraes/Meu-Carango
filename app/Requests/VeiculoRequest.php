@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Requests;
 
 use App\Core\FormRequest;
+use App\Repository\MarcaRepository;
+use App\Repository\ModeloRepository;
+use App\Repository\VeiculoRepository;
+use App\Helpers\SlugGenerator;
 
 /**
  * FormRequest para validação dos campos comuns do veículo (tabela veiculos).
@@ -15,6 +19,34 @@ use App\Core\FormRequest;
  */
 class VeiculoRequest extends FormRequest
 {
+    private MarcaRepository $marcaRepo;
+    private ModeloRepository $modeloRepo;
+    private VeiculoRepository $veiculoRepo;
+    private ?int $routeId = null;
+
+    public function __construct(
+        \App\Core\Request $request,
+        MarcaRepository $marcaRepo,
+        ModeloRepository $modeloRepo,
+        VeiculoRepository $veiculoRepo
+    ) {
+        parent::__construct($request);
+        $this->marcaRepo = $marcaRepo;
+        $this->modeloRepo = $modeloRepo;
+        $this->veiculoRepo = $veiculoRepo;
+    }
+
+    /**
+     * Define o ID da rota (usado na edição para ignorar o próprio registro).
+     *
+     * @param int $id
+     * @return void
+     */
+    public function setRouteId(int $id): void
+    {
+        $this->routeId = $id;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -178,6 +210,77 @@ class VeiculoRequest extends FormRequest
     }
 
     /**
+     * {@inheritDoc}
+     * 
+     * Adiciona validação de unicidade do slug e geração automática.
+     */
+    public function validate(): bool
+    {
+        // 1. Executa a validação base
+        if (!parent::validate()) {
+            return false;
+        }
+
+        // 2. Obtém os dados validados
+        $data = $this->validated();
+
+        // 3. Verifica se marca_id e modelo_id estão presentes (já validados)
+        $marcaId = $data['marca_id'] ?? null;
+        $modeloId = $data['modelo_id'] ?? null;
+        $anoModelo = (int) ($data['ano_modelo'] ?? 0);
+
+        if (!$marcaId || !$modeloId || !$anoModelo) {
+            // Isso não deve ocorrer porque são obrigatórios, mas mantemos segurança
+            return true; // não geramos erro aqui, pois os campos já foram validados
+        }
+
+        // 4. Busca os nomes da marca e modelo
+        $marca = $this->marcaRepo->findById($marcaId);
+        $modelo = $this->modeloRepo->findById($modeloId);
+
+        if (!$marca || !$modelo) {
+            // Se não encontrar, não adicionamos erro aqui (já foi validado exists)
+            return true;
+        }
+
+        // 5. Gera o slug
+        $slug = SlugGenerator::generate($marca['nome'], $modelo['nome'], $anoModelo);
+
+        // 6. Verifica unicidade do slug
+        $exists = $this->veiculoRepo->findBySlug($slug);
+        if ($exists) {
+            // Se for edição, ignora se o slug pertence ao próprio veículo
+            if ($this->routeId !== null && (int)$exists['id'] === $this->routeId) {
+                // Pertence ao mesmo veículo, ok
+            } else {
+                // Conflito: adiciona erro
+                $this->addError('slug', 'Já existe um veículo com esse slug. Por favor, altere o ano ou modelo.');
+                return false;
+            }
+        }
+
+        // 7. Armazena o slug nos dados validados para uso posterior
+        $this->validated['slug'] = $slug;
+
+        return true;
+    }
+
+    /**
+     * Adiciona um erro ao campo (usado internamente).
+     *
+     * @param string $field
+     * @param string $message
+     * @return void
+     */
+    private function addError(string $field, string $message): void
+    {
+        if (!isset($this->errors[$field])) {
+            $this->errors[$field] = [];
+        }
+        $this->errors[$field][] = $message;
+    }
+
+    /**
      * Retorna os dados da tabela veiculos já validados e sanitizados.
      *
      * @return array
@@ -209,6 +312,7 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'         => $validated['gnv_instalado'] ?? 0,
             'status_estoque'        => $validated['status_estoque'] ?? 'disponivel',
             'status_vitrine'        => $validated['status_vitrine'] ?? 'inativo',
+            'slug'                  => $validated['slug'] ?? null, // Inclui o slug gerado
         ];
     }
 
