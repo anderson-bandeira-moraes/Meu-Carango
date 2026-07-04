@@ -174,30 +174,6 @@ class VeiculoService
             return false;
         }
 
-        // Busca os nomes da marca e modelo (se os IDs estiverem presentes)
-        $marcaId = $dados['marca_id'] ?? $veiculo['marca_id'] ?? null;
-        $modeloId = $dados['modelo_id'] ?? $veiculo['modelo_id'] ?? null;
-
-        if ($marcaId && $modeloId) {
-            $marca = $this->marcaRepo->findById($marcaId);
-            $modelo = $this->modeloRepo->findById($modeloId);
-
-            if (!$marca || !$modelo) {
-                $this->logger->error('Marca ou modelo não encontrados', [
-                    'marca_id'  => $marcaId,
-                    'modelo_id' => $modeloId,
-                ]);
-                return false;
-            }
-
-            // Gera o slug com base nos nomes da marca/modelo e ano (se disponível)
-            $ano = (int) ($dados['ano_modelo'] ?? $veiculo['ano_modelo'] ?? 0);
-            $dados['slug'] = SlugGenerator::generate($marca['nome'], $modelo['nome'], $ano);
-        } else {
-            // Fallback: manter o slug existente (caso os IDs não sejam fornecidos)
-            $dados['slug'] = $veiculo['slug'] ?? null;
-        }
-
         // Se o tipo mudou, precisamos deletar o complemento antigo
         $tipoAtual = $this->detectarTipoAtual($veiculoId);
         $deveDeletarComplementoAntigo = ($tipoAtual !== null && $tipoAtual !== $tipoVeiculo);
