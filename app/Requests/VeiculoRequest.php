@@ -205,7 +205,8 @@ class VeiculoRequest extends FormRequest
     /**
      * {@inheritDoc}
      * 
-     * Adiciona validação de unicidade do slug e geração automática.
+     * Adiciona validação de unicidade do slug e geração automática,
+     * além de validação condicional para GNV (apenas veículos a combustão).
      */
     public function validate(): bool
     {
@@ -217,7 +218,13 @@ class VeiculoRequest extends FormRequest
         // 2. Obtém os dados validados
         $data = $this->validated();
 
-        // 3. Verifica se marca_id e modelo_id estão presentes (já validados)
+        // 3. Valida condicional: GNV só permitido em veículos a combustão
+        if (!empty($data['gnv_instalado']) && ($data['tipo_veiculo'] ?? '') !== 'combustao') {
+            $this->addError('gnv_instalado', 'O kit GNV só pode ser instalado em veículos a combustão.');
+            return false;
+        }
+
+        // 4. Verifica se marca_id e modelo_id estão presentes (já validados)
         $marcaId = $data['marca_id'] ?? null;
         $modeloId = $data['modelo_id'] ?? null;
         $anoModelo = (int) ($data['ano_modelo'] ?? 0);
@@ -227,7 +234,7 @@ class VeiculoRequest extends FormRequest
             return true; // não geramos erro aqui, pois os campos já foram validados
         }
 
-        // 4. Busca os nomes da marca e modelo
+        // 5. Busca os nomes da marca e modelo
         $marca = $this->marcaRepo->findById($marcaId);
         $modelo = $this->modeloRepo->findById($modeloId);
 
@@ -236,10 +243,10 @@ class VeiculoRequest extends FormRequest
             return true;
         }
 
-        // 5. Gera o slug
+        // 6. Gera o slug
         $slug = SlugGenerator::generate($marca['nome'], $modelo['nome'], $anoModelo);
 
-        // 6. Verifica unicidade do slug
+        // 7. Verifica unicidade do slug
         $exists = $this->veiculoRepo->findBySlug($slug);
         if ($exists) {
             // Se for edição, ignora se o slug pertence ao próprio veículo
@@ -252,7 +259,7 @@ class VeiculoRequest extends FormRequest
             }
         }
 
-        // 7. Armazena o slug nos dados validados para uso posterior
+        // 8. Armazena o slug nos dados validados para uso posterior
         $this->validated['slug'] = $slug;
 
         return true;
