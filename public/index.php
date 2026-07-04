@@ -72,10 +72,31 @@ use App\Middleware\UserTwoFactorMiddleware;
 use App\Service\UserTwoFactorService;
 use App\Controller\UserTwoFactorController;
 use App\Repository\UsuarioRepository;
+// --- NOVOS USES PARA VEÍCULOS ---
+use App\Repository\VeiculoRepository;
+use App\Repository\VeiculoCombustaoRepository;
+use App\Repository\VeiculoEletricoRepository;
+use App\Repository\VeiculoHibridoRepository;
+use App\Repository\VeiculoGNVRepository;
+use App\Repository\VeiculoOpcionalRepository;
+use App\Repository\OpcionalRepository;
+use App\Repository\VeiculoImagemRepository;
+use App\Repository\MarcaRepository;
+use App\Repository\ModeloRepository;
+use App\Service\VeiculoService;
 // --- NOVOS USES PARA FORMREQUEST ---
 use App\Core\Request;
 use App\Requests\LoginRequest;
 use App\Requests\TwoFactorRequest;
+use App\Requests\VeiculoRequest;
+use App\Requests\VeiculoCombustaoRequest;
+use App\Requests\VeiculoEletricoRequest;
+use App\Requests\VeiculoHibridoRequest;
+use App\Requests\VeiculoGNVRequest;
+use App\Requests\VeiculoOpcionalRequest;
+use App\Requests\VeiculoImagemRequest;
+// --- NOVOS USES PARA CONTROLLER ---
+use App\Controller\VeiculoController;
 
 $container = new Container();
 
@@ -114,7 +135,7 @@ $container->set(App\Core\ViewRenderer::class, function() {
     return new App\Core\ViewRenderer(VIEW_DIR);
 });
 
-// Repositórios
+// ============== REPOSITÓRIOS ==============
 $container->set(App\Repository\UsuarioRepository::class, function($c) {
     return new App\Repository\UsuarioRepository(
         $c->get(PDO::class),
@@ -122,8 +143,19 @@ $container->set(App\Repository\UsuarioRepository::class, function($c) {
     );
 });
 
-$container->set(App\Repository\VeiculoRepository::class, function($c) {
-    return new App\Repository\VeiculoRepository($c->get(PDO::class));
+$container->set(App\Repository\AdministradorRepository::class, function($c) {
+    return new App\Repository\AdministradorRepository($c->get(PDO::class));
+});
+
+$container->set(App\Repository\LoginAttemptRepository::class, function($c) {
+    return new App\Repository\LoginAttemptRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(App\Repository\TwoFactorRepository::class, function($c) {
+    return new App\Repository\TwoFactorRepository($c->get(PDO::class), $c->get(LoggerInterface::class));
 });
 
 $container->set(App\Repository\AnuncioRepository::class, function($c) {
@@ -132,6 +164,77 @@ $container->set(App\Repository\AnuncioRepository::class, function($c) {
 
 $container->set(App\Repository\FotoRepository::class, function($c) {
     return new App\Repository\FotoRepository($c->get(PDO::class));
+});
+
+// ============== REPOSITÓRIOS DE VEÍCULOS ==============
+$container->set(VeiculoRepository::class, function($c) {
+    return new VeiculoRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoCombustaoRepository::class, function($c) {
+    return new VeiculoCombustaoRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoEletricoRepository::class, function($c) {
+    return new VeiculoEletricoRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoHibridoRepository::class, function($c) {
+    return new VeiculoHibridoRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoGNVRepository::class, function($c) {
+    return new VeiculoGNVRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoOpcionalRepository::class, function($c) {
+    return new VeiculoOpcionalRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(OpcionalRepository::class, function($c) {
+    return new OpcionalRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(VeiculoImagemRepository::class, function($c) {
+    return new VeiculoImagemRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(MarcaRepository::class, function($c) {
+    return new MarcaRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+$container->set(ModeloRepository::class, function($c) {
+    return new ModeloRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
 });
 
 // Helpers
@@ -171,28 +274,51 @@ $container->set(App\Service\UserTwoFactorService::class, function($c) {
     );
 });
 
-// Registra o wrapper da sessão (substitui o acesso direto estático)
-$container->set(SessionInterface::class, function() {
-    return new SessionWrapper();
-});
-
-// ============== CSRF ==============
-// Gerador de token CSRF (abstração)
-$container->set(CsrfTokenGeneratorInterface::class, function() {
-    return new CsrfTokenGenerator();
-});
-
-// Middleware de geração do token
-$container->set(CsrfTokenMiddleware::class, function($c) {
-    return new CsrfTokenMiddleware(
+$container->set(App\Service\AdminAuthService::class, function($c) {
+    return new App\Service\AdminAuthService(
+        $c->get(App\Repository\AdministradorRepository::class),
         $c->get(SessionInterface::class),
-        $c->get(CsrfTokenGeneratorInterface::class)
+        $c->get(LoggerInterface::class),
+        $c->get(App\Repository\LoginAttemptRepository::class),
+        $c->get(App\Service\TwoFactorService::class)
     );
 });
 
-// Middleware de validação do token
-$container->set(CsrfValidationMiddleware::class, function($c) {
-    return new CsrfValidationMiddleware(
+$container->set(App\Service\AuthService::class, function($c) {
+    return new App\Service\AuthService(
+        $c->get(App\Repository\UsuarioRepository::class),
+        $c->get(SessionInterface::class),
+        $c->get(LoggerInterface::class),
+        $c->get(App\Repository\LoginAttemptRepository::class),
+        $c->get(App\Service\UserTwoFactorService::class)
+    );
+});
+
+// ============== NOVO SERVIÇO DE VEÍCULOS ==============
+$container->set(VeiculoService::class, function($c) {
+    return new VeiculoService(
+        $c->get(VeiculoRepository::class),
+        $c->get(VeiculoCombustaoRepository::class),
+        $c->get(VeiculoEletricoRepository::class),
+        $c->get(VeiculoHibridoRepository::class),
+        $c->get(VeiculoGNVRepository::class),
+        $c->get(VeiculoOpcionalRepository::class),
+        $c->get(OpcionalRepository::class),
+        $c->get(VeiculoImagemRepository::class),
+        $c->get(MarcaRepository::class),
+        $c->get(ModeloRepository::class),
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+// ============== MIDDLEWARES ==============
+$container->set(App\Middleware\AdminMiddleware::class, function($c) {
+    return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
+});
+
+$container->set(App\Middleware\AuthMiddleware::class, function($c) {
+    return new App\Middleware\AuthMiddleware(
         $c->get(SessionInterface::class),
         $c->get(LoggerInterface::class)
     );
@@ -212,21 +338,98 @@ $container->set(App\Middleware\UserTwoFactorMiddleware::class, function($c) {
     );
 });
 
-// ============== AUTENTICAÇÃO (LOJISTA) ==============
-$container->set(App\Middleware\AuthMiddleware::class, function($c) {
-    return new App\Middleware\AuthMiddleware(
+// ============== CSRF ==============
+$container->set(CsrfTokenGeneratorInterface::class, function() {
+    return new CsrfTokenGenerator();
+});
+
+$container->set(CsrfTokenMiddleware::class, function($c) {
+    return new CsrfTokenMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(CsrfTokenGeneratorInterface::class)
+    );
+});
+
+$container->set(CsrfValidationMiddleware::class, function($c) {
+    return new CsrfValidationMiddleware(
         $c->get(SessionInterface::class),
         $c->get(LoggerInterface::class)
     );
 });
 
-$container->set(App\Service\AuthService::class, function($c) {
-    return new App\Service\AuthService(
-        $c->get(App\Repository\UsuarioRepository::class),
+// ============== SESSÃO ==============
+$container->set(SessionInterface::class, function() {
+    return new SessionWrapper();
+});
+
+// ============== CRIAÇÃO DA REQUEST E REGISTRO NO CONTAINER ==============
+$container->set(Request::class, function() {
+    return new Request();
+});
+
+// ============== REGISTRO DAS FORMREQUESTS ==============
+$container->set(LoginRequest::class, function($c) {
+    return new LoginRequest($c->get(Request::class));
+});
+
+$container->set(TwoFactorRequest::class, function($c) {
+    return new TwoFactorRequest($c->get(Request::class));
+});
+
+// ============== NOVAS FORMREQUESTS DE VEÍCULOS ==============
+$container->set(VeiculoRequest::class, function($c) {
+    return new VeiculoRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoCombustaoRequest::class, function($c) {
+    return new VeiculoCombustaoRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoEletricoRequest::class, function($c) {
+    return new VeiculoEletricoRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoHibridoRequest::class, function($c) {
+    return new VeiculoHibridoRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoGNVRequest::class, function($c) {
+    return new VeiculoGNVRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoOpcionalRequest::class, function($c) {
+    return new VeiculoOpcionalRequest($c->get(Request::class));
+});
+
+$container->set(VeiculoImagemRequest::class, function($c) {
+    return new VeiculoImagemRequest($c->get(Request::class));
+});
+
+// ============== CONTROLLERS ==============
+$container->set(App\Controller\AdminAuthController::class, function($c) {
+    return new App\Controller\AdminAuthController(
+        $c->get(App\Service\AdminAuthService::class),
+        $c->get(App\Core\ViewRenderer::class),
         $c->get(SessionInterface::class),
-        $c->get(LoggerInterface::class),
-        $c->get(App\Repository\LoginAttemptRepository::class),
-        $c->get(App\Service\UserTwoFactorService::class)
+        $c->get(LoginRequest::class)
+    );
+});
+
+$container->set(App\Controller\TwoFactorController::class, function($c) {
+    return new App\Controller\TwoFactorController(
+        $c->get(App\Service\TwoFactorService::class),
+        $c->get(App\Core\ViewRenderer::class),
+        $c->get(SessionInterface::class),
+        $c->get(TwoFactorRequest::class)
+    );
+});
+
+$container->set(App\Controller\UserTwoFactorController::class, function($c) {
+    return new App\Controller\UserTwoFactorController(
+        $c->get(App\Service\UserTwoFactorService::class),
+        $c->get(App\Core\ViewRenderer::class),
+        $c->get(SessionInterface::class),
+        $c->get(TwoFactorRequest::class)
     );
 });
 
@@ -239,81 +442,21 @@ $container->set(App\Controller\AuthController::class, function($c) {
     );
 });
 
-// ============== ADMINISTRAÇÃO ==============
-
-// Middleware de administrador
-$container->set(App\Middleware\AdminMiddleware::class, function($c) {
-    return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
-});
-
-// Repositórios
-$container->set(App\Repository\AdministradorRepository::class, function($c) {
-    return new App\Repository\AdministradorRepository($c->get(PDO::class));
-});
-
-$container->set(App\Repository\LoginAttemptRepository::class, function($c) {
-    return new App\Repository\LoginAttemptRepository(
-        $c->get(PDO::class),
-        $c->get(LoggerInterface::class)
-    );
-});
-
-$container->set(App\Repository\TwoFactorRepository::class, function($c) {
-    return new App\Repository\TwoFactorRepository($c->get(PDO::class), $c->get(LoggerInterface::class));
-});
-
-// Services
-$container->set(App\Service\AdminAuthService::class, function($c) {
-    return new App\Service\AdminAuthService(
-        $c->get(App\Repository\AdministradorRepository::class),
-        $c->get(SessionInterface::class),
-        $c->get(LoggerInterface::class),
-        $c->get(App\Repository\LoginAttemptRepository::class),
-        $c->get(App\Service\TwoFactorService::class)
-    );
-});
-
-// ============== CRIAÇÃO DA REQUEST E REGISTRO NO CONTAINER ==============
-// A Request é registrada como uma factory para que seja criada sob demanda
-$container->set(Request::class, function() {
-    return new Request();
-});
-
-// ============== REGISTRO DAS FORMREQUESTS ==============
-// As FormRequests dependem da Request
-$container->set(LoginRequest::class, function($c) {
-    return new LoginRequest($c->get(Request::class));
-});
-
-$container->set(TwoFactorRequest::class, function($c) {
-    return new TwoFactorRequest($c->get(Request::class));
-});
-
-// ============== CONTROLLERS ==============
-$container->set(App\Controller\AdminAuthController::class, function($c) {
-    return new App\Controller\AdminAuthController(
-        $c->get(App\Service\AdminAuthService::class),
+// ============== NOVO CONTROLLER DE VEÍCULOS ==============
+$container->set(VeiculoController::class, function($c) {
+    return new VeiculoController(
+        $c->get(VeiculoService::class),
         $c->get(App\Core\ViewRenderer::class),
         $c->get(SessionInterface::class),
-        $c->get(LoginRequest::class) // injeta LoginRequest
-    );
-});
-
-$container->set(App\Controller\TwoFactorController::class, function($c) {
-    return new App\Controller\TwoFactorController(
-        $c->get(App\Service\TwoFactorService::class),
-        $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class),
-        $c->get(TwoFactorRequest::class) // substitui Logger por TwoFactorRequest
-    );
-});
-
-$container->set(App\Controller\UserTwoFactorController::class, function($c) {
-    return new App\Controller\UserTwoFactorController(
-        $c->get(App\Service\UserTwoFactorService::class),
-        $c->get(App\Core\ViewRenderer::class),
-        $c->get(SessionInterface::class),
-        $c->get(TwoFactorRequest::class) // injeta TwoFactorRequest
+        $c->get(VeiculoRequest::class),
+        $c->get(VeiculoCombustaoRequest::class),
+        $c->get(VeiculoEletricoRequest::class),
+        $c->get(VeiculoHibridoRequest::class),
+        $c->get(VeiculoGNVRequest::class),
+        $c->get(VeiculoOpcionalRequest::class),
+        $c->get(VeiculoImagemRequest::class),
+        $c->get(MarcaRepository::class),
+        $c->get(ModeloRepository::class)
     );
 });
 
@@ -322,7 +465,7 @@ use App\Core\Router;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
 
-$router  = new Router($container);
+$router = new Router($container);
 
 // Obtém a Request a partir do container (a mesma instância que será injetada)
 $request = $container->get(Request::class);
@@ -363,27 +506,6 @@ $router->group('/admin', function(Router $router) use ($container) {
     $router->get('', 'AdminAuthController@index');
 });
 
-// Grupo /logista protegido (autenticação + 2FA + CSRF)
-$router->group('/logista', function(Router $router) use ($container) {
-    $router->middleware($container->get(CsrfTokenMiddleware::class));
-    $router->middleware($container->get(AuthMiddleware::class));
-    $router->middleware($container->get(UserTwoFactorMiddleware::class));
-    $router->middleware($container->get(CsrfValidationMiddleware::class));
-
-    $router->get('/dashboard', 'AuthController@index');
-    $router->get('/veiculos', 'VeiculoController@listar');
-    $router->get('/veiculos/criar', 'VeiculoController@formCriar');
-    $router->post('/veiculos/criar', 'VeiculoController@criar');
-    $router->get('/anuncios', 'AnuncioController@listar');
-    $router->get('/anuncios/criar', 'AnuncioController@formCriar');
-    $router->post('/anuncios/criar', 'AnuncioController@criar');
-});
-
-// ---------- Rotas públicas ----------
-$router->get('/', 'HomeController@index');
-$router->get('/loja/{slug}', 'VitrineController@listar');
-$router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
-
 // ============== ROTAS LOJISTA ==============
 
 // Rotas de login (públicas, com CSRF)
@@ -407,6 +529,60 @@ $router->group('/logista/2fa', function(Router $router) use ($container) {
     $router->post('/verify', 'UserTwoFactorController@verify');
     $router->post('/resend', 'UserTwoFactorController@resend');
 });
+
+// ============== ROTAS DE VEÍCULOS (LOJISTA) ==============
+// Todas as rotas protegidas por autenticação, 2FA e CSRF
+$router->group('/logista', function(Router $router) use ($container) {
+    // Middlewares aplicados a todas as rotas deste grupo
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->middleware($container->get(AuthMiddleware::class));
+    $router->middleware($container->get(UserTwoFactorMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+
+    // Dashboard
+    $router->get('/dashboard', 'AuthController@index');
+
+    // ====== ROTAS DE VEÍCULOS ======
+    // Listagem (com suporte a filtros via ?filtro=)
+    $router->get('/veiculos', 'VeiculoController@index');
+
+    // Lixeira
+    $router->get('/veiculos/lixeira', 'VeiculoController@trash');
+
+    // Formulário de criação
+    $router->get('/veiculos/criar', 'VeiculoController@create');
+
+    // Salvar novo veículo
+    $router->post('/veiculos/salvar', 'VeiculoController@store');
+
+    // Formulário de edição
+    $router->get('/veiculos/editar/{id}', 'VeiculoController@edit');
+
+    // Atualizar veículo
+    $router->post('/veiculos/atualizar/{id}', 'VeiculoController@update');
+
+    // Soft delete (mover para lixeira)
+    $router->post('/veiculos/deletar/{id}', 'VeiculoController@destroy');
+
+    // Restaurar da lixeira
+    $router->post('/veiculos/restaurar/{id}', 'VeiculoController@restore');
+
+    // Toggle vitrine (ativar/desativar)
+    $router->post('/veiculos/toggle-vitrine/{id}', 'VeiculoController@toggleVitrine');
+
+    // Remover imagem individual (AJAX)
+    $router->post('/veiculos/delete-imagem/{veiculoId}/{imagemId}', 'VeiculoController@deleteImagem');
+
+    // ====== ROTAS DE ANÚNCIOS (mantidas para compatibilidade) ======
+    $router->get('/anuncios', 'AnuncioController@listar');
+    $router->get('/anuncios/criar', 'AnuncioController@formCriar');
+    $router->post('/anuncios/criar', 'AnuncioController@criar');
+});
+
+// ---------- Rotas públicas ----------
+$router->get('/', 'HomeController@index');
+$router->get('/loja/{slug}', 'VitrineController@listar');
+$router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
 
 // ============== DISPATCH COM TRATAMENTO DE EXCEÇÕES ==============
 try {
