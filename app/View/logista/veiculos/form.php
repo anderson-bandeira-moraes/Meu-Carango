@@ -1164,6 +1164,84 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 }
             });
         }
+
+        // =============================================
+        // 7. APLICAR REGRAS CONDICIONAIS PARA HÍBRIDOS
+        // =============================================
+        const tipoHibridoSelect = document.getElementById('tipo_hibrido');
+        const modoEletricoPuro = document.getElementById('modo_eletrico_puro');
+        const phevFields = document.querySelectorAll('.phev-field');
+
+        /**
+         * Aplica as regras de exibição e valores forçados com base no tipo de híbrido.
+         * @param {string} tipo - 'hev', 'mhev', 'phev' ou vazio
+         */
+        function aplicarRegrasHibrido(tipo) {
+            // Se não houver tipo selecionado ou não houver regras, exibe todos os campos (padrão)
+            if (!tipo || !CONFIG.regrasHibrido || !CONFIG.regrasHibrido[tipo]) {
+                // Exibe todos os campos (comportamento padrão)
+                if (modoEletricoPuro) {
+                    modoEletricoPuro.closest('.col-md-6').style.display = 'block';
+                    modoEletricoPuro.disabled = false;
+                }
+                phevFields.forEach(field => {
+                    field.closest('.col-md-3, .col-md-4, .col-md-6')?.style.display = 'block';
+                });
+                return;
+            }
+
+            const regras = CONFIG.regrasHibrido[tipo];
+
+            // 1. Aplica regras para modo_eletrico_puro
+            if (modoEletricoPuro && regras.modo_eletrico_puro) {
+                const regra = regras.modo_eletrico_puro;
+                const container = modoEletricoPuro.closest('.col-md-6');
+
+                if (regra.visivel) {
+                    container.style.display = 'block';
+                    modoEletricoPuro.disabled = false;
+                    if (regra.forcar_valor !== null) {
+                        modoEletricoPuro.value = regra.forcar_valor;
+                        modoEletricoPuro.disabled = true; // bloqueia alteração
+                    }
+                } else {
+                    container.style.display = 'none';
+                    if (regra.forcar_valor !== null) {
+                        modoEletricoPuro.value = regra.forcar_valor;
+                    }
+                }
+            }
+
+            // 2. Aplica regras para campos PHEV (carregamento e autonomia elétrica)
+            const phevVisivel = regras.campos_phev?.visivel ?? false;
+            phevFields.forEach(field => {
+                // Encontra o container pai (div com classe col-*)
+                const container = field.closest('.col-md-3, .col-md-4, .col-md-6');
+                if (container) {
+                    container.style.display = phevVisivel ? 'block' : 'none';
+                }
+            });
+        }
+
+        // =============================================
+        // ASSOCIAR AO EVENTO CHANGE
+        // =============================================
+        if (tipoHibridoSelect) {
+            tipoHibridoSelect.addEventListener('change', function() {
+                aplicarRegrasHibrido(this.value);
+            });
+
+            // Executa no carregamento para sincronizar (especialmente na edição)
+            // Aguarda o DOM estar pronto (já estamos dentro do DOMContentLoaded)
+            // Se o tipo já estiver selecionado, aplica as regras imediatamente
+            const tipoInicial = tipoHibridoSelect.value;
+            if (tipoInicial) {
+                aplicarRegrasHibrido(tipoInicial);
+            } else {
+                // Se não houver tipo selecionado, exibe todos os campos (padrão)
+                aplicarRegrasHibrido('');
+            }
+        }
     });
 </script>
 
