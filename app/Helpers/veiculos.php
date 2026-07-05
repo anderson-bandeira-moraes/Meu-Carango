@@ -26,3 +26,28 @@ if (!function_exists('motorizacoes_list')) {
         return $list;
     }
 }
+
+if (!function_exists('regras_hibrido')) {
+    /**
+     * Retorna as regras condicionais para veículos híbridos (HEV, MHEV, PHEV).
+     *
+     * As regras definem a visibilidade e valores forçados para campos específicos
+     * de acordo com o tipo de híbrido selecionado no formulário.
+     *
+     * A estrutura do array retornado segue o formato definido em config/veiculos.php
+     * sob a chave 'regras_hibrido'. Caso a chave não exista, retorna um array vazio.
+     *
+     * @return array Regras para cada tipo de híbrido (hev, mhev, phev)
+     */
+    function regras_hibrido(): array
+    {
+        static $rules = null;
+
+        if ($rules === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $rules = $config['regras_hibrido'] ?? [];
+        }
+
+        return $rules;
+    }
+}
