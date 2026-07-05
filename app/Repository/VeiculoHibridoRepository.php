@@ -30,7 +30,7 @@ class VeiculoHibridoRepository
     {
         try {
             $sql = 'INSERT INTO veiculo_hibrido (
-                veiculo_id, tipo,
+                veiculo_id, tipo, combustivel,
                 motor_combustao_tipo, motor_combustao_potencia_cv, motor_combustao_torque_kgfm,
                 motor_eletrico_potencia_cv, motor_eletrico_torque_kgfm,
                 potencia_combinada_cv, torque_combinado_kgfm,
@@ -43,7 +43,7 @@ class VeiculoHibridoRepository
                 consumo_cidade_kml, consumo_estrada_kml, consumo_medio_kml,
                 capacidade_tanque_l
             ) VALUES (
-                :veiculo_id, :tipo,
+                :veiculo_id, :tipo, :combustivel,
                 :motor_combustao_tipo, :motor_combustao_potencia_cv, :motor_combustao_torque_kgfm,
                 :motor_eletrico_potencia_cv, :motor_eletrico_torque_kgfm,
                 :potencia_combinada_cv, :torque_combinado_kgfm,
@@ -57,6 +57,7 @@ class VeiculoHibridoRepository
                 :capacidade_tanque_l
             ) ON DUPLICATE KEY UPDATE
                 tipo = VALUES(tipo),
+                combustivel = VALUES(combustivel),
                 motor_combustao_tipo = VALUES(motor_combustao_tipo),
                 motor_combustao_potencia_cv = VALUES(motor_combustao_potencia_cv),
                 motor_combustao_torque_kgfm = VALUES(motor_combustao_torque_kgfm),
@@ -167,6 +168,7 @@ class VeiculoHibridoRepository
         return [
             ':veiculo_id'                        => $dados['veiculo_id'] ?? null,
             ':tipo'                              => $dados['tipo'] ?? null,
+            ':combustivel'                       => $dados['combustivel'] ?? null,
             ':motor_combustao_tipo'              => $dados['motor_combustao_tipo'] ?? null,
             ':motor_combustao_potencia_cv'       => $dados['motor_combustao_potencia_cv'] ?? null,
             ':motor_combustao_torque_kgfm'       => $dados['motor_combustao_torque_kgfm'] ?? null,
@@ -193,4 +195,5 @@ class VeiculoHibridoRepository
             ':capacidade_tanque_l'               => $dados['capacidade_tanque_l'] ?? null,
         ];
     }
+
 }
