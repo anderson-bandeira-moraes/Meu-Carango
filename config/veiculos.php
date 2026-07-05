@@ -38,4 +38,59 @@ return [
         '2.7',
         '3.0',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Regras condicionais para veículos híbridos (HEV, MHEV, PHEV)
+    |--------------------------------------------------------------------------
+    |
+    | Define o comportamento de exibição e valores forçados para campos
+    | específicos, de acordo com o tipo de híbrido selecionado.
+    |
+    | Estrutura:
+    |   'tipo' => [
+    |       'modo_eletrico_puro' => [
+    |           'visivel'      => bool,   // Se o campo deve ser exibido
+    |           'forcar_valor' => int|null // Valor a ser forçado (0 ou 1), ou null para livre
+    |       ],
+    |       'campos_phev' => [
+    |           'visivel' => bool // Se os campos de carregamento e autonomia elétrica devem ser exibidos
+    |       ]
+    |   ]
+    |
+    | Tipos suportados:
+    |   - hev  : Híbrido convencional (ex: Toyota Corolla Hybrid)
+    |   - mhev : Híbrido leve 48V (ex: Jeep Compass T270)
+    |   - phev : Híbrido plug-in (ex: BYD King, Haval H6)
+    |
+    */
+    'regras_hibrido' => [
+        'hev' => [
+            'modo_eletrico_puro' => [
+                'visivel'      => true,
+                'forcar_valor' => null, // permite 0 ou 1 (alguns HEV têm modo EV limitado)
+            ],
+            'campos_phev' => [
+                'visivel' => false, // carregamento e autonomia elétrica NÃO se aplicam a HEV
+            ],
+        ],
+        'mhev' => [
+            'modo_eletrico_puro' => [
+                'visivel'      => false, // MHEV não possui modo elétrico puro
+                'forcar_valor' => 0,     // força 0 (não tem)
+            ],
+            'campos_phev' => [
+                'visivel' => false, // carregamento e autonomia elétrica NÃO se aplicam a MHEV
+            ],
+        ],
+        'phev' => [
+            'modo_eletrico_puro' => [
+                'visivel'      => true,  // PHEV possui modo elétrico puro
+                'forcar_valor' => 1,     // força 1 (sempre tem)
+            ],
+            'campos_phev' => [
+                'visivel' => true, // carregamento e autonomia elétrica são essenciais para PHEV
+            ],
+        ],
+    ],
 ];

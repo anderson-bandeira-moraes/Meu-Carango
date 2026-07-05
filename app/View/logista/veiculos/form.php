@@ -743,6 +743,22 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-fuel-pump me-2"></i>Motor a Combustão</h6>
                         </div>
+
+                        <!-- Combustível -->
+                        <div class="col-md-6">
+                            <label for="combustivel_hibrido" class="form-label">Combustível <span class="text-danger">*</span></label>
+                            <select name="combustivel" id="combustivel_hibrido" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="alcool" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'alcool') ?>>Álcool</option>
+                                <option value="diesel" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'diesel') ?>>Diesel</option>
+                                <option value="flex" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'flex') ?>>Flex</option>
+                                <option value="gasolina" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'gasolina') ?>>Gasolina</option>
+                            </select>
+                            <?php if (isset($errors['combustivel'])): ?>
+                                <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
                         <div class="col-md-6">
                             <label for="motor_combustao_tipo" class="form-label">Tipo do Motor <span class="text-danger">*</span></label>
                             <input type="text" name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-control <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
@@ -751,6 +767,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+
                         <div class="col-md-3">
                             <label for="motor_combustao_potencia_cv" class="form-label">Potência (cv) <span class="text-danger">*</span></label>
                             <input type="number" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
@@ -759,6 +776,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_potencia_cv']) ?></div>
                             <?php endif; ?>
                         </div>
+
                         <div class="col-md-3">
                             <label for="motor_combustao_torque_kgfm" class="form-label">Torque (kgfm)</label>
                             <input type="number" step="0.1" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
