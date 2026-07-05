@@ -1209,6 +1209,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     if (regra.forcar_valor !== null) {
                         modoEletricoPuro.value = regra.forcar_valor;
                     }
+                    modoEletricoPuro.disabled = true; // desabilita mesmo quando oculto (segurança)
                 }
             }
 
