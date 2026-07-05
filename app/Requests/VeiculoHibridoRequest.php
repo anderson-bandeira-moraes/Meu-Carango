@@ -23,6 +23,9 @@ class VeiculoHibridoRequest extends FormRequest
             // Tipo do híbrido
             'tipo' => 'required|in:hev,mhev,phev',
 
+            // Combustível (ENUM)
+            'combustivel' => 'required|in:alcool,diesel,flex,gasolina',
+
             // Motor a combustão
             'motor_combustao_tipo'          => 'required|max:40',
             'motor_combustao_potencia_cv'   => 'required|integer|min:0',
@@ -80,6 +83,10 @@ class VeiculoHibridoRequest extends FormRequest
             // Tipo
             'tipo.required' => 'O tipo de veículo híbrido é obrigatório.',
             'tipo.in'       => 'O tipo deve ser HEV, MHEV ou PHEV.',
+
+            // Combustível
+            'combustivel.required' => 'O tipo de combustível é obrigatório.',
+            'combustivel.in'       => 'O tipo de combustível deve ser: álcool, diesel, flex ou gasolina.',
 
             // Motor a combustão
             'motor_combustao_tipo.required' => 'O tipo do motor a combustão é obrigatório.',
@@ -221,6 +228,7 @@ class VeiculoHibridoRequest extends FormRequest
 
         return [
             'tipo'                              => $validated['tipo'] ?? null,
+            'combustivel'                       => $validated['combustivel'] ?? null,
             'motor_combustao_tipo'              => $validated['motor_combustao_tipo'] ?? null,
             'motor_combustao_potencia_cv'       => $validated['motor_combustao_potencia_cv'] ?? null,
             'motor_combustao_torque_kgfm'       => $validated['motor_combustao_torque_kgfm'] ?? null,
