@@ -10,7 +10,7 @@ use App\Core\FormRequest;
  * FormRequest para validação dos campos específicos de veículos híbridos (HEV, MHEV, PHEV).
  *
  * Valida os campos da tabela veiculo_hibrido.
- * Não há validação condicional, conforme definido.
+ * Possui validação condicional para campos PHEV (obrigatórios apenas quando tipo = phev).
  */
 class VeiculoHibridoRequest extends FormRequest
 {
@@ -215,6 +215,40 @@ class VeiculoHibridoRequest extends FormRequest
         }
 
         return $data;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Adiciona validação condicional: campos PHEV são obrigatórios apenas
+     * quando o tipo for 'phev'.
+     */
+    public function validate(): bool
+    {
+        // 1. Executa a validação base
+        if (!parent::validate()) {
+            return false;
+        }
+
+        // 2. Obtém os dados validados
+        $data = $this->validated();
+
+        // 3. Validação condicional: se for PHEV, campos de carregamento e autonomia são obrigatórios
+        if (($data['tipo'] ?? '') === 'phev') {
+            $camposPHEV = [
+                'autonomia_eletrica_pbev_km'   => 'Autonomia elétrica (PBEV)',
+                'carregamento_potencia_ac_kw'  => 'Potência de carregamento AC',
+                'carregamento_tipo_conector_ac' => 'Tipo de conector AC',
+            ];
+
+            foreach ($camposPHEV as $campo => $label) {
+                if (empty($data[$campo]) && $data[$campo] !== 0) {
+                    $this->addError($campo, "O campo '{$label}' é obrigatório para veículos PHEV.");
+                }
+            }
+        }
+
+        return empty($this->errors);
     }
 
     /**
