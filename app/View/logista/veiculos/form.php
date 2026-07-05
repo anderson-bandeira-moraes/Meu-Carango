@@ -903,7 +903,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-4">
                             <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica (PBEV) (km)</label>
-                            <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" class="form-control <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" class="form-control phev-field <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['autonomia_eletrica_pbev_km'] ?? $complemento['autonomia_eletrica_pbev_km'] ?? '') ?>" min="0">
                             <?php if (isset($errors['autonomia_eletrica_pbev_km'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_eletrica_pbev_km']) ?></div>
@@ -911,7 +911,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-4">
                             <label for="autonomia_combinada_km" class="form-label">Autonomia Combinada (km)</label>
-                            <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" class="form-control phev-field <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" min="0">
                             <?php if (isset($errors['autonomia_combinada_km'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_combinada_km']) ?></div>
@@ -925,7 +925,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-3">
                             <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC (kW)</label>
-                            <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" class="form-control phev-field <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" min="0">
                             <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
@@ -933,7 +933,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-3">
                             <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC (horas)</label>
-                            <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" class="form-control phev-field <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" min="0">
                             <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
@@ -941,7 +941,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-3">
                             <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC (kW)</label>
-                            <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" class="form-control phev-field <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" min="0">
                             <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
@@ -949,7 +949,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <div class="col-md-3">
                             <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                            <input type="text" name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-control <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-control phev-field <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') ?>" maxlength="20">
                             <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_tipo_conector_ac']) ?></div>
