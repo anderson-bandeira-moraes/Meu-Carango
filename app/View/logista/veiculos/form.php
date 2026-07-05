@@ -26,7 +26,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
 <script>
     const CONFIG = {
-        motorizacoes: <?= json_encode(motorizacoes_list()) ?>
+        motorizacoes: <?= json_encode(motorizacoes_list()) ?>,
+        regrasHibrido: <?= json_encode(regras_hibrido()) ?>
     };
 </script>
 
