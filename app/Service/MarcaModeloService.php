@@ -139,4 +139,46 @@ class MarcaModeloService
 
         return $slug;
     }
+
+    /**
+     * Lista todos os modelos de uma marca específica.
+     *
+     * @param int $marcaId ID da marca
+     * @return array Lista de modelos com os campos: id, nome
+     */
+    public function listarModelosPorMarca(int $marcaId): array
+    {
+        try {
+            // Verifica se a marca existe
+            $marca = $this->marcaRepo->findById($marcaId);
+            if (!$marca) {
+                $this->logger->warning('Tentativa de listar modelos de marca inexistente', ['marca_id' => $marcaId]);
+                return [];
+            }
+
+            // Busca os modelos da marca
+            $modelos = $this->modeloRepo->findByMarcaId($marcaId);
+
+            // Retorna apenas id e nome (e opcionalmente slug, se quiser)
+            $resultado = array_map(function ($modelo) {
+                return [
+                    'id'   => (int) $modelo['id'],
+                    'nome' => $modelo['nome'],
+                ];
+            }, $modelos);
+
+            $this->logger->debug('Modelos listados por marca', [
+                'marca_id' => $marcaId,
+                'total'    => count($resultado),
+            ]);
+
+            return $resultado;
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao listar modelos por marca', [
+                'marca_id' => $marcaId,
+                'error'    => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
 }
