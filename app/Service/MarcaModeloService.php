@@ -62,4 +62,81 @@ class MarcaModeloService
             return [];
         }
     }
+
+    /**
+     * Cria uma nova marca.
+     *
+     * @param string $nome Nome da marca (obrigatório)
+     * @param string|null $logoPath Caminho relativo da logo (opcional)
+     * @return int|false ID da marca criada ou false em caso de erro
+     */
+    public function criarMarca(string $nome, ?string $logoPath = null): int|false
+    {
+        try {
+            // 1. Valida se o nome já existe
+            if ($this->marcaRepo->findByNome($nome)) {
+                $this->logger->warning('Tentativa de criar marca com nome já existente', ['nome' => $nome]);
+                return false;
+            }
+
+            // 2. Gera slug a partir do nome
+            $slug = SlugGenerator::fromString($nome);
+
+            // 3. Verifica duplicidade de slug (adiciona sufixo numérico se necessário)
+            $slug = $this->gerarSlugUnico($slug, 'marca');
+
+            // 4. Salva a marca no banco
+            $dados = [
+                'nome' => $nome,
+                'slug' => $slug,
+                'logo' => $logoPath,
+            ];
+
+            $id = $this->marcaRepo->save($dados);
+            if ($id === false) {
+                $this->logger->error('Falha ao salvar marca no banco', ['nome' => $nome, 'slug' => $slug]);
+                return false;
+            }
+
+            $this->logger->info('Marca criada com sucesso', [
+                'id'   => $id,
+                'nome' => $nome,
+                'slug' => $slug,
+                'logo' => $logoPath ?? 'N/A',
+            ]);
+
+            return $id;
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao criar marca', [
+                'nome'  => $nome,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Gera um slug único para marca ou modelo, adicionando sufixo numérico se necessário.
+     *
+     * @param string $slugBase Slug base (já normalizado)
+     * @param string $tipo 'marca' ou 'modelo'
+     * @return string Slug único
+     */
+    private function gerarSlugUnico(string $slugBase, string $tipo): string
+    {
+        $slug = $slugBase;
+        $contador = 1;
+
+        if ($tipo === 'marca') {
+            while ($this->marcaRepo->slugExists($slug)) {
+                $slug = $slugBase . '-' . $contador++;
+            }
+        } else {
+            while ($this->modeloRepo->slugExists($slug)) {
+                $slug = $slugBase . '-' . $contador++;
+            }
+        }
+
+        return $slug;
+    }
 }
