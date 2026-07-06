@@ -51,3 +51,22 @@ if (!function_exists('regras_hibrido')) {
         return $rules;
     }
 }
+
+if (!function_exists('logo_url')) {
+    /**
+     * Retorna a URL pública para a logo de uma marca.
+     *
+     * @param string|null $caminho Caminho relativo da imagem (ex: 'marcas/logo_fiat_12345.webp')
+     * @return string URL pública da imagem ou URL da imagem padrão se não houver logo.
+     */
+    function logo_url(?string $caminho): string
+    {
+        if (empty($caminho)) {
+            // Retorna a URL de uma imagem padrão (criar no próximo passo)
+            return '/assets/images/default-brand.png';
+        }
+
+        // Garante que não haja duplicação de barras
+        return '/storage/' . ltrim($caminho, '/');
+    }
+}
