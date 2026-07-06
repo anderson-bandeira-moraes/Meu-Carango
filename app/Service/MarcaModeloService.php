@@ -248,4 +248,59 @@ class MarcaModeloService
             return false;
         }
     }
+
+    /**
+     * Verifica se um nome de marca já existe no banco.
+     *
+     * @param string $nome Nome da marca a ser verificado
+     * @return bool True se o nome já existe, false caso contrário
+     */
+    private function validarNomeMarca(string $nome): bool
+    {
+        try {
+            $existe = (bool) $this->marcaRepo->findByNome($nome);
+            
+            if ($existe) {
+                $this->logger->debug('Verificação de nome de marca: nome já existe', ['nome' => $nome]);
+            }
+            
+            return $existe;
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao verificar existência de nome de marca', [
+                'nome'  => $nome,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se já existe um modelo com o mesmo nome para uma determinada marca.
+     *
+     * @param int $marcaId ID da marca
+     * @param string $nome Nome do modelo a ser verificado
+     * @return bool True se o modelo já existe para a marca, false caso contrário
+     */
+    private function validarNomeModelo(int $marcaId, string $nome): bool
+    {
+        try {
+            $existe = (bool) $this->modeloRepo->marcaIdAndNomeExists($marcaId, $nome);
+            
+            if ($existe) {
+                $this->logger->debug('Verificação de nome de modelo: nome já existe para a marca', [
+                    'marca_id' => $marcaId,
+                    'nome'     => $nome,
+                ]);
+            }
+            
+            return $existe;
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao verificar existência de nome de modelo para a marca', [
+                'marca_id' => $marcaId,
+                'nome'     => $nome,
+                'error'    => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
 }
