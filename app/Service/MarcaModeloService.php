@@ -304,4 +304,20 @@ class MarcaModeloService
             return false;
         }
     }
+
+    /**
+     * Busca uma marca pelo ID, com logo_url incluída.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function buscarMarcaPorId(int $id): ?array
+    {
+        $marca = $this->marcaRepo->findById($id);
+        if (!$marca) {
+            return null;
+        }
+        $marca['logo_url'] = logo_url($marca['logo'] ?? null);
+        return $marca;
+    }
 }

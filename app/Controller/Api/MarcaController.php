@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Core\Request;
 use App\Service\MarcaModeloService;
+use App\Helpers\UploadHelper;
 
 /**
  * Controlador da API para gerenciamento de marcas.
@@ -72,11 +73,12 @@ class MarcaController
                 exit;
             }
 
-            // 2. (Opcional) Receber a logo via $_FILES['logo']
+            // 2. (Opcional) Receber a logo via $request->getFile()
             $logoPath = null;
-            if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $file = $request->getFile('logo');
+            if ($file && $file['error'] === UPLOAD_ERR_OK) {
                 // 3. Fazer upload da logo
-                $caminhoRelativo = UploadHelper::upload($_FILES['logo'], 'marcas');
+                $caminhoRelativo = UploadHelper::upload($file, 'marcas');
                 if ($caminhoRelativo === false) {
                     header('Content-Type: application/json');
                     http_response_code(400);
@@ -103,17 +105,10 @@ class MarcaController
                 exit;
             }
 
-            // 6. Busca a marca recém-criada para retornar os dados completos (incluindo logo_url)
-            $marca = $this->marcaModeloService->listarMarcas(); // Busca todas
-            $novaMarca = null;
-            foreach ($marca as $item) {
-                if ((int) $item['id'] === $id) {
-                    $novaMarca = $item;
-                    break;
-                }
-            }
+            // 6. Busca a marca recém-criada via método específico (mais eficiente)
+            $novaMarca = $this->marcaModeloService->buscarMarcaPorId($id);
 
-            // Caso não encontre, retorna apenas o ID e nome (fallback)
+            // Fallback caso não encontre
             if (!$novaMarca) {
                 $novaMarca = [
                     'id'       => $id,
@@ -143,5 +138,4 @@ class MarcaController
             exit;
         }
     }
-    
 }
