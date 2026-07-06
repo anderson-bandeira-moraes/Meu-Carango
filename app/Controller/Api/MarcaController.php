@@ -30,6 +30,11 @@ class MarcaController
             // Obtém o parâmetro de busca da query string
             $busca = $request->getQuery('busca');
 
+            // Limita o comprimento da busca para evitar abusos
+            if ($busca !== null && strlen($busca) > 100) {
+                $busca = substr($busca, 0, 100);
+            }
+
             // Chama o service para listar as marcas
             $marcas = $this->marcaModeloService->listarMarcas($busca);
 
@@ -73,6 +78,17 @@ class MarcaController
                 exit;
             }
 
+            // 1.1 Valida o comprimento máximo do nome (banco: VARCHAR(50))
+            if (strlen($nome) > 50) {
+                header('Content-Type: application/json');
+                http_response_code(400);
+                echo json_encode([
+                    'sucesso' => false,
+                    'erro'    => 'O nome da marca deve ter no máximo 50 caracteres.',
+                ]);
+                exit;
+            }
+
             // 2. (Opcional) Receber a logo via $request->getFile()
             $logoPath = null;
             $file = $request->getFile('logo');
@@ -95,6 +111,10 @@ class MarcaController
             $id = $this->marcaModeloService->criarMarca($nome, $logoPath);
 
             // 5. Se retornar false, assume conflito de nome (ou outro erro)
+            // Nota: O service retorna false para nome duplicado, slug duplicado ou erro de banco.
+            // Para simplificar, tratamos como conflito de nome. Se desejar maior precisão,
+            // o service pode ser modificado para lançar exceções específicas ou retornar
+            // um array com o motivo do erro.
             if ($id === false) {
                 header('Content-Type: application/json');
                 http_response_code(409);
@@ -115,7 +135,7 @@ class MarcaController
                     'nome'     => $nome,
                     'slug'     => null,
                     'logo'     => $logoPath,
-                    'logo_url' => logo_url($logoPath),
+                    'logo_url' => \logo_url($logoPath), // Chamada global explícita
                 ];
             }
 
