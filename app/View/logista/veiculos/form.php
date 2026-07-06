@@ -761,12 +761,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <div class="col-md-6">
-                            <label for="motor_combustao_tipo" class="form-label">Tipo do Motor <span class="text-danger">*</span></label>
-                            <input type="text" name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-control <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '') ?>" maxlength="40">
+                            <label for="motor_combustao_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
+                            <select name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-select <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <?php foreach (motorizacoes_list() as $valor): ?>
+                                    <option value="<?= htmlspecialchars($valor) ?>" <?= selected($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '', $valor) ?>>
+                                        <?= htmlspecialchars($valor) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="outro" <?= selected($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
                             <?php if (isset($errors['motor_combustao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_tipo']) ?></div>
                             <?php endif; ?>
+                            
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="motor_combustao_tipo_outro" id="motor_combustao_tipo_outro" class="form-control mt-2 <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['motor_combustao_tipo_outro'] ?? '') ?>" 
+                                   placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
+                                   style="display: none;">
+                            <small class="text-muted">Ex: 1.0, 1.6, 2.0, etc.</small>
                         </div>
 
                         <div class="col-md-3">
@@ -1020,7 +1034,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             });
             modal.show();
 
-            // Botões de categoria
             document.querySelectorAll('.categoria-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const tipo = this.dataset.tipo;
@@ -1030,7 +1043,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 });
             });
 
-            // Impedir fechamento com ESC ou clique fora
             document.getElementById('categoriaModal').addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     e.preventDefault();
@@ -1038,11 +1050,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 }
             });
         <?php else: ?>
-            // Em edição, mostra os campos do tipo atual
             const tipoAtual = '<?= addslashes($tipoAtual) ?>';
             if (tipoAtual) {
                 mostrarCampos(tipoAtual);
-                // Marca o checkbox GNV se aplicável
                 if (tipoAtual === 'combustao') {
                     document.querySelector('.gnv-field').style.display = 'block';
                 }
@@ -1053,18 +1063,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // 2. FUNÇÃO PARA MOSTRAR/OCULTAR CAMPOS
         // =============================================
         function mostrarCampos(tipo) {
-            // Oculta todos
             document.getElementById('campos-combustao').style.display = 'none';
             document.getElementById('campos-eletrico').style.display = 'none';
             document.getElementById('campos-hibrido').style.display = 'none';
             document.querySelector('.gnv-field').style.display = 'none';
 
-            // Mostra o específico
             if (tipo === 'combustao') {
                 document.getElementById('campos-combustao').style.display = 'block';
                 document.querySelector('.gnv-field').style.display = 'block';
-                // Torna campos de etanol obrigatórios se combustível for flex
-                toggleFlexFields(); // para sincronizar flex
+                toggleFlexFields();
             } else if (tipo === 'eletrico') {
                 document.getElementById('campos-eletrico').style.display = 'block';
             } else if (tipo === 'hibrido') {
@@ -1090,47 +1097,86 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
         if (combustivelSelect) {
             combustivelSelect.addEventListener('change', toggleFlexFields);
-            // Executa ao carregar para sincronizar (edição)
             toggleFlexFields();
         }
 
         // =============================================
-        // 4. CONTROLE DE "OUTRO" (motorização)
+        // 4. FUNÇÕES GENÉRICAS PARA "OUTRO" (MOTORIZAÇÃO)
         // =============================================
-        const motorTipoSelect = document.getElementById('motor_tipo');
-        const motorTipoOutro = document.getElementById('motor_tipo_outro');
-
-        function toggleMotorOutro() {
-            if (motorTipoSelect && motorTipoOutro) {
-                const isOutro = motorTipoSelect.value === 'outro';
-                motorTipoOutro.style.display = isOutro ? 'block' : 'none';
-                // Se não for outro, limpa o campo extra para não enviar dados inconsistentes
-                if (!isOutro) {
-                    motorTipoOutro.value = '';
-                }
-            }
+        /**
+         * Mostra/oculta o campo extra para "Outro" e limpa seu valor se não for "outro".
+         * @param {string} selectId - ID do elemento <select>
+         * @param {string} outroInputId - ID do campo de texto extra
+         */
+        function toggleMotorOutro(selectId, outroInputId) {
+            const select = document.getElementById(selectId);
+            const outroInput = document.getElementById(outroInputId);
+            if (!select || !outroInput) return;
+            const isOutro = select.value === 'outro';
+            outroInput.style.display = isOutro ? 'block' : 'none';
+            if (!isOutro) outroInput.value = '';
         }
 
-        if (motorTipoSelect) {
-            // Ao mudar a seleção, mostra/oculta o campo extra
-            motorTipoSelect.addEventListener('change', toggleMotorOutro);
+        /**
+         * Configura o comportamento do "Outro" para um par select + campo extra.
+         * @param {string} selectId - ID do <select>
+         * @param {string} outroInputId - ID do campo de texto extra
+         * @param {string[]} motorizacoesList - Array com os valores da lista de motorizações
+         */
+        function setupMotorOutro(selectId, outroInputId, motorizacoesList) {
+            const select = document.getElementById(selectId);
+            const outroInput = document.getElementById(outroInputId);
+            if (!select || !outroInput) return;
 
-            // Na edição, se o valor salvo não estiver na lista, seleciona "outro" e preenche o campo extra
-            const valorAtual = motorTipoSelect.value;
-            if (valorAtual && valorAtual !== 'outro') {
-                // Verifica se o valor está na lista de motorizações (via CONFIG)
-                if (CONFIG.motorizacoes && !CONFIG.motorizacoes.includes(valorAtual)) {
-                    // Valor personalizado não está na lista: seleciona "outro" e coloca o valor no campo extra
-                    motorTipoSelect.value = 'outro';
-                    motorTipoOutro.value = valorAtual;
-                    // Dispara o evento para exibir o campo
-                    toggleMotorOutro();
+            // Event listener para mudança no select
+            select.addEventListener('change', function() {
+                toggleMotorOutro(selectId, outroInputId);
+            });
+
+            // Lógica para edição: se o valor atual não estiver na lista, seleciona "outro" e preenche o campo extra
+            const valorAtual = select.value;
+            if (valorAtual && valorAtual !== 'outro' && motorizacoesList) {
+                if (!motorizacoesList.includes(valorAtual)) {
+                    select.value = 'outro';
+                    outroInput.value = valorAtual;
+                    toggleMotorOutro(selectId, outroInputId);
                 }
             }
 
-            // Executa ao carregar para sincronizar (edição)
-            toggleMotorOutro();
+            // Execução inicial
+            toggleMotorOutro(selectId, outroInputId);
         }
+
+        /**
+         * Prepara o campo para submissão: se "outro" estiver selecionado, copia o valor do campo extra para o select.
+         * Retorna false se o campo extra estiver vazio (para impedir submissão).
+         * @param {string} selectId
+         * @param {string} outroInputId
+         * @returns {boolean}
+         */
+        function prepareSubmit(selectId, outroInputId) {
+            const select = document.getElementById(selectId);
+            const outroInput = document.getElementById(outroInputId);
+            if (!select || !outroInput) return true;
+            if (select.value === 'outro') {
+                const valor = outroInput.value.trim();
+                if (valor === '') {
+                    return false;
+                }
+                select.value = valor;
+            }
+            return true;
+        }
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA COMBUSTÃO
+        // =============================================
+        setupMotorOutro('motor_tipo', 'motor_tipo_outro', CONFIG.motorizacoes);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA HÍBRIDO
+        // =============================================
+        setupMotorOutro('motor_combustao_tipo', 'motor_combustao_tipo_outro', CONFIG.motorizacoes);
 
         // =============================================
         // 5. VALIDAÇÃO DE GNV (exibe campos extras)
@@ -1138,30 +1184,31 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const gnvCheckbox = document.getElementById('gnv_instalado');
         if (gnvCheckbox) {
             gnvCheckbox.addEventListener('change', function() {
-                // Se GNV for marcado, mostrar campos adicionais de GNV (serão implementados depois)
                 console.log('GNV marcado:', this.checked);
             });
         }
 
         // =============================================
-        // 6. PREPARAR SUBMISSÃO (garantir que o valor certo seja enviado)
+        // 6. PREPARAR SUBMISSÃO (garantir que os valores de "Outro" sejam enviados corretamente)
         // =============================================
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                // Se "outro" estiver selecionado, copia o valor do campo extra para o select (ou para um hidden)
-                if (motorTipoSelect && motorTipoSelect.value === 'outro') {
-                    const valorPersonalizado = motorTipoOutro.value.trim();
-                    if (valorPersonalizado === '') {
-                        // Impede envio se campo extra estiver vazio
-                        e.preventDefault();
-                        alert('Por favor, digite a motorização personalizada.');
-                        motorTipoOutro.focus();
-                        return;
-                    }
-                    // Seta o valor personalizado no select para ser enviado
-                    motorTipoSelect.value = valorPersonalizado;
+                // Validar e preparar campo de combustão
+                if (!prepareSubmit('motor_tipo', 'motor_tipo_outro')) {
+                    e.preventDefault();
+                    alert('Por favor, digite a motorização personalizada para o motor a combustão.');
+                    document.getElementById('motor_tipo_outro').focus();
+                    return;
                 }
+                // Validar e preparar campo do híbrido
+                if (!prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro')) {
+                    e.preventDefault();
+                    alert('Por favor, digite a motorização personalizada para o motor a combustão (híbrido).');
+                    document.getElementById('motor_combustao_tipo_outro').focus();
+                    return;
+                }
+                // O formulário segue normalmente
             });
         }
 
@@ -1172,14 +1219,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const modoEletricoPuro = document.getElementById('modo_eletrico_puro');
         const phevFields = document.querySelectorAll('.phev-field');
 
-        /**
-         * Aplica as regras de exibição e valores forçados com base no tipo de híbrido.
-         * @param {string} tipo - 'hev', 'mhev', 'phev' ou vazio
-         */
         function aplicarRegrasHibrido(tipo) {
-            // Se não houver tipo selecionado ou não houver regras, exibe todos os campos (padrão)
             if (!tipo || !CONFIG.regrasHibrido || !CONFIG.regrasHibrido[tipo]) {
-                // Exibe todos os campos (comportamento padrão)
                 if (modoEletricoPuro) {
                     modoEletricoPuro.closest('.col-md-6').style.display = 'block';
                     modoEletricoPuro.disabled = false;
@@ -1195,7 +1236,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
             const regras = CONFIG.regrasHibrido[tipo];
 
-            // 1. Aplica regras para modo_eletrico_puro
             if (modoEletricoPuro && regras.modo_eletrico_puro) {
                 const regra = regras.modo_eletrico_puro;
                 const container = modoEletricoPuro.closest('.col-md-6');
@@ -1205,21 +1245,19 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     modoEletricoPuro.disabled = false;
                     if (regra.forcar_valor !== null) {
                         modoEletricoPuro.value = regra.forcar_valor;
-                        modoEletricoPuro.disabled = true; // bloqueia alteração
+                        modoEletricoPuro.disabled = true;
                     }
                 } else {
                     container.style.display = 'none';
                     if (regra.forcar_valor !== null) {
                         modoEletricoPuro.value = regra.forcar_valor;
                     }
-                    modoEletricoPuro.disabled = true; // desabilita mesmo quando oculto (segurança)
+                    modoEletricoPuro.disabled = true;
                 }
             }
 
-            // 2. Aplica regras para campos PHEV (carregamento e autonomia elétrica)
             const phevVisivel = regras.campos_phev?.visivel ?? false;
             phevFields.forEach(field => {
-                // Encontra o container pai (div com classe col-*)
                 const container = field.closest('.col-md-3, .col-md-4, .col-md-6');
                 if (container) {
                     container.style.display = phevVisivel ? 'block' : 'none';
@@ -1227,22 +1265,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             });
         }
 
-        // =============================================
-        // ASSOCIAR AO EVENTO CHANGE
-        // =============================================
         if (tipoHibridoSelect) {
             tipoHibridoSelect.addEventListener('change', function() {
                 aplicarRegrasHibrido(this.value);
             });
 
-            // Executa no carregamento para sincronizar (especialmente na edição)
-            // Aguarda o DOM estar pronto (já estamos dentro do DOMContentLoaded)
-            // Se o tipo já estiver selecionado, aplica as regras imediatamente
             const tipoInicial = tipoHibridoSelect.value;
             if (tipoInicial) {
                 aplicarRegrasHibrido(tipoInicial);
             } else {
-                // Se não houver tipo selecionado, exibe todos os campos (padrão)
                 aplicarRegrasHibrido('');
             }
         }
