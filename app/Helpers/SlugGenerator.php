@@ -71,4 +71,16 @@ class SlugGenerator
 
         return $texto;
     }
+
+    /**
+     * Gera um slug a partir de um texto qualquer (ex: nome de modelo).
+     *
+     * @param string $texto
+     * @return string
+     */
+    public static function fromString(string $texto): string
+    {
+        $slug = self::normalizarTexto($texto);
+        return $slug;
+    }
 }
