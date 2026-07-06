@@ -181,4 +181,71 @@ class MarcaModeloService
             return [];
         }
     }
+
+    /**
+     * Cria um novo modelo para uma marca específica.
+     *
+     * @param int $marcaId ID da marca
+     * @param string $nome Nome do modelo (obrigatório)
+     * @return int|false ID do modelo criado ou false em caso de erro
+     */
+    public function criarModelo(int $marcaId, string $nome): int|false
+    {
+        try {
+            // 1. Valida se a marca existe
+            $marca = $this->marcaRepo->findById($marcaId);
+            if (!$marca) {
+                $this->logger->warning('Tentativa de criar modelo para marca inexistente', ['marca_id' => $marcaId]);
+                return false;
+            }
+
+            // 2. Valida se já existe modelo com o mesmo nome para a marca
+            if ($this->modeloRepo->marcaIdAndNomeExists($marcaId, $nome)) {
+                $this->logger->warning('Tentativa de criar modelo com nome duplicado para a marca', [
+                    'marca_id' => $marcaId,
+                    'nome'     => $nome,
+                ]);
+                return false;
+            }
+
+            // 3. Gera slug a partir do nome
+            $slug = SlugGenerator::fromString($nome);
+
+            // 4. Verifica duplicidade de slug (global) - adiciona sufixo numérico se necessário
+            $slug = $this->gerarSlugUnico($slug, 'modelo');
+
+            // 5. Salva o modelo no banco
+            $dados = [
+                'marca_id' => $marcaId,
+                'nome'     => $nome,
+                'slug'     => $slug,
+            ];
+
+            $id = $this->modeloRepo->save($dados);
+            if ($id === false) {
+                $this->logger->error('Falha ao salvar modelo no banco', [
+                    'marca_id' => $marcaId,
+                    'nome'     => $nome,
+                    'slug'     => $slug,
+                ]);
+                return false;
+            }
+
+            $this->logger->info('Modelo criado com sucesso', [
+                'id'       => $id,
+                'marca_id' => $marcaId,
+                'nome'     => $nome,
+                'slug'     => $slug,
+            ]);
+
+            return $id;
+        } catch (\Throwable $e) {
+            $this->logger->error('Erro ao criar modelo', [
+                'marca_id' => $marcaId,
+                'nome'     => $nome,
+                'error'    => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
 }
