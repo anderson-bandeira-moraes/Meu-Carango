@@ -1185,7 +1185,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     modoEletricoPuro.disabled = false;
                 }
                 phevFields.forEach(field => {
-                    field.closest('.col-md-3, .col-md-4, .col-md-6')?.style.display = 'block';
+                    const container = field.closest('.col-md-3, .col-md-4, .col-md-6');
+                    if (container) {
+                        container.style.display = 'block';
+                    }
                 });
                 return;
             }
