@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
+use App\Helpers\SlugGenerator;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -74,7 +75,7 @@ class MarcaModeloService
     {
         try {
             // 1. Valida se o nome já existe
-            if ($this->marcaRepo->findByNome($nome)) {
+            if ($this->validarNomeMarca($nome)) {
                 $this->logger->warning('Tentativa de criar marca com nome já existente', ['nome' => $nome]);
                 return false;
             }
@@ -200,7 +201,7 @@ class MarcaModeloService
             }
 
             // 2. Valida se já existe modelo com o mesmo nome para a marca
-            if ($this->modeloRepo->marcaIdAndNomeExists($marcaId, $nome)) {
+            if ($this->validarNomeModelo($marcaId, $nome)) {
                 $this->logger->warning('Tentativa de criar modelo com nome duplicado para a marca', [
                     'marca_id' => $marcaId,
                     'nome'     => $nome,
