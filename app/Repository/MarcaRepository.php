@@ -148,17 +148,18 @@ class MarcaRepository
     /**
      * Insere uma nova marca.
      *
-     * @param array $dados Deve conter 'nome' e 'slug'.
+     * @param array $dados Deve conter 'nome', 'slug' e opcionalmente 'logo'.
      * @return int|false ID da marca inserida ou false em caso de erro.
      */
     public function save(array $dados): int|false
     {
         try {
-            $sql = 'INSERT INTO marcas (nome, slug) VALUES (:nome, :slug)';
+            $sql = 'INSERT INTO marcas (nome, slug, logo) VALUES (:nome, :slug, :logo)';
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':nome' => $dados['nome'] ?? null,
                 ':slug' => $dados['slug'] ?? null,
+                ':logo' => $dados['logo'] ?? null,
             ]);
 
             $id = (int) $this->pdo->lastInsertId();
@@ -167,6 +168,7 @@ class MarcaRepository
                 'id'   => $id,
                 'nome' => $dados['nome'],
                 'slug' => $dados['slug'],
+                'logo' => $dados['logo'] ?? 'N/A',
             ]);
 
             return $id;
@@ -174,6 +176,7 @@ class MarcaRepository
             $this->logger->error('Erro ao criar marca', [
                 'nome'  => $dados['nome'] ?? 'unknown',
                 'slug'  => $dados['slug'] ?? 'unknown',
+                'logo'  => $dados['logo'] ?? 'unknown',
                 'error' => $e->getMessage(),
             ]);
             return false;
