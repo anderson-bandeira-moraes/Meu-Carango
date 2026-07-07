@@ -85,6 +85,10 @@ use App\Repository\VeiculoImagemRepository;
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
 use App\Service\VeiculoService;
+// --- NOVOS USES PARA API CONTROLLERS ---
+use App\Controller\Api\MarcaController;
+use App\Controller\Api\ModeloController;
+use App\Service\MarcaModeloService;
 // --- NOVOS USES PARA FORMREQUEST ---
 use App\Core\Request;
 use App\Requests\LoginRequest;
@@ -295,7 +299,7 @@ $container->set(App\Service\AuthService::class, function($c) {
     );
 });
 
-// ============== NOVO SERVIÇO DE VEÍCULOS ==============
+// ============== SERVIÇO DE VEÍCULOS ==============
 $container->set(VeiculoService::class, function($c) {
     return new VeiculoService(
         $c->get(VeiculoRepository::class),
@@ -309,6 +313,15 @@ $container->set(VeiculoService::class, function($c) {
         $c->get(MarcaRepository::class),
         $c->get(ModeloRepository::class),
         $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
+});
+
+// ============== SERVIÇO DE MARCAS E MODELOS ==============
+$container->set(MarcaModeloService::class, function($c) {
+    return new MarcaModeloService(
+        $c->get(MarcaRepository::class),
+        $c->get(ModeloRepository::class),
         $c->get(LoggerInterface::class)
     );
 });
@@ -448,7 +461,7 @@ $container->set(App\Controller\AuthController::class, function($c) {
     );
 });
 
-// ============== NOVO CONTROLLER DE VEÍCULOS ==============
+// ============== CONTROLLER DE VEÍCULOS ==============
 $container->set(VeiculoController::class, function($c) {
     return new VeiculoController(
         $c->get(VeiculoService::class),
@@ -463,6 +476,19 @@ $container->set(VeiculoController::class, function($c) {
         $c->get(VeiculoImagemRequest::class),
         $c->get(MarcaRepository::class),
         $c->get(ModeloRepository::class)
+    );
+});
+
+// ============== CONTROLLERS DA API ==============
+$container->set(MarcaController::class, function($c) {
+    return new MarcaController(
+        $c->get(MarcaModeloService::class)
+    );
+});
+
+$container->set(ModeloController::class, function($c) {
+    return new ModeloController(
+        $c->get(MarcaModeloService::class)
     );
 });
 
@@ -589,6 +615,12 @@ $router->group('/logista', function(Router $router) use ($container) {
 $router->get('/', 'HomeController@index');
 $router->get('/loja/{slug}', 'VitrineController@listar');
 $router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
+
+// ---------- Rotas da API ----------
+$router->get('/api/marcas', 'Api\\MarcaController@index');
+$router->post('/api/marcas', 'Api\\MarcaController@store');
+$router->get('/api/modelos', 'Api\\ModeloController@index');
+$router->post('/api/modelos', 'Api\\ModeloController@store');
 
 // ============== DISPATCH COM TRATAMENTO DE EXCEÇÕES ==============
 try {
