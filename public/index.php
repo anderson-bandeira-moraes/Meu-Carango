@@ -482,7 +482,8 @@ $container->set(VeiculoController::class, function($c) {
         $c->get(VeiculoOpcionalRequest::class),
         $c->get(VeiculoImagemRequest::class),
         $c->get(MarcaRepository::class),
-        $c->get(ModeloRepository::class)
+        $c->get(ModeloRepository::class),
+        $c->get(MarcaModeloService::class)
     );
 });
 

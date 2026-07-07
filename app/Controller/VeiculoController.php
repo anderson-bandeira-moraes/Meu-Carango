@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\VeiculoService;
+use App\Service\MarcaModeloService;
 use App\Requests\VeiculoRequest;
 use App\Requests\VeiculoCombustaoRequest;
 use App\Requests\VeiculoEletricoRequest;
@@ -37,6 +38,7 @@ class VeiculoController
         private VeiculoImagemRequest $veiculoImagemRequest,
         private MarcaRepository $marcaRepo,
         private ModeloRepository $modeloRepo,
+        private MarcaModeloService $marcaModeloService,
     ) {}
 
     /**
@@ -116,8 +118,8 @@ class VeiculoController
         // Busca todos os opcionais agrupados para o formulário
         $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
 
-        // Busca marcas e modelos para os selects do formulário
-        $marcas = $this->marcaRepo->findAll();
+        // Busca marcas com a URL da logo (via service) e modelos para os selects do formulário
+        $marcas = $this->marcaModeloService->listarMarcas(); // <-- SUBSTITUÍDO
         $modelos = $this->modeloRepo->findAll();
 
         // Recupera old input e flash
@@ -270,8 +272,8 @@ class VeiculoController
             $this->redirectWithError('Acesso negado.');
         }
 
-        // Busca marcas e modelos para os selects do formulário
-        $marcas = $this->marcaRepo->findAll();
+        // Busca marcas com a URL da logo (via service) e modelos para os selects do formulário
+        $marcas = $this->marcaModeloService->listarMarcas(); // <-- SUBSTITUÍDO
         $modelos = $this->modeloRepo->findAll();
 
         // Recupera old input e flash
