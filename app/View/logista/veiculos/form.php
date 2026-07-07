@@ -131,8 +131,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Versão -->
                     <div class="col-md-4">
-                        <label for="versao" class="form-label">Versão</label>
-                        <input type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
+                        <label for="versao" class="form-label">Versão do Modelo</label>
+                        <input title="Versão do modelo (ex: GL, EX, Sport, Turbo)" placeholder="ex: GL, EX, Sport, Turbo" type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['versao'] ?? $veiculo['versao'] ?? '') ?>">
                         <?php if (isset($errors['versao'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['versao']) ?></div>
@@ -142,7 +142,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Ano Fabricação -->
                     <div class="col-md-4">
                         <label for="ano_fabricacao" class="form-label">Ano de Fabricação <span class="text-danger">*</span></label>
-                        <input type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>">
                         <?php if (isset($errors['ano_fabricacao'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_fabricacao']) ?></div>
@@ -152,7 +152,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Ano Modelo -->
                     <div class="col-md-4">
                         <label for="ano_modelo" class="form-label">Ano do Modelo <span class="text-danger">*</span></label>
-                        <input type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>">
                         <?php if (isset($errors['ano_modelo'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_modelo']) ?></div>
@@ -161,40 +161,124 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Cor -->
                     <div class="col-md-4">
-                        <label for="cor" class="form-label">Cor <span class="text-danger">*</span></label>
-                        <input type="text" name="cor" id="cor" class="form-control <?= isset($errors['cor']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>">
+                        <label for="corInput" class="form-label">Cor <span class="text-danger">*</span></label>
+                        
+                        <!-- Input + botão para abrir a lista -->
+                        <div class="input-group">
+                            <input type="text" id="corInput" class="form-control <?= isset($errors['cor']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>" 
+                                   placeholder="Selecione uma cor" readonly>
+                            <button class="btn btn-outline-secondary" type="button" id="btnAbrirCores">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Campo oculto para armazenar a cor selecionada -->
+                        <input type="hidden" name="cor" id="corSelecionada" value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>">
+
                         <?php if (isset($errors['cor'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['cor']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['cor']) ?></div>
                         <?php endif; ?>
+
+                        <!-- Dropdown com a lista de cores -->
+                        <div id="dropdownCores" class="border rounded shadow-sm mt-1" style="display: none; max-height: 200px; overflow-y: auto; position: relative; z-index: 1000; background: white;">
+                            <div class="p-1">
+                                <?php
+                                $cores = [
+                                    'Preto' => '#000000',
+                                    'Branco' => '#FFFFFF',
+                                    'Prata' => '#C0C0C0',
+                                    'Cinza' => '#808080',
+                                    'Vermelho' => '#FF0000',
+                                    'Azul' => '#0000FF',
+                                    'Verde' => '#008000',
+                                    'Amarelo' => '#FFD700',
+                                    'Laranja' => '#FFA500',
+                                    'Marrom' => '#8B4513',
+                                    'Bege' => '#F5F5DC',
+                                    'Dourado' => '#FFD700',
+                                    'Prata Metálico' => '#A8A9AD',
+                                    'Azul Metálico' => '#1E3A5F',
+                                    'Vermelho Metálico' => '#8B0000',
+                                    'Verde Metálico' => '#2E8B57',
+                                    'Cinza Metálico' => '#696969',
+                                    'Preto Metálico' => '#1A1A1A',
+                                    'Branco Pérola' => '#F8F8FF',
+                                    'Azul Escuro' => '#191970',
+                                    'Vinho' => '#722F37',
+                                    'Bronze' => '#CD7F32',
+                                ];
+                                $valorSalvo = $old['cor'] ?? $veiculo['cor'] ?? '';
+                                ?>
+                                <?php foreach ($cores as $nome => $hex): ?>
+                                    <div class="cor-item d-flex justify-content-between align-items-center p-2 rounded" 
+                                         style="cursor: pointer; <?= ($valorSalvo === $nome) ? 'background-color: #e9ecef;' : '' ?>"
+                                         data-cor="<?= htmlspecialchars($nome) ?>" 
+                                         data-hex="<?= $hex ?>">
+                                        <span><?= htmlspecialchars($nome) ?></span>
+                                        <span style="display: inline-block; width: 30px; height: 30px; background-color: <?= $hex ?>; border-radius: 4px; border: 1px solid #ccc; flex-shrink: 0;"></span>
+                                    </div>
+                                <?php endforeach; ?>
+                                <!-- Opção "Outro" -->
+                                <div class="cor-item d-flex justify-content-between align-items-center p-2 rounded" 
+                                     style="cursor: pointer; <?= ($valorSalvo === 'outro') ? 'background-color: #e9ecef;' : '' ?>"
+                                     data-cor="outro" data-hex="#cccccc">
+                                    <span>Outro (digitar)</span>
+                                    <span style="display: inline-block; width: 30px; height: 30px; background-color: #cccccc; border-radius: 4px; border: 1px solid #999; flex-shrink: 0;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo extra para "Outro" -->
+                        <input type="text" name="cor_outro" id="cor_outro" class="form-control mt-2 <?= isset($errors['cor']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['cor_outro'] ?? '') ?>" 
+                               placeholder="Digite a cor personalizada" 
+                               style="display: <?= ($valorSalvo === 'outro') ? 'block' : 'none' ?>;">
                     </div>
 
                     <!-- Quilometragem -->
                     <div class="col-md-4">
                         <label for="quilometragem" class="form-label">Quilometragem <span class="text-danger">*</span></label>
-                        <input type="number" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>" min="0">
+                        <div class="input-group">
+                            <input type="text" name="quilometragem_display" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars(
+                                       isset($old['quilometragem']) ? number_format($old['quilometragem'], 0, ',', '.') : 
+                                       (isset($veiculo['quilometragem']) ? number_format($veiculo['quilometragem'], 0, ',', '.') : '')
+                                   ) ?>" 
+                                   placeholder="Ex: 90.000" inputmode="numeric">
+                            <span class="input-group-text">km</span>
+                        </div>
+                        <!-- Campo oculto com o valor real (sem formatação) -->
+                        <input type="hidden" name="quilometragem" id="quilometragem_real" value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
                         <?php if (isset($errors['quilometragem'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['quilometragem']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['quilometragem']) ?></div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Preço -->
                     <div class="col-md-4">
-                        <label for="preco" class="form-label">Preço (R$) <span class="text-danger">*</span></label>
-                        <input type="text" name="preco" id="preco" class="form-control <?= isset($errors['preco']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['preco'] ?? (isset($veiculo['preco']) ? number_format($veiculo['preco'], 2, ',', '.') : '')) ?>" 
-                               placeholder="Ex: 45.900,00">
+                        <label for="preco" class="form-label">Preço <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" id="preco" class="form-control <?= isset($errors['preco']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 45.900,00" inputmode="decimal">
+                        </div>
+                        <input type="hidden" name="preco" id="preco_real" value="<?= htmlspecialchars($old['preco'] ?? $veiculo['preco'] ?? '') ?>">
                         <?php if (isset($errors['preco'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['preco']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['preco']) ?></div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Número de Portas -->
                     <div class="col-md-3">
-                        <label for="numero_portas" class="form-label">Portas</label>
-                        <input type="number" name="numero_portas" id="numero_portas" class="form-control <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '') ?>" min="2" max="6">
+                        <label for="numero_portas" class="form-label">Portas <span class="text-danger">*</span></label>
+                        <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <option value="2" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '2') ?>>2 portas (cupê)</option>
+                            <option value="3" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '3') ?>>3 portas (hatch 2 portas)</option>
+                            <option value="4" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '4') ?>>4 portas (sedã)</option>
+                            <option value="5" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '5') ?>>5 portas (hatch 4 portas + mala)</option>
+                        </select>
                         <?php if (isset($errors['numero_portas'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['numero_portas']) ?></div>
                         <?php endif; ?>
@@ -1987,6 +2071,286 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             });
         }
 
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA COR (simples, sem lista)
+        // =============================================
+        function setupCorOutro() {
+            const select = document.getElementById('cor');
+            const outroInput = document.getElementById('cor_outro');
+            if (!select || !outroInput) return;
+
+            // Event listener para mudança no select
+            select.addEventListener('change', function() {
+                const isOutro = select.value === 'outro';
+                outroInput.style.display = isOutro ? 'block' : 'none';
+                if (!isOutro) outroInput.value = '';
+            });
+
+            // Na edição, se o valor salvo não estiver na lista, seleciona "outro" e preenche
+            const valorAtual = select.value;
+            if (valorAtual && valorAtual !== 'outro') {
+                // Verifica se o valor existe na lista de opções (excluindo "outro")
+                const options = Array.from(select.options).map(o => o.value);
+                if (!options.includes(valorAtual)) {
+                    select.value = 'outro';
+                    outroInput.value = valorAtual;
+                    outroInput.style.display = 'block';
+                }
+            }
+
+            // Execução inicial
+            if (select.value === 'outro') {
+                outroInput.style.display = 'block';
+            } else {
+                outroInput.style.display = 'none';
+            }
+        }
+
+        // Chamar a função no DOMContentLoaded
+        setupCorOutro();
+
+        // ============================================================
+        // DROPDOWN DE CORES (abrir ao clicar no input ou botão)
+        // ============================================================
+        const corInput = document.getElementById('corInput');
+        const btnAbrir = document.getElementById('btnAbrirCores');
+        const dropdown = document.getElementById('dropdownCores');
+        const corHidden = document.getElementById('corSelecionada');
+        const corOutro = document.getElementById('cor_outro');
+        const corItems = document.querySelectorAll('.cor-item');
+
+        // Função para abrir/fechar dropdown
+        function toggleDropdown() {
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // Abrir ao clicar no input ou no botão
+        if (corInput) {
+            corInput.addEventListener('click', toggleDropdown);
+        }
+        if (btnAbrir) {
+            btnAbrir.addEventListener('click', toggleDropdown);
+        }
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+            if (!target.closest('#corInput') && !target.closest('#btnAbrirCores') && !target.closest('#dropdownCores')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Selecionar cor ao clicar em um item da lista
+        if (corItems.length) {
+            corItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const cor = this.dataset.cor;
+                    const hex = this.dataset.hex;
+
+                    // Atualiza o campo de exibição
+                    corInput.value = cor === 'outro' ? 'Outro (digitar)' : cor;
+
+                    // Atualiza o campo oculto
+                    corHidden.value = cor;
+
+                    // Remove destaque de todos
+                    corItems.forEach(el => el.style.backgroundColor = '');
+                    this.style.backgroundColor = '#e9ecef';
+
+                    // Controla campo "Outro"
+                    if (cor === 'outro') {
+                        corOutro.style.display = 'block';
+                        corOutro.focus();
+                    } else {
+                        corOutro.style.display = 'none';
+                        corOutro.value = '';
+                    }
+
+                    // Fecha o dropdown
+                    dropdown.style.display = 'none';
+                });
+            });
+        }
+
+        // Se houver valor salvo, destaca o item correspondente e atualiza o input
+        if (corHidden.value) {
+            const valorSalvo = corHidden.value;
+            if (valorSalvo === 'outro') {
+                corInput.value = 'Outro (digitar)';
+                corOutro.style.display = 'block';
+            } else {
+                corInput.value = valorSalvo;
+            }
+            corItems.forEach(item => {
+                if (item.dataset.cor === valorSalvo) {
+                    item.style.backgroundColor = '#e9ecef';
+                }
+            });
+        }
+
+        // ============================================================
+        // FORMATAÇÃO DE QUILOMETRAGEM COM PONTOS DE MILHAR
+        // ============================================================
+        const kmInput = document.getElementById('quilometragem');
+        const kmHidden = document.getElementById('quilometragem_real');
+
+        if (kmInput && kmHidden) {
+            kmInput.addEventListener('input', function(e) {
+                // Remove tudo que não for número
+                let raw = this.value.replace(/\D/g, '');
+                
+                // Se estiver vazio, limpa o hidden
+                if (raw === '') {
+                    kmHidden.value = '';
+                    this.value = '';
+                    return;
+                }
+
+                // Converte para número inteiro
+                const numero = parseInt(raw, 10);
+                
+                // Formata com pontos de milhar
+                const formatado = numero.toLocaleString('pt-BR');
+                
+                // Atualiza o campo visível com a formatação
+                this.value = formatado;
+                
+                // Armazena o valor real (sem formatação) no campo hidden
+                kmHidden.value = numero.toString();
+            });
+
+            // Sincroniza o hidden ao carregar (para edição)
+            if (kmHidden.value) {
+                const numero = parseInt(kmHidden.value, 10);
+                if (!isNaN(numero)) {
+                    kmInput.value = numero.toLocaleString('pt-BR');
+                }
+            }
+        }
+
+        // ============================================================
+        // MÁSCARA DE PREÇO BRASILEIRA (VANILLA JS) – CORRIGIDA
+        // ============================================================
+        (function() {
+            const precoInput = document.getElementById('preco');
+            const precoHidden = document.getElementById('preco_real');
+
+            if (!precoInput || !precoHidden) return;
+
+            // Converte número (ex: 45900.67) para string formatada (ex: "45.900,67")
+            function formatValue(value) {
+                if (value === undefined || value === null || isNaN(value)) return '';
+                const num = parseFloat(value);
+                if (isNaN(num)) return '';
+                return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            // Obtém apenas os dígitos de uma string
+            function getDigits(str) {
+                return str.replace(/\D/g, '');
+            }
+
+            // Converte uma string de dígitos para um número com 2 casas decimais (centavos)
+            function digitsToNumber(digits) {
+                if (digits === '') return 0;
+                const cents = parseInt(digits, 10);
+                if (isNaN(cents)) return 0;
+                return cents / 100;
+            }
+
+            // Atualiza o campo de exibição e o hidden
+            function updateDisplay(rawDigits) {
+                const digits = getDigits(rawDigits);
+                // Se não houver dígitos, limpa os campos
+                if (digits === '') {
+                    precoInput.value = '';
+                    precoHidden.value = '';
+                    return;
+                }
+
+                // Converte para valor em reais (com 2 casas)
+                const cents = parseInt(digits, 10);
+                const reais = cents / 100;
+                const formatted = formatValue(reais);
+                precoInput.value = formatted;
+                precoHidden.value = reais.toFixed(2);
+            }
+
+            // Obtém os dígitos atuais do campo (ignorando formatação)
+            function getCurrentDigits() {
+                const raw = precoInput.value;
+                return getDigits(raw);
+            }
+
+            // Manipula a entrada do usuário
+            precoInput.addEventListener('input', function(e) {
+                // Pega os dígitos atuais (já que o campo pode ter formatação)
+                let digits = getCurrentDigits();
+
+                // Se o usuário digitou algo que não é número, o campo pode conter caracteres estranhos.
+                // Mas nosso getDigits já filtra.
+                updateDisplay(digits);
+            });
+
+            // Bloqueia teclas que não são números ou vírgula
+            precoInput.addEventListener('keydown', function(e) {
+                const key = e.key;
+                // Permite teclas de navegação, backspace, delete, etc.
+                if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End', 'Enter'].includes(key)) return;
+                if (e.ctrlKey || e.metaKey) return; // Ctrl+C, Ctrl+V, etc.
+                // Permite apenas dígitos e vírgula
+                if (!/^[\d,]$/.test(key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Lida com paste (colar)
+            precoInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                if (!pasteData) return;
+                // Remove tudo que não for dígito
+                const digits = getDigits(pasteData);
+                if (digits === '') return;
+                // Atualiza o display com os dígitos colados
+                updateDisplay(digits);
+            });
+
+            // Inicialização: se houver valor no hidden, formata e exibe
+            function initializeFromHidden() {
+                const realValue = precoHidden.value;
+                if (realValue !== '') {
+                    const num = parseFloat(realValue);
+                    if (!isNaN(num) && num > 0) {
+                        const formatted = formatValue(num);
+                        precoInput.value = formatted;
+                    }
+                }
+            }
+            initializeFromHidden();
+
+            // Sincroniza ao enviar o formulário (garantir que o hidden esteja correto)
+            const form = document.getElementById('veiculoForm');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    // Se o campo de exibição estiver vazio, limpa o hidden
+                    if (precoInput.value === '') {
+                        precoHidden.value = '';
+                    } else {
+                        // Atualiza o hidden com o valor real
+                        const digits = getDigits(precoInput.value);
+                        if (digits === '') {
+                            precoHidden.value = '';
+                        } else {
+                            const cents = parseInt(digits, 10);
+                            const reais = cents / 100;
+                            precoHidden.value = reais.toFixed(2);
+                        }
+                    }
+                });
+            }
+        })();
     });
 </script>
 
