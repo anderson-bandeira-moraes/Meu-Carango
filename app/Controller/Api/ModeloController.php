@@ -17,25 +17,6 @@ class ModeloController
         private MarcaModeloService $marcaModeloService,
     ) {}
 
-<?php
-
-declare(strict_types=1);
-
-namespace App\Controller\Api;
-
-use App\Core\Request;
-use App\Service\MarcaModeloService;
-
-/**
- * Controlador da API para gerenciamento de modelos.
- * Fornece endpoints para listagem e criação de modelos por marca via AJAX.
- */
-class ModeloController
-{
-    public function __construct(
-        private MarcaModeloService $marcaModeloService,
-    ) {}
-
     /**
      * Lista todos os modelos de uma marca específica.
      *
@@ -191,5 +172,4 @@ class ModeloController
             exit;
         }
     }
-    
 }
