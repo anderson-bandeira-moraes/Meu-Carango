@@ -17,6 +17,25 @@ class ModeloController
         private MarcaModeloService $marcaModeloService,
     ) {}
 
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\Api;
+
+use App\Core\Request;
+use App\Service\MarcaModeloService;
+
+/**
+ * Controlador da API para gerenciamento de modelos.
+ * Fornece endpoints para listagem e criação de modelos por marca via AJAX.
+ */
+class ModeloController
+{
+    public function __construct(
+        private MarcaModeloService $marcaModeloService,
+    ) {}
+
     /**
      * Lista todos os modelos de uma marca específica.
      *
@@ -42,15 +61,20 @@ class ModeloController
 
             $marcaId = (int) $marcaId;
 
-            // 3. Chama o service para listar os modelos (já verifica se a marca existe)
-            $modelos = $this->marcaModeloService->listarModelosPorMarca($marcaId);
+            // 3. Verifica se a marca existe
+            $marca = $this->marcaModeloService->buscarMarcaPorId($marcaId);
+            if (!$marca) {
+                header('Content-Type: application/json');
+                http_response_code(404);
+                echo json_encode([
+                    'sucesso' => false,
+                    'erro'    => 'Marca não encontrada.',
+                ]);
+                exit;
+            }
 
-            // Se a lista estiver vazia e o service retornou vazio, a marca pode não existir.
-            // Como listarModelosPorMarca já retorna [] quando marca não existe, podemos
-            // verificar isso implicitamente. Mas para dar um feedback mais preciso,
-            // podemos buscar a marca separadamente (opcional).
-            // Como o service já registra warning, apenas retornamos o resultado.
-            // O frontend pode interpretar a lista vazia como "sem modelos" ou "marca inválida".
+            // 4. Chama o service para listar os modelos
+            $modelos = $this->marcaModeloService->listarModelosPorMarca($marcaId);
 
             // Retorna a resposta JSON com sucesso
             header('Content-Type: application/json');
@@ -119,10 +143,22 @@ class ModeloController
                 exit;
             }
 
-            // 5. Chama o service para criar o modelo
+            // 5. Verifica se a marca existe
+            $marca = $this->marcaModeloService->buscarMarcaPorId($marcaId);
+            if (!$marca) {
+                header('Content-Type: application/json');
+                http_response_code(404);
+                echo json_encode([
+                    'sucesso' => false,
+                    'erro'    => 'Marca não encontrada.',
+                ]);
+                exit;
+            }
+
+            // 6. Chama o service para criar o modelo
             $id = $this->marcaModeloService->criarModelo($marcaId, $nome);
 
-            // 6. Se retornar false, assume conflito de nome (ou outro erro)
+            // 7. Se retornar false, assume conflito de nome (ou outro erro)
             if ($id === false) {
                 header('Content-Type: application/json');
                 http_response_code(409);
@@ -133,7 +169,7 @@ class ModeloController
                 exit;
             }
 
-            // 7. Retorna sucesso com status 201 (Created)
+            // 8. Retorna sucesso com status 201 (Created)
             header('Content-Type: application/json');
             http_response_code(201);
             echo json_encode([
@@ -145,7 +181,7 @@ class ModeloController
             ]);
             exit;
         } catch (\Throwable $e) {
-            // 8. Em caso de exceção, retorna status 500
+            // 9. Em caso de exceção, retorna status 500
             header('Content-Type: application/json');
             http_response_code(500);
             echo json_encode([
@@ -155,4 +191,5 @@ class ModeloController
             exit;
         }
     }
+    
 }
