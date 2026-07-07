@@ -7,7 +7,7 @@ define('APP_DIR', ROOT_DIR . '/app');
 define('VIEW_DIR', APP_DIR . '/View');
 define('CONFIG_DIR', ROOT_DIR . '/config');
 
-// ============== CRIA LINK SIMBÓLICO PARA UPLOADS (se não existir) ==============
+// ============== CRIA LINK SIMBÓLICO PARA UPLOADS ==============
 $link = ROOT_DIR . '/public/uploads';
 $target = ROOT_DIR . '/storage/uploads';
 if (!is_link($link) && !file_exists($link)) {
