@@ -102,36 +102,31 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Marca -->
-                    <div class="col-md-6">
-                        <label for="marca_id" class="form-label">Marca <span class="text-danger">*</span></label>
-                        <select name="marca_id" id="marca_id" class="form-select <?= isset($errors['marca_id']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione uma marca</option>
-                            <?php foreach ($marcas as $marca): ?>
-                                <option value="<?= $marca['id'] ?>" <?= selected($old['marca_id'] ?? $veiculo['marca_id'] ?? '', $marca['id']) ?>>
-                                    <?= htmlspecialchars($marca['nome']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <?php if (isset($errors['marca_id'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['marca_id']) ?></div>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Modelo -->
-                    <div class="col-md-6">
-                        <label for="modelo_id" class="form-label">Modelo <span class="text-danger">*</span></label>
-                        <select name="modelo_id" id="modelo_id" class="form-select <?= isset($errors['modelo_id']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione um modelo</option>
-                            <?php foreach ($modelos as $modelo): ?>
-                                <option value="<?= $modelo['id'] ?>" <?= selected($old['modelo_id'] ?? $veiculo['modelo_id'] ?? '', $modelo['id']) ?>>
-                                    <?= htmlspecialchars($modelo['nome']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <?php if (isset($errors['modelo_id'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['modelo_id']) ?></div>
-                        <?php endif; ?>
+                    <!-- ===== MARCA E MODELO ===== -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-tags me-2"></i>Marca e Modelo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="brand-model-display">
+                                            <span id="marcaDisplay" class="badge bg-secondary p-2">Nenhuma marca selecionada</span>
+                                            <span id="modeloDisplay" class="badge bg-secondary p-2">Nenhum modelo selecionado</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button type="button" class="btn btn-primary" id="selecionarMarcaModeloBtn">
+                                        <i class="bi bi-search me-1"></i> Selecionar
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Campos ocultos para armazenar os IDs -->
+                            <input type="hidden" name="marca_id" id="marca_id" value="<?= $veiculo['marca_id'] ?? $old['marca_id'] ?? '' ?>">
+                            <input type="hidden" name="modelo_id" id="modelo_id" value="<?= $veiculo['modelo_id'] ?? $old['modelo_id'] ?? '' ?>">
+                        </div>
                     </div>
 
                     <!-- Versão -->
@@ -1020,6 +1015,86 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             <a href="/logista/veiculos" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
+
+    <!-- ========== MODAL MARCA E MODELO ========== -->
+    <div class="modal fade" id="marcaModeloModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-car-front me-2"></i>Selecionar Marca e Modelo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Etapa 1: Selecionar Marca -->
+                    <div id="etapa-marca" class="etapa">
+                        <h6 class="mb-3">1. Selecione a Marca</h6>
+                        <div class="mb-3">
+                            <input type="text" id="buscaMarca" class="form-control" placeholder="Pesquisar marca...">
+                        </div>
+                        <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Itens serão carregados via PHP + JS -->
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 2: Selecionar Modelo -->
+                    <div id="etapa-modelo" class="etapa" style="display: none;">
+                        <h6 class="mb-3">2. Selecione o Modelo</h6>
+                        <div class="mb-3">
+                            <input type="text" id="buscaModelo" class="form-control" placeholder="Pesquisar modelo...">
+                        </div>
+                        <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Itens carregados via AJAX -->
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-outline-secondary" id="voltarMarcaBtn">Voltar</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 3: Resumo e Edição -->
+                    <div id="etapa-resumo" class="etapa" style="display: none;">
+                        <h6 class="mb-3">3. Confirme a seleção</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card resumo-card" id="resumo-marca" style="cursor: pointer;">
+                                    <div class="card-body text-center position-relative">
+                                        <div class="editar-overlay">
+                                            <i class="bi bi-pencil-fill text-primary"></i>
+                                        </div>
+                                        <div id="resumo-marca-logo" class="mb-2">
+                                            <img src="/assets/images/default-brand.png" alt="Marca" width="64" height="64" class="rounded">
+                                        </div>
+                                        <h6 id="resumo-marca-nome">Nenhuma</h6>
+                                        <small class="text-muted">Clique para editar</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card resumo-card" id="resumo-modelo" style="cursor: pointer;">
+                                    <div class="card-body text-center position-relative">
+                                        <div class="editar-overlay">
+                                            <i class="bi bi-pencil-fill text-primary"></i>
+                                        </div>
+                                        <h6 id="resumo-modelo-nome">Nenhum</h6>
+                                        <small class="text-muted">Clique para editar</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" id="confirmarSelecaoBtn">
+                                <i class="bi bi-check-lg me-1"></i> Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -1277,6 +1352,227 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 aplicarRegrasHibrido('');
             }
         }
+
+        // ============================================================
+        // MODAL DE SELEÇÃO DE MARCA E MODELO
+        // ============================================================
+
+        // Referências DOM
+        const modalMarcaModelo = document.getElementById('marcaModeloModal');
+        const etapaMarca = document.getElementById('etapa-marca');
+        const etapaModelo = document.getElementById('etapa-modelo');
+        const etapaResumo = document.getElementById('etapa-resumo');
+        const listaMarcas = document.getElementById('lista-marcas');
+        const listaModelos = document.getElementById('lista-modelos');
+        const buscaMarca = document.getElementById('buscaMarca');
+        const buscaModelo = document.getElementById('buscaModelo');
+        const voltarMarcaBtn = document.getElementById('voltarMarcaBtn');
+        const confirmarBtn = document.getElementById('confirmarSelecaoBtn');
+        const resumoMarcaNome = document.getElementById('resumo-marca-nome');
+        const resumoModeloNome = document.getElementById('resumo-modelo-nome');
+        const resumoMarcaLogo = document.getElementById('resumo-marca-logo');
+        const resumoMarcaCard = document.getElementById('resumo-marca');
+        const resumoModeloCard = document.getElementById('resumo-modelo');
+        const marcaDisplay = document.getElementById('marcaDisplay');
+        const modeloDisplay = document.getElementById('modeloDisplay');
+        const marcaIdInput = document.getElementById('marca_id');
+        const modeloIdInput = document.getElementById('modelo_id');
+
+        // Dados da seleção
+        let selectedMarcaId = null;
+        let selectedMarcaNome = '';
+        let selectedMarcaLogo = '';
+        let selectedModeloId = null;
+        let selectedModeloNome = '';
+
+        // Inicialização: carregar marcas via PHP
+        const marcasData = <?= json_encode($marcas) ?>;
+
+        // Função para renderizar lista de marcas
+        function renderMarcas(filtro = '') {
+            const filtroLower = filtro.toLowerCase().trim();
+            const filtered = marcasData.filter(m => 
+                m.nome.toLowerCase().includes(filtroLower)
+            );
+            listaMarcas.innerHTML = '';
+            if (filtered.length === 0) {
+                listaMarcas.innerHTML = '<div class="text-center text-muted py-3">Nenhuma marca encontrada.</div>';
+                return;
+            }
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'item-lista';
+                if (selectedMarcaId === m.id) div.classList.add('selecionado');
+                div.innerHTML = `
+                    <img src="${m.logo_url || '/assets/images/default-brand.png'}" alt="${m.nome}">
+                    <span class="nome">${m.nome}</span>
+                `;
+                div.addEventListener('click', function() {
+                    listaMarcas.querySelectorAll('.item-lista').forEach(el => el.classList.remove('selecionado'));
+                    this.classList.add('selecionado');
+                    selectedMarcaId = m.id;
+                    selectedMarcaNome = m.nome;
+                    selectedMarcaLogo = m.logo_url || '/assets/images/default-brand.png';
+                    carregarModelos(m.id);
+                    irParaEtapa('modelo');
+                });
+                listaMarcas.appendChild(div);
+            });
+        }
+
+        // Função para carregar modelos via AJAX
+        function carregarModelos(marcaId) {
+            listaModelos.innerHTML = '<div class="text-center text-muted py-3">Carregando modelos...</div>';
+            fetch(`/api/modelos?marca_id=${marcaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.sucesso || !data.dados || data.dados.length === 0) {
+                        listaModelos.innerHTML = '<div class="text-center text-muted py-3">Nenhum modelo encontrado para esta marca.</div>';
+                        return;
+                    }
+                    const modelos = data.dados;
+                    renderModelos(modelos);
+                })
+                .catch(err => {
+                    listaModelos.innerHTML = '<div class="text-center text-danger py-3">Erro ao carregar modelos.</div>';
+                    console.error(err);
+                });
+        }
+
+        function renderModelos(modelos, filtro = '') {
+            const filtroLower = filtro.toLowerCase().trim();
+            const filtered = modelos.filter(m => 
+                m.nome.toLowerCase().includes(filtroLower)
+            );
+            listaModelos.innerHTML = '';
+            if (filtered.length === 0) {
+                listaModelos.innerHTML = '<div class="text-center text-muted py-3">Nenhum modelo encontrado.</div>';
+                return;
+            }
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'item-lista';
+                if (selectedModeloId === m.id) div.classList.add('selecionado');
+                div.innerHTML = `<span class="nome">${m.nome}</span>`;
+                div.addEventListener('click', function() {
+                    listaModelos.querySelectorAll('.item-lista').forEach(el => el.classList.remove('selecionado'));
+                    this.classList.add('selecionado');
+                    selectedModeloId = m.id;
+                    selectedModeloNome = m.nome;
+                    atualizarResumo();
+                    irParaEtapa('resumo');
+                });
+                listaModelos.appendChild(div);
+            });
+        }
+
+        // Atualizar resumo
+        function atualizarResumo() {
+            resumoMarcaNome.textContent = selectedMarcaNome || 'Nenhuma';
+            resumoModeloNome.textContent = selectedModeloNome || 'Nenhum';
+            const logoImg = resumoMarcaLogo.querySelector('img');
+            if (logoImg) {
+                logoImg.src = selectedMarcaLogo || '/assets/images/default-brand.png';
+            }
+        }
+
+        // Navegação entre etapas
+        function irParaEtapa(etapa) {
+            etapaMarca.style.display = 'none';
+            etapaModelo.style.display = 'none';
+            etapaResumo.style.display = 'none';
+            if (etapa === 'marca') {
+                etapaMarca.style.display = 'block';
+                buscaMarca.value = '';
+                renderMarcas();
+                setTimeout(() => buscaMarca.focus(), 100);
+            } else if (etapa === 'modelo') {
+                etapaModelo.style.display = 'block';
+                buscaModelo.value = '';
+                if (window._modelosData) {
+                    renderModelos(window._modelosData);
+                }
+                setTimeout(() => buscaModelo.focus(), 100);
+            } else if (etapa === 'resumo') {
+                etapaResumo.style.display = 'block';
+                atualizarResumo();
+            }
+        }
+
+        // Event listeners
+        if (buscaMarca) {
+            buscaMarca.addEventListener('input', function() {
+                renderMarcas(this.value);
+            });
+        }
+
+        if (buscaModelo) {
+            buscaModelo.addEventListener('input', function() {
+                const modelosAtuais = window._modelosData || [];
+                renderModelos(modelosAtuais, this.value);
+            });
+        }
+
+        if (voltarMarcaBtn) {
+            voltarMarcaBtn.addEventListener('click', function() {
+                irParaEtapa('marca');
+            });
+        }
+
+        if (resumoMarcaCard) {
+            resumoMarcaCard.addEventListener('click', function() {
+                irParaEtapa('marca');
+            });
+        }
+        if (resumoModeloCard) {
+            resumoModeloCard.addEventListener('click', function() {
+                irParaEtapa('modelo');
+            });
+        }
+
+        // Confirmar seleção
+        if (confirmarBtn) {
+            confirmarBtn.addEventListener('click', function() {
+                if (!selectedMarcaId || !selectedModeloId) {
+                    alert('Por favor, selecione uma marca e um modelo.');
+                    return;
+                }
+                marcaIdInput.value = selectedMarcaId;
+                modeloIdInput.value = selectedModeloId;
+                marcaDisplay.textContent = selectedMarcaNome;
+                marcaDisplay.className = 'badge bg-primary p-2';
+                modeloDisplay.textContent = selectedModeloNome;
+                modeloDisplay.className = 'badge bg-primary p-2';
+                const modalInstance = bootstrap.Modal.getInstance(modalMarcaModelo);
+                if (modalInstance) modalInstance.hide();
+            });
+        }
+
+        // Abrir modal
+        const btnSelecionar = document.getElementById('selecionarMarcaModeloBtn');
+        if (btnSelecionar) {
+            btnSelecionar.addEventListener('click', function() {
+                const currentMarcaId = parseInt(marcaIdInput.value);
+                const currentModeloId = parseInt(modeloIdInput.value);
+                if (currentMarcaId) {
+                    const marca = marcasData.find(m => m.id === currentMarcaId);
+                    if (marca) {
+                        selectedMarcaId = currentMarcaId;
+                        selectedMarcaNome = marca.nome;
+                        selectedMarcaLogo = marca.logo_url || '/assets/images/default-brand.png';
+                    }
+                }
+                renderMarcas();
+                irParaEtapa('marca');
+                const modalInstance = new bootstrap.Modal(modalMarcaModelo);
+                modalInstance.show();
+            });
+        }
+
+        modalMarcaModelo.addEventListener('hidden.bs.modal', function() {
+            // Opcional
+        });
+
     });
 </script>
 

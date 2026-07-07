@@ -29,6 +29,67 @@
                 transform: translateY(-5px);
                 box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
             }
+
+            /* Estilos para a lista de itens */
+            .lista-items .item-lista {
+                padding: 10px 15px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .lista-items .item-lista:hover {
+                background-color: #f8f9fa;
+            }
+            .lista-items .item-lista.selecionado {
+                background-color: #e7f3ff;
+                border-left: 4px solid #0d6efd;
+            }
+            .lista-items .item-lista img {
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+                border-radius: 4px;
+                background: #f8f9fa;
+            }
+            .lista-items .item-lista .nome {
+                font-weight: 500;
+            }
+
+            /* Overlay de edição nos cards de resumo */
+            .resumo-card {
+                position: relative;
+                transition: transform 0.2s;
+            }
+            .resumo-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+            }
+            .resumo-card .editar-overlay {
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+            .resumo-card:hover .editar-overlay {
+                opacity: 1;
+            }
+            .resumo-card .editar-overlay i {
+                font-size: 1.2rem;
+                background: white;
+                padding: 4px 6px;
+                border-radius: 50%;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            /* Badge de exibição no formulário */
+            .brand-model-display .badge {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+            }
         </style>
         <?php if (isset($extraCss)) echo $extraCss; ?>
     </head>
