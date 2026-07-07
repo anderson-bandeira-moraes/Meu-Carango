@@ -360,7 +360,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Datas -->
+                            <!-- Data de Instalação -->
                             <div class="col-md-4">
                                 <label for="data_instalacao" class="form-label">Data de Instalação</label>
                                 <input type="date" name="data_instalacao" id="data_instalacao" class="form-control <?= isset($errors['data_instalacao']) ? 'is-invalid' : '' ?>" 
@@ -370,6 +370,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Data da Última Inspeção -->
                             <div class="col-md-4">
                                 <label for="data_inspecao" class="form-label">Data da Última Inspeção <span class="text-danger">*</span></label>
                                 <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
@@ -379,6 +380,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Validade do Cilindro -->
                             <div class="col-md-4">
                                 <label for="data_validade_cilindro" class="form-label">Validade do Cilindro <span class="text-danger">*</span></label>
                                 <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
@@ -388,84 +390,156 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Cilindro -->
+                            <!-- Capacidade -->
                             <div class="col-md-3">
-                                <label for="capacidade_cilindro_m3" class="form-label">Capacidade (m³) <span class="text-danger">*</span></label>
-                                <input type="number" step="0.01" name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-control <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') ?>" min="0">
+                                <label for="capacidade_cilindro_m3" class="form-label">Capacidade <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>">
+                                        <option value="">Selecione</option>
+                                        <option value="7.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '7.5') ?>>7,5 m³</option>
+                                        <option value="9.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '9.5') ?>>9,5 m³</option>
+                                        <option value="10" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '10') ?>>10 m³</option>
+                                        <option value="15" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '15') ?>>15 m³</option>
+                                        <option value="17" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '17') ?>>17 m³</option>
+                                        <option value="21" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '21') ?>>21 m³</option>
+                                        <option value="24.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '24.5') ?>>24,5 m³</option>
+                                        <option value="25" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '25') ?>>25 m³</option>
+                                        <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    </select>
+                                    
+                                </div>
                                 <?php if (isset($errors['capacidade_cilindro_m3'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_cilindro_m3']) ?></div>
                                 <?php endif; ?>
+
+                                <!-- Campo extra para "Outro" -->
+                                <input type="number" step="0.01" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['capacidade_cilindro_m3_outro'] ?? '') ?>" 
+                                       placeholder="Digite a capacidade em m³" 
+                                       style="display: <?= ($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
+                                       min="0">
                             </div>
 
+                            <!-- Quantidade Cilindros -->
                             <div class="col-md-3">
                                 <label for="quantidade_cilindros" class="form-label">Quantidade <span class="text-danger">*</span></label>
-                                <input type="number" name="quantidade_cilindros" id="quantidade_cilindros" class="form-control <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '') ?>" min="0">
+                                <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <option value="1" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '1') ?>>1 cilindro</option>
+                                    <option value="2" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '2') ?>>2 cilindros</option>
+                                    <option value="3" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '3') ?>>3 cilindros</option>
+                                    <option value="4" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '4') ?>>4 cilindros</option>
+                                    <option value="5" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '5') ?>>5 cilindros</option>
+                                </select>
                                 <?php if (isset($errors['quantidade_cilindros'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['quantidade_cilindros']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Material Cilindro -->
                             <div class="col-md-3">
                                 <label for="material_cilindro" class="form-label">Material do Cilindro</label>
-                                <input type="text" name="material_cilindro" id="material_cilindro" class="form-control <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '') ?>" maxlength="20">
+                                <select name="material_cilindro" id="material_cilindro" class="form-select <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <option value="Aço" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Aço') ?>>Aço</option>
+                                    <option value="Alumínio" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Alumínio') ?>>Alumínio</option>
+                                    <option value="Compósito (Fibra de Carbono)" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Compósito (Fibra de Carbono)') ?>>Compósito (Fibra de Carbono)</option>
+                                    <option value="Compósito (Fibra de Vidro)" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Compósito (Fibra de Vidro)') ?>>Compósito (Fibra de Vidro)</option>
+                                    <option value="outro" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                </select>
                                 <?php if (isset($errors['material_cilindro'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['material_cilindro']) ?></div>
                                 <?php endif; ?>
+
+                                <!-- Campo extra para "Outro" -->
+                                <input type="text" name="material_cilindro_outro" id="material_cilindro_outro" class="form-control mt-2 <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['material_cilindro_outro'] ?? '') ?>" 
+                                       placeholder="Digite o material personalizado" 
+                                       style="display: <?= ($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                             </div>
 
+                            <!-- Localização Cilindro -->
                             <div class="col-md-3">
                                 <label for="localizacao_cilindro" class="form-label">Localização</label>
-                                <input type="text" name="localizacao_cilindro" id="localizacao_cilindro" class="form-control <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '') ?>" maxlength="30">
+                                <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <option value="Porta-malas" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Porta-malas') ?>>Porta-malas</option>
+                                    <option value="Sob o assoalho (Por baixo do carro)" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Sob o assoalho (Por baixo do carro)') ?>>Sob o assoalho (Por baixo do carro)</option>
+                                    <option value="Atrás dos bancos" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Atrás dos bancos') ?>>Atrás dos bancos</option>
+                                    <option value="Sobre o assoalho (área de carga)" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Sobre o assoalho (área de carga)') ?>>Sobre o assoalho (área de carga)</option>
+                                    <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                </select>
                                 <?php if (isset($errors['localizacao_cilindro'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['localizacao_cilindro']) ?></div>
                                 <?php endif; ?>
+
+                                <!-- Campo extra para "Outro" -->
+                                <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['localizacao_cilindro_outro'] ?? '') ?>" 
+                                       placeholder="Digite a localização personalizada" 
+                                       style="display: <?= ($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                             </div>
 
-                            <!-- Consumo e Autonomia -->
+                            <!-- Consumo Cidade -->
                             <div class="col-md-3">
-                                <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade (m³/km)</label>
-                                <input type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
+                                <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
+                                    <span class="input-group-text">m³/km</span>
+                                </div>
                                 <?php if (isset($errors['consumo_cidade_m3km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_m3km']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Consumo Estrada -->
                             <div class="col-md-3">
-                                <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada (m³/km)</label>
-                                <input type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
+                                <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
+                                    <span class="input-group-text">m³/km</span>
+                                </div>
                                 <?php if (isset($errors['consumo_estrada_m3km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_m3km']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Autonomia Média -->
                             <div class="col-md-2">
-                                <label for="autonomia_media_km" class="form-label">Autonomia Média (km)</label>
-                                <input type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
+                                <label for="autonomia_media_km" class="form-label">Autonomia Média</label>
+                                <div class="input-group">
+                                    <input type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
+                                    <span class="input-group-text">km</span>
+                                </div>
                                 <?php if (isset($errors['autonomia_media_km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_media_km']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Autonomia Cidade -->
                             <div class="col-md-2">
-                                <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade (km)</label>
-                                <input type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
+                                <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade</label>
+                                <div class="input-group">
+                                    <input type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
+                                    <span class="input-group-text">km</span>
+                                </div>
                                 <?php if (isset($errors['autonomia_cidade_km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_cidade_km']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Autonomia Estrada -->
                             <div class="col-md-2">
-                                <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada (km)</label>
-                                <input type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
+                                <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada</label>
+                                <div class="input-group">
+                                    <input type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
+                                    <span class="input-group-text">km</span>
+                                </div>
                                 <?php if (isset($errors['autonomia_estrada_km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_estrada_km']) ?></div>
                                 <?php endif; ?>
@@ -2451,7 +2525,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         // ============================================================
-        // MÁSCARA DE PREÇO BRASILEIRA (VANILLA JS) – CORRIGIDA
+        // MÁSCARA DE PREÇO BRASILEIRA
         // ============================================================
         (function() {
             const precoInput = document.getElementById('preco');
@@ -2572,6 +2646,23 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 });
             }
         })();
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA MATERIAL DO CILINDRO
+        // =============================================
+        setupMotorOutro('material_cilindro', 'material_cilindro_outro', []); 
+        // Passamos array vazio porque não há lista fixa para verificação
+        // (a lógica de edição que verifica se o valor está na lista não será aplicada)
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA CAPACIDADE DO CILINDRO
+        // =============================================
+        setupMotorOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA LOCALIZAÇÃO DO CILINDRO
+        // =============================================
+        setupMotorOutro('localizacao_cilindro', 'localizacao_cilindro_outro', []);
     });
 </script>
 
