@@ -70,7 +70,7 @@ class VeiculoRequest extends FormRequest
             // Opcionais (comuns)
             'versao'         => 'nullable|max:50',
             'numero_portas'  => 'nullable|integer|between:2,6',
-            'numero_assentos'=> 'nullable|integer|between:2,9',
+            'numero_assentos'=> 'nullable|integer|between:2,15',
 
             // Dimensões (opcionais)
             'comprimento_mm' => 'nullable|integer|min:0',

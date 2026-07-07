@@ -286,9 +286,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Número de Assentos -->
                     <div class="col-md-3">
-                        <label for="numero_assentos" class="form-label">Assentos</label>
-                        <input type="number" name="numero_assentos" id="numero_assentos" class="form-control <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '') ?>" min="2" max="9">
+                        <label for="numero_assentos" class="form-label">Assentos <span class="text-danger">*</span></label>
+                        <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <option value="2" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '2') ?>>2 assentos</option>
+                            <option value="3" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '3') ?>>3 assentos</option>
+                            <option value="4" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '4') ?>>4 assentos</option>
+                            <option value="5" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '5') ?>>5 assentos</option>
+                            <option value="6" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '6') ?>>6 assentos</option>
+                            <option value="7" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '7') ?>>7 assentos</option>
+                            <option value="8" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '8') ?>>8 assentos</option>
+                            <option value="9" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '9') ?>>9 assentos</option>
+                            <option value="10" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '10') ?>>10 assentos</option>
+                            <option value="11" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '11') ?>>11 assentos</option>
+                            <option value="12" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '12') ?>>12 assentos</option>
+                            <option value="13" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '13') ?>>13 assentos</option>
+                            <option value="14" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '14') ?>>14 assentos</option>
+                            <option value="15" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '15') ?>>15 assentos</option>
+                        </select>
                         <?php if (isset($errors['numero_assentos'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
                         <?php endif; ?>
@@ -300,6 +315,207 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <input type="checkbox" name="gnv_instalado" id="gnv_instalado" class="form-check-input" value="1"
                                    <?= ($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? 0) ? 'checked' : '' ?>>
                             <label for="gnv_instalado" class="form-check-label">Veículo possui kit GNV instalado</label>
+                        </div>
+                    </div>
+
+                    <!-- Bloco GNV (exibido apenas se o checkbox estiver marcado) -->
+                    <div id="bloco-gnv" style="display: <?= ($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? 0) ? 'block' : 'none' ?>;" class="mt-3 p-3 border rounded bg-light">
+                        <h6 class="mb-3"><i class="bi bi-gas-pump me-2"></i>Dados do Kit GNV</h6>
+                        <div class="row g-3">
+                            <!-- Tipo de Sistema -->
+                            <div class="col-md-4">
+                                <label for="tipo_sistema" class="form-label">Tipo de Sistema <span class="text-danger">*</span></label>
+                                <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <option value="GNC" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', 'GNC') ?>>GNC (Gás Natural Comprimido)</option>
+                                    <option value="GLP" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', 'GLP') ?>>GLP (Gás Liquefeito de Petróleo)</option>
+                                </select>
+                                <?php if (isset($errors['tipo_sistema'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_sistema']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Geração do Kit -->
+                            <div class="col-md-4">
+                                <label for="geracao_kit" class="form-label">Geração do Kit <span class="text-danger">*</span></label>
+                                <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <option value="3ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '3ª') ?>>3ª Geração</option>
+                                    <option value="4ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '4ª') ?>>4ª Geração</option>
+                                    <option value="5ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '5ª') ?>>5ª Geração</option>
+                                    <option value="6ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '6ª') ?>>6ª Geração</option>
+                                </select>
+                                <?php if (isset($errors['geracao_kit'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['geracao_kit']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Marca do Kit -->
+                            <div class="col-md-4">
+                                <label for="marca_kit" class="form-label">Marca do Kit</label>
+                                <input type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['marca_kit'] ?? $complemento['marca_kit'] ?? '') ?>" maxlength="40">
+                                <?php if (isset($errors['marca_kit'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['marca_kit']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Datas -->
+                            <div class="col-md-4">
+                                <label for="data_instalacao" class="form-label">Data de Instalação</label>
+                                <input type="date" name="data_instalacao" id="data_instalacao" class="form-control <?= isset($errors['data_instalacao']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['data_instalacao'] ?? $complemento['data_instalacao'] ?? '') ?>">
+                                <?php if (isset($errors['data_instalacao'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_instalacao']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="data_inspecao" class="form-label">Data da Última Inspeção <span class="text-danger">*</span></label>
+                                <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['data_inspecao'] ?? $complemento['data_inspecao'] ?? '') ?>">
+                                <?php if (isset($errors['data_inspecao'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_inspecao']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="data_validade_cilindro" class="form-label">Validade do Cilindro <span class="text-danger">*</span></label>
+                                <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $complemento['data_validade_cilindro'] ?? '') ?>">
+                                <?php if (isset($errors['data_validade_cilindro'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_validade_cilindro']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Cilindro -->
+                            <div class="col-md-3">
+                                <label for="capacidade_cilindro_m3" class="form-label">Capacidade (m³) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-control <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['capacidade_cilindro_m3'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_cilindro_m3']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="quantidade_cilindros" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                                <input type="number" name="quantidade_cilindros" id="quantidade_cilindros" class="form-control <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['quantidade_cilindros'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['quantidade_cilindros']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="material_cilindro" class="form-label">Material do Cilindro</label>
+                                <input type="text" name="material_cilindro" id="material_cilindro" class="form-control <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '') ?>" maxlength="20">
+                                <?php if (isset($errors['material_cilindro'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['material_cilindro']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="localizacao_cilindro" class="form-label">Localização</label>
+                                <input type="text" name="localizacao_cilindro" id="localizacao_cilindro" class="form-control <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '') ?>" maxlength="30">
+                                <?php if (isset($errors['localizacao_cilindro'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['localizacao_cilindro']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Consumo e Autonomia -->
+                            <div class="col-md-3">
+                                <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade (m³/km)</label>
+                                <input type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['consumo_cidade_m3km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_m3km']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada (m³/km)</label>
+                                <input type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['consumo_estrada_m3km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_m3km']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="autonomia_media_km" class="form-label">Autonomia Média (km)</label>
+                                <input type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['autonomia_media_km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_media_km']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade (km)</label>
+                                <input type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['autonomia_cidade_km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_cidade_km']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada (km)</label>
+                                <input type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
+                                <?php if (isset($errors['autonomia_estrada_km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_estrada_km']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Booleanos -->
+                            <div class="col-md-3">
+                                <div class="form-check mt-4">
+                                    <input type="hidden" name="selo_inmetro" value="0">
+                                    <input type="checkbox" name="selo_inmetro" id="selo_inmetro" class="form-check-input" value="1"
+                                           <?= ($old['selo_inmetro'] ?? $complemento['selo_inmetro'] ?? 0) ? 'checked' : '' ?>>
+                                    <label for="selo_inmetro" class="form-check-label">Possui selo Inmetro?</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-check mt-4">
+                                    <input type="hidden" name="certificado_csv" value="0">
+                                    <input type="checkbox" name="certificado_csv" id="certificado_csv" class="form-check-input" value="1"
+                                           <?= ($old['certificado_csv'] ?? $complemento['certificado_csv'] ?? 0) ? 'checked' : '' ?>>
+                                    <label for="certificado_csv" class="form-check-label">Possui certificado CSV?</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-check mt-4">
+                                    <input type="hidden" name="registro_detran" value="0">
+                                    <input type="checkbox" name="registro_detran" id="registro_detran" class="form-check-input" value="1"
+                                           <?= ($old['registro_detran'] ?? $complemento['registro_detran'] ?? 0) ? 'checked' : '' ?>>
+                                    <label for="registro_detran" class="form-check-label">Registrado no Detran?</label>
+                                </div>
+                            </div>
+
+                            <!-- Instaladora e Observações -->
+                            <div class="col-md-6">
+                                <label for="instaladora_certificada" class="form-label">Instaladora Certificada</label>
+                                <input type="text" name="instaladora_certificada" id="instaladora_certificada" class="form-control <?= isset($errors['instaladora_certificada']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['instaladora_certificada'] ?? $complemento['instaladora_certificada'] ?? '') ?>" maxlength="50">
+                                <?php if (isset($errors['instaladora_certificada'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['instaladora_certificada']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="observacoes" class="form-label">Observações</label>
+                                <textarea name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="2"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
+                                <?php if (isset($errors['observacoes'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['observacoes']) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1392,10 +1608,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // 5. VALIDAÇÃO DE GNV (exibe campos extras)
         // =============================================
         const gnvCheckbox = document.getElementById('gnv_instalado');
-        if (gnvCheckbox) {
-            gnvCheckbox.addEventListener('change', function() {
-                console.log('GNV marcado:', this.checked);
-            });
+        const gnvBloco = document.getElementById('bloco-gnv');
+
+        if (gnvCheckbox && gnvBloco) {
+            function toggleGNV() {
+                gnvBloco.style.display = gnvCheckbox.checked ? 'block' : 'none';
+            }
+            gnvCheckbox.addEventListener('change', toggleGNV);
+            // Executa na inicialização (para edição)
+            toggleGNV();
         }
 
         // =============================================
