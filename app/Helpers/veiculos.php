@@ -62,11 +62,9 @@ if (!function_exists('logo_url')) {
     function logo_url(?string $caminho): string
     {
         if (empty($caminho)) {
-            // Retorna a URL de uma imagem padrão (criar no próximo passo)
             return '/assets/images/default-brand.png';
         }
-
-        // Garante que não haja duplicação de barras
-        return '/storage/' . ltrim($caminho, '/');
+        // Agora a URL pública é /uploads/ + caminho (ex: 'marcas/arquivo.webp')
+        return '/uploads/' . ltrim($caminho, '/');
     }
 }

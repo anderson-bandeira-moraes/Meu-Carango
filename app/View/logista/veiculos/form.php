@@ -1027,30 +1027,81 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 <div class="modal-body">
                     <!-- Etapa 1: Selecionar Marca -->
                     <div id="etapa-marca" class="etapa">
-                        <h6 class="mb-3">1. Selecione a Marca</h6>
-                        <div class="mb-3">
-                            <input type="text" id="buscaMarca" class="form-control" placeholder="Pesquisar marca...">
+                        <div id="conteudo-marca-lista">
+                            <h6 class="mb-3">1. Selecione a Marca</h6>
+                            <div class="mb-3">
+                                <input type="text" id="buscaMarca" class="form-control" placeholder="Pesquisar marca...">
+                            </div>
+                            <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                                <!-- Itens serão carregados via PHP + JS -->
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="adicionarMarcaBtn">
+                                    <i class="bi bi-plus-lg me-1"></i> Adicionar Nova Marca
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
                         </div>
-                        <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
-                            <!-- Itens serão carregados via PHP + JS -->
-                        </div>
-                        <div class="text-end mt-3">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <div id="conteudo-marca-form" style="display: none;">
+                            <h6 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Nova Marca</h6>
+                            <form id="formNovaMarca">
+                                <div class="mb-3">
+                                    <label for="novaMarcaNome" class="form-label">Nome da Marca <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="novaMarcaNome" placeholder="Ex: Fiat" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="novaMarcaLogo" class="form-label">Logo (opcional)</label>
+                                    <input type="file" class="form-control" id="novaMarcaLogo" accept="image/*">
+                                    <div id="previewMarcaLogo" class="mt-2" style="display: none;">
+                                        <img id="previewMarcaImg" src="#" alt="Preview" width="64" height="64" class="rounded border">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-secondary" id="cancelarNovaMarcaBtn">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="salvarNovaMarcaBtn">
+                                        <span id="spinnerMarca" class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+                                        <span id="textoMarcaBtn">Cadastrar</span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
                     <!-- Etapa 2: Selecionar Modelo -->
                     <div id="etapa-modelo" class="etapa" style="display: none;">
-                        <h6 class="mb-3">2. Selecione o Modelo</h6>
-                        <div class="mb-3">
-                            <input type="text" id="buscaModelo" class="form-control" placeholder="Pesquisar modelo...">
+                        <div id="conteudo-modelo-lista">
+                            <h6 class="mb-3">2. Selecione o Modelo</h6>
+                            <div class="mb-3">
+                                <input type="text" id="buscaModelo" class="form-control" placeholder="Pesquisar modelo...">
+                            </div>
+                            <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                                <!-- Itens carregados via AJAX -->
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="adicionarModeloBtn">
+                                    <i class="bi bi-plus-lg me-1"></i> Adicionar Novo Modelo
+                                </button>
+                                <div>
+                                    <button type="button" class="btn btn-outline-secondary" id="voltarMarcaBtn">Voltar</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
                         </div>
-                        <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
-                            <!-- Itens carregados via AJAX -->
-                        </div>
-                        <div class="text-end mt-3">
-                            <button type="button" class="btn btn-outline-secondary" id="voltarMarcaBtn">Voltar</button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <div id="conteudo-modelo-form" style="display: none;">
+                            <h6 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Novo Modelo</h6>
+                            <form id="formNovoModelo">
+                                <div class="mb-3">
+                                    <label for="novoModeloNome" class="form-label">Nome do Modelo <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="novoModeloNome" placeholder="Ex: Palio" required>
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-secondary" id="cancelarNovoModeloBtn">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" id="salvarNovoModeloBtn">
+                                        <span id="spinnerModelo" class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+                                        <span id="textoModeloBtn">Cadastrar</span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
@@ -1572,6 +1623,369 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         modalMarcaModelo.addEventListener('hidden.bs.modal', function() {
             // Opcional
         });
+
+        // ============================================================
+        // CONTROLE DOS FORMULÁRIOS DE ADIÇÃO (Marca e Modelo)
+        // ============================================================
+
+        // ----- Marca -----
+        const adicionarMarcaBtn = document.getElementById('adicionarMarcaBtn');
+        const cancelarNovaMarcaBtn = document.getElementById('cancelarNovaMarcaBtn');
+        const conteudoMarcaLista = document.getElementById('conteudo-marca-lista');
+        const conteudoMarcaForm = document.getElementById('conteudo-marca-form');
+
+        if (adicionarMarcaBtn) {
+            adicionarMarcaBtn.addEventListener('click', function() {
+                conteudoMarcaLista.style.display = 'none';
+                conteudoMarcaForm.style.display = 'block';
+                // Limpar campos ao abrir
+                document.getElementById('novaMarcaNome').value = '';
+                document.getElementById('novaMarcaLogo').value = '';
+                document.getElementById('previewMarcaLogo').style.display = 'none';
+            });
+        }
+
+        if (cancelarNovaMarcaBtn) {
+            cancelarNovaMarcaBtn.addEventListener('click', function() {
+                conteudoMarcaLista.style.display = 'block';
+                conteudoMarcaForm.style.display = 'none';
+                // Limpar campos ao cancelar
+                document.getElementById('novaMarcaNome').value = '';
+                document.getElementById('novaMarcaLogo').value = '';
+                document.getElementById('previewMarcaLogo').style.display = 'none';
+            });
+        }
+
+        // ----- Modelo -----
+        const adicionarModeloBtn = document.getElementById('adicionarModeloBtn');
+        const cancelarNovoModeloBtn = document.getElementById('cancelarNovoModeloBtn');
+        const conteudoModeloLista = document.getElementById('conteudo-modelo-lista');
+        const conteudoModeloForm = document.getElementById('conteudo-modelo-form');
+
+        if (adicionarModeloBtn) {
+            adicionarModeloBtn.addEventListener('click', function() {
+                conteudoModeloLista.style.display = 'none';
+                conteudoModeloForm.style.display = 'block';
+                document.getElementById('novoModeloNome').value = '';
+            });
+        }
+
+        if (cancelarNovoModeloBtn) {
+            cancelarNovoModeloBtn.addEventListener('click', function() {
+                conteudoModeloLista.style.display = 'block';
+                conteudoModeloForm.style.display = 'none';
+                document.getElementById('novoModeloNome').value = '';
+            });
+        }
+
+        // ============================================================
+        // CONVERSÃO DE IMAGEM PARA WEBP 64x64 (Marca)
+        // ============================================================
+        const inputLogo = document.getElementById('novaMarcaLogo');
+        const previewContainer = document.getElementById('previewMarcaLogo');
+        const previewImg = document.getElementById('previewMarcaImg');
+        let imagemConvertidaBlob = null;
+
+        if (inputLogo) {
+            inputLogo.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (!file) return;
+
+                // Valida se é uma imagem
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor, selecione um arquivo de imagem válido.');
+                    this.value = '';
+                    return;
+                }
+
+                // Limpa preview anterior
+                previewContainer.style.display = 'none';
+                previewImg.src = '#';
+                imagemConvertidaBlob = null;
+
+                // Lê o arquivo como DataURL
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const dataUrl = event.target.result;
+
+                    // Cria uma imagem para obter dimensões
+                    const img = new Image();
+                    img.onload = function() {
+                        try {
+                            // 1. Configura canvas 64x64
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 64;
+                            canvas.height = 64;
+                            const ctx = canvas.getContext('2d');
+
+                            // 2. Calcula crop centralizado 1:1
+                            const size = Math.min(img.width, img.height);
+                            const sx = (img.width - size) / 2;
+                            const sy = (img.height - size) / 2;
+
+                            // 3. Desenha a imagem recortada e redimensionada
+                            ctx.drawImage(img, sx, sy, size, size, 0, 0, 64, 64);
+
+                            // 4. Converte para WebP (qualidade 0.9)
+                            canvas.toBlob(function(blob) {
+                                if (!blob) {
+                                    alert('Erro ao converter imagem para WebP. Tente novamente.');
+                                    return;
+                                }
+
+                                // 5. Armazena o Blob para envio posterior
+                                imagemConvertidaBlob = blob;
+
+                                // 6. Exibe preview da imagem convertida
+                                const previewUrl = URL.createObjectURL(blob);
+                                previewImg.src = previewUrl;
+                                previewContainer.style.display = 'block';
+
+                                console.log('Imagem convertida com sucesso:', {
+                                    tamanho: (blob.size / 1024).toFixed(2) + ' KB',
+                                    tipo: blob.type
+                                });
+
+                            }, 'image/webp', 0.9);
+
+                        } catch (err) {
+                            alert('Erro ao processar a imagem: ' + err.message);
+                            inputLogo.value = '';
+                        }
+                    };
+
+                    img.onerror = function() {
+                        alert('Erro ao carregar a imagem. Tente novamente.');
+                        inputLogo.value = '';
+                    };
+
+                    img.src = dataUrl;
+                };
+
+                reader.onerror = function() {
+                    alert('Erro ao ler o arquivo. Tente novamente.');
+                    inputLogo.value = '';
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ============================================================
+        // CONTROLE DE SPINNER E ESTADO DOS BOTÕES
+        // ============================================================
+        function showSpinner(btnId, spinnerId, textId, loadingText = 'Carregando...') {
+            const btn = document.getElementById(btnId);
+            const spinner = document.getElementById(spinnerId);
+            const text = document.getElementById(textId);
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.style.display = 'inline-block';
+            if (text) text.textContent = loadingText;
+        }
+
+        function hideSpinner(btnId, spinnerId, textId, originalText = 'Cadastrar') {
+            const btn = document.getElementById(btnId);
+            const spinner = document.getElementById(spinnerId);
+            const text = document.getElementById(textId);
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.style.display = 'none';
+            if (text) text.textContent = originalText;
+        }
+
+        // ============================================================
+        // 5. ENVIO VIA AJAX – CRIAÇÃO DE MARCA
+        // ============================================================
+        const formMarca = document.getElementById('formNovaMarca');
+        if (formMarca) {
+            formMarca.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // 1. Validação do campo nome
+                const nomeInput = document.getElementById('novaMarcaNome');
+                const nome = nomeInput.value.trim();
+                if (nome === '') {
+                    alert('O nome da marca é obrigatório.');
+                    nomeInput.focus();
+                    return;
+                }
+
+                // 2. Verifica se a imagem foi convertida (se o usuário selecionou um arquivo)
+                // Se o usuário selecionou um arquivo, mas a conversão falhou, o blob pode ser null
+                // Se não selecionou arquivo, o blob será null e está tudo bem (logo opcional)
+                // Se selecionou e o blob é null, significa que a conversão falhou
+                const fileInput = document.getElementById('novaMarcaLogo');
+                if (fileInput.files.length > 0 && !imagemConvertidaBlob) {
+                    alert('A imagem ainda está sendo processada. Aguarde um momento ou selecione novamente.');
+                    return;
+                }
+
+                // 3. Monta FormData
+                const formData = new FormData();
+                formData.append('nome', nome);
+
+                // Se houver imagem convertida, adiciona ao FormData
+                if (imagemConvertidaBlob) {
+                    // Cria um File a partir do Blob com nome e tipo adequados
+                    const file = new File([imagemConvertidaBlob], 'logo.webp', { type: 'image/webp' });
+                    formData.append('logo', file);
+                }
+
+                // 4. Exibe spinner
+                showSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrando...');
+
+                // 5. Envia via fetch
+                fetch('/api/marcas', {
+                    method: 'POST',
+                    body: formData,
+                    // Não define Content-Type – o browser define com boundary automaticamente
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Esconde spinner
+                    hideSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrar');
+
+                    if (data.sucesso) {
+                        // 6. Sucesso: mensagem positiva
+                        alert('✅ Marca criada com sucesso!');
+
+                        // 7. Atualiza a lista local de marcas
+                        const novaMarca = data.dados;
+                        marcasData.push(novaMarca);
+                        // Ordena por nome
+                        marcasData.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                        // 8. Pré-seleciona a nova marca
+                        selectedMarcaId = novaMarca.id;
+                        selectedMarcaNome = novaMarca.nome;
+                        selectedMarcaLogo = novaMarca.logo_url || '/assets/images/default-brand.png';
+
+                        // 9. Re-renderiza a lista
+                        renderMarcas();
+
+                        // 10. Limpa formulário e volta para a lista
+                        document.getElementById('novaMarcaNome').value = '';
+                        document.getElementById('novaMarcaLogo').value = '';
+                        document.getElementById('previewMarcaLogo').style.display = 'none';
+                        imagemConvertidaBlob = null;
+                        conteudoMarcaForm.style.display = 'none';
+                        conteudoMarcaLista.style.display = 'block';
+
+                        // 11. Marca o item como selecionado na lista
+                        const itens = listaMarcas.querySelectorAll('.item-lista');
+                        itens.forEach(item => {
+                            const nomeItem = item.querySelector('.nome')?.textContent;
+                            if (nomeItem === selectedMarcaNome) {
+                                item.classList.add('selecionado');
+                            }
+                        });
+
+                    } else {
+                        // 12. Erro: exibe mensagem
+                        const erro = data.erro || 'Erro ao criar marca.';
+                        alert('❌ ' + erro);
+                    }
+                })
+                .catch(error => {
+                    // 13. Erro de rede
+                    hideSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrar');
+                    alert('❌ Erro de conexão. Tente novamente.');
+                    console.error('Erro ao criar marca:', error);
+                });
+            });
+        }
+
+
+        // ============================================================
+        // 6. ENVIO VIA AJAX – CRIAÇÃO DE MODELO
+        // ============================================================
+        const formModelo = document.getElementById('formNovoModelo');
+        if (formModelo) {
+            formModelo.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // 1. Validação do campo nome
+                const nomeInput = document.getElementById('novoModeloNome');
+                const nome = nomeInput.value.trim();
+                if (nome === '') {
+                    alert('O nome do modelo é obrigatório.');
+                    nomeInput.focus();
+                    return;
+                }
+
+                // 2. Verifica se há uma marca selecionada
+                if (!selectedMarcaId) {
+                    alert('Selecione uma marca antes de adicionar um modelo.');
+                    return;
+                }
+
+                // 3. Monta FormData
+                const formData = new FormData();
+                formData.append('marca_id', selectedMarcaId);
+                formData.append('nome', nome);
+
+                // 4. Exibe spinner
+                showSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrando...');
+
+                // 5. Envia via fetch
+                fetch('/api/modelos', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Esconde spinner
+                    hideSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrar');
+
+                    if (data.sucesso) {
+                        // 6. Sucesso: mensagem positiva
+                        alert('✅ Modelo criado com sucesso!');
+
+                        // 7. Atualiza a lista local de modelos
+                        const novoModelo = data.dados;
+                        if (!window._modelosData) {
+                            window._modelosData = [];
+                        }
+                        window._modelosData.push(novoModelo);
+                        window._modelosData.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                        // 8. Pré-seleciona o novo modelo
+                        selectedModeloId = novoModelo.id;
+                        selectedModeloNome = novoModelo.nome;
+
+                        // 9. Re-renderiza a lista de modelos
+                        renderModelos(window._modelosData);
+
+                        // 10. Limpa formulário e volta para a lista
+                        document.getElementById('novoModeloNome').value = '';
+                        conteudoModeloForm.style.display = 'none';
+                        conteudoModeloLista.style.display = 'block';
+
+                        // 11. Marca o item como selecionado na lista
+                        const itens = listaModelos.querySelectorAll('.item-lista');
+                        itens.forEach(item => {
+                            const nomeItem = item.querySelector('.nome')?.textContent;
+                            if (nomeItem === selectedModeloNome) {
+                                item.classList.add('selecionado');
+                            }
+                        });
+
+                        // Atualiza resumo (caso o usuário confirme depois)
+                        atualizarResumo();
+
+                    } else {
+                        // 12. Erro: exibe mensagem
+                        const erro = data.erro || 'Erro ao criar modelo.';
+                        alert('❌ ' + erro);
+                    }
+                })
+                .catch(error => {
+                    // 13. Erro de rede
+                    hideSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrar');
+                    alert('❌ Erro de conexão. Tente novamente.');
+                    console.error('Erro ao criar modelo:', error);
+                });
+            });
+        }
 
     });
 </script>
