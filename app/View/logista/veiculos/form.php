@@ -816,8 +816,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <div class="col-md-4">
                             <label for="numero_marchas" class="form-label">Número de Marchas</label>
-                            <input type="number" name="numero_marchas" id="numero_marchas" class="form-control <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '') ?>" min="0">
+                            <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="4" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '4') ?>>4 marchas</option>
+                                <option value="5" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '5') ?>>5 marchas</option>
+                                <option value="6" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '6') ?>>6 marchas</option>
+                                <option value="7" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '7') ?>>7 marchas</option>
+                                <option value="8" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '8') ?>>8 marchas</option>
+                                <option value="9" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '9') ?>>9 marchas</option>
+                                <option value="10" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '10') ?>>10 marchas</option>
+                            </select>
                             <?php if (isset($errors['numero_marchas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
                             <?php endif; ?>
@@ -1277,11 +1285,19 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <label for="numero_marchas_hibrido" class="form-label">Número de Marchas</label>
-                            <input type="number" name="numero_marchas" id="numero_marchas_hibrido" class="form-control <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '') ?>" min="0">
+                            <select name="numero_marchas" id="numero_marchas_hibrido" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="4" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '4') ?>>4 marchas</option>
+                                <option value="5" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '5') ?>>5 marchas</option>
+                                <option value="6" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '6') ?>>6 marchas</option>
+                                <option value="7" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '7') ?>>7 marchas</option>
+                                <option value="8" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '8') ?>>8 marchas</option>
+                                <option value="9" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '9') ?>>9 marchas</option>
+                                <option value="10" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '10') ?>>10 marchas</option>
+                            </select>
                             <?php if (isset($errors['numero_marchas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
                             <?php endif; ?>
@@ -2784,6 +2800,54 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 form.submit();
             });
         }
+
+        // ============================================================
+        // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS PARA CVT
+        // ============================================================
+
+        /**
+         * Configura a lógica de exibição do campo de marchas baseado no tipo de transmissão.
+         * @param {string} transmissaoId - ID do <select> de transmissão
+         * @param {string} marchasId    - ID do <select> de número de marchas
+         * @param {string[]} tiposCvt   - Array de valores que indicam "sem marchas fixas"
+         */
+        function configurarMarchasCvt(transmissaoId, marchasId, tiposCvt) {
+            const transmissao = document.getElementById(transmissaoId);
+            const marchas = document.getElementById(marchasId);
+            if (!transmissao || !marchas) return;
+
+            function toggleMarchas() {
+                const valor = transmissao.value;
+                const isCvt = tiposCvt.includes(valor);
+                // Oculta/exibe o container do campo (col-md-4)
+                const container = marchas.closest('.col-md-4');
+                if (container) {
+                    container.style.display = isCvt ? 'none' : 'block';
+                }
+                // Se for CVT, limpa o valor do select para não enviar dados incorretos
+                if (isCvt) {
+                    marchas.value = '';
+                }
+            }
+
+            transmissao.addEventListener('change', toggleMarchas);
+            // Executa uma vez para inicializar (na edição)
+            toggleMarchas();
+        }
+
+        // Configurar para a seção Combustão
+        configurarMarchasCvt(
+            'transmissao_tipo',               // ID do select de transmissão
+            'numero_marchas',                 // ID do select de marchas
+            ['Automática CVT', 'CVT']         // Valores que indicam CVT (adicione outros se necessário)
+        );
+
+        // Configurar para a seção Híbrido
+        configurarMarchasCvt(
+            'transmissao_tipo_hibrido',       // ID do select de transmissão híbrido
+            'numero_marchas_hibrido',         // ID do select de marchas híbrido
+            ['CVT', 'e-CVT', 'Automática CVT'] // Valores comuns para híbridos
+        );
     });
 </script>
 
