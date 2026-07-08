@@ -132,7 +132,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Versão -->
                     <div class="col-md-4">
                         <label for="versao" class="form-label">Versão do Modelo</label>
-                        <input title="Versão do modelo (ex: GL, EX, Sport, Turbo)" placeholder="ex: GL, EX, Sport, Turbo" type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
+                        <input title="Versão do modelo (Ex: GL, EX, Sport, Turbo)" placeholder="ex: GL, EX, Sport, Turbo" type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['versao'] ?? $veiculo['versao'] ?? '') ?>">
                         <?php if (isset($errors['versao'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['versao']) ?></div>
@@ -142,7 +142,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Ano Fabricação -->
                     <div class="col-md-4">
                         <label for="ano_fabricacao" class="form-label">Ano de Fabricação <span class="text-danger">*</span></label>
-                        <input title="Digite o ano com 4 dígitos" placeholder="ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>">
                         <?php if (isset($errors['ano_fabricacao'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_fabricacao']) ?></div>
@@ -152,7 +152,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Ano Modelo -->
                     <div class="col-md-4">
                         <label for="ano_modelo" class="form-label">Ano do Modelo <span class="text-danger">*</span></label>
-                        <input title="Digite o ano com 4 dígitos" placeholder="ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>">
                         <?php if (isset($errors['ano_modelo'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_modelo']) ?></div>
@@ -353,7 +353,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Marca do Kit -->
                             <div class="col-md-4">
                                 <label for="marca_kit" class="form-label">Marca do Kit</label>
-                                <input type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
+                                <input placeholder="Ex: Landirenzo, Lovato, BRC" type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['marca_kit'] ?? $complemento['marca_kit'] ?? '') ?>" maxlength="40">
                                 <?php if (isset($errors['marca_kit'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['marca_kit']) ?></div>
@@ -484,9 +484,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-3">
                                 <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade</label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="12,5" type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
-                                    <span class="input-group-text">m³/km</span>
+                                    <span class="input-group-text">km/m³</span>
                                 </div>
                                 <?php if (isset($errors['consumo_cidade_m3km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_m3km']) ?></div>
@@ -497,9 +497,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-3">
                                 <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada</label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="16,6" type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
-                                    <span class="input-group-text">m³/km</span>
+                                    <span class="input-group-text">km/m³</span>
                                 </div>
                                 <?php if (isset($errors['consumo_estrada_m3km'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_m3km']) ?></div>
@@ -510,7 +510,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_media_km" class="form-label">Autonomia Média</label>
                                 <div class="input-group">
-                                    <input type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="180" type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
@@ -523,7 +523,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade</label>
                                 <div class="input-group">
-                                    <input type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="150" type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
@@ -536,7 +536,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada</label>
                                 <div class="input-group">
-                                    <input type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="210" type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
@@ -573,19 +573,20 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                             </div>
 
-                            <!-- Instaladora e Observações -->
+                            <!-- Instaladora Certificada -->
                             <div class="col-md-6">
                                 <label for="instaladora_certificada" class="form-label">Instaladora Certificada</label>
-                                <input type="text" name="instaladora_certificada" id="instaladora_certificada" class="form-control <?= isset($errors['instaladora_certificada']) ? 'is-invalid' : '' ?>" 
+                                <input placeholder="Nome da oficina credenciada que instalou o kit" type="text" name="instaladora_certificada" id="instaladora_certificada" class="form-control <?= isset($errors['instaladora_certificada']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['instaladora_certificada'] ?? $complemento['instaladora_certificada'] ?? '') ?>" maxlength="50">
                                 <?php if (isset($errors['instaladora_certificada'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['instaladora_certificada']) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Observações -->
                             <div class="col-md-6">
                                 <label for="observacoes" class="form-label">Observações</label>
-                                <textarea name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="2"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
+                                <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="2"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
                                 <?php if (isset($errors['observacoes'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['observacoes']) ?></div>
                                 <?php endif; ?>
@@ -599,102 +600,102 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 <h6 class="mb-3"><i class="bi bi-rulers me-2"></i>Dimensões e Capacidades</h6>
                 <div class="row g-3">
                     <div class="col-md-2">
-                        <label for="comprimento_mm" class="form-label">Comprimento (mm)</label>
-                        <input type="number" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0">
+                        <label for="comprimento_mm" class="form-label">Comprimento</label>
+                        <div class="input-group">
+                            <input type="number" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
+                            <span class="input-group-text">mm</span>
+                        </div>
                         <?php if (isset($errors['comprimento_mm'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['comprimento_mm']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['comprimento_mm']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="largura_mm" class="form-label">Largura (mm)</label>
-                        <input type="number" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0">
+                        <label for="largura_mm" class="form-label">Largura</label>
+                        <div class="input-group">
+                            <input type="number" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1800">
+                            <span class="input-group-text">mm</span>
+                        </div>
                         <?php if (isset($errors['largura_mm'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['largura_mm']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['largura_mm']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="altura_mm" class="form-label">Altura (mm)</label>
-                        <input type="number" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0">
+                        <label for="altura_mm" class="form-label">Altura</label>
+                        <div class="input-group">
+                            <input type="number" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
+                            <span class="input-group-text">mm</span>
+                        </div>
                         <?php if (isset($errors['altura_mm'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['altura_mm']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['altura_mm']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="distancia_entre_eixos_mm" class="form-label">Dist. entre eixos (mm)</label>
-                        <input type="number" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0">
+                        <label for="distancia_entre_eixos_mm" class="form-label">Dist. entre eixos</label>
+                        <div class="input-group">
+                            <input type="number" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0" placeholder="Ex: 2600">
+                            <span class="input-group-text">mm</span>
+                        </div>
                         <?php if (isset($errors['distancia_entre_eixos_mm'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['distancia_entre_eixos_mm']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['distancia_entre_eixos_mm']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="peso_ordem_marcha_kg" class="form-label">Peso (kg)</label>
-                        <input type="number" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0">
+                        <label for="peso_ordem_marcha_kg" class="form-label">Peso</label>
+                        <div class="input-group">
+                            <input type="number" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
+                            <span class="input-group-text">kg</span>
+                        </div>
                         <?php if (isset($errors['peso_ordem_marcha_kg'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['peso_ordem_marcha_kg']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['peso_ordem_marcha_kg']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="volume_porta_malas_l" class="form-label">Porta-malas (L)</label>
-                        <input type="number" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0">
+                        <label for="volume_porta_malas_l" class="form-label">Porta-malas</label>
+                        <div class="input-group">
+                            <input type="number" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0" placeholder="Ex: 450">
+                            <span class="input-group-text">L</span>
+                        </div>
                         <?php if (isset($errors['volume_porta_malas_l'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['volume_porta_malas_l']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['volume_porta_malas_l']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="volume_cacamba_l" class="form-label">Caçamba (L)</label>
-                        <input type="number" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0">
+                        <label for="volume_cacamba_l" class="form-label">Caçamba</label>
+                        <div class="input-group">
+                            <input type="number" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0" placeholder="Ex: 800">
+                            <span class="input-group-text">L</span>
+                        </div>
                         <?php if (isset($errors['volume_cacamba_l'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['volume_cacamba_l']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['volume_cacamba_l']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="carga_util_kg" class="form-label">Carga útil (kg)</label>
-                        <input type="number" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0">
+                        <label for="carga_util_kg" class="form-label">Carga útil</label>
+                        <div class="input-group">
+                            <input type="number" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0" placeholder="Ex: 750">
+                            <span class="input-group-text">kg</span>
+                        </div>
                         <?php if (isset($errors['carga_util_kg'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['carga_util_kg']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['carga_util_kg']) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="col-md-2">
-                        <label for="capacidade_reboque_kg" class="form-label">Cap. reboque (kg)</label>
-                        <input type="number" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0">
+                        <label for="capacidade_reboque_kg" class="form-label">Cap. reboque</label>
+                        <div class="input-group">
+                            <input type="number" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0" placeholder="Ex: 1500">
+                            <span class="input-group-text">kg</span>
+                        </div>
                         <?php if (isset($errors['capacidade_reboque_kg'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['capacidade_reboque_kg']) ?></div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- ===== STATUS ===== -->
-                <hr class="my-4">
-                <h6 class="mb-3"><i class="bi bi-toggles me-2"></i>Status</h6>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="status_estoque" class="form-label">Status de Estoque</label>
-                        <select name="status_estoque" id="status_estoque" class="form-select <?= isset($errors['status_estoque']) ? 'is-invalid' : '' ?>">
-                            <option value="disponivel" <?= selected($old['status_estoque'] ?? $veiculo['status_estoque'] ?? 'disponivel', 'disponivel') ?>>Disponível</option>
-                            <option value="vendido" <?= selected($old['status_estoque'] ?? $veiculo['status_estoque'] ?? 'disponivel', 'vendido') ?>>Vendido</option>
-                            <option value="reservado" <?= selected($old['status_estoque'] ?? $veiculo['status_estoque'] ?? 'disponivel', 'reservado') ?>>Reservado</option>
-                        </select>
-                        <?php if (isset($errors['status_estoque'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['status_estoque']) ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="status_vitrine" class="form-label">Vitrine</label>
-                        <select name="status_vitrine" id="status_vitrine" class="form-select <?= isset($errors['status_vitrine']) ? 'is-invalid' : '' ?>">
-                            <option value="inativo" <?= selected($old['status_vitrine'] ?? $veiculo['status_vitrine'] ?? 'inativo', 'inativo') ?>>Inativo</option>
-                            <option value="ativo" <?= selected($old['status_vitrine'] ?? $veiculo['status_vitrine'] ?? 'inativo', 'ativo') ?>>Ativo</option>
-                        </select>
-                        <?php if (isset($errors['status_vitrine'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['status_vitrine']) ?></div>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_reboque_kg']) ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -750,25 +751,39 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <small class="text-muted">Ex: 1.0, 1.6, 2.0, etc.</small>
                         </div>
 
-                        <!-- Potência e Torque -->
+                        <h6 id="titulo-gasolina" class="text-secondary" style="display: none;">
+                          <i class="bi bi-fuel-pump me-2"></i>Dados para Gasolina (obrigatórios para Flex)
+                        </h6>
+
+                        <!-- Potência -->
                         <div class="col-md-4">
-                            <label for="potencia_cv" class="form-label">Potência (cv) <span class="text-danger">*</span></label>
-                            <input type="number" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" min="0">
+                            <label for="potencia_cv" class="form-label">Potência <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
+                                       placeholder="Ex: 120" min="0">
+                                <span class="input-group-text">cv</span>
+                            </div>
                             <?php if (isset($errors['potencia_cv'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['potencia_cv']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="torque_kgfm" class="form-label">Torque (kgfm)</label>
-                            <input type="number" step="0.1" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['torque_kgfm'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['torque_kgfm']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_cv']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Tração e Transmissão -->
+                        <!-- Torque -->
+                        <div class="col-md-4">
+                            <label for="torque_kgfm" class="form-label">Torque</label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
+                                       placeholder="Ex: 18.5" min="0">
+                                <span class="input-group-text">kgfm</span>
+                            </div>
+                            <?php if (isset($errors['torque_kgfm'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_kgfm']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Tipo de Tração -->
                         <div class="col-md-4">
                             <label for="tracao_tipo" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
                             <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
@@ -782,6 +797,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Tipo de Transmissão -->
                         <div class="col-md-4">
                             <label for="transmissao_tipo" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
                             <input type="text" name="transmissao_tipo" id="transmissao_tipo" class="form-control <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" 
@@ -790,6 +807,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+
                         <div class="col-md-4">
                             <label for="numero_marchas" class="form-label">Número de Marchas</label>
                             <input type="number" name="numero_marchas" id="numero_marchas" class="form-control <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" 
@@ -1381,6 +1399,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             </div>
         </div>
 
+        <!-- Campos ocultos para status (preenchidos pelo modal) -->
+        <input type="hidden" name="status_estoque" id="status_estoque_hidden" value="disponivel">
+        <input type="hidden" name="status_vitrine" id="status_vitrine_hidden" value="inativo">
+
         <!-- ========== OPÇÕES E BOTÕES ========== -->
         <div class="d-flex gap-2 mt-4">
             <button type="submit" class="btn btn-primary">
@@ -1389,6 +1411,42 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             <a href="/logista/veiculos" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
+
+    <!-- ========== MODAL DE CONFIRMAÇÃO DE STATUS ========== -->
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>Confirmar Status do Veículo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Antes de salvar, defina o status do veículo:</p>
+                    <div class="mb-3">
+                        <label for="modal_status_estoque" class="form-label">Status de Estoque</label>
+                        <select id="modal_status_estoque" class="form-select">
+                            <option value="disponivel">Disponível</option>
+                            <option value="vendido">Vendido</option>
+                            <option value="reservado">Reservado</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal_status_vitrine" class="form-label">Vitrine</label>
+                        <select id="modal_status_vitrine" class="form-select">
+                            <option value="inativo">Inativo</option>
+                            <option value="ativo">Ativo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="confirmarStatusBtn">
+                        <i class="bi bi-check-lg me-1"></i> Confirmar e Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== MODAL MARCA E MODELO ========== -->
     <div class="modal fade" id="marcaModeloModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
@@ -1593,6 +1651,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             flexRequired.forEach(el => {
                 el.style.display = isFlex ? 'inline' : 'none';
             });
+
+            const tituloGasolina = document.getElementById('titulo-gasolina');
+            if (tituloGasolina) {
+                tituloGasolina.style.display = isFlex ? 'block' : 'none';
+            }
         }
 
         if (combustivelSelect) {
@@ -2663,6 +2726,44 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA LOCALIZAÇÃO DO CILINDRO
         // =============================================
         setupMotorOutro('localizacao_cilindro', 'localizacao_cilindro_outro', []);
+
+        // ============================================================
+        // MODAL DE CONFIRMAÇÃO DE STATUS (intercepta o submit)
+        // ============================================================
+
+        const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+        const confirmarStatusBtn = document.getElementById('confirmarStatusBtn');
+
+        if (form) {
+            // Intercepta o submit do formulário
+            form.addEventListener('submit', function(e) {
+                // 1. Verifica se o formulário é válido (validação HTML5)
+                if (!this.checkValidity()) {
+                    // O navegador já mostra as mensagens de erro automáticas
+                    return; // não impede o submit, mas o browser já bloqueia
+                }
+
+                // 2. Impede o envio padrão e abre o modal
+                e.preventDefault();
+                statusModal.show();
+            });
+        }
+
+        if (confirmarStatusBtn) {
+            confirmarStatusBtn.addEventListener('click', function() {
+                // 3. Obtém os valores selecionados no modal
+                const estoque = document.getElementById('modal_status_estoque').value;
+                const vitrine = document.getElementById('modal_status_vitrine').value;
+
+                // 4. Preenche os campos hidden
+                document.getElementById('status_estoque_hidden').value = estoque;
+                document.getElementById('status_vitrine_hidden').value = vitrine;
+
+                // 5. Fecha o modal e submete o formulário
+                statusModal.hide();
+                form.submit();
+            });
+        }
     });
 </script>
 
