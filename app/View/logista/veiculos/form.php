@@ -798,11 +798,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
-                        <!-- Tipo de Transmissão -->
+                        <!-- Tipo de Transmissão (Combustão) -->
                         <div class="col-md-4">
                             <label for="transmissao_tipo" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
-                            <input type="text" name="transmissao_tipo" id="transmissao_tipo" class="form-control <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '') ?>" maxlength="30">
+                            <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="Manual" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Manual') ?>>Manual (MT)</option>
+                                <option value="Automática" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática') ?>>Automática Convencional (AT)</option>
+                                <option value="Automática CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática CVT') ?>>Automática CVT</option>
+                                <option value="Automatizada" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automatizada') ?>>Automatizada (AMT)</option>
+                                <option value="Dupla Embreagem" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Dupla Embreagem') ?>>Dupla Embreagem (DCT)</option>
+                            </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
@@ -946,10 +952,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+                        
+                        <!-- Tipo de Transmissão (Elétrico) -->
                         <div class="col-md-6">
                             <label for="transmissao_tipo_eletrico" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
-                            <input type="text" name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-control <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '') ?>" maxlength="30">
+                            <select name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="Relação Única" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Relação Única') ?>>Relação Única (Fixed-Ratio)</option>
+                                <option value="Duas Velocidades" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Duas Velocidades') ?>>Duas Velocidades (2-Speed)</option>
+                            </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
@@ -1250,14 +1261,23 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+                        
+                        <!-- Tipo de Transmissão (Híbrido) -->
                         <div class="col-md-4">
                             <label for="transmissao_tipo_hibrido" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
-                            <input type="text" name="transmissao_tipo" id="transmissao_tipo_hibrido" class="form-control <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '') ?>" maxlength="30">
+                            <select name="transmissao_tipo" id="transmissao_tipo_hibrido" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="e-CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'e-CVT') ?>>e-CVT</option>
+                                <option value="Automática" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática') ?>>Automática Convencional (AT)</option>
+                                <option value="Dupla Embreagem" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Dupla Embreagem') ?>>Dupla Embreagem (DCT)</option>
+                                <option value="CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'CVT') ?>>CVT</option>
+                                <option value="Manual" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Manual') ?>>Manual (MT)</option>
+                            </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+                        
                         <div class="col-md-4">
                             <label for="numero_marchas_hibrido" class="form-label">Número de Marchas</label>
                             <input type="number" name="numero_marchas" id="numero_marchas_hibrido" class="form-control <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" 
