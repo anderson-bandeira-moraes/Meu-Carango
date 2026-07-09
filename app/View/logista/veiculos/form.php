@@ -2841,13 +2841,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 const container = marchas.closest('.col-md-4');
                 
                 if (container) {
-                    // Exibe apenas se houver um tipo selecionado E não for CVT
                     container.style.display = (valor !== '' && !isCvt) ? 'block' : 'none';
                 }
                 
-                // Se não houver seleção ou for CVT, limpa o valor para evitar dados inconsistentes
                 if (valor === '' || isCvt) {
                     marchas.value = '';
+                    marchas.selectedIndex = 0;
                 }
             }
 
