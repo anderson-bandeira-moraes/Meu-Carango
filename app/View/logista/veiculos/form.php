@@ -1348,6 +1348,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Motorização -->
                         <div class="col-md-6">
                             <label for="motor_combustao_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
                             <select name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-select <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>">
@@ -1371,6 +1372,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <small class="text-muted">Ex: 1.0, 1.6, 2.0, etc.</small>
                         </div>
 
+                        <!-- Potência (cv) -->
                         <div class="col-md-3">
                             <label for="motor_combustao_potencia_cv" class="form-label">Potência (cv) <span class="text-danger">*</span></label>
                             <input type="number" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
@@ -1380,6 +1382,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Torque (kgfm) -->
                         <div class="col-md-3">
                             <label for="motor_combustao_torque_kgfm" class="form-label">Torque (kgfm)</label>
                             <input type="number" step="0.1" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1394,6 +1397,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-battery-charging me-2"></i>Motor Elétrico</h6>
                         </div>
+                        <!-- Potência (cv) -->
                         <div class="col-md-6">
                             <label for="motor_eletrico_potencia_cv" class="form-label">Potência (cv) <span class="text-danger">*</span></label>
                             <input type="number" name="motor_eletrico_potencia_cv" id="motor_eletrico_potencia_cv" class="form-control <?= isset($errors['motor_eletrico_potencia_cv']) ? 'is-invalid' : '' ?>" 
@@ -1402,6 +1406,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['motor_eletrico_potencia_cv']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Torque (kgfm) -->
                         <div class="col-md-6">
                             <label for="motor_eletrico_torque_kgfm" class="form-label">Torque (kgfm)</label>
                             <input type="number" step="0.1" name="motor_eletrico_torque_kgfm" id="motor_eletrico_torque_kgfm" class="form-control <?= isset($errors['motor_eletrico_torque_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1416,6 +1422,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-arrow-left-right me-2"></i>Potência e Torque Combinados</h6>
                         </div>
+
+                        <!-- Potência Combinada (cv) -->
                         <div class="col-md-6">
                             <label for="potencia_combinada_cv" class="form-label">Potência Combinada (cv) <span class="text-danger">*</span></label>
                             <input type="number" name="potencia_combinada_cv" id="potencia_combinada_cv" class="form-control <?= isset($errors['potencia_combinada_cv']) ? 'is-invalid' : '' ?>" 
@@ -1424,6 +1432,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['potencia_combinada_cv']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Torque Combinado (kgfm) -->
                         <div class="col-md-6">
                             <label for="torque_combinado_kgfm" class="form-label">Torque Combinado (kgfm) <span class="text-danger">*</span></label>
                             <input type="number" step="0.1" name="torque_combinado_kgfm" id="torque_combinado_kgfm" class="form-control <?= isset($errors['torque_combinado_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1438,6 +1448,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-gear me-2"></i>Tração e Transmissão</h6>
                         </div>
+
+                        <!-- Tipo de Tração -->
                         <div class="col-md-4">
                             <label for="tracao_tipo_hibrido" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
                             <select name="tracao_tipo" id="tracao_tipo_hibrido" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
@@ -1468,6 +1480,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Número de Marchas -->
                         <div class="col-md-4">
                             <label for="numero_marchas_hibrido" class="form-label">Número de Marchas</label>
                             <select name="numero_marchas" id="numero_marchas_hibrido" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
@@ -1490,6 +1503,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-battery me-2"></i>Bateria</h6>
                         </div>
+
+                        <!-- Capacidade (kWh) -->
                         <div class="col-md-4">
                             <label for="bateria_capacidade_kwh" class="form-label">Capacidade (kWh) <span class="text-danger">*</span></label>
                             <input type="number" step="0.1" name="bateria_capacidade_kwh" id="bateria_capacidade_kwh" class="form-control <?= isset($errors['bateria_capacidade_kwh']) ? 'is-invalid' : '' ?>" 
@@ -1498,6 +1513,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['bateria_capacidade_kwh']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Tipo da Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
                             <input type="text" name="bateria_tipo" id="bateria_tipo" class="form-control <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
@@ -1506,6 +1523,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['bateria_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Garantia da Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_garantia" class="form-label">Garantia da Bateria</label>
                             <input type="text" name="bateria_garantia" id="bateria_garantia" class="form-control <?= isset($errors['bateria_garantia']) ? 'is-invalid' : '' ?>" 
@@ -1520,6 +1539,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-speedometer me-2"></i>Autonomias</h6>
                         </div>
+
+                        <!-- Garantia da Bateria -->
                         <div class="col-md-4">
                             <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica (PBEV) (km)</label>
                             <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" class="form-control phev-field <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
@@ -1538,41 +1559,53 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- ===== CARREGAMENTO (PHEV) ===== -->
-                        <div class="col-12">
-                            <hr>
-                            <h6 class="text-secondary"><i class="bi bi-plug me-2"></i>Carregamento (específico para PHEV)</h6>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC (kW)</label>
-                            <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" class="form-control phev-field <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC (horas)</label>
-                            <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" class="form-control phev-field <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC (kW)</label>
-                            <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" class="form-control phev-field <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                            <input type="text" name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-control phev-field <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') ?>" maxlength="20">
-                            <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['carregamento_tipo_conector_ac']) ?></div>
-                            <?php endif; ?>
+                        <div id="phev-container" style="display: none;">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <hr>
+                                    <h6 class="text-secondary"><i class="bi bi-plug me-2"></i>Carregamento (específico para PHEV)</h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC (kW)</label>
+                                    <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
+                                           class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" 
+                                           placeholder="Ex: 7.4" min="0">
+                                    <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC (horas)</label>
+                                    <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
+                                           class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" 
+                                           placeholder="Ex: 4.5" min="0">
+                                    <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC (kW)</label>
+                                    <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
+                                           class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" 
+                                           placeholder="Ex: 50" min="0">
+                                    <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
+                                    <input type="text" name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" 
+                                           class="form-control <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') ?>" 
+                                           placeholder="Ex: Type 2, Mennekes" maxlength="20">
+                                    <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tipo_conector_ac']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- ===== CONSUMO E TANQUE ===== -->
@@ -2006,35 +2039,37 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const phevFields = document.querySelectorAll('.phev-field');
 
         function aplicarRegrasHibrido(tipo) {
+            const phevContainer = document.getElementById('phev-container');
+            const modoContainer = modoEletricoPuro ? modoEletricoPuro.closest('.col-md-6') : null;
+
+            // Caso não haja tipo ou não existam regras para ele, oculta tudo relacionado a PHEV
             if (!tipo || !CONFIG.regrasHibrido || !CONFIG.regrasHibrido[tipo]) {
-                if (modoEletricoPuro) {
-                    modoEletricoPuro.closest('.col-md-6').style.display = 'block';
+                // Modo elétrico puro: exibe normalmente (sem forçar valor)
+                if (modoContainer) {
+                    modoContainer.style.display = 'block';
                     modoEletricoPuro.disabled = false;
                 }
-                phevFields.forEach(field => {
-                    const container = field.closest('.col-md-3, .col-md-4, .col-md-6');
-                    if (container) {
-                        container.style.display = 'block';
-                    }
-                });
+                if (phevContainer) {
+                    phevContainer.style.display = 'none';
+                }
                 return;
             }
 
             const regras = CONFIG.regrasHibrido[tipo];
 
+            // Aplica regras para o campo "Modo Elétrico Puro"
             if (modoEletricoPuro && regras.modo_eletrico_puro) {
                 const regra = regras.modo_eletrico_puro;
-                const container = modoEletricoPuro.closest('.col-md-6');
 
                 if (regra.visivel) {
-                    container.style.display = 'block';
+                    modoContainer.style.display = 'block';
                     modoEletricoPuro.disabled = false;
                     if (regra.forcar_valor !== null) {
                         modoEletricoPuro.value = regra.forcar_valor;
                         modoEletricoPuro.disabled = true;
                     }
                 } else {
-                    container.style.display = 'none';
+                    modoContainer.style.display = 'none';
                     if (regra.forcar_valor !== null) {
                         modoEletricoPuro.value = regra.forcar_valor;
                     }
@@ -2042,13 +2077,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 }
             }
 
+            // Aplica regras para a seção PHEV
             const phevVisivel = regras.campos_phev?.visivel ?? false;
-            phevFields.forEach(field => {
-                const container = field.closest('.col-md-3, .col-md-4, .col-md-6');
-                if (container) {
-                    container.style.display = phevVisivel ? 'block' : 'none';
-                }
-            });
+            if (phevContainer) {
+                phevContainer.style.display = phevVisivel ? 'block' : 'none';
+            }
         }
 
         if (tipoHibridoSelect) {
