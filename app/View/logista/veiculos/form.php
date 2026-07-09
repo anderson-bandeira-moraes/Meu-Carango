@@ -1629,32 +1629,47 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <hr>
                                     <h6 class="text-secondary"><i class="bi bi-plug me-2"></i>Carregamento (específico para PHEV)</h6>
                                 </div>
+
+                                <!-- Potência AC (kW) -->
                                 <div class="col-md-3">
-                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC (kW)</label>
-                                    <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
-                                           class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" 
-                                           placeholder="Ex: 7.4" min="0">
+                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC <span class="text-muted">(kW)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
+                                               class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" 
+                                               placeholder="Ex: 7.4" min="0">
+                                        <span class="input-group-text">kW</span>
+                                    </div>
                                     <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Tempo AC (horas) -->
                                 <div class="col-md-3">
-                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC (horas)</label>
-                                    <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
-                                           class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" 
-                                           placeholder="Ex: 4.5" min="0">
+                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC <span class="text-muted">(horas)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
+                                               class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" 
+                                               placeholder="Ex: 4.5" min="0">
+                                        <span class="input-group-text">h</span>
+                                    </div>
                                     <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Potência DC (kW) -->
                                 <div class="col-md-3">
-                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC (kW)</label>
-                                    <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
-                                           class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" 
-                                           placeholder="Ex: 50" min="0">
+                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC <span class="text-muted">(kW)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
+                                               class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" 
+                                               placeholder="Ex: 50" min="0">
+                                        <span class="input-group-text">kW</span>
+                                    </div>
                                     <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
                                     <?php endif; ?>

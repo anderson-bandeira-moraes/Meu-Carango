@@ -68,6 +68,9 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_cidade_kml'   => 'required|numeric|min:0',
             'consumo_estrada_kml'  => 'required|numeric|min:0',
             'consumo_medio_kml'    => 'nullable|numeric|min:0',
+            'consumo_cidade_etanol_kml'   => 'nullable|numeric|min:0',
+            'consumo_estrada_etanol_kml'  => 'nullable|numeric|min:0',
+            'consumo_medio_etanol_kml'    => 'nullable|numeric|min:0',
 
             // Tanque
             'capacidade_tanque_l' => 'required|integer|min:0',
@@ -157,6 +160,12 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_estrada_kml.min'      => 'O consumo na estrada não pode ser negativo.',
             'consumo_medio_kml.numeric'    => 'O consumo médio deve ser um número válido.',
             'consumo_medio_kml.min'        => 'O consumo médio não pode ser negativo.',
+            'consumo_cidade_etanol_kml.numeric' => 'O consumo na cidade com etanol deve ser um número válido.',
+            'consumo_cidade_etanol_kml.min'     => 'O consumo na cidade com etanol não pode ser negativo.',
+            'consumo_estrada_etanol_kml.numeric' => 'O consumo na estrada com etanol deve ser um número válido.',
+            'consumo_estrada_etanol_kml.min'     => 'O consumo na estrada com etanol não pode ser negativo.',
+            'consumo_medio_etanol_kml.numeric'  => 'O consumo médio com etanol deve ser um número válido.',
+            'consumo_medio_etanol_kml.min'      => 'O consumo médio com etanol não pode ser negativo.',
 
             // Tanque
             'capacidade_tanque_l.required' => 'A capacidade do tanque é obrigatória.',
@@ -186,6 +195,9 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_cidade_kml',
             'consumo_estrada_kml',
             'consumo_medio_kml',
+            'consumo_cidade_etanol_kml',
+            'consumo_estrada_etanol_kml',
+            'consumo_medio_etanol_kml',
         ];
         foreach ($floatFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
@@ -220,8 +232,9 @@ class VeiculoHibridoRequest extends FormRequest
     /**
      * {@inheritDoc}
      *
-     * Adiciona validação condicional: campos PHEV são obrigatórios apenas
-     * quando o tipo for 'phev'.
+     * Adiciona validação condicional:
+     * - Campos PHEV são obrigatórios apenas quando o tipo for 'phev'.
+     * - Campos de consumo com etanol são obrigatórios apenas quando combustivel = 'flex'.
      */
     public function validate(): bool
     {
@@ -244,6 +257,21 @@ class VeiculoHibridoRequest extends FormRequest
             foreach ($camposPHEV as $campo => $label) {
                 if (empty($data[$campo]) && $data[$campo] !== 0) {
                     $this->addError($campo, "O campo '{$label}' é obrigatório para veículos PHEV.");
+                }
+            }
+        }
+
+        // 4. Validação condicional: se for Flex, campos de consumo com etanol são obrigatórios
+        if (($data['combustivel'] ?? '') === 'flex') {
+            $camposFlex = [
+                'consumo_cidade_etanol_kml'   => 'Consumo na cidade com etanol',
+                'consumo_estrada_etanol_kml'  => 'Consumo na estrada com etanol',
+                // 'consumo_medio_etanol_kml' pode ser opcional, deixamos como nullable
+            ];
+
+            foreach ($camposFlex as $campo => $label) {
+                if (!isset($data[$campo]) || $data[$campo] === '' || $data[$campo] === null) {
+                    $this->addError($campo, "O campo '{$label}' é obrigatório para veículos flex.");
                 }
             }
         }
@@ -287,6 +315,9 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_estrada_kml'               => $validated['consumo_estrada_kml'] ?? null,
             'consumo_medio_kml'                 => $validated['consumo_medio_kml'] ?? null,
             'capacidade_tanque_l'               => $validated['capacidade_tanque_l'] ?? null,
+            'consumo_cidade_etanol_kml'         => $validated['consumo_cidade_etanol_kml'] ?? null,
+            'consumo_estrada_etanol_kml'        => $validated['consumo_estrada_etanol_kml'] ?? null,
+            'consumo_medio_etanol_kml'          => $validated['consumo_medio_etanol_kml'] ?? null,
         ];
     }
 }
