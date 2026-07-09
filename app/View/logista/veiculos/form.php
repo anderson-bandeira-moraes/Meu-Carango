@@ -1707,37 +1707,113 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-fuel-pump me-2"></i>Consumo e Tanque</h6>
                         </div>
-                        <div class="col-md-3">
-                            <label for="consumo_cidade_kml_hibrido" class="form-label">Consumo Cidade (km/l) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml_hibrido" class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['consumo_cidade_kml'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
-                            <?php endif; ?>
+
+                        <!-- Consumo com Gasolina (sempre visível) -->
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="consumo_cidade_kml_hibrido" class="form-label">Consumo Cidade <span class="text-danger">*</span> <span class="text-muted">(km/l)</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml_hibrido" 
+                                           class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
+                                           placeholder="Ex: 12.5" min="0">
+                                    <span class="input-group-text">km/l</span>
+                                </div>
+                                <?php if (isset($errors['consumo_cidade_kml'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="consumo_estrada_kml_hibrido" class="form-label">Consumo Estrada <span class="text-danger">*</span> <span class="text-muted">(km/l)</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml_hibrido" 
+                                           class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
+                                           placeholder="Ex: 15.0" min="0">
+                                    <span class="input-group-text">km/l</span>
+                                </div>
+                                <?php if (isset($errors['consumo_estrada_kml'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="consumo_medio_kml" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" name="consumo_medio_kml" id="consumo_medio_kml" 
+                                           class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['consumo_medio_kml'] ?? $complemento['consumo_medio_kml'] ?? '') ?>" 
+                                           placeholder="Ex: 13.5" min="0">
+                                    <span class="input-group-text">km/l</span>
+                                </div>
+                                <?php if (isset($errors['consumo_medio_kml'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_kml']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="capacidade_tanque_l_hibrido" class="form-label">Capacidade Tanque <span class="text-danger">*</span> <span class="text-muted">(L)</span></label>
+                                <div class="input-group">
+                                    <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l_hibrido" 
+                                           class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
+                                           placeholder="Ex: 50" min="0">
+                                    <span class="input-group-text">L</span>
+                                </div>
+                                <?php if (isset($errors['capacidade_tanque_l'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="consumo_estrada_kml_hibrido" class="form-label">Consumo Estrada (km/l) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml_hibrido" class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['consumo_estrada_kml'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="consumo_medio_kml" class="form-label">Consumo Médio (km/l)</label>
-                            <input type="number" step="0.1" name="consumo_medio_kml" id="consumo_medio_kml" class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['consumo_medio_kml'] ?? $complemento['consumo_medio_kml'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['consumo_medio_kml'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_medio_kml']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="capacidade_tanque_l_hibrido" class="form-label">Capacidade Tanque (L) <span class="text-danger">*</span></label>
-                            <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l_hibrido" class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" min="0">
-                            <?php if (isset($errors['capacidade_tanque_l'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
-                            <?php endif; ?>
+
+                        <!-- Consumo com Etanol (visível apenas para Flex) -->
+                        <div id="consumo_etanol_container" style="display: none;">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Consumo com Etanol (obrigatório para Flex)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="consumo_cidade_etanol_kml_hibrido" class="form-label">Consumo Cidade <span class="text-danger">*</span> <span class="text-muted">(km/l)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml_hibrido" 
+                                               class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
+                                               placeholder="Ex: 8.5" min="0">
+                                        <span class="input-group-text">km/l</span>
+                                    </div>
+                                    <?php if (isset($errors['consumo_cidade_etanol_kml'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="consumo_estrada_etanol_kml_hibrido" class="form-label">Consumo Estrada <span class="text-danger">*</span> <span class="text-muted">(km/l)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml_hibrido" 
+                                               class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
+                                               placeholder="Ex: 10.2" min="0">
+                                        <span class="input-group-text">km/l</span>
+                                    </div>
+                                    <?php if (isset($errors['consumo_estrada_etanol_kml'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="consumo_medio_etanol_kml" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml" 
+                                               class="form-control <?= isset($errors['consumo_medio_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['consumo_medio_etanol_kml'] ?? $complemento['consumo_medio_etanol_kml'] ?? '') ?>" 
+                                               placeholder="Ex: 9.5" min="0">
+                                        <span class="input-group-text">km/l</span>
+                                    </div>
+                                    <?php if (isset($errors['consumo_medio_etanol_kml'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_etanol_kml']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2224,6 +2300,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     aplicarRegrasHibrido(tipoAtual);
                 }
             });
+        }
+
+        // =============================================
+        // CONTROLE DE EXIBIÇÃO DOS CAMPOS DE CONSUMO PARA ETANOL
+        // =============================================
+        const combustivelHibrido = document.getElementById('combustivel_hibrido');
+        const consumoEtanolContainer = document.getElementById('consumo_etanol_container');
+
+        function toggleConsumoEtanol() {
+            if (!combustivelHibrido || !consumoEtanolContainer) return;
+            const isFlex = combustivelHibrido.value === 'flex';
+            consumoEtanolContainer.style.display = isFlex ? 'block' : 'none';
+        }
+
+        if (combustivelHibrido) {
+            combustivelHibrido.addEventListener('change', toggleConsumoEtanol);
+            // Executa na inicialização (para edição)
+            toggleConsumoEtanol();
         }
 
         // ============================================================
