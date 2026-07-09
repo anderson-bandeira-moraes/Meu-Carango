@@ -921,36 +921,63 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-speedometer2 me-2"></i>Desempenho (opcional)</h6>
                             <div class="row g-3">
+                                <!-- Regime Potência (RPM) -->
                                 <div class="col-md-3">
-                                    <label for="regime_potencia_rpm" class="form-label">Regime Potência (RPM)</label>
-                                    <input type="number" name="regime_potencia_rpm" id="regime_potencia_rpm" class="form-control <?= isset($errors['regime_potencia_rpm']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['regime_potencia_rpm'] ?? $complemento['regime_potencia_rpm'] ?? '') ?>" min="0">
+                                    <label for="regime_potencia_rpm" class="form-label">Regime Potência <span class="text-muted">(RPM)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" name="regime_potencia_rpm" id="regime_potencia_rpm" 
+                                               class="form-control <?= isset($errors['regime_potencia_rpm']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['regime_potencia_rpm'] ?? $complemento['regime_potencia_rpm'] ?? '') ?>" 
+                                               placeholder="Ex: 6250" min="0">
+                                        <span class="input-group-text">RPM</span>
+                                    </div>
                                     <?php if (isset($errors['regime_potencia_rpm'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['regime_potencia_rpm']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['regime_potencia_rpm']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Regime Torque (RPM) -->
                                 <div class="col-md-3">
-                                    <label for="regime_torque_rpm" class="form-label">Regime Torque (RPM)</label>
-                                    <input type="number" name="regime_torque_rpm" id="regime_torque_rpm" class="form-control <?= isset($errors['regime_torque_rpm']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['regime_torque_rpm'] ?? $complemento['regime_torque_rpm'] ?? '') ?>" min="0">
+                                    <label for="regime_torque_rpm" class="form-label">Regime Torque <span class="text-muted">(RPM)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" name="regime_torque_rpm" id="regime_torque_rpm" 
+                                               class="form-control <?= isset($errors['regime_torque_rpm']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['regime_torque_rpm'] ?? $complemento['regime_torque_rpm'] ?? '') ?>" 
+                                               placeholder="Ex: 3000" min="0">
+                                        <span class="input-group-text">RPM</span>
+                                    </div>
                                     <?php if (isset($errors['regime_torque_rpm'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['regime_torque_rpm']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['regime_torque_rpm']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Aceleração 0-100 -->
                                 <div class="col-md-3">
-                                    <label for="aceleracao_0_100_seg" class="form-label">Aceleração 0-100 (s)</label>
-                                    <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" min="0">
+                                    <label for="aceleracao_0_100_seg" class="form-label">Aceleração 0-100 <span class="text-muted">(s)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
+                                               class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
+                                               placeholder="Ex: 8.5" min="0">
+                                        <span class="input-group-text">s</span>
+                                    </div>
                                     <?php if (isset($errors['aceleracao_0_100_seg'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Velocidade Máxima -->
                                 <div class="col-md-3">
-                                    <label for="velocidade_max_kmh" class="form-label">Velocidade Máxima (km/h)</label>
-                                    <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh" class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" min="0">
+                                    <label for="velocidade_max_kmh" class="form-label">Velocidade Máxima <span class="text-muted">(km/h)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh" 
+                                               class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
+                                               placeholder="Ex: 220" min="0">
+                                        <span class="input-group-text">km/h</span>
+                                    </div>
                                     <?php if (isset($errors['velocidade_max_kmh'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -1019,7 +1046,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
-                        <!-- Desempenho (opcionais) -->
+                        <!-- Aceleração 0-100 -->
                         <div class="col-md-4">
                             <label for="aceleracao_0_100_seg_eletrico" class="form-label">Aceleração 0-100 (s)</label>
                             <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
@@ -1028,6 +1055,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Velocidade Máxima -->
                         <div class="col-md-4">
                             <label for="velocidade_max_kmh_eletrico" class="form-label">Velocidade Máxima (km/h)</label>
                             <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
