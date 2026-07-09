@@ -1581,10 +1581,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Garantia da Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_garantia" class="form-label">Garantia da Bateria</label>
-                            <input type="text" name="bateria_garantia" id="bateria_garantia" class="form-control <?= isset($errors['bateria_garantia']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_garantia'] ?? $complemento['bateria_garantia'] ?? '') ?>" maxlength="40">
+                            <div class="input-group">
+                                <input type="text" name="bateria_garantia" id="bateria_garantia" 
+                                       class="form-control <?= isset($errors['bateria_garantia']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['bateria_garantia'] ?? $complemento['bateria_garantia'] ?? '') ?>" 
+                                       placeholder="Ex: 8 anos / 160.000 km" maxlength="40">
+                            </div>
                             <?php if (isset($errors['bateria_garantia'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['bateria_garantia']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_garantia']) ?></div>
                             <?php endif; ?>
                         </div>
 
