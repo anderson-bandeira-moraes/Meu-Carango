@@ -704,7 +704,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
         <!-- ========== DADOS ESPECÍFICOS POR TIPO ========== -->
         <div id="campos-especificos">
-            <!-- Combustão -->
+            <!-- COMBUSTÃO -->
             <div id="campos-combustao" class="card shadow-sm mb-4" style="display: none;">
                 <div class="card-header bg-light">
                     <h5 class="mb-0"><i class="bi bi-fuel-pump me-2"></i>Dados do Motor a Combustão</h5>
@@ -814,6 +814,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Número de Marchas -->
                         <div class="col-md-4">
                             <label for="numero_marchas" class="form-label">Número de Marchas</label>
                             <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
@@ -831,29 +832,48 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
-                        <!-- Consumo e Tanque -->
+                        <!-- Consumo Cidade -->
                         <div class="col-md-3">
-                            <label for="consumo_cidade_kml" class="form-label">Consumo Cidade (km/l) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml" class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" min="0">
+                            <label for="consumo_cidade_kml" class="form-label">Consumo Cidade <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml" 
+                                       class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
+                                       placeholder="Ex: 12.5" min="0">
+                                <span class="input-group-text">km/l</span>
+                            </div>
                             <?php if (isset($errors['consumo_cidade_kml'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Consumo Estrada -->
                         <div class="col-md-3">
-                            <label for="consumo_estrada_kml" class="form-label">Consumo Estrada (km/l)</label>
-                            <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml" class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" min="0">
+                            <label for="consumo_estrada_kml" class="form-label">Consumo Estrada</label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml" 
+                                       class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
+                                       placeholder="Ex: 15.0" min="0">
+                                <span class="input-group-text">km/l</span>
+                            </div>
                             <?php if (isset($errors['consumo_estrada_kml'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Capacidade Tanque -->
                         <div class="col-md-3">
-                            <label for="capacidade_tanque_l" class="form-label">Capacidade Tanque (L) <span class="text-danger">*</span></label>
-                            <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l" class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" min="0">
+                            <label for="capacidade_tanque_l" class="form-label">Capacidade Tanque <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l" 
+                                       class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
+                                       placeholder="Ex: 50" min="0">
+                                <span class="input-group-text">L</span>
+                            </div>
                             <?php if (isset($errors['capacidade_tanque_l'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
                             <?php endif; ?>
                         </div>
 
