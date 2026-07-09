@@ -720,12 +720,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <option value="diesel" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'diesel') ?>>Diesel</option>
                                 <option value="flex" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'flex') ?>>Flex</option>
                                 <option value="gasolina" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'gasolina') ?>>Gasolina</option>
-                                <option value="gnv" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'gnv') ?>>GNV</option>
                             </select>
                             <?php if (isset($errors['combustivel'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
                             <?php endif; ?>
-                        </div>
+                        </div>git 
 
                         <!-- Motorização (cilindrada) -->
                         <div class="col-md-6">

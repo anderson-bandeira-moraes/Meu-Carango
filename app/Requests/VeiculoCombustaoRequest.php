@@ -22,7 +22,7 @@ class VeiculoCombustaoRequest extends FormRequest
     {
         return [
             // Combustível (ENUM)
-            'combustivel' => 'required|in:alcool,diesel,flex,gasolina,gnv',
+            'combustivel' => 'required|in:alcool,diesel,flex,gasolina',
 
             // Motor
             'motor_tipo'  => 'required|max:40',
@@ -67,7 +67,7 @@ class VeiculoCombustaoRequest extends FormRequest
         return [
             // Combustível
             'combustivel.required' => 'O tipo de combustível é obrigatório.',
-            'combustivel.in'       => 'O tipo de combustível deve ser: álcool, diesel, flex, gasolina ou GNV.',
+            'combustivel.in'       => 'O tipo de combustível deve ser: álcool, diesel, flex ou gasolina',
 
             // Motor
             'motor_tipo.required' => 'O tipo do motor é obrigatório.',
