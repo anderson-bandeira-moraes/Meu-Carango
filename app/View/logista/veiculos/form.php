@@ -1374,21 +1374,31 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência (cv) -->
                         <div class="col-md-3">
-                            <label for="motor_combustao_potencia_cv" class="form-label">Potência (cv) <span class="text-danger">*</span></label>
-                            <input type="number" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['motor_combustao_potencia_cv'] ?? $complemento['motor_combustao_potencia_cv'] ?? '') ?>" min="0">
+                            <label for="motor_combustao_potencia_cv" class="form-label">Potência <span class="text-danger">*</span> <span class="text-muted">(cv)</span></label>
+                            <div class="input-group">
+                                <input type="number" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" 
+                                       class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['motor_combustao_potencia_cv'] ?? $complemento['motor_combustao_potencia_cv'] ?? '') ?>" 
+                                       placeholder="Ex: 120" min="0">
+                                <span class="input-group-text">cv</span>
+                            </div>
                             <?php if (isset($errors['motor_combustao_potencia_cv'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_potencia_cv']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_combustao_potencia_cv']) ?></div>
                             <?php endif; ?>
                         </div>
 
                         <!-- Torque (kgfm) -->
                         <div class="col-md-3">
-                            <label for="motor_combustao_torque_kgfm" class="form-label">Torque (kgfm)</label>
-                            <input type="number" step="0.1" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['motor_combustao_torque_kgfm'] ?? $complemento['motor_combustao_torque_kgfm'] ?? '') ?>" min="0">
+                            <label for="motor_combustao_torque_kgfm" class="form-label">Torque <span class="text-muted">(kgfm)</span></label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" 
+                                       class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['motor_combustao_torque_kgfm'] ?? $complemento['motor_combustao_torque_kgfm'] ?? '') ?>" 
+                                       placeholder="Ex: 18.5" min="0">
+                                <span class="input-group-text">kgfm</span>
+                            </div>
                             <?php if (isset($errors['motor_combustao_torque_kgfm'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_torque_kgfm']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_combustao_torque_kgfm']) ?></div>
                             <?php endif; ?>
                         </div>
 
