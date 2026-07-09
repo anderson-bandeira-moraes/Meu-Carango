@@ -724,7 +724,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php if (isset($errors['combustivel'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
                             <?php endif; ?>
-                        </div>git 
+                        </div>
 
                         <!-- Motorização (cilindrada) -->
                         <div class="col-md-6">
@@ -2821,7 +2821,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         // ============================================================
-        // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS PARA CVT
+        // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS
         // ============================================================
 
         /**
@@ -2838,13 +2838,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             function toggleMarchas() {
                 const valor = transmissao.value;
                 const isCvt = tiposCvt.includes(valor);
-                // Oculta/exibe o container do campo (col-md-4)
                 const container = marchas.closest('.col-md-4');
+                
                 if (container) {
-                    container.style.display = isCvt ? 'none' : 'block';
+                    // Exibe apenas se houver um tipo selecionado E não for CVT
+                    container.style.display = (valor !== '' && !isCvt) ? 'block' : 'none';
                 }
-                // Se for CVT, limpa o valor do select para não enviar dados incorretos
-                if (isCvt) {
+                
+                // Se não houver seleção ou for CVT, limpa o valor para evitar dados inconsistentes
+                if (valor === '' || isCvt) {
                     marchas.value = '';
                 }
             }
@@ -2858,7 +2860,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         configurarMarchasCvt(
             'transmissao_tipo',               // ID do select de transmissão
             'numero_marchas',                 // ID do select de marchas
-            ['Automática CVT', 'CVT']         // Valores que indicam CVT (adicione outros se necessário)
+            ['Automática CVT', 'CVT']         // Valores que indicam CVT
         );
 
         // Configurar para a seção Híbrido
