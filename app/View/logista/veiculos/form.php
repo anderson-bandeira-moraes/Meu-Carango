@@ -1446,21 +1446,31 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência Combinada (cv) -->
                         <div class="col-md-6">
-                            <label for="potencia_combinada_cv" class="form-label">Potência Combinada (cv) <span class="text-danger">*</span></label>
-                            <input type="number" name="potencia_combinada_cv" id="potencia_combinada_cv" class="form-control <?= isset($errors['potencia_combinada_cv']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['potencia_combinada_cv'] ?? $complemento['potencia_combinada_cv'] ?? '') ?>" min="0">
+                            <label for="potencia_combinada_cv" class="form-label">Potência Combinada <span class="text-danger">*</span> <span class="text-muted">(cv)</span></label>
+                            <div class="input-group">
+                                <input type="number" name="potencia_combinada_cv" id="potencia_combinada_cv" 
+                                       class="form-control <?= isset($errors['potencia_combinada_cv']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['potencia_combinada_cv'] ?? $complemento['potencia_combinada_cv'] ?? '') ?>" 
+                                       placeholder="Ex: 180" min="0">
+                                <span class="input-group-text">cv</span>
+                            </div>
                             <?php if (isset($errors['potencia_combinada_cv'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['potencia_combinada_cv']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_combinada_cv']) ?></div>
                             <?php endif; ?>
                         </div>
 
                         <!-- Torque Combinado (kgfm) -->
                         <div class="col-md-6">
-                            <label for="torque_combinado_kgfm" class="form-label">Torque Combinado (kgfm) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.1" name="torque_combinado_kgfm" id="torque_combinado_kgfm" class="form-control <?= isset($errors['torque_combinado_kgfm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['torque_combinado_kgfm'] ?? $complemento['torque_combinado_kgfm'] ?? '') ?>" min="0">
+                            <label for="torque_combinado_kgfm" class="form-label">Torque Combinado <span class="text-danger">*</span> <span class="text-muted">(kgfm)</span></label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="torque_combinado_kgfm" id="torque_combinado_kgfm" 
+                                       class="form-control <?= isset($errors['torque_combinado_kgfm']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['torque_combinado_kgfm'] ?? $complemento['torque_combinado_kgfm'] ?? '') ?>" 
+                                       placeholder="Ex: 25.0" min="0">
+                                <span class="input-group-text">kgfm</span>
+                            </div>
                             <?php if (isset($errors['torque_combinado_kgfm'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['torque_combinado_kgfm']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_combinado_kgfm']) ?></div>
                             <?php endif; ?>
                         </div>
 
