@@ -881,36 +881,63 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Dados para Etanol (obrigatórios para Flex)</h6>
                             <div class="row g-3">
+                                <!-- Potência Etanol -->
                                 <div class="col-md-4">
-                                    <label for="potencia_etanol_cv" class="form-label">Potência Etanol (cv) <span class="text-danger flex-required">*</span></label>
-                                    <input type="number" name="potencia_etanol_cv" id="potencia_etanol_cv" class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['potencia_etanol_cv'] ?? $complemento['potencia_etanol_cv'] ?? '') ?>" min="0">
+                                    <label for="potencia_etanol_cv" class="form-label">Potência Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(cv)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" name="potencia_etanol_cv" id="potencia_etanol_cv" 
+                                               class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['potencia_etanol_cv'] ?? $complemento['potencia_etanol_cv'] ?? '') ?>" 
+                                               placeholder="Ex: 115" min="0">
+                                        <span class="input-group-text">cv</span>
+                                    </div>
                                     <?php if (isset($errors['potencia_etanol_cv'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['potencia_etanol_cv']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_etanol_cv']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Torque Etanol -->
                                 <div class="col-md-4">
-                                    <label for="torque_etanol_kgfm" class="form-label">Torque Etanol (kgfm) <span class="text-danger flex-required">*</span></label>
-                                    <input type="number" step="0.1" name="torque_etanol_kgfm" id="torque_etanol_kgfm" class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['torque_etanol_kgfm'] ?? $complemento['torque_etanol_kgfm'] ?? '') ?>" min="0">
+                                    <label for="torque_etanol_kgfm" class="form-label">Torque Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(kgfm)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
+                                               class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['torque_etanol_kgfm'] ?? $complemento['torque_etanol_kgfm'] ?? '') ?>" 
+                                               placeholder="Ex: 16.8" min="0">
+                                        <span class="input-group-text">kgfm</span>
+                                    </div>
                                     <?php if (isset($errors['torque_etanol_kgfm'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['torque_etanol_kgfm']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_etanol_kgfm']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Consumo Cidade Etanol -->
                                 <div class="col-md-4">
-                                    <label for="consumo_cidade_etanol_kml" class="form-label">Consumo Cidade Etanol (km/l) <span class="text-danger flex-required">*</span></label>
-                                    <input type="number" step="0.1" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" min="0">
+                                    <label for="consumo_cidade_etanol_kml" class="form-label">Consumo Cidade Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(km/l)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
+                                               class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
+                                               placeholder="Ex: 8.5" min="0">
+                                        <span class="input-group-text">km/l</span>
+                                    </div>
                                     <?php if (isset($errors['consumo_cidade_etanol_kml'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Consumo Estrada Etanol -->
                                 <div class="col-md-4">
-                                    <label for="consumo_estrada_etanol_kml" class="form-label">Consumo Estrada Etanol (km/l) <span class="text-danger flex-required">*</span></label>
-                                    <input type="number" step="0.1" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" min="0">
+                                    <label for="consumo_estrada_etanol_kml" class="form-label">Consumo Estrada Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(km/l)</span></label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
+                                               class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
+                                               placeholder="Ex: 10.2" min="0">
+                                        <span class="input-group-text">km/l</span>
+                                    </div>
                                     <?php if (isset($errors['consumo_estrada_etanol_kml'])): ?>
-                                        <div class="invalid-feedback"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
                                     <?php endif; ?>
                                 </div>
                             </div>
