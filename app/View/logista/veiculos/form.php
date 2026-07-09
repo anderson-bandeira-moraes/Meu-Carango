@@ -1253,15 +1253,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo de Conector AC -->
                         <div class="col-md-4">
                             <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                            <div class="input-group">
-                                <input type="text" name="tipo_conector_ac" id="tipo_conector_ac" 
-                                       class="form-control <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') ?>" 
-                                       placeholder="Ex: Type 2, Mennekes, NACS" maxlength="20">
-                            </div>
+                            <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="Tipo 2 (Mennekes)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 2 (Mennekes)') ?>>Tipo 2 (Mennekes) – Padrão Brasil/Europa</option>
+                                <option value="Tipo 1 (SAE J1772)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 1 (SAE J1772)') ?>>Tipo 1 (SAE J1772) – Padrão América do Norte/Japão</option>
+                                <option value="NACS" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'NACS') ?>>NACS – Padrão Tesla (América do Norte)</option>
+                                <option value="GB/T" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'GB/T') ?>>GB/T – Padrão Chinês</option>
+                                <option value="Tipo 3 (Scame)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 3 (Scame)') ?>>Tipo 3 (Scame) – Padrão Europeu (França/Itália)</option>
+                                <option value="Schuko" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Schuko') ?>>Schuko – Tomada doméstica (carga lenta)</option>
+                                <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
                             <?php if (isset($errors['tipo_conector_ac'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_ac']) ?></div>
                             <?php endif; ?>
+
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="tipo_conector_ac_outro" id="tipo_conector_ac_outro" 
+                                   class="form-control mt-2 <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['tipo_conector_ac_outro'] ?? '') ?>" 
+                                   placeholder="Digite o conector personalizado" 
+                                   style="display: <?= ($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                         </div>
 
                         <!-- Consumo energético -->
@@ -2938,6 +2949,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC
         // =============================================
         setupMotorOutro('tipo_conector_dc', 'tipo_conector_dc_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC
+        // =============================================
+        setupMotorOutro('tipo_conector_ac', 'tipo_conector_ac_outro', []);
 
         // ============================================================
         // MODAL DE CONFIRMAÇÃO DE STATUS (intercepta o submit)
