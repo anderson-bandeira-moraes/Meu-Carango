@@ -1537,11 +1537,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Capacidade (kWh) -->
                         <div class="col-md-4">
-                            <label for="bateria_capacidade_kwh" class="form-label">Capacidade (kWh) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.1" name="bateria_capacidade_kwh" id="bateria_capacidade_kwh" class="form-control <?= isset($errors['bateria_capacidade_kwh']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_capacidade_kwh'] ?? $complemento['bateria_capacidade_kwh'] ?? '') ?>" min="0">
+                            <label for="bateria_capacidade_kwh" class="form-label">Capacidade <span class="text-danger">*</span> <span class="text-muted">(kWh)</span></label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" name="bateria_capacidade_kwh" id="bateria_capacidade_kwh" 
+                                       class="form-control <?= isset($errors['bateria_capacidade_kwh']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['bateria_capacidade_kwh'] ?? $complemento['bateria_capacidade_kwh'] ?? '') ?>" 
+                                       placeholder="Ex: 45.5" min="0">
+                                <span class="input-group-text">kWh</span>
+                            </div>
                             <?php if (isset($errors['bateria_capacidade_kwh'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['bateria_capacidade_kwh']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_capacidade_kwh']) ?></div>
                             <?php endif; ?>
                         </div>
 
