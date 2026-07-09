@@ -2060,9 +2060,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 if (phevContainer) {
                     phevContainer.style.display = 'none';
                 }
-                // Oculta ambos os campos de autonomia (combinada e elétrica) por padrão
+                // Oculta autonomia elétrica; mantém combinada visível
                 if (autonomiaEletricaContainer) autonomiaEletricaContainer.style.display = 'none';
-                if (autonomiaCombinadaContainer) autonomiaCombinadaContainer.style.display = 'none';
+                if (autonomiaCombinadaContainer) autonomiaCombinadaContainer.style.display = 'block';
                 return;
             }
 
@@ -2095,24 +2095,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             }
 
             // Lógica para autonomias:
-            // - Autonomia Combinada: visível para HEV e PHEV, oculta para MHEV
-            // - Autonomia Elétrica (PBEV): visível para PHEV sempre; para HEV, depende do modo elétrico puro; oculta para MHEV
-            const isHEV = (tipo === 'hev');
-            const isPHEV = (tipo === 'phev');
-            const isMHEV = (tipo === 'mhev');
-
-            // Autonomia Combinada: visível para HEV e PHEV, oculta para MHEV
+            // - Autonomia Combinada: visível para todos os tipos híbridos (HEV, MHEV, PHEV)
             if (autonomiaCombinadaContainer) {
-                autonomiaCombinadaContainer.style.display = (isHEV || isPHEV) ? 'block' : 'none';
+                autonomiaCombinadaContainer.style.display = 'block';
             }
 
-            // Autonomia Elétrica: visível para PHEV; para HEV, verifica modo_eletrico_puro
+            // - Autonomia Elétrica (PBEV): visível para PHEV sempre; para HEV, depende do modo elétrico puro; oculta para MHEV
             if (autonomiaEletricaContainer) {
                 let showEletrica = false;
-                if (isPHEV) {
+                if (tipo === 'phev') {
                     showEletrica = true;
-                } else if (isHEV) {
-                    // Obtém o valor do modo elétrico puro (se disponível)
+                } else if (tipo === 'hev') {
                     const modoEletricoValor = modoEletricoPuro ? parseInt(modoEletricoPuro.value, 10) : 0;
                     showEletrica = (modoEletricoValor === 1);
                 } else {
