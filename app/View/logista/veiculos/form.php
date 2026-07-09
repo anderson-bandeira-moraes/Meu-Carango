@@ -1540,21 +1540,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <h6 class="text-secondary"><i class="bi bi-speedometer me-2"></i>Autonomias</h6>
                         </div>
 
-                        <!-- Garantia da Bateria -->
-                        <div class="col-md-4">
+                        <!-- Autonomia Elétrica (PBEV) -->
+                        <div id="autonomia_eletrica_container" class="col-md-4">
                             <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica (PBEV) (km)</label>
-                            <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" class="form-control phev-field <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['autonomia_eletrica_pbev_km'] ?? $complemento['autonomia_eletrica_pbev_km'] ?? '') ?>" min="0">
+                            <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" 
+                                   class="form-control <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['autonomia_eletrica_pbev_km'] ?? $complemento['autonomia_eletrica_pbev_km'] ?? '') ?>" 
+                                   placeholder="Ex: 50" min="0">
                             <?php if (isset($errors['autonomia_eletrica_pbev_km'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_eletrica_pbev_km']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_eletrica_pbev_km']) ?></div>
                             <?php endif; ?>
                         </div>
-                        <div class="col-md-4">
+
+                        <!-- Autonomia Combinada -->
+                        <div id="autonomia_combinada_container" class="col-md-4">
                             <label for="autonomia_combinada_km" class="form-label">Autonomia Combinada (km)</label>
-                            <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" class="form-control phev-field <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" min="0">
+                            <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" 
+                                   class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" 
+                                   placeholder="Ex: 600" min="0">
                             <?php if (isset($errors['autonomia_combinada_km'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['autonomia_combinada_km']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_combinada_km']) ?></div>
                             <?php endif; ?>
                         </div>
 
@@ -2041,6 +2047,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         function aplicarRegrasHibrido(tipo) {
             const phevContainer = document.getElementById('phev-container');
             const modoContainer = modoEletricoPuro ? modoEletricoPuro.closest('.col-md-6') : null;
+            const autonomiaEletricaContainer = document.getElementById('autonomia_eletrica_container');
+            const autonomiaCombinadaContainer = document.getElementById('autonomia_combinada_container');
 
             // Caso não haja tipo ou não existam regras para ele, oculta tudo relacionado a PHEV
             if (!tipo || !CONFIG.regrasHibrido || !CONFIG.regrasHibrido[tipo]) {
@@ -2052,6 +2060,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 if (phevContainer) {
                     phevContainer.style.display = 'none';
                 }
+                // Oculta ambos os campos de autonomia (combinada e elétrica) por padrão
+                if (autonomiaEletricaContainer) autonomiaEletricaContainer.style.display = 'none';
+                if (autonomiaCombinadaContainer) autonomiaCombinadaContainer.style.display = 'none';
                 return;
             }
 
@@ -2082,6 +2093,33 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             if (phevContainer) {
                 phevContainer.style.display = phevVisivel ? 'block' : 'none';
             }
+
+            // Lógica para autonomias:
+            // - Autonomia Combinada: visível para HEV e PHEV, oculta para MHEV
+            // - Autonomia Elétrica (PBEV): visível para PHEV sempre; para HEV, depende do modo elétrico puro; oculta para MHEV
+            const isHEV = (tipo === 'hev');
+            const isPHEV = (tipo === 'phev');
+            const isMHEV = (tipo === 'mhev');
+
+            // Autonomia Combinada: visível para HEV e PHEV, oculta para MHEV
+            if (autonomiaCombinadaContainer) {
+                autonomiaCombinadaContainer.style.display = (isHEV || isPHEV) ? 'block' : 'none';
+            }
+
+            // Autonomia Elétrica: visível para PHEV; para HEV, verifica modo_eletrico_puro
+            if (autonomiaEletricaContainer) {
+                let showEletrica = false;
+                if (isPHEV) {
+                    showEletrica = true;
+                } else if (isHEV) {
+                    // Obtém o valor do modo elétrico puro (se disponível)
+                    const modoEletricoValor = modoEletricoPuro ? parseInt(modoEletricoPuro.value, 10) : 0;
+                    showEletrica = (modoEletricoValor === 1);
+                } else {
+                    showEletrica = false;
+                }
+                autonomiaEletricaContainer.style.display = showEletrica ? 'block' : 'none';
+            }
         }
 
         if (tipoHibridoSelect) {
@@ -2095,6 +2133,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             } else {
                 aplicarRegrasHibrido('');
             }
+        }
+
+        // Adiciona listener no campo "Modo Elétrico Puro" para atualizar a autonomia elétrica quando o tipo for HEV
+        if (modoEletricoPuro) {
+            modoEletricoPuro.addEventListener('change', function() {
+                const tipoAtual = tipoHibridoSelect.value;
+                if (tipoAtual === 'hev') {
+                    aplicarRegrasHibrido(tipoAtual);
+                }
+            });
         }
 
         // ============================================================
