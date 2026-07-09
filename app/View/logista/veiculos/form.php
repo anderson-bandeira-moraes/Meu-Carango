@@ -1548,11 +1548,29 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo da Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
-                            <input type="text" name="bateria_tipo" id="bateria_tipo" class="form-control <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') ?>" maxlength="30">
+                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <option value="NiMH (Níquel-Hidreto Metálico)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NiMH (Níquel-Hidreto Metálico)') ?>>NiMH (Níquel-Hidreto Metálico)</option>
+                                <option value="NMC (Níquel-Manganês-Cobalto)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NMC (Níquel-Manganês-Cobalto)') ?>>NMC (Níquel-Manganês-Cobalto)</option>
+                                <option value="NCA (Níquel-Cobalto-Alumínio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NCA (Níquel-Cobalto-Alumínio)') ?>>NCA (Níquel-Cobalto-Alumínio)</option>
+                                <option value="LFP (Fosfato de Ferro e Lítio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LFP (Fosfato de Ferro e Lítio)') ?>>LFP (Fosfato de Ferro e Lítio)</option>
+                                <option value="LMO (Óxido de Lítio e Manganês)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LMO (Óxido de Lítio e Manganês)') ?>>LMO (Óxido de Lítio e Manganês)</option>
+                                <option value="LTO (Óxido de Lítio e Titânio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LTO (Óxido de Lítio e Titânio)') ?>>LTO (Óxido de Lítio e Titânio)</option>
+                                <option value="Bateria 48V" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Bateria 48V') ?>>Bateria 48V</option>
+                                <option value="Estado Sólido" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Estado Sólido') ?>>Estado Sólido</option>
+                                <option value="Supercapacitores" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Supercapacitores') ?>>Supercapacitores</option>
+                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
                             <?php if (isset($errors['bateria_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['bateria_tipo']) ?></div>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
                             <?php endif; ?>
+
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
+                                   class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
+                                   placeholder="Digite o tipo personalizado" 
+                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                         </div>
 
                         <!-- Garantia da Bateria -->
@@ -3059,6 +3077,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC
         // =============================================
         setupMotorOutro('tipo_conector_ac', 'tipo_conector_ac_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
+        // =============================================
+        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
 
         // ============================================================
         // MODAL DE CONFIRMAÇÃO DE STATUS (intercepta o submit)
