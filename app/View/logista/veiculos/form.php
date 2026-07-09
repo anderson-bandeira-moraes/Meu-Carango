@@ -1659,15 +1659,30 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
                                     <?php endif; ?>
                                 </div>
+
+                                <!-- Tipo de Conector AC -->
                                 <div class="col-md-3">
                                     <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                                    <input type="text" name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" 
-                                           class="form-control <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') ?>" 
-                                           placeholder="Ex: Type 2, Mennekes" maxlength="20">
+                                    <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" 
+                                            class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
+                                        <option value="">Selecione</option>
+                                        <option value="Tipo 2 (Mennekes)" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'Tipo 2 (Mennekes)') ?>>Tipo 2 (Mennekes) – Padrão Brasil/Europa</option>
+                                        <option value="Tipo 1 (SAE J1772)" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'Tipo 1 (SAE J1772)') ?>>Tipo 1 (SAE J1772) – Padrão América do Norte/Japão</option>
+                                        <option value="NACS" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'NACS') ?>>NACS – Padrão Tesla (América do Norte)</option>
+                                        <option value="GB/T" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'GB/T') ?>>GB/T – Padrão Chinês</option>
+                                        <option value="CHAdeMO" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'CHAdeMO') ?>>CHAdeMO – Padrão Japonês</option>
+                                        <option value="outro" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    </select>
                                     <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tipo_conector_ac']) ?></div>
                                     <?php endif; ?>
+
+                                    <!-- Campo extra para "Outro" -->
+                                    <input type="text" name="carregamento_tipo_conector_ac_outro" id="carregamento_tipo_conector_ac_outro" 
+                                           class="form-control mt-2 <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac_outro'] ?? '') ?>" 
+                                           placeholder="Digite o conector personalizado" 
+                                           style="display: <?= ($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                                 </div>
                             </div>
                         </div>
@@ -3091,6 +3106,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
         // =============================================
         setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
+        // =============================================
+        setupMotorOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro', []);
 
         // ============================================================
         // MODAL DE CONFIRMAÇÃO DE STATUS (intercepta o submit)
