@@ -36,8 +36,8 @@ class VeiculoCombustaoRepository
                 regime_potencia_rpm, regime_torque_rpm,
                 aceleracao_0_100_seg, velocidade_max_kmh,
                 tracao_tipo,
-                consumo_cidade_kml, consumo_estrada_kml,
-                consumo_cidade_etanol_kml, consumo_estrada_etanol_kml,
+                consumo_cidade_kml, consumo_estrada_kml, consumo_medio_kml,
+                consumo_cidade_etanol_kml, consumo_estrada_etanol_kml, consumo_medio_etanol_kml,
                 capacidade_tanque_l, transmissao_tipo, numero_marchas
             ) VALUES (
                 :veiculo_id, :combustivel, :motor_tipo,
@@ -46,8 +46,8 @@ class VeiculoCombustaoRepository
                 :regime_potencia_rpm, :regime_torque_rpm,
                 :aceleracao_0_100_seg, :velocidade_max_kmh,
                 :tracao_tipo,
-                :consumo_cidade_kml, :consumo_estrada_kml,
-                :consumo_cidade_etanol_kml, :consumo_estrada_etanol_kml,
+                :consumo_cidade_kml, :consumo_estrada_kml, :consumo_medio_kml,
+                :consumo_cidade_etanol_kml, :consumo_estrada_etanol_kml, :consumo_medio_etanol_kml,
                 :capacidade_tanque_l, :transmissao_tipo, :numero_marchas
             ) ON DUPLICATE KEY UPDATE
                 combustivel = VALUES(combustivel),
@@ -63,8 +63,10 @@ class VeiculoCombustaoRepository
                 tracao_tipo = VALUES(tracao_tipo),
                 consumo_cidade_kml = VALUES(consumo_cidade_kml),
                 consumo_estrada_kml = VALUES(consumo_estrada_kml),
+                consumo_medio_kml = VALUES(consumo_medio_kml),
                 consumo_cidade_etanol_kml = VALUES(consumo_cidade_etanol_kml),
                 consumo_estrada_etanol_kml = VALUES(consumo_estrada_etanol_kml),
+                consumo_medio_etanol_kml = VALUES(consumo_medio_etanol_kml),
                 capacidade_tanque_l = VALUES(capacidade_tanque_l),
                 transmissao_tipo = VALUES(transmissao_tipo),
                 numero_marchas = VALUES(numero_marchas)';
@@ -165,8 +167,10 @@ class VeiculoCombustaoRepository
             ':tracao_tipo'                   => $dados['tracao_tipo'] ?? null,
             ':consumo_cidade_kml'            => $dados['consumo_cidade_kml'] ?? null,
             ':consumo_estrada_kml'           => $dados['consumo_estrada_kml'] ?? null,
+            ':consumo_medio_kml'             => $dados['consumo_medio_kml'] ?? null,
             ':consumo_cidade_etanol_kml'     => $dados['consumo_cidade_etanol_kml'] ?? null,
             ':consumo_estrada_etanol_kml'    => $dados['consumo_estrada_etanol_kml'] ?? null,
+            ':consumo_medio_etanol_kml'      => $dados['consumo_medio_etanol_kml'] ?? null,
             ':capacidade_tanque_l'           => $dados['capacidade_tanque_l'] ?? null,
             ':transmissao_tipo'              => $dados['transmissao_tipo'] ?? null,
             ':numero_marchas'                => $dados['numero_marchas'] ?? null,
