@@ -37,6 +37,7 @@ class VeiculoCombustaoRequest extends FormRequest
             // Consumo (cidade obrigatório, estrada opcional)
             'consumo_cidade_kml'   => 'required|numeric|min:0',
             'consumo_estrada_kml'  => 'nullable|numeric|min:0',
+            'consumo_medio_kml'    => 'nullable|numeric|min:0',
 
             // Tanque
             'capacidade_tanque_l' => 'required|integer|min:0',
@@ -50,6 +51,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'torque_etanol_kgfm'          => 'nullable|numeric|min:0',
             'consumo_cidade_etanol_kml'   => 'nullable|numeric|min:0',
             'consumo_estrada_etanol_kml'  => 'nullable|numeric|min:0',
+            'consumo_medio_etanol_kml'    => 'nullable|numeric|min:0', 
 
             // Campos de desempenho (opcionais)
             'regime_potencia_rpm'  => 'nullable|integer|min:0',
@@ -94,6 +96,12 @@ class VeiculoCombustaoRequest extends FormRequest
             // Consumo estrada
             'consumo_estrada_kml.numeric' => 'O consumo na estrada deve ser um número válido.',
             'consumo_estrada_kml.min'     => 'O consumo na estrada não pode ser negativo.',
+
+            // Consumo médio
+            'consumo_medio_kml.numeric' => 'O consumo médio deve ser um número válido.',
+            'consumo_medio_kml.min'     => 'O consumo médio não pode ser negativo.',
+            'consumo_medio_etanol_kml.numeric' => 'O consumo médio com etanol deve ser um número válido.',
+            'consumo_medio_etanol_kml.min'     => 'O consumo médio com etanol não pode ser negativo.',
 
             // Tanque
             'capacidade_tanque_l.required' => 'A capacidade do tanque é obrigatória.',
@@ -151,6 +159,7 @@ class VeiculoCombustaoRequest extends FormRequest
                 'potencia_etanol_cv'         => 'potência com etanol',
                 'torque_etanol_kgfm'         => 'torque com etanol',
                 'consumo_cidade_etanol_kml'  => 'consumo na cidade com etanol',
+                'consumo_medio_etanol_kml'   => 'consumo médio com etanol',
             ];
 
             foreach ($camposFlex as $campo => $nome) {
@@ -178,7 +187,7 @@ class VeiculoCombustaoRequest extends FormRequest
         $data = parent::sanitize($data);
 
         // Converte campos numéricos para float/int onde apropriado
-        $floatFields = ['torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'aceleracao_0_100_seg'];
+        $floatFields = ['torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg'];
         foreach ($floatFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (float) $data[$field];
@@ -218,8 +227,10 @@ class VeiculoCombustaoRequest extends FormRequest
             'tracao_tipo'                   => $validated['tracao_tipo'] ?? null,
             'consumo_cidade_kml'            => $validated['consumo_cidade_kml'] ?? null,
             'consumo_estrada_kml'           => $validated['consumo_estrada_kml'] ?? null,
+            'consumo_medio_kml'             => $validated['consumo_medio_kml'] ?? null,
             'consumo_cidade_etanol_kml'     => $validated['consumo_cidade_etanol_kml'] ?? null,
             'consumo_estrada_etanol_kml'    => $validated['consumo_estrada_etanol_kml'] ?? null,
+            'consumo_medio_etanol_kml'      => $validated['consumo_medio_etanol_kml'] ?? null,
             'capacidade_tanque_l'           => $validated['capacidade_tanque_l'] ?? null,
             'transmissao_tipo'              => $validated['transmissao_tipo'] ?? null,
             'numero_marchas'                => $validated['numero_marchas'] ?? null,
