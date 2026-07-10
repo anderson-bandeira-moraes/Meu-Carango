@@ -41,6 +41,7 @@ class VeiculoHibridoRepository
                 carregamento_potencia_ac_kw, carregamento_tempo_ac_horas,
                 carregamento_potencia_dc_kw, carregamento_tipo_conector_ac,
                 consumo_cidade_kml, consumo_estrada_kml, consumo_medio_kml,
+                consumo_cidade_etanol_kml, consumo_estrada_etanol_kml, consumo_medio_etanol_kml,
                 capacidade_tanque_l
             ) VALUES (
                 :veiculo_id, :tipo, :combustivel,
@@ -54,6 +55,7 @@ class VeiculoHibridoRepository
                 :carregamento_potencia_ac_kw, :carregamento_tempo_ac_horas,
                 :carregamento_potencia_dc_kw, :carregamento_tipo_conector_ac,
                 :consumo_cidade_kml, :consumo_estrada_kml, :consumo_medio_kml,
+                :consumo_cidade_etanol_kml, :consumo_estrada_etanol_kml, :consumo_medio_etanol_kml,
                 :capacidade_tanque_l
             ) ON DUPLICATE KEY UPDATE
                 tipo = VALUES(tipo),
@@ -81,6 +83,9 @@ class VeiculoHibridoRepository
                 consumo_cidade_kml = VALUES(consumo_cidade_kml),
                 consumo_estrada_kml = VALUES(consumo_estrada_kml),
                 consumo_medio_kml = VALUES(consumo_medio_kml),
+                consumo_cidade_etanol_kml = VALUES(consumo_cidade_etanol_kml),
+                consumo_estrada_etanol_kml = VALUES(consumo_estrada_etanol_kml),
+                consumo_medio_etanol_kml = VALUES(consumo_medio_etanol_kml),
                 capacidade_tanque_l = VALUES(capacidade_tanque_l)';
 
             $stmt = $this->pdo->prepare($sql);
@@ -192,6 +197,10 @@ class VeiculoHibridoRepository
             ':consumo_cidade_kml'                => $dados['consumo_cidade_kml'] ?? null,
             ':consumo_estrada_kml'               => $dados['consumo_estrada_kml'] ?? null,
             ':consumo_medio_kml'                 => $dados['consumo_medio_kml'] ?? null,
+            // NOVOS CAMPOS DE CONSUMO COM ETANOL
+            ':consumo_cidade_etanol_kml'         => $dados['consumo_cidade_etanol_kml'] ?? null,
+            ':consumo_estrada_etanol_kml'        => $dados['consumo_estrada_etanol_kml'] ?? null,
+            ':consumo_medio_etanol_kml'          => $dados['consumo_medio_etanol_kml'] ?? null,
             ':capacidade_tanque_l'               => $dados['capacidade_tanque_l'] ?? null,
         ];
     }
