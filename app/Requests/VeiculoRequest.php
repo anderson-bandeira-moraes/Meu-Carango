@@ -62,7 +62,7 @@ class VeiculoRequest extends FormRequest
             'ano_modelo'     => 'required|integer|min:1900',
             'cor'            => 'required|max:30',
             'quilometragem'  => 'required|integer|min:0',
-            'preco'          => 'required|regex:/^(\d{1,3}(\.\d{3})*|\d+)(\,\d{1,2})?$/|numeric|min:0',
+            'preco'          => 'required|numeric|min:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
