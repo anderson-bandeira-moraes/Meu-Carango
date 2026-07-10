@@ -1775,9 +1775,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </div>
 
                             <div class="col-md-3">
-                                <label for="consumo_medio_kml" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
+                                <label for="consumo_medio_kml_hibrido" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.1" name="consumo_medio_kml" id="consumo_medio_kml" 
+                                    <input type="number" step="0.1" name="consumo_medio_kml" id="consumo_medio_kml_hibrido" 
                                            class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_medio_kml'] ?? $complemento['consumo_medio_kml'] ?? '') ?>" 
                                            placeholder="Ex: 13.5" min="0">
@@ -1837,9 +1837,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label for="consumo_medio_etanol_kml" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
+                                    <label for="consumo_medio_etanol_kml_hibrido" class="form-label">Consumo Médio <span class="text-muted">(km/l)</span></label>
                                     <div class="input-group">
-                                        <input type="number" step="0.1" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml" 
+                                        <input type="number" step="0.1" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml_hibrido" 
                                                class="form-control <?= isset($errors['consumo_medio_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_medio_etanol_kml'] ?? $complemento['consumo_medio_etanol_kml'] ?? '') ?>" 
                                                placeholder="Ex: 9.5" min="0">
@@ -1849,6 +1849,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_etanol_kml']) ?></div>
                                     <?php endif; ?>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
