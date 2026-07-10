@@ -417,3 +417,22 @@ if (!function_exists('status_vitrine_list')) {
         return $list;
     }
 }
+
+if (!function_exists('gnv_quantidades_list')) {
+    /**
+     * Retorna a lista de quantidades de cilindros GNV (valores numéricos).
+     *
+     * @return array Array de valores inteiros (1 a 5)
+     */
+    function gnv_quantidades_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['gnv_quantidades'] ?? [];
+        }
+
+        return $list;
+    }
+}

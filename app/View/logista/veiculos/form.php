@@ -27,7 +27,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 <script>
     const CONFIG = {
         motorizacoes: <?= json_encode(motorizacoes_list()) ?>,
-        regrasHibrido: <?= json_encode(regras_hibrido()) ?>
+        regrasHibrido: <?= json_encode(regras_hibrido()) ?>,
+        cores: <?= json_encode(cores_list()) ?>,
+        portas: <?= json_encode(portas_list()) ?>,
+        assentos: <?= json_encode(assentos_list()) ?>,
+        combustiveis: <?= json_encode(combustiveis_list()) ?>,
+        tracao: <?= json_encode(tracao_list()) ?>,
+        transmissoes: <?= json_encode(transmissoes_list()) ?>,
+        marchas: <?= json_encode(marchas_list()) ?>,
+        gnv_sistemas: <?= json_encode(gnv_sistemas_list()) ?>,
+        gnv_geracoes: <?= json_encode(gnv_geracoes_list()) ?>,
+        gnv_materiais: <?= json_encode(gnv_materiais_list()) ?>,
+        gnv_localizacoes: <?= json_encode(gnv_localizacoes_list()) ?>,
+        gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
+        gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
+        conectores_dc: <?= json_encode(conectores_dc_list()) ?>,
+        conectores_ac: <?= json_encode(conectores_ac_list()) ?>,
+        tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
+        baterias_tipos: <?= json_encode(baterias_tipos_list()) ?>,
+        status_estoque: <?= json_encode(status_estoque_list()) ?>,
+        status_vitrine: <?= json_encode(status_vitrine_list()) ?>
     };
 </script>
 
@@ -247,24 +266,36 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Número de Portas -->
-                    <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
-                        <option value="">Selecione</option>
-                        <?php foreach (portas_list() as $valor => $label): ?>
-                            <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
-                                <?= htmlspecialchars($label) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="col-md-4">
+                        <label for="numero_portas" class="form-label">Número de Portas <span class="text-danger">*</span></label>
+                        <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (portas_list() as $valor => $label): ?>
+                                <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['numero_portas'])): ?>
+                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_portas']) ?></div>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- Número de Assentos -->
-                    <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
-                        <option value="">Selecione</option>
-                        <?php foreach (assentos_list() as $valor): ?>
-                            <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
-                                <?= $valor ?> assentos
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="col-md-4">
+                        <label for="numero_assentos" class="form-label">Número de Assentos <span class="text-danger">*</span></label>
+                        <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (assentos_list() as $valor): ?>
+                                <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
+                                    <?= $valor ?> assentos
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['numero_assentos'])): ?>
+                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- GNV Instalado (apenas para combustão) -->
                     <div class="col-md-6 gnv-field" style="display: none;">
@@ -382,11 +413,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="quantidade_cilindros" class="form-label">Quantidade <span class="text-danger">*</span></label>
                                 <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <option value="1" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '1') ?>>1 cilindro</option>
-                                    <option value="2" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '2') ?>>2 cilindros</option>
-                                    <option value="3" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '3') ?>>3 cilindros</option>
-                                    <option value="4" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '4') ?>>4 cilindros</option>
-                                    <option value="5" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', '5') ?>>5 cilindros</option>
+                                    <?php foreach (gnv_quantidades_list() as $valor): ?>
+                                        <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', $valor) ?>>
+                                            <?= $valor ?> cilindro<?= $valor > 1 ? 's' : '' ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <?php if (isset($errors['quantidade_cilindros'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['quantidade_cilindros']) ?></div>
