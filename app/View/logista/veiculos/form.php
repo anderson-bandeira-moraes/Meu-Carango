@@ -1928,7 +1928,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="adicionarMarcaBtn">
                                     <i class="bi bi-plus-lg me-1"></i> Adicionar Nova Marca
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="btnProximoMarca" disabled>
+                                    Próximo <i class="bi bi-chevron-right"></i>
+                                </button>
                             </div>
                         </div>
                         <div id="conteudo-marca-form" style="display: none;">
@@ -2380,6 +2382,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const modeloDisplay = document.getElementById('modeloDisplay');
         const marcaIdInput = document.getElementById('marca_id');
         const modeloIdInput = document.getElementById('modelo_id');
+        // NOVO: referência ao botão "Próximo"
+        const btnProximoMarca = document.getElementById('btnProximoMarca');
 
         // Dados da seleção
         let selectedMarcaId = null;
@@ -2416,8 +2420,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     selectedMarcaId = m.id;
                     selectedMarcaNome = m.nome;
                     selectedMarcaLogo = m.logo_url || '/assets/images/default-brand.png';
-                    carregarModelos(m.id);
-                    irParaEtapa('modelo');
+                    // Habilita o botão "Próximo"
+                    if (btnProximoMarca) {
+                        btnProximoMarca.disabled = false;
+                    }
                 });
                 listaMarcas.appendChild(div);
             });
@@ -2434,6 +2440,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         return;
                     }
                     const modelos = data.dados;
+                    window._modelosData = modelos; // Armazena para filtro
                     renderModelos(modelos);
                 })
                 .catch(err => {
@@ -2488,6 +2495,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 etapaMarca.style.display = 'block';
                 buscaMarca.value = '';
                 renderMarcas();
+                // Atualiza estado do botão Próximo
+                if (btnProximoMarca) {
+                    btnProximoMarca.disabled = (selectedMarcaId === null);
+                }
                 setTimeout(() => buscaMarca.focus(), 100);
             } else if (etapa === 'modelo') {
                 etapaModelo.style.display = 'block';
@@ -2533,6 +2544,20 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             });
         }
 
+        // NOVO: Evento do botão "Próximo"
+        if (btnProximoMarca) {
+            btnProximoMarca.addEventListener('click', function() {
+                if (!selectedMarcaId) {
+                    alert('Por favor, selecione uma marca primeiro.');
+                    return;
+                }
+                // Carrega os modelos da marca selecionada
+                carregarModelos(selectedMarcaId);
+                // Vai para a etapa de modelo
+                irParaEtapa('modelo');
+            });
+        }
+
         // Confirmar seleção
         if (confirmarBtn) {
             confirmarBtn.addEventListener('click', function() {
@@ -2557,6 +2582,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             btnSelecionar.addEventListener('click', function() {
                 const currentMarcaId = parseInt(marcaIdInput.value);
                 const currentModeloId = parseInt(modeloIdInput.value);
+                // Resetar seleção (mas manter a atual se houver)
+                selectedMarcaId = null;
+                selectedMarcaNome = '';
+                selectedMarcaLogo = '';
+                selectedModeloId = null;
+                selectedModeloNome = '';
+
                 if (currentMarcaId) {
                     const marca = marcasData.find(m => m.id === currentMarcaId);
                     if (marca) {
@@ -2565,6 +2597,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         selectedMarcaLogo = marca.logo_url || '/assets/images/default-brand.png';
                     }
                 }
+                if (currentModeloId) {
+                    // Se houver um modelo selecionado, poderíamos carregar a lista, mas não temos os dados ainda
+                    // O usuário poderá selecionar novamente na etapa modelo
+                }
+
+                // Desabilita o botão Próximo (será habilitado quando clicar em uma marca)
+                if (btnProximoMarca) {
+                    btnProximoMarca.disabled = (selectedMarcaId === null);
+                }
+
                 renderMarcas();
                 irParaEtapa('marca');
                 const modalInstance = new bootstrap.Modal(modalMarcaModelo);
@@ -2573,7 +2615,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         modalMarcaModelo.addEventListener('hidden.bs.modal', function() {
-            // Opcional
+            // Limpar estado se necessário
         });
 
         // ============================================================
