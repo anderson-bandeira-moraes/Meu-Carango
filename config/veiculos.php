@@ -93,4 +93,239 @@ return [
             ],
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cores disponíveis (nome => código hexadecimal)
+    |--------------------------------------------------------------------------
+    */
+    'cores' => [
+        'Preto'             => '#000000',
+        'Branco'            => '#FFFFFF',
+        'Prata'             => '#C0C0C0',
+        'Cinza'             => '#808080',
+        'Vermelho'          => '#FF0000',
+        'Azul'              => '#0000FF',
+        'Verde'             => '#008000',
+        'Amarelo'           => '#FFD700',
+        'Laranja'           => '#FFA500',
+        'Marrom'            => '#8B4513',
+        'Bege'              => '#F5F5DC',
+        'Dourado'           => '#FFD700',
+        'Prata Metálico'    => '#A8A9AD',
+        'Azul Metálico'     => '#1E3A5F',
+        'Vermelho Metálico' => '#8B0000',
+        'Verde Metálico'    => '#2E8B57',
+        'Cinza Metálico'    => '#696969',
+        'Preto Metálico'    => '#1A1A1A',
+        'Branco Pérola'     => '#F8F8FF',
+        'Azul Escuro'       => '#191970',
+        'Vinho'             => '#722F37',
+        'Bronze'            => '#CD7F32',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Número de portas (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'portas' => [
+        2 => '2 portas (cupê)',
+        3 => '3 portas (hatch 2 portas)',
+        4 => '4 portas (sedã)',
+        5 => '5 portas (hatch 4 portas + mala)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Número de assentos (array de valores numéricos)
+    |--------------------------------------------------------------------------
+    */
+    'assentos' => [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de combustível (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'combustiveis' => [
+        'alcool'   => 'Álcool',
+        'diesel'   => 'Diesel',
+        'flex'     => 'Flex',
+        'gasolina' => 'Gasolina',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de tração (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'tracao' => [
+        'dianteira' => 'Dianteira',
+        'traseira'  => 'Traseira',
+        'integral'  => 'Integral',
+        '4x4'       => '4x4',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de transmissão por contexto (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'transmissoes' => [
+        'combustao' => [
+            'Manual'            => 'Manual (MT)',
+            'Automática'        => 'Automática Convencional (AT)',
+            'Automática CVT'    => 'Automática CVT',
+            'Automatizada'      => 'Automatizada (AMT)',
+            'Dupla Embreagem'   => 'Dupla Embreagem (DCT)',
+        ],
+        'eletrico' => [
+            'Relação Única'         => 'Relação Única (Fixed-Ratio)',
+            'Duas Velocidades'      => 'Duas Velocidades (2-Speed)',
+        ],
+        'hibrido' => [
+            'e-CVT'             => 'e-CVT',
+            'Automática'        => 'Automática Convencional (AT)',
+            'Dupla Embreagem'   => 'Dupla Embreagem (DCT)',
+            'CVT'               => 'CVT',
+            'Manual'            => 'Manual (MT)',
+        ],
+    ],
+
+        /*
+    |--------------------------------------------------------------------------
+    | Número de marchas (range de 4 a 10)
+    |--------------------------------------------------------------------------
+    */
+    'marchas' => [4, 5, 6, 7, 8, 9, 10],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GNV – Tipos de sistema (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'gnv_sistemas' => [
+        'GNC' => 'GNC (Gás Natural Comprimido)',
+        'GLP' => 'GLP (Gás Liquefeito de Petróleo)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GNV – Gerações do kit (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'gnv_geracoes' => [
+        '3ª' => '3ª Geração',
+        '4ª' => '4ª Geração',
+        '5ª' => '5ª Geração',
+        '6ª' => '6ª Geração',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GNV – Materiais do cilindro (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'gnv_materiais' => [
+        'Aço' => 'Aço',
+        'Alumínio' => 'Alumínio',
+        'Compósito (Fibra de Carbono)' => 'Compósito (Fibra de Carbono)',
+        'Compósito (Fibra de Vidro)' => 'Compósito (Fibra de Vidro)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GNV – Localizações do cilindro (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'gnv_localizacoes' => [
+        'Porta-malas' => 'Porta-malas',
+        'Sob o assoalho (Por baixo do carro)' => 'Sob o assoalho (Por baixo do carro)',
+        'Atrás dos bancos' => 'Atrás dos bancos',
+        'Sobre o assoalho (área de carga)' => 'Sobre o assoalho (área de carga)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GNV – Capacidades do cilindro em m³ (valores numéricos)
+    |--------------------------------------------------------------------------
+    */
+    'gnv_capacidades' => [7.5, 9.5, 10, 15, 17, 21, 24.5, 25],
+
+        /*
+    |--------------------------------------------------------------------------
+    | Conectores DC para veículos elétricos (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'conectores_dc' => [
+        'CCS2 (Combo 2)' => 'CCS2 (Combo 2) – Padrão Brasil/Europa',
+        'CCS1 (Combo 1)' => 'CCS1 (Combo 1) – Padrão América do Norte',
+        'NACS'           => 'NACS – Padrão Tesla (América do Norte)',
+        'CHAdeMO'        => 'CHAdeMO – Padrão Japonês (Nissan, Mitsubishi)',
+        'GB/T'           => 'GB/T – Padrão Chinês',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Conectores AC para veículos elétricos e PHEV (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'conectores_ac' => [
+        'Tipo 2 (Mennekes)'       => 'Tipo 2 (Mennekes) – Padrão Brasil/Europa',
+        'Tipo 1 (SAE J1772)'      => 'Tipo 1 (SAE J1772) – Padrão América do Norte/Japão',
+        'NACS'                    => 'NACS – Padrão Tesla (América do Norte)',
+        'GB/T'                    => 'GB/T – Padrão Chinês',
+        'Tipo 3 (Scame)'          => 'Tipo 3 (Scame) – Padrão Europeu (França/Itália)',
+        'Schuko'                  => 'Schuko – Tomada doméstica (carga lenta)',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de veículos híbridos (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'tipos_hibrido' => [
+        'hev'  => 'HEV',
+        'mhev' => 'MHEV',
+        'phev' => 'PHEV',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de bateria para veículos híbridos e elétricos (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'baterias_tipos' => [
+        'NiMH (Níquel-Hidreto Metálico)'         => 'NiMH (Níquel-Hidreto Metálico)',
+        'NMC (Níquel-Manganês-Cobalto)'          => 'NMC (Níquel-Manganês-Cobalto)',
+        'NCA (Níquel-Cobalto-Alumínio)'          => 'NCA (Níquel-Cobalto-Alumínio)',
+        'LFP (Fosfato de Ferro e Lítio)'         => 'LFP (Fosfato de Ferro e Lítio)',
+        'LMO (Óxido de Lítio e Manganês)'        => 'LMO (Óxido de Lítio e Manganês)',
+        'LTO (Óxido de Lítio e Titânio)'         => 'LTO (Óxido de Lítio e Titânio)',
+        'Bateria 48V'                            => 'Bateria 48V',
+        'Estado Sólido'                          => 'Estado Sólido',
+        'Supercapacitores'                       => 'Supercapacitores',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status de estoque (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'status_estoque' => [
+        'disponivel' => 'Disponível',
+        'vendido'    => 'Vendido',
+        'reservado'  => 'Reservado',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status de vitrine (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'status_vitrine' => [
+        'ativo'   => 'Ativo',
+        'inativo' => 'Inativo',
+    ],
 ];
