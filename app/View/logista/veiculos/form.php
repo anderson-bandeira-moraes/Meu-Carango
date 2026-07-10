@@ -3385,6 +3385,49 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             'numero_marchas_hibrido',         // ID do select de marchas híbrido
             ['CVT', 'e-CVT', 'Automática CVT'] // Valores comuns para híbridos
         );
+
+        // ============================================================
+        // PROTEÇÃO CONTRA RECARREGAMENTO COM DADOS NÃO SALVOS
+        // ============================================================
+
+        // Flag que indica se o formulário foi alterado
+        let formDirty = false;
+
+        // Função para marcar o formulário como "sujo"
+        function markFormDirty() {
+            formDirty = true;
+        }
+
+        // Função para limpar a flag (usada ao submeter)
+        function clearFormDirty() {
+            formDirty = false;
+        }
+
+        // Obtém o formulário
+        const veiculoForm = document.getElementById('veiculoForm');
+        if (veiculoForm) {
+            // Detecta alterações em inputs, selects e textareas
+            const inputs = veiculoForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', markFormDirty);
+                input.addEventListener('change', markFormDirty);
+            });
+
+            // Quando o formulário for submetido, limpa a flag
+            veiculoForm.addEventListener('submit', clearFormDirty);
+        }
+
+        // Listener global para antes de descarregar a página
+        window.addEventListener('beforeunload', function(e) {
+            // Só exibe aviso se o formulário estiver sujo
+            if (formDirty) {
+                // Previne o comportamento padrão e dispara o aviso do navegador
+                e.preventDefault();
+                // Necessário para Chrome/Edge
+                e.returnValue = '';
+                // Nota: mensagens personalizadas são ignoradas; o navegador exibe a própria
+            }
+        });
     });
 </script>
 
