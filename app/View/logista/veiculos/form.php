@@ -184,30 +184,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div id="dropdownCores" class="border rounded shadow-sm mt-1" style="display: none; max-height: 200px; overflow-y: auto; position: relative; z-index: 1000; background: white;">
                             <div class="p-1">
                                 <?php
-                                $cores = [
-                                    'Preto' => '#000000',
-                                    'Branco' => '#FFFFFF',
-                                    'Prata' => '#C0C0C0',
-                                    'Cinza' => '#808080',
-                                    'Vermelho' => '#FF0000',
-                                    'Azul' => '#0000FF',
-                                    'Verde' => '#008000',
-                                    'Amarelo' => '#FFD700',
-                                    'Laranja' => '#FFA500',
-                                    'Marrom' => '#8B4513',
-                                    'Bege' => '#F5F5DC',
-                                    'Dourado' => '#FFD700',
-                                    'Prata Metálico' => '#A8A9AD',
-                                    'Azul Metálico' => '#1E3A5F',
-                                    'Vermelho Metálico' => '#8B0000',
-                                    'Verde Metálico' => '#2E8B57',
-                                    'Cinza Metálico' => '#696969',
-                                    'Preto Metálico' => '#1A1A1A',
-                                    'Branco Pérola' => '#F8F8FF',
-                                    'Azul Escuro' => '#191970',
-                                    'Vinho' => '#722F37',
-                                    'Bronze' => '#CD7F32',
-                                ];
+                                $cores = cores_list();
                                 $valorSalvo = $old['cor'] ?? $veiculo['cor'] ?? '';
                                 ?>
                                 <?php foreach ($cores as $nome => $hex): ?>
@@ -270,44 +247,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Número de Portas -->
-                    <div class="col-md-3">
-                        <label for="numero_portas" class="form-label">Portas <span class="text-danger">*</span></label>
-                        <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione</option>
-                            <option value="2" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '2') ?>>2 portas (cupê)</option>
-                            <option value="3" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '3') ?>>3 portas (hatch 2 portas)</option>
-                            <option value="4" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '4') ?>>4 portas (sedã)</option>
-                            <option value="5" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', '5') ?>>5 portas (hatch 4 portas + mala)</option>
-                        </select>
-                        <?php if (isset($errors['numero_portas'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_portas']) ?></div>
-                        <?php endif; ?>
-                    </div>
+                    <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
+                        <option value="">Selecione</option>
+                        <?php foreach (portas_list() as $valor => $label): ?>
+                            <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
+                                <?= htmlspecialchars($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
 
                     <!-- Número de Assentos -->
-                    <div class="col-md-3">
-                        <label for="numero_assentos" class="form-label">Assentos <span class="text-danger">*</span></label>
-                        <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione</option>
-                            <option value="2" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '2') ?>>2 assentos</option>
-                            <option value="3" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '3') ?>>3 assentos</option>
-                            <option value="4" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '4') ?>>4 assentos</option>
-                            <option value="5" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '5') ?>>5 assentos</option>
-                            <option value="6" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '6') ?>>6 assentos</option>
-                            <option value="7" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '7') ?>>7 assentos</option>
-                            <option value="8" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '8') ?>>8 assentos</option>
-                            <option value="9" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '9') ?>>9 assentos</option>
-                            <option value="10" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '10') ?>>10 assentos</option>
-                            <option value="11" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '11') ?>>11 assentos</option>
-                            <option value="12" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '12') ?>>12 assentos</option>
-                            <option value="13" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '13') ?>>13 assentos</option>
-                            <option value="14" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '14') ?>>14 assentos</option>
-                            <option value="15" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', '15') ?>>15 assentos</option>
-                        </select>
-                        <?php if (isset($errors['numero_assentos'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
-                        <?php endif; ?>
-                    </div>
+                    <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
+                        <option value="">Selecione</option>
+                        <?php foreach (assentos_list() as $valor): ?>
+                            <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
+                                <?= $valor ?> assentos
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
 
                     <!-- GNV Instalado (apenas para combustão) -->
                     <div class="col-md-6 gnv-field" style="display: none;">
@@ -327,8 +284,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="tipo_sistema" class="form-label">Tipo de Sistema <span class="text-danger">*</span></label>
                                 <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <option value="GNC" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', 'GNC') ?>>GNC (Gás Natural Comprimido)</option>
-                                    <option value="GLP" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', 'GLP') ?>>GLP (Gás Liquefeito de Petróleo)</option>
+                                    <?php foreach (gnv_sistemas_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <?php if (isset($errors['tipo_sistema'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_sistema']) ?></div>
@@ -340,10 +300,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="geracao_kit" class="form-label">Geração do Kit <span class="text-danger">*</span></label>
                                 <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <option value="3ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '3ª') ?>>3ª Geração</option>
-                                    <option value="4ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '4ª') ?>>4ª Geração</option>
-                                    <option value="5ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '5ª') ?>>5ª Geração</option>
-                                    <option value="6ª" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', '6ª') ?>>6ª Geração</option>
+                                    <?php foreach (gnv_geracoes_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <?php if (isset($errors['geracao_kit'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['geracao_kit']) ?></div>
@@ -394,19 +355,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-3">
                                 <label for="capacidade_cilindro_m3" class="form-label">Capacidade <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>">
-                                        <option value="">Selecione</option>
-                                        <option value="7.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '7.5') ?>>7,5 m³</option>
-                                        <option value="9.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '9.5') ?>>9,5 m³</option>
-                                        <option value="10" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '10') ?>>10 m³</option>
-                                        <option value="15" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '15') ?>>15 m³</option>
-                                        <option value="17" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '17') ?>>17 m³</option>
-                                        <option value="21" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '21') ?>>21 m³</option>
-                                        <option value="24.5" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '24.5') ?>>24,5 m³</option>
-                                        <option value="25" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', '25') ?>>25 m³</option>
-                                        <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                    </select>
-                                    
+                                <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <?php foreach (gnv_capacidades_list() as $valor): ?>
+                                        <option value="<?= $valor ?>" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', $valor) ?>>
+                                            <?= number_format($valor, 1, ',', '') ?> m³
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                </select>                                    
                                 </div>
                                 <?php if (isset($errors['capacidade_cilindro_m3'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_cilindro_m3']) ?></div>
@@ -441,13 +398,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="material_cilindro" class="form-label">Material do Cilindro</label>
                                 <select name="material_cilindro" id="material_cilindro" class="form-select <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <option value="Aço" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Aço') ?>>Aço</option>
-                                    <option value="Alumínio" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Alumínio') ?>>Alumínio</option>
-                                    <option value="Compósito (Fibra de Carbono)" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Compósito (Fibra de Carbono)') ?>>Compósito (Fibra de Carbono)</option>
-                                    <option value="Compósito (Fibra de Vidro)" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'Compósito (Fibra de Vidro)') ?>>Compósito (Fibra de Vidro)</option>
+                                    <?php foreach (gnv_materiais_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>
-                                <?php if (isset($errors['material_cilindro'])): ?>
+                                </select>                                <?php if (isset($errors['material_cilindro'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['material_cilindro']) ?></div>
                                 <?php endif; ?>
 
@@ -463,10 +420,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="localizacao_cilindro" class="form-label">Localização</label>
                                 <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <option value="Porta-malas" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Porta-malas') ?>>Porta-malas</option>
-                                    <option value="Sob o assoalho (Por baixo do carro)" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Sob o assoalho (Por baixo do carro)') ?>>Sob o assoalho (Por baixo do carro)</option>
-                                    <option value="Atrás dos bancos" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Atrás dos bancos') ?>>Atrás dos bancos</option>
-                                    <option value="Sobre o assoalho (área de carga)" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'Sobre o assoalho (área de carga)') ?>>Sobre o assoalho (área de carga)</option>
+                                    <?php foreach (gnv_localizacoes_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
                                 <?php if (isset($errors['localizacao_cilindro'])): ?>
@@ -716,10 +674,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="combustivel" class="form-label">Combustível <span class="text-danger">*</span></label>
                             <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="alcool" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'alcool') ?>>Álcool</option>
-                                <option value="diesel" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'diesel') ?>>Diesel</option>
-                                <option value="flex" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'flex') ?>>Flex</option>
-                                <option value="gasolina" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'gasolina') ?>>Gasolina</option>
+                                <?php foreach (combustiveis_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['combustivel'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
@@ -787,10 +746,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="tracao_tipo" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
                             <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="dianteira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'dianteira') ?>>Dianteira</option>
-                                <option value="traseira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'traseira') ?>>Traseira</option>
-                                <option value="integral" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'integral') ?>>Integral</option>
-                                <option value="4x4" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', '4x4') ?>>4x4</option>
+                                <?php foreach (tracao_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['tracao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
@@ -802,11 +762,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="transmissao_tipo" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
                             <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="Manual" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Manual') ?>>Manual (MT)</option>
-                                <option value="Automática" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática') ?>>Automática Convencional (AT)</option>
-                                <option value="Automática CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática CVT') ?>>Automática CVT</option>
-                                <option value="Automatizada" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automatizada') ?>>Automatizada (AMT)</option>
-                                <option value="Dupla Embreagem" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Dupla Embreagem') ?>>Dupla Embreagem (DCT)</option>
+                                <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
@@ -818,13 +778,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="numero_marchas" class="form-label">Número de Marchas</label>
                             <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="4" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '4') ?>>4 marchas</option>
-                                <option value="5" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '5') ?>>5 marchas</option>
-                                <option value="6" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '6') ?>>6 marchas</option>
-                                <option value="7" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '7') ?>>7 marchas</option>
-                                <option value="8" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '8') ?>>8 marchas</option>
-                                <option value="9" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '9') ?>>9 marchas</option>
-                                <option value="10" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '10') ?>>10 marchas</option>
+                                <?php foreach (marchas_list() as $valor): ?>
+                                    <option value="<?= $valor ?>" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', $valor) ?>>
+                                        <?= $valor ?> marchas
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['numero_marchas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
@@ -1055,9 +1013,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="tracao_tipo_eletrico" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
                             <select name="tracao_tipo" id="tracao_tipo_eletrico" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="dianteira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'dianteira') ?>>Dianteira</option>
-                                <option value="traseira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'traseira') ?>>Traseira</option>
-                                <option value="integral" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'integral') ?>>Integral</option>
+                                <?php foreach (tracao_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['tracao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
@@ -1069,8 +1029,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="transmissao_tipo_eletrico" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
                             <select name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="Relação Única" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Relação Única') ?>>Relação Única (Fixed-Ratio)</option>
-                                <option value="Duas Velocidades" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Duas Velocidades') ?>>Duas Velocidades (2-Speed)</option>
+                                <?php foreach (transmissoes_list()['eletrico'] as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
@@ -1246,11 +1209,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
                             <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="CCS2 (Combo 2)" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'CCS2 (Combo 2)') ?>>CCS2 (Combo 2) – Padrão Brasil/Europa</option>
-                                <option value="CCS1 (Combo 1)" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'CCS1 (Combo 1)') ?>>CCS1 (Combo 1) – Padrão América do Norte</option>
-                                <option value="NACS" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'NACS') ?>>NACS – Padrão Tesla (América do Norte)</option>
-                                <option value="CHAdeMO" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'CHAdeMO') ?>>CHAdeMO – Padrão Japonês (Nissan, Mitsubishi)</option>
-                                <option value="GB/T" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'GB/T') ?>>GB/T – Padrão Chinês</option>
+                                <?php foreach (conectores_dc_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
                             <?php if (isset($errors['tipo_conector_dc'])): ?>
@@ -1285,12 +1248,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
                             <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="Tipo 2 (Mennekes)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 2 (Mennekes)') ?>>Tipo 2 (Mennekes) – Padrão Brasil/Europa</option>
-                                <option value="Tipo 1 (SAE J1772)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 1 (SAE J1772)') ?>>Tipo 1 (SAE J1772) – Padrão América do Norte/Japão</option>
-                                <option value="NACS" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'NACS') ?>>NACS – Padrão Tesla (América do Norte)</option>
-                                <option value="GB/T" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'GB/T') ?>>GB/T – Padrão Chinês</option>
-                                <option value="Tipo 3 (Scame)" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Tipo 3 (Scame)') ?>>Tipo 3 (Scame) – Padrão Europeu (França/Itália)</option>
-                                <option value="Schuko" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'Schuko') ?>>Schuko – Tomada doméstica (carga lenta)</option>
+                                <?php foreach (conectores_ac_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
                             <?php if (isset($errors['tipo_conector_ac'])): ?>
@@ -1335,9 +1297,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="tipo_hibrido" class="form-label">Tipo de Híbrido <span class="text-danger">*</span></label>
                             <select name="tipo" id="tipo_hibrido" class="form-select <?= isset($errors['tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="hev" <?= selected($old['tipo'] ?? $complemento['tipo'] ?? '', 'hev') ?>>HEV</option>
-                                <option value="mhev" <?= selected($old['tipo'] ?? $complemento['tipo'] ?? '', 'mhev') ?>>MHEV</option>
-                                <option value="phev" <?= selected($old['tipo'] ?? $complemento['tipo'] ?? '', 'phev') ?>>PHEV</option>
+                                <?php foreach (tipos_hibrido_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['tipo'] ?? $complemento['tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tipo']) ?></div>
@@ -1368,10 +1332,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="combustivel_hibrido" class="form-label">Combustível <span class="text-danger">*</span></label>
                             <select name="combustivel" id="combustivel_hibrido" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="alcool" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'alcool') ?>>Álcool</option>
-                                <option value="diesel" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'diesel') ?>>Diesel</option>
-                                <option value="flex" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'flex') ?>>Flex</option>
-                                <option value="gasolina" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', 'gasolina') ?>>Gasolina</option>
+                                <?php foreach (combustiveis_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['combustivel'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
@@ -1530,11 +1495,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="transmissao_tipo_hibrido" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
                             <select name="transmissao_tipo" id="transmissao_tipo_hibrido" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="e-CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'e-CVT') ?>>e-CVT</option>
-                                <option value="Automática" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Automática') ?>>Automática Convencional (AT)</option>
-                                <option value="Dupla Embreagem" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Dupla Embreagem') ?>>Dupla Embreagem (DCT)</option>
-                                <option value="CVT" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'CVT') ?>>CVT</option>
-                                <option value="Manual" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', 'Manual') ?>>Manual (MT)</option>
+                                <?php foreach (transmissoes_list()['hibrido'] as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
@@ -1546,13 +1511,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="numero_marchas_hibrido" class="form-label">Número de Marchas</label>
                             <select name="numero_marchas" id="numero_marchas_hibrido" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="4" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '4') ?>>4 marchas</option>
-                                <option value="5" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '5') ?>>5 marchas</option>
-                                <option value="6" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '6') ?>>6 marchas</option>
-                                <option value="7" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '7') ?>>7 marchas</option>
-                                <option value="8" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '8') ?>>8 marchas</option>
-                                <option value="9" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '9') ?>>9 marchas</option>
-                                <option value="10" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', '10') ?>>10 marchas</option>
+                                <?php foreach (marchas_list() as $valor): ?>
+                                    <option value="<?= $valor ?>" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', $valor) ?>>
+                                        <?= $valor ?> marchas
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (isset($errors['numero_marchas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
@@ -1585,15 +1548,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
                             <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
-                                <option value="NiMH (Níquel-Hidreto Metálico)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NiMH (Níquel-Hidreto Metálico)') ?>>NiMH (Níquel-Hidreto Metálico)</option>
-                                <option value="NMC (Níquel-Manganês-Cobalto)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NMC (Níquel-Manganês-Cobalto)') ?>>NMC (Níquel-Manganês-Cobalto)</option>
-                                <option value="NCA (Níquel-Cobalto-Alumínio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'NCA (Níquel-Cobalto-Alumínio)') ?>>NCA (Níquel-Cobalto-Alumínio)</option>
-                                <option value="LFP (Fosfato de Ferro e Lítio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LFP (Fosfato de Ferro e Lítio)') ?>>LFP (Fosfato de Ferro e Lítio)</option>
-                                <option value="LMO (Óxido de Lítio e Manganês)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LMO (Óxido de Lítio e Manganês)') ?>>LMO (Óxido de Lítio e Manganês)</option>
-                                <option value="LTO (Óxido de Lítio e Titânio)" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'LTO (Óxido de Lítio e Titânio)') ?>>LTO (Óxido de Lítio e Titânio)</option>
-                                <option value="Bateria 48V" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Bateria 48V') ?>>Bateria 48V</option>
-                                <option value="Estado Sólido" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Estado Sólido') ?>>Estado Sólido</option>
-                                <option value="Supercapacitores" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'Supercapacitores') ?>>Supercapacitores</option>
+                                <?php foreach (baterias_tipos_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
                             <?php if (isset($errors['bateria_tipo'])): ?>
@@ -1714,14 +1673,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Tipo de Conector AC -->
                                 <div class="col-md-3">
                                     <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                                    <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" 
-                                            class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
+                                    <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                         <option value="">Selecione</option>
-                                        <option value="Tipo 2 (Mennekes)" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'Tipo 2 (Mennekes)') ?>>Tipo 2 (Mennekes) – Padrão Brasil/Europa</option>
-                                        <option value="Tipo 1 (SAE J1772)" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'Tipo 1 (SAE J1772)') ?>>Tipo 1 (SAE J1772) – Padrão América do Norte/Japão</option>
-                                        <option value="NACS" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'NACS') ?>>NACS – Padrão Tesla (América do Norte)</option>
-                                        <option value="GB/T" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'GB/T') ?>>GB/T – Padrão Chinês</option>
-                                        <option value="CHAdeMO" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'CHAdeMO') ?>>CHAdeMO – Padrão Japonês</option>
+                                        <?php foreach (conectores_ac_list() as $value => $label): ?>
+                                            <option value="<?= $value ?>" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', $value) ?>>
+                                                <?= htmlspecialchars($label) ?>
+                                            </option>
+                                        <?php endforeach; ?>
                                         <option value="outro" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                     </select>
                                     <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
@@ -1849,7 +1807,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_etanol_kml']) ?></div>
                                     <?php endif; ?>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -1883,16 +1841,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="mb-3">
                         <label for="modal_status_estoque" class="form-label">Status de Estoque</label>
                         <select id="modal_status_estoque" class="form-select">
-                            <option value="disponivel">Disponível</option>
-                            <option value="vendido">Vendido</option>
-                            <option value="reservado">Reservado</option>
+                            <?php foreach (status_estoque_list() as $value => $label): ?>
+                                <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="modal_status_vitrine" class="form-label">Vitrine</label>
                         <select id="modal_status_vitrine" class="form-select">
-                            <option value="inativo">Inativo</option>
-                            <option value="ativo">Ativo</option>
+                            <?php foreach (status_vitrine_list() as $value => $label): ?>
+                                <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
