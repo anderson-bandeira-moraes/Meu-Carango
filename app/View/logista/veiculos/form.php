@@ -1630,11 +1630,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia Elétrica (PBEV) -->
                         <div id="autonomia_eletrica_container" class="col-md-4">
-                            <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica (PBEV) (km)</label>
-                            <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" 
-                                   class="form-control <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['autonomia_eletrica_pbev_km'] ?? $complemento['autonomia_eletrica_pbev_km'] ?? '') ?>" 
-                                   placeholder="Ex: 50" min="0">
+                            <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica <span class="text-muted">(PBEV)</span> <span class="text-muted">(km)</span></label>
+                            <div class="input-group">
+                                <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" 
+                                       class="form-control <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_eletrica_pbev_km'] ?? $complemento['autonomia_eletrica_pbev_km'] ?? '') ?>" 
+                                       placeholder="Ex: 50" min="0">
+                                <span class="input-group-text">km</span>
+                            </div>
                             <?php if (isset($errors['autonomia_eletrica_pbev_km'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_eletrica_pbev_km']) ?></div>
                             <?php endif; ?>
@@ -1642,11 +1645,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia Combinada -->
                         <div id="autonomia_combinada_container" class="col-md-4">
-                            <label for="autonomia_combinada_km" class="form-label">Autonomia Combinada (km)</label>
-                            <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" 
-                                   class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" 
-                                   placeholder="Ex: 600" min="0">
+                            <label for="autonomia_combinada_km" class="form-label">Autonomia Combinada <span class="text-muted">(km)</span></label>
+                            <div class="input-group">
+                                <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" 
+                                       class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" 
+                                       placeholder="Ex: 600" min="0">
+                                <span class="input-group-text">km</span>
+                            </div>
                             <?php if (isset($errors['autonomia_combinada_km'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_combinada_km']) ?></div>
                             <?php endif; ?>

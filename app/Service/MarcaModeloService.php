@@ -73,6 +73,8 @@ class MarcaModeloService
      */
     public function criarMarca(string $nome, ?string $logoPath = null): int|false
     {
+        $nome = $this->normalizarNome($nome);
+        
         try {
             // 1. Valida se o nome já existe
             if ($this->validarNomeMarca($nome)) {
@@ -192,6 +194,8 @@ class MarcaModeloService
      */
     public function criarModelo(int $marcaId, string $nome): int|false
     {
+        $nome = $this->normalizarNome($nome);
+
         try {
             // 1. Valida se a marca existe
             $marca = $this->marcaRepo->findById($marcaId);
@@ -319,5 +323,26 @@ class MarcaModeloService
         }
         $marca['logo_url'] = logo_url($marca['logo'] ?? null);
         return $marca;
+    }
+
+    /**
+     * Normaliza um nome para capitalização padrão, preservando siglas.
+     *
+     * - Se a string estiver toda em maiúsculas, mantém como está (sigla).
+     * - Caso contrário, aplica ucwords(mb_strtolower()) para capitalizar corretamente.
+     *
+     * @param string $nome
+     * @return string
+     */
+    private function normalizarNome(string $nome): string
+    {
+        // Remove espaços extras e normaliza espaços entre palavras
+        $nome = trim(preg_replace('/\s+/', ' ', $nome));
+        // Se estiver toda em maiúsculas, mantém (sigla)
+        if (mb_strtoupper($nome) === $nome) {
+            return $nome;
+        }
+        // Caso contrário, capitaliza a primeira letra de cada palavra e converte o restante para minúsculas
+        return ucwords(mb_strtolower($nome));
     }
 }
