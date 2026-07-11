@@ -30,10 +30,9 @@ class VeiculoGNVRequest extends FormRequest
             'data_inspecao'            => 'required|date',
             'data_validade_cilindro'   => 'required|date',
 
-            // Booleanos (selo, certificado, registro)
-            'selo_inmetro'     => 'required|boolean',
-            'certificado_csv'  => 'required|boolean',
-            'registro_detran'  => 'required|boolean',
+            // Documentação (CSV e Selo GNV)
+            'possui_csv'               => 'nullable|boolean',
+            'possui_selo_gnv'          => 'nullable|boolean',
 
             // Cilindro
             'capacidade_cilindro_m3' => 'required|numeric|min:0',
@@ -81,13 +80,9 @@ class VeiculoGNVRequest extends FormRequest
             'data_validade_cilindro.required' => 'A data de validade do cilindro é obrigatória.',
             'data_validade_cilindro.date'     => 'A data de validade do cilindro deve ser uma data válida.',
 
-            // Booleanos
-            'selo_inmetro.required' => 'O campo selo Inmetro é obrigatório.',
-            'selo_inmetro.boolean'  => 'O selo Inmetro deve ser verdadeiro ou falso.',
-            'certificado_csv.required' => 'O campo certificado CSV é obrigatório.',
-            'certificado_csv.boolean'  => 'O certificado CSV deve ser verdadeiro ou falso.',
-            'registro_detran.required' => 'O campo registro no Detran é obrigatório.',
-            'registro_detran.boolean'  => 'O registro no Detran deve ser verdadeiro ou falso.',
+            // Documentação
+            'possui_csv.boolean' => 'O campo CSV deve ser verdadeiro ou falso.',
+            'possui_selo_gnv.boolean' => 'O campo selo GNV deve ser verdadeiro ou falso.',
 
             // Cilindro
             'capacidade_cilindro_m3.required' => 'A capacidade do cilindro em m³ é obrigatória.',
@@ -131,7 +126,7 @@ class VeiculoGNVRequest extends FormRequest
         $data = parent::sanitize($data);
 
         // Converte booleanos para 0 ou 1
-        $boolFields = ['selo_inmetro', 'certificado_csv', 'registro_detran'];
+        $boolFields = ['possui_csv', 'possui_selo_gnv'];
         foreach ($boolFields as $field) {
             if (isset($data[$field])) {
                 $data[$field] = (int) (bool) $data[$field];
@@ -193,7 +188,8 @@ class VeiculoGNVRequest extends FormRequest
             'data_instalacao'            => $validated['data_instalacao'] ?? null,
             'data_inspecao'              => $validated['data_inspecao'] ?? null,
             'data_validade_cilindro'     => $validated['data_validade_cilindro'] ?? null,
-            'selo_inmetro'               => $validated['selo_inmetro'] ?? 0,
+            'possui_csv'                 => $validated['possui_csv'] ?? 0,
+            'possui_selo_gnv'            => $validated['possui_selo_gnv'] ?? 0,
             'capacidade_cilindro_m3'     => $validated['capacidade_cilindro_m3'] ?? null,
             'quantidade_cilindros'       => $validated['quantidade_cilindros'] ?? null,
             'material_cilindro'          => $validated['material_cilindro'] ?? null,
@@ -204,8 +200,6 @@ class VeiculoGNVRequest extends FormRequest
             'autonomia_media_km'         => $validated['autonomia_media_km'] ?? null,
             'autonomia_cidade_km'        => $validated['autonomia_cidade_km'] ?? null,
             'autonomia_estrada_km'       => $validated['autonomia_estrada_km'] ?? null,
-            'certificado_csv'            => $validated['certificado_csv'] ?? 0,
-            'registro_detran'            => $validated['registro_detran'] ?? 0,
             'instaladora_certificada'    => $validated['instaladora_certificada'] ?? null,
             'observacoes'                => $validated['observacoes'] ?? null,
         ];
