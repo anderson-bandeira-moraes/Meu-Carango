@@ -534,31 +534,33 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Booleanos -->
-                            <div class="col-md-3">
-                                <div class="form-check mt-4">
-                                    <input type="hidden" name="selo_inmetro" value="0">
-                                    <input type="checkbox" name="selo_inmetro" id="selo_inmetro" class="form-check-input" value="1"
-                                           <?= ($old['selo_inmetro'] ?? $complemento['selo_inmetro'] ?? 0) ? 'checked' : '' ?>>
-                                    <label for="selo_inmetro" class="form-check-label">Possui selo Inmetro?</label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-check mt-4">
-                                    <input type="hidden" name="certificado_csv" value="0">
-                                    <input type="checkbox" name="certificado_csv" id="certificado_csv" class="form-check-input" value="1"
-                                           <?= ($old['certificado_csv'] ?? $complemento['certificado_csv'] ?? 0) ? 'checked' : '' ?>>
-                                    <label for="certificado_csv" class="form-check-label">Possui certificado CSV?</label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-check mt-4">
-                                    <input type="hidden" name="registro_detran" value="0">
-                                    <input type="checkbox" name="registro_detran" id="registro_detran" class="form-check-input" value="1"
-                                           <?= ($old['registro_detran'] ?? $complemento['registro_detran'] ?? 0) ? 'checked' : '' ?>>
-                                    <label for="registro_detran" class="form-check-label">Registrado no Detran?</label>
+                            <!-- Documentação GNV -->
+                            <div class="col-12">
+                                <hr>
+                                <h6 class="text-secondary"><i class="bi bi-file-earmark-text me-2"></i>Documentação do Kit GNV</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-2">
+                                            <input type="hidden" name="possui_csv" value="0">
+                                            <input type="checkbox" name="possui_csv" id="possui_csv" class="form-check-input" value="1"
+                                                   <?= ($old['possui_csv'] ?? $complemento['possui_csv'] ?? 0) ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="possui_csv">
+                                                <strong>Certificado de Segurança Veicular (CSV)</strong>
+                                                <br><small class="text-muted">Laudo do INMETRO que aprova a instalação</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-2">
+                                            <input type="hidden" name="possui_selo_gnv" value="0">
+                                            <input type="checkbox" name="possui_selo_gnv" id="possui_selo_gnv" class="form-check-input" value="1"
+                                                   <?= ($old['possui_selo_gnv'] ?? $complemento['possui_selo_gnv'] ?? 0) ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="possui_selo_gnv">
+                                                <strong>Selo GNV atualizado (válido)</strong>
+                                                <br><small class="text-muted">Renovação anual em dia</small>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
