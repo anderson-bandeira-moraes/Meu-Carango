@@ -586,6 +586,62 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
                 </div>
 
+                <!-- ========== OPCIONAIS ========== -->
+                <div class="card shadow-sm my-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-check2-square me-2"></i>Opcionais</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (empty($todos_opcionais)): ?>
+                            <p class="text-muted">Nenhum opcional cadastrado.</p>
+                        <?php else: ?>
+                            <div class="accordion" id="accordionOpcionais">
+                                <?php $i = 0; ?>
+                                <?php foreach ($todos_opcionais as $categoria => $opcionais): ?>
+                                    <?php $id = 'collapse_' . $i; ?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading_<?= $i ?>">
+                                            <button class="accordion-button collapsed" 
+                                                    type="button" 
+                                                    data-bs-toggle="collapse" 
+                                                    data-bs-target="#<?= $id ?>" 
+                                                    aria-expanded="false" 
+                                                    aria-controls="<?= $id ?>">
+                                                <?= htmlspecialchars($categoria) ?>
+                                            </button>
+                                        </h2>
+                                        <div id="<?= $id ?>" 
+                                             class="accordion-collapse collapse" 
+                                             aria-labelledby="heading_<?= $i ?>" 
+                                             data-bs-parent="#accordionOpcionais">
+                                            <div class="accordion-body">
+                                                <div class="row g-2">
+                                                    <?php foreach ($opcionais as $opcional): ?>
+                                                        <div class="col-md-4 col-lg-3">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" 
+                                                                       name="opcionaisIds[]" 
+                                                                       value="<?= $opcional['id'] ?>" 
+                                                                       class="form-check-input" 
+                                                                       id="opcional_<?= $opcional['id'] ?>"
+                                                                       <?= (in_array($opcional['id'], $opcionais_selecionados ?? [])) ? 'checked' : '' ?>>
+                                                                <label class="form-check-label" for="opcional_<?= $opcional['id'] ?>">
+                                                                    <?= htmlspecialchars($opcional['nome']) ?>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <!-- ===== DIMENSÕES (opcionais) ===== -->
                 <hr class="my-4">
                 <h6 class="mb-3"><i class="bi bi-rulers me-2"></i>Dimensões e Capacidades</h6>
@@ -1034,7 +1090,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 </div>
             </div>
 
-            <!-- Elétrico -->
+            <!-- ELÉTRICO -->
             <div id="campos-eletrico" class="card shadow-sm mb-4" style="display: none;">
                 <div class="card-header bg-light">
                     <h5 class="mb-0"><i class="bi bi-battery-charging me-2"></i>Dados do Veículo Elétrico</h5>
@@ -1318,7 +1374,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 </div>
             </div>
 
-            <!-- Híbrido -->
+            <!-- HÍBRIDO -->
             <div id="campos-hibrido" class="card shadow-sm mb-4" style="display: none;">
                 <div class="card-header bg-light">
                     <h5 class="mb-0"><i class="bi bi-ev-front me-2"></i>Dados do Veículo Híbrido</h5>
