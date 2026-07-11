@@ -34,7 +34,7 @@ class VeiculoGNVRepository
                 data_instalacao, data_inspecao, data_validade_cilindro,
                 possui_csv, possui_selo_gnv,
                 capacidade_cilindro_m3, quantidade_cilindros,
-                material_cilindro, cilindro_norma, localizacao_cilindro,
+                material_cilindro, localizacao_cilindro,
                 consumo_cidade_m3km, consumo_estrada_m3km,
                 autonomia_media_km, autonomia_cidade_km, autonomia_estrada_km,
                 instaladora_certificada, observacoes
@@ -43,7 +43,7 @@ class VeiculoGNVRepository
                 :data_instalacao, :data_inspecao, :data_validade_cilindro,
                 :possui_csv, :possui_selo_gnv,
                 :capacidade_cilindro_m3, :quantidade_cilindros,
-                :material_cilindro, :cilindro_norma, :localizacao_cilindro,
+                :material_cilindro, :localizacao_cilindro,
                 :consumo_cidade_m3km, :consumo_estrada_m3km,
                 :autonomia_media_km, :autonomia_cidade_km, :autonomia_estrada_km,
                 :instaladora_certificada, :observacoes
@@ -59,7 +59,6 @@ class VeiculoGNVRepository
                 capacidade_cilindro_m3 = VALUES(capacidade_cilindro_m3),
                 quantidade_cilindros = VALUES(quantidade_cilindros),
                 material_cilindro = VALUES(material_cilindro),
-                cilindro_norma = VALUES(cilindro_norma),
                 localizacao_cilindro = VALUES(localizacao_cilindro),
                 consumo_cidade_m3km = VALUES(consumo_cidade_m3km),
                 consumo_estrada_m3km = VALUES(consumo_estrada_m3km),
@@ -163,7 +162,6 @@ class VeiculoGNVRepository
             ':capacidade_cilindro_m3'     => $dados['capacidade_cilindro_m3'] ?? null,
             ':quantidade_cilindros'       => $dados['quantidade_cilindros'] ?? null,
             ':material_cilindro'          => $dados['material_cilindro'] ?? null,
-            ':cilindro_norma'             => $dados['cilindro_norma'] ?? null,
             ':localizacao_cilindro'       => $dados['localizacao_cilindro'] ?? null,
             ':consumo_cidade_m3km'        => $dados['consumo_cidade_m3km'] ?? null,
             ':consumo_estrada_m3km'       => $dados['consumo_estrada_m3km'] ?? null,

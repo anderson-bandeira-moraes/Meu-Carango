@@ -38,7 +38,6 @@ class VeiculoGNVRequest extends FormRequest
             'capacidade_cilindro_m3' => 'required|numeric|min:0',
             'quantidade_cilindros'   => 'required|integer|min:0',
             'material_cilindro'      => 'nullable|max:20',
-            'cilindro_norma'         => 'nullable|max:20',
             'localizacao_cilindro'   => 'nullable|max:30',
 
             // Consumo (opcionais)
@@ -92,7 +91,6 @@ class VeiculoGNVRequest extends FormRequest
             'quantidade_cilindros.integer'    => 'A quantidade de cilindros deve ser um número inteiro.',
             'quantidade_cilindros.min'        => 'A quantidade de cilindros não pode ser negativa.',
             'material_cilindro.max'  => 'O material do cilindro deve ter no máximo :max caracteres.',
-            'cilindro_norma.max'     => 'A norma do cilindro deve ter no máximo :max caracteres.',
             'localizacao_cilindro.max' => 'A localização do cilindro deve ter no máximo :max caracteres.',
 
             // Consumo
@@ -193,7 +191,6 @@ class VeiculoGNVRequest extends FormRequest
             'capacidade_cilindro_m3'     => $validated['capacidade_cilindro_m3'] ?? null,
             'quantidade_cilindros'       => $validated['quantidade_cilindros'] ?? null,
             'material_cilindro'          => $validated['material_cilindro'] ?? null,
-            'cilindro_norma'             => $validated['cilindro_norma'] ?? null,
             'localizacao_cilindro'       => $validated['localizacao_cilindro'] ?? null,
             'consumo_cidade_m3km'        => $validated['consumo_cidade_m3km'] ?? null,
             'consumo_estrada_m3km'       => $validated['consumo_estrada_m3km'] ?? null,
