@@ -32,22 +32,20 @@ class VeiculoGNVRepository
             $sql = 'INSERT INTO veiculo_gnv (
                 veiculo_id, tipo_sistema, geracao_kit, marca_kit,
                 data_instalacao, data_inspecao, data_validade_cilindro,
-                selo_inmetro,
+                possui_csv, possui_selo_gnv,
                 capacidade_cilindro_m3, quantidade_cilindros,
                 material_cilindro, cilindro_norma, localizacao_cilindro,
                 consumo_cidade_m3km, consumo_estrada_m3km,
                 autonomia_media_km, autonomia_cidade_km, autonomia_estrada_km,
-                certificado_csv, registro_detran,
                 instaladora_certificada, observacoes
             ) VALUES (
                 :veiculo_id, :tipo_sistema, :geracao_kit, :marca_kit,
                 :data_instalacao, :data_inspecao, :data_validade_cilindro,
-                :selo_inmetro,
+                :possui_csv, :possui_selo_gnv,
                 :capacidade_cilindro_m3, :quantidade_cilindros,
                 :material_cilindro, :cilindro_norma, :localizacao_cilindro,
                 :consumo_cidade_m3km, :consumo_estrada_m3km,
                 :autonomia_media_km, :autonomia_cidade_km, :autonomia_estrada_km,
-                :certificado_csv, :registro_detran,
                 :instaladora_certificada, :observacoes
             ) ON DUPLICATE KEY UPDATE
                 tipo_sistema = VALUES(tipo_sistema),
@@ -56,7 +54,8 @@ class VeiculoGNVRepository
                 data_instalacao = VALUES(data_instalacao),
                 data_inspecao = VALUES(data_inspecao),
                 data_validade_cilindro = VALUES(data_validade_cilindro),
-                selo_inmetro = VALUES(selo_inmetro),
+                possui_csv = VALUES(possui_csv),
+                possui_selo_gnv = VALUES(possui_selo_gnv),
                 capacidade_cilindro_m3 = VALUES(capacidade_cilindro_m3),
                 quantidade_cilindros = VALUES(quantidade_cilindros),
                 material_cilindro = VALUES(material_cilindro),
@@ -67,8 +66,6 @@ class VeiculoGNVRepository
                 autonomia_media_km = VALUES(autonomia_media_km),
                 autonomia_cidade_km = VALUES(autonomia_cidade_km),
                 autonomia_estrada_km = VALUES(autonomia_estrada_km),
-                certificado_csv = VALUES(certificado_csv),
-                registro_detran = VALUES(registro_detran),
                 instaladora_certificada = VALUES(instaladora_certificada),
                 observacoes = VALUES(observacoes)';
 
@@ -161,7 +158,8 @@ class VeiculoGNVRepository
             ':data_instalacao'            => $dados['data_instalacao'] ?? null,
             ':data_inspecao'              => $dados['data_inspecao'] ?? null,
             ':data_validade_cilindro'     => $dados['data_validade_cilindro'] ?? null,
-            ':selo_inmetro'               => $dados['selo_inmetro'] ?? 0,
+            ':possui_csv'                 => $dados['possui_csv'] ?? 0,
+            ':possui_selo_gnv'            => $dados['possui_selo_gnv'] ?? 0,
             ':capacidade_cilindro_m3'     => $dados['capacidade_cilindro_m3'] ?? null,
             ':quantidade_cilindros'       => $dados['quantidade_cilindros'] ?? null,
             ':material_cilindro'          => $dados['material_cilindro'] ?? null,
@@ -172,10 +170,9 @@ class VeiculoGNVRepository
             ':autonomia_media_km'         => $dados['autonomia_media_km'] ?? null,
             ':autonomia_cidade_km'        => $dados['autonomia_cidade_km'] ?? null,
             ':autonomia_estrada_km'       => $dados['autonomia_estrada_km'] ?? null,
-            ':certificado_csv'            => $dados['certificado_csv'] ?? 0,
-            ':registro_detran'            => $dados['registro_detran'] ?? 0,
             ':instaladora_certificada'    => $dados['instaladora_certificada'] ?? null,
             ':observacoes'                => $dados['observacoes'] ?? null,
         ];
     }
+
 }
