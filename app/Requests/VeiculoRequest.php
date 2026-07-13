@@ -198,6 +198,21 @@ class VeiculoRequest extends FormRequest
             $data['status_vitrine'] = 'inativo';
         }
 
+        // Converte strings vazias para null em campos numéricos opcionais
+        $numericOptionalFields = [
+            'comprimento_mm', 'largura_mm', 'altura_mm',
+            'distancia_entre_eixos_mm', 'peso_ordem_marcha_kg',
+            'volume_porta_malas_l', 'volume_cacamba_l',
+            'carga_util_kg', 'capacidade_reboque_kg',
+            'numero_portas', 'numero_assentos'
+        ];
+
+        foreach ($numericOptionalFields as $field) {
+            if (isset($data[$field]) && $data[$field] === '') {
+                $data[$field] = null;
+            }
+        }
+
         return $data;
     }
 
