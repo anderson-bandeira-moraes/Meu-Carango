@@ -228,6 +228,10 @@ class VeiculoRequest extends FormRequest
         $modeloId = $data['modelo_id'] ?? null;
         $anoModelo = (int) ($data['ano_modelo'] ?? 0);
 
+        // Converte para inteiro antes de usar
+        $marcaId = (int) $marcaId;
+        $modeloId = (int) $modeloId;
+
         if (!$marcaId || !$modeloId || !$anoModelo) {
             // Isso não deve ocorrer porque são obrigatórios, mas mantemos segurança
             return true; // não geramos erro aqui, pois os campos já foram validados

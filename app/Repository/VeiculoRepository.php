@@ -577,4 +577,26 @@ class VeiculoRepository
         }
     }
 
+    /**
+     * Busca um veículo pelo slug (apenas registros não deletados).
+     *
+     * @param string $slug
+     * @return array|null
+     */
+    public function findBySlug(string $slug): ?array
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM veiculos WHERE slug = ? AND deleted_at IS NULL');
+            $stmt->execute([$slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao buscar veículo por slug', [
+                'slug'  => $slug,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
 }
