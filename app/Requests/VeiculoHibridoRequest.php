@@ -285,39 +285,7 @@ class VeiculoHibridoRequest extends FormRequest
      */
     public function getDadosHibridos(): array
     {
-        $validated = $this->validated();
-
-        return [
-            'tipo'                              => $validated['tipo'] ?? null,
-            'combustivel'                       => $validated['combustivel'] ?? null,
-            'motor_combustao_tipo'              => $validated['motor_combustao_tipo'] ?? null,
-            'motor_combustao_potencia_cv'       => $validated['motor_combustao_potencia_cv'] ?? null,
-            'motor_combustao_torque_kgfm'       => $validated['motor_combustao_torque_kgfm'] ?? null,
-            'motor_eletrico_potencia_cv'        => $validated['motor_eletrico_potencia_cv'] ?? null,
-            'motor_eletrico_torque_kgfm'        => $validated['motor_eletrico_torque_kgfm'] ?? null,
-            'potencia_combinada_cv'             => $validated['potencia_combinada_cv'] ?? null,
-            'torque_combinado_kgfm'             => $validated['torque_combinado_kgfm'] ?? null,
-            'tracao_tipo'                       => $validated['tracao_tipo'] ?? null,
-            'transmissao_tipo'                  => $validated['transmissao_tipo'] ?? null,
-            'numero_marchas'                    => $validated['numero_marchas'] ?? null,
-            'bateria_capacidade_kwh'            => $validated['bateria_capacidade_kwh'] ?? null,
-            'bateria_tipo'                      => $validated['bateria_tipo'] ?? null,
-            'modo_eletrico_puro'                => $validated['modo_eletrico_puro'] ?? 0,
-            'autonomia_eletrica_pbev_km'        => $validated['autonomia_eletrica_pbev_km'] ?? null,
-            'autonomia_combinada_km'            => $validated['autonomia_combinada_km'] ?? null,
-            'bateria_garantia'                  => $validated['bateria_garantia'] ?? null,
-            'carregamento_potencia_ac_kw'       => $validated['carregamento_potencia_ac_kw'] ?? null,
-            'carregamento_tempo_ac_horas'       => $validated['carregamento_tempo_ac_horas'] ?? null,
-            'carregamento_potencia_dc_kw'       => $validated['carregamento_potencia_dc_kw'] ?? null,
-            'carregamento_tipo_conector_ac'     => $validated['carregamento_tipo_conector_ac'] ?? null,
-            'consumo_cidade_kml'                => $validated['consumo_cidade_kml'] ?? null,
-            'consumo_estrada_kml'               => $validated['consumo_estrada_kml'] ?? null,
-            'consumo_medio_kml'                 => $validated['consumo_medio_kml'] ?? null,
-            'capacidade_tanque_l'               => $validated['capacidade_tanque_l'] ?? null,
-            'consumo_cidade_etanol_kml'         => $validated['consumo_cidade_etanol_kml'] ?? null,
-            'consumo_estrada_etanol_kml'        => $validated['consumo_estrada_etanol_kml'] ?? null,
-            'consumo_medio_etanol_kml'          => $validated['consumo_medio_etanol_kml'] ?? null,
-        ];
+        return $this->validated();
     }
 
     /**

@@ -181,26 +181,6 @@ class VeiculoEletricoRequest extends FormRequest
      */
     public function getDadosEletricos(): array
     {
-        $validated = $this->validated();
-
-        return [
-            'tracao_tipo'                   => $validated['tracao_tipo'] ?? null,
-            'transmissao_tipo'              => $validated['transmissao_tipo'] ?? null,
-            'potencia_max_cv'               => $validated['potencia_max_cv'] ?? null,
-            'torque_max_nm'                 => $validated['torque_max_nm'] ?? null,
-            'torque_max_kgfm'               => $validated['torque_max_kgfm'] ?? null,
-            'aceleracao_0_100_seg'          => $validated['aceleracao_0_100_seg'] ?? null,
-            'velocidade_max_kmh'            => $validated['velocidade_max_kmh'] ?? null,
-            'capacidade_liquida_kwh'        => $validated['capacidade_liquida_kwh'] ?? null,
-            'saude_bateria_soh'             => $validated['saude_bateria_soh'] ?? null,
-            'autonomia_wltp_km'             => $validated['autonomia_wltp_km'] ?? null,
-            'autonomia_inmetro_km'          => $validated['autonomia_inmetro_km'] ?? null,
-            'garantia_bateria'              => $validated['garantia_bateria'] ?? null,
-            'potencia_max_dc_kw'            => $validated['potencia_max_dc_kw'] ?? null,
-            'tipo_conector_dc'              => $validated['tipo_conector_dc'] ?? null,
-            'tipo_conector_ac'              => $validated['tipo_conector_ac'] ?? null,
-            'tempo_carga_dc_min'            => $validated['tempo_carga_dc_min'] ?? null,
-            'consumo_energetico_kwh_100km'  => $validated['consumo_energetico_kwh_100km'] ?? null,
-        ];
+        return $this->validated();
     }
 }

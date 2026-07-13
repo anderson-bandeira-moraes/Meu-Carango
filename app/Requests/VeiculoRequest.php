@@ -299,39 +299,14 @@ class VeiculoRequest extends FormRequest
     }
 
     /**
-     * Retorna os dados da tabela veiculos já validados e sanitizados.
+     * Retorna os dados principais do veículo já validados e sanitizados.
+     * Apenas os campos enviados na requisição são retornados.
      *
      * @return array
      */
     public function getDadosPrincipais(): array
     {
-        $validated = $this->validated();
-
-        return [
-            'marca_id'              => $validated['marca_id'] ?? null,
-            'modelo_id'             => $validated['modelo_id'] ?? null,
-            'versao'                => $validated['versao'] ?? null,
-            'ano_fabricacao'        => $validated['ano_fabricacao'] ?? null,
-            'ano_modelo'            => $validated['ano_modelo'] ?? null,
-            'cor'                   => $validated['cor'] ?? '',
-            'quilometragem'         => $validated['quilometragem'] ?? 0,
-            'preco'                 => (float) ($validated['preco'] ?? 0),
-            'numero_portas'         => $validated['numero_portas'] ?? null,
-            'numero_assentos'       => $validated['numero_assentos'] ?? null,
-            'comprimento_mm'        => $validated['comprimento_mm'] ?? null,
-            'largura_mm'            => $validated['largura_mm'] ?? null,
-            'altura_mm'             => $validated['altura_mm'] ?? null,
-            'distancia_entre_eixos_mm' => $validated['distancia_entre_eixos_mm'] ?? null,
-            'peso_ordem_marcha_kg'  => $validated['peso_ordem_marcha_kg'] ?? null,
-            'volume_porta_malas_l'  => $validated['volume_porta_malas_l'] ?? null,
-            'volume_cacamba_l'      => $validated['volume_cacamba_l'] ?? null,
-            'carga_util_kg'         => $validated['carga_util_kg'] ?? null,
-            'capacidade_reboque_kg' => $validated['capacidade_reboque_kg'] ?? null,
-            'gnv_instalado'         => $validated['gnv_instalado'] ?? 0,
-            'status_estoque'        => $validated['status_estoque'] ?? 'disponivel',
-            'status_vitrine'        => $validated['status_vitrine'] ?? 'inativo',
-            'slug'                  => $validated['slug'] ?? null, // Inclui o slug gerado
-        ];
+        return $this->validated();
     }
 
     /**

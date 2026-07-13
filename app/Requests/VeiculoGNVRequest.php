@@ -177,28 +177,6 @@ class VeiculoGNVRequest extends FormRequest
      */
     public function getDadosGNV(): array
     {
-        $validated = $this->validated();
-
-        return [
-            'tipo_sistema'               => $validated['tipo_sistema'] ?? null,
-            'geracao_kit'                => $validated['geracao_kit'] ?? null,
-            'marca_kit'                  => $validated['marca_kit'] ?? null,
-            'data_instalacao'            => $validated['data_instalacao'] ?? null,
-            'data_inspecao'              => $validated['data_inspecao'] ?? null,
-            'data_validade_cilindro'     => $validated['data_validade_cilindro'] ?? null,
-            'possui_csv'                 => $validated['possui_csv'] ?? 0,
-            'possui_selo_gnv'            => $validated['possui_selo_gnv'] ?? 0,
-            'capacidade_cilindro_m3'     => $validated['capacidade_cilindro_m3'] ?? null,
-            'quantidade_cilindros'       => $validated['quantidade_cilindros'] ?? null,
-            'material_cilindro'          => $validated['material_cilindro'] ?? null,
-            'localizacao_cilindro'       => $validated['localizacao_cilindro'] ?? null,
-            'consumo_cidade_m3km'        => $validated['consumo_cidade_m3km'] ?? null,
-            'consumo_estrada_m3km'       => $validated['consumo_estrada_m3km'] ?? null,
-            'autonomia_media_km'         => $validated['autonomia_media_km'] ?? null,
-            'autonomia_cidade_km'        => $validated['autonomia_cidade_km'] ?? null,
-            'autonomia_estrada_km'       => $validated['autonomia_estrada_km'] ?? null,
-            'instaladora_certificada'    => $validated['instaladora_certificada'] ?? null,
-            'observacoes'                => $validated['observacoes'] ?? null,
-        ];
+        return $this->validated();
     }
 }

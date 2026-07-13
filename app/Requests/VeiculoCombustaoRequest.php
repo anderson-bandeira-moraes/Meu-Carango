@@ -211,29 +211,6 @@ class VeiculoCombustaoRequest extends FormRequest
      */
     public function getDadosCombustao(): array
     {
-        $validated = $this->validated();
-
-        return [
-            'combustivel'                   => $validated['combustivel'] ?? null,
-            'motor_tipo'                    => $validated['motor_tipo'] ?? null,
-            'potencia_cv'                   => $validated['potencia_cv'] ?? null,
-            'potencia_etanol_cv'            => $validated['potencia_etanol_cv'] ?? null,
-            'torque_kgfm'                   => $validated['torque_kgfm'] ?? null,
-            'torque_etanol_kgfm'            => $validated['torque_etanol_kgfm'] ?? null,
-            'regime_potencia_rpm'           => $validated['regime_potencia_rpm'] ?? null,
-            'regime_torque_rpm'             => $validated['regime_torque_rpm'] ?? null,
-            'aceleracao_0_100_seg'          => $validated['aceleracao_0_100_seg'] ?? null,
-            'velocidade_max_kmh'            => $validated['velocidade_max_kmh'] ?? null,
-            'tracao_tipo'                   => $validated['tracao_tipo'] ?? null,
-            'consumo_cidade_kml'            => $validated['consumo_cidade_kml'] ?? null,
-            'consumo_estrada_kml'           => $validated['consumo_estrada_kml'] ?? null,
-            'consumo_medio_kml'             => $validated['consumo_medio_kml'] ?? null,
-            'consumo_cidade_etanol_kml'     => $validated['consumo_cidade_etanol_kml'] ?? null,
-            'consumo_estrada_etanol_kml'    => $validated['consumo_estrada_etanol_kml'] ?? null,
-            'consumo_medio_etanol_kml'      => $validated['consumo_medio_etanol_kml'] ?? null,
-            'capacidade_tanque_l'           => $validated['capacidade_tanque_l'] ?? null,
-            'transmissao_tipo'              => $validated['transmissao_tipo'] ?? null,
-            'numero_marchas'                => $validated['numero_marchas'] ?? null,
-        ];
+        return $this->validated();
     }
 }
