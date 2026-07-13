@@ -2091,6 +2091,50 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // =============================================
+        // 0. INICIALIZAÇÃO DOS BADGES E MODAL DE CATEGORIA
+        // =============================================
+
+        // Dados das marcas e modelos (carregados via PHP)
+        const marcasData = <?= json_encode($marcas) ?>;
+        const modelosData = <?= json_encode($modelos) ?>;
+
+        // Obtém referências para os campos ocultos e badges
+        const marcaIdInput = document.getElementById('marca_id');
+        const modeloIdInput = document.getElementById('modelo_id');
+        const marcaDisplay = document.getElementById('marcaDisplay');
+        const modeloDisplay = document.getElementById('modeloDisplay');
+
+        // Função para atualizar os badges com base nos IDs atuais
+        function atualizarBadges() {
+            const marcaId = marcaIdInput.value;
+            const modeloId = modeloIdInput.value;
+
+            // Atualiza badge da marca
+            if (marcaId) {
+                const marca = marcasData.find(m => m.id == marcaId);
+                if (marca) {
+                    marcaDisplay.textContent = marca.nome;
+                    marcaDisplay.className = 'badge bg-primary p-2';
+                }
+            } else {
+                marcaDisplay.textContent = 'Nenhuma marca selecionada';
+                marcaDisplay.className = 'badge bg-secondary p-2';
+            }
+
+            // Atualiza badge do modelo
+            if (modeloId && modelosData[modeloId]) {
+                modeloDisplay.textContent = modelosData[modeloId];
+                modeloDisplay.className = 'badge bg-primary p-2';
+            } else {
+                modeloDisplay.textContent = 'Nenhum modelo selecionado';
+                modeloDisplay.className = 'badge bg-secondary p-2';
+            }
+        }
+
+        // Executa a atualização dos badges ao carregar a página
+        atualizarBadges();
+
+        // =============================================
         // 1. MODAL DE CATEGORIA E RESTAURAÇÃO DO TIPO
         // =============================================
         <?php if (!$isEdit): ?>
@@ -2493,10 +2537,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const resumoMarcaLogo = document.getElementById('resumo-marca-logo');
         const resumoMarcaCard = document.getElementById('resumo-marca');
         const resumoModeloCard = document.getElementById('resumo-modelo');
-        const marcaDisplay = document.getElementById('marcaDisplay');
-        const modeloDisplay = document.getElementById('modeloDisplay');
-        const marcaIdInput = document.getElementById('marca_id');
-        const modeloIdInput = document.getElementById('modelo_id');
         // NOVO: referência ao botão "Próximo"
         const btnProximoMarca = document.getElementById('btnProximoMarca');
 
@@ -2506,9 +2546,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         let selectedMarcaLogo = '';
         let selectedModeloId = null;
         let selectedModeloNome = '';
-
-        // Inicialização: carregar marcas via PHP
-        const marcasData = <?= json_encode($marcas) ?>;
 
         // Função para renderizar lista de marcas
         function renderMarcas(filtro = '') {

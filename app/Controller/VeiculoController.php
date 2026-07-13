@@ -118,9 +118,8 @@ class VeiculoController
         // Busca todos os opcionais agrupados para o formulário
         $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
 
-        // Busca marcas com a URL da logo (via service) e modelos para os selects do formulário
-        $marcas = $this->marcaModeloService->listarMarcas(); // <-- SUBSTITUÍDO
-        $modelos = $this->modeloRepo->findAll();
+        // Busca marcas com a URL da logo (via service)
+        $marcas = $this->marcaModeloService->listarMarcas();
 
         // Recupera old input e flash
         $old = $this->session->get('old_veiculo_input', []);
@@ -130,6 +129,16 @@ class VeiculoController
 
         $tipoSelecionado = $old['tipo_veiculo'] ?? null;
         $opcionaisSelecionados = $old['opcionaisIds'] ?? [];
+
+        // Carrega modelos apenas se houver uma marca selecionada e for numericamente válida
+        $marcaId = isset($old['marca_id']) && is_numeric($old['marca_id']) ? (int) $old['marca_id'] : null;
+        $modelos = $marcaId ? $this->modeloRepo->findByMarcaId($marcaId) : [];
+
+        // Cria array de modelos no formato id => nome para uso no JavaScript
+        $modelosData = [];
+        foreach ($modelos as $modelo) {
+            $modelosData[$modelo['id']] = $modelo['nome'];
+        }
 
         return $this->view->renderWithLayout(
             'logista/veiculos/form',
@@ -141,13 +150,76 @@ class VeiculoController
                 'opcionais_selecionados' => $opcionaisSelecionados,
                 'todos_opcionais'  => $opcionais,
                 'marcas'           => $marcas,
-                'modelos'          => $modelos,
+                'modelos'          => $modelosData,
                 'old'              => $old,
                 'error'            => $error,
                 'isEdit'           => false,
             ],
             'layouts/main',
             ['title' => 'Cadastrar Veículo']
+        );
+    }
+
+    /**
+     * Exibe o formulário de edição de veículo.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function edit(Request $request, int $id): string
+    {
+        $dadosEdicao = $this->veiculoService->buscarParaEdicao($id);
+        if (!$dadosEdicao) {
+            $this->redirectWithError('Veículo não encontrado.');
+        }
+
+        // Verifica se o veículo pertence ao lojista logado
+        if ($dadosEdicao['veiculo']['lojista_id'] != $this->getLojistaId()) {
+            $this->redirectWithError('Acesso negado.');
+        }
+
+        // Busca marcas com a URL da logo (via service)
+        $marcas = $this->marcaModeloService->listarMarcas();
+
+        // Recupera old input e flash
+        $old = $this->session->get('old_veiculo_input', []);
+        $this->session->delete('old_veiculo_input');
+
+        $error = $this->getFlash('flash_veiculo_error');
+
+        // Mescla old input com dados existentes (se houver)
+        if (!empty($old)) {
+            $dadosEdicao['veiculo'] = array_merge($dadosEdicao['veiculo'], $old);
+        }
+
+        // Carrega modelos apenas se houver uma marca selecionada e for numericamente válida
+        $marcaId = isset($dadosEdicao['veiculo']['marca_id']) && is_numeric($dadosEdicao['veiculo']['marca_id']) ? (int) $dadosEdicao['veiculo']['marca_id'] : null;
+        $modelos = $marcaId ? $this->modeloRepo->findByMarcaId($marcaId) : [];
+
+        // Cria array de modelos no formato id => nome para uso no JavaScript
+        $modelosData = [];
+        foreach ($modelos as $modelo) {
+            $modelosData[$modelo['id']] = $modelo['nome'];
+        }
+
+        return $this->view->renderWithLayout(
+            'logista/veiculos/form',
+            [
+                'veiculo'          => $dadosEdicao['veiculo'],
+                'tipo'             => $dadosEdicao['tipo'],
+                'complemento'      => $dadosEdicao['complemento'],
+                'gnv'              => $dadosEdicao['gnv'],
+                'opcionais_selecionados' => $dadosEdicao['opcionais_selecionados'],
+                'todos_opcionais'  => $dadosEdicao['todos_opcionais'],
+                'marcas'           => $marcas,
+                'modelos'          => $modelosData,
+                'old'              => [],
+                'error'            => $error,
+                'isEdit'           => true,
+            ],
+            'layouts/main',
+            ['title' => 'Editar Veículo']
         );
     }
 
@@ -254,60 +326,6 @@ class VeiculoController
         $this->session->set('flash_veiculo_success', 'Veículo criado com sucesso!');
         header('Location: /logista/veiculos');
         exit;
-    }
-
-    /**
-     * Exibe o formulário de edição de veículo.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return string
-     */
-    public function edit(Request $request, int $id): string
-    {
-        $dadosEdicao = $this->veiculoService->buscarParaEdicao($id);
-        if (!$dadosEdicao) {
-            $this->redirectWithError('Veículo não encontrado.');
-        }
-
-        // Verifica se o veículo pertence ao lojista logado
-        if ($dadosEdicao['veiculo']['lojista_id'] != $this->getLojistaId()) {
-            $this->redirectWithError('Acesso negado.');
-        }
-
-        // Busca marcas com a URL da logo (via service) e modelos para os selects do formulário
-        $marcas = $this->marcaModeloService->listarMarcas(); // <-- SUBSTITUÍDO
-        $modelos = $this->modeloRepo->findAll();
-
-        // Recupera old input e flash
-        $old = $this->session->get('old_veiculo_input', []);
-        $this->session->delete('old_veiculo_input');
-
-        $error = $this->getFlash('flash_veiculo_error');
-
-        // Mescla old input com dados existentes (se houver)
-        if (!empty($old)) {
-            $dadosEdicao['veiculo'] = array_merge($dadosEdicao['veiculo'], $old);
-        }
-
-        return $this->view->renderWithLayout(
-            'logista/veiculos/form',
-            [
-                'veiculo'          => $dadosEdicao['veiculo'],
-                'tipo'             => $dadosEdicao['tipo'],
-                'complemento'      => $dadosEdicao['complemento'],
-                'gnv'              => $dadosEdicao['gnv'],
-                'opcionais_selecionados' => $dadosEdicao['opcionais_selecionados'],
-                'todos_opcionais'  => $dadosEdicao['todos_opcionais'],
-                'marcas'           => $marcas,
-                'modelos'          => $modelos,
-                'old'              => [],
-                'error'            => $error,
-                'isEdit'           => true,
-            ],
-            'layouts/main',
-            ['title' => 'Editar Veículo']
-        );
     }
 
     /**
