@@ -1904,10 +1904,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             </div>
         </div>
 
-        <!-- Campos ocultos para status (preenchidos pelo modal) -->
-        <input type="hidden" name="status_estoque" id="status_estoque_hidden" value="disponivel">
-        <input type="hidden" name="status_vitrine" id="status_vitrine_hidden" value="inativo">
-
         <!-- ========== OPÇÕES E BOTÕES ========== -->
         <div class="d-flex gap-2 mt-4">
             <button type="submit" class="btn btn-primary">
@@ -1916,43 +1912,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             <a href="/logista/veiculos" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
-
-    <!-- ========== MODAL DE CONFIRMAÇÃO DE STATUS ========== -->
-    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>Confirmar Status do Veículo</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-3">Antes de salvar, defina o status do veículo:</p>
-                    <div class="mb-3">
-                        <label for="modal_status_estoque" class="form-label">Status de Estoque</label>
-                        <select id="modal_status_estoque" class="form-select">
-                            <?php foreach (status_estoque_list() as $value => $label): ?>
-                                <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="modal_status_vitrine" class="form-label">Vitrine</label>
-                        <select id="modal_status_vitrine" class="form-select">
-                            <?php foreach (status_vitrine_list() as $value => $label): ?>
-                                <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="confirmarStatusBtn">
-                        <i class="bi bi-check-lg me-1"></i> Confirmar e Salvar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ========== MODAL MARCA E MODELO ========== -->
     <div class="modal fade" id="marcaModeloModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
@@ -3463,44 +3422,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
         // =============================================
         setupMotorOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro', []);
-
-        // ============================================================
-        // MODAL DE CONFIRMAÇÃO DE STATUS (intercepta o submit)
-        // ============================================================
-
-        const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
-        const confirmarStatusBtn = document.getElementById('confirmarStatusBtn');
-
-        if (form) {
-            // Intercepta o submit do formulário
-            form.addEventListener('submit', function(e) {
-                // 1. Verifica se o formulário é válido (validação HTML5)
-                if (!this.checkValidity()) {
-                    // O navegador já mostra as mensagens de erro automáticas
-                    return; // não impede o submit, mas o browser já bloqueia
-                }
-
-                // 2. Impede o envio padrão e abre o modal
-                e.preventDefault();
-                statusModal.show();
-            });
-        }
-
-        if (confirmarStatusBtn) {
-            confirmarStatusBtn.addEventListener('click', function() {
-                // 3. Obtém os valores selecionados no modal
-                const estoque = document.getElementById('modal_status_estoque').value;
-                const vitrine = document.getElementById('modal_status_vitrine').value;
-
-                // 4. Preenche os campos hidden
-                document.getElementById('status_estoque_hidden').value = estoque;
-                document.getElementById('status_vitrine_hidden').value = vitrine;
-
-                // 5. Fecha o modal e submete o formulário
-                statusModal.hide();
-                form.submit();
-            });
-        }
 
         // ============================================================
         // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS
