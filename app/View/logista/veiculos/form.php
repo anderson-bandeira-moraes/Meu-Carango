@@ -2259,6 +2259,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             if (!flexFields) return;
             const isFlex = combustivelSelect && combustivelSelect.value === 'flex';
             flexFields.style.display = isFlex ? 'block' : 'none';
+            
+            // Habilita ou desabilita todos os campos dentro da div .flex-fields
+            const inputs = flexFields.querySelectorAll('input, select, textarea');
+            inputs.forEach(el => {
+                el.disabled = !isFlex;
+            });
+
             flexRequired.forEach(el => {
                 el.style.display = isFlex ? 'inline' : 'none';
             });
@@ -2509,6 +2516,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             if (!combustivelHibrido || !consumoEtanolContainer) return;
             const isFlex = combustivelHibrido.value === 'flex';
             consumoEtanolContainer.style.display = isFlex ? 'block' : 'none';
+            
+            // Habilita ou desabilita todos os campos dentro do container
+            const inputs = consumoEtanolContainer.querySelectorAll('input, select, textarea');
+            inputs.forEach(el => {
+                el.disabled = !isFlex;
+            });
         }
 
         if (combustivelHibrido) {
