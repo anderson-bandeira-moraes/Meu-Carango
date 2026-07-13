@@ -33,7 +33,7 @@ class VeiculoImagemRequest extends FormRequest
             'imagens.*'    => 'file|mimes:webp|max:1024', // 1 MB
 
             // Índice da capa (criação)
-            'capa_index'   => 'nullable|integer|min:0|max:15',
+            'capa_index' => 'nullable|integer|min_num:0|max_num:15',
 
             // Edição: IDs a manter
             'ids_manter'   => 'nullable|array',
@@ -62,9 +62,9 @@ class VeiculoImagemRequest extends FormRequest
             'imagens.*.max'    => 'Cada imagem deve ter no máximo 1 MB.',
 
             // Capa (criação)
-            'capa_index.integer' => 'O índice da capa deve ser um número inteiro.',
-            'capa_index.min'     => 'O índice da capa não pode ser negativo.',
-            'capa_index.max'     => 'O índice da capa não pode ultrapassar :max.',
+            'capa_index.integer'   => 'O índice da capa deve ser um número inteiro.',
+            'capa_index.min_num'   => 'O índice da capa não pode ser negativo.',
+            'capa_index.max_num'   => 'O índice da capa não pode ultrapassar :max.',
 
             // IDs a manter (edição)
             'ids_manter.array'    => 'A lista de IDs a manter deve ser um array.',

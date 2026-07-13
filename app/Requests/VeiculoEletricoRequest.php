@@ -25,39 +25,39 @@ class VeiculoEletricoRequest extends FormRequest
             'transmissao_tipo'  => 'required|max:30',
 
             // Motorização
-            'potencia_max_cv'   => 'required|integer|min:0',
+            'potencia_max_cv'   => 'required|integer|min_num:0',
 
             // Torque (opcionais)
-            'torque_max_nm'     => 'nullable|integer|min:0',
-            'torque_max_kgfm'   => 'nullable|numeric|min:0',
+            'torque_max_nm'     => 'nullable|integer|min_num:0',
+            'torque_max_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Desempenho (opcionais)
-            'aceleracao_0_100_seg' => 'nullable|numeric|min:0',
-            'velocidade_max_kmh'   => 'nullable|integer|min:0',
+            'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
 
             // Bateria
-            'capacidade_liquida_kwh' => 'required|numeric|min:0',
+            'capacidade_liquida_kwh' => 'required|numeric|min_num:0',
             'saude_bateria_soh'      => 'required|numeric|between:0,100',
 
             // Autonomia
-            'autonomia_wltp_km'    => 'nullable|integer|min:0',
-            'autonomia_inmetro_km' => 'required|integer|min:0',
+            'autonomia_wltp_km'    => 'nullable|integer|min_num:0',
+            'autonomia_inmetro_km' => 'required|integer|min_num:0',
 
             // Garantia (opcional)
             'garantia_bateria' => 'nullable|max:40',
 
             // Carregamento DC
-            'potencia_max_dc_kw' => 'required|integer|min:0',
+            'potencia_max_dc_kw' => 'required|integer|min_num:0',
             'tipo_conector_dc'   => 'required|max:20',
 
             // Carregamento AC (opcional)
             'tipo_conector_ac' => 'nullable|max:20',
 
             // Tempo de carga (opcional)
-            'tempo_carga_dc_min' => 'nullable|integer|min:0',
+            'tempo_carga_dc_min' => 'nullable|integer|min_num:0',
 
             // Consumo energético (opcional)
-            'consumo_energetico_kwh_100km' => 'nullable|numeric|min:0',
+            'consumo_energetico_kwh_100km' => 'nullable|numeric|min_num:0',
         ];
     }
 
@@ -76,26 +76,26 @@ class VeiculoEletricoRequest extends FormRequest
             'transmissao_tipo.max'      => 'O tipo de transmissão deve ter no máximo :max caracteres.',
 
             // Potência máxima
-            'potencia_max_cv.required' => 'A potência máxima é obrigatória.',
-            'potencia_max_cv.integer'  => 'A potência máxima deve ser um número inteiro.',
-            'potencia_max_cv.min'      => 'A potência máxima não pode ser negativa.',
+            'potencia_max_cv.required'    => 'A potência máxima é obrigatória.',
+            'potencia_max_cv.integer'     => 'A potência máxima deve ser um número inteiro.',
+            'potencia_max_cv.min_num'     => 'A potência máxima não pode ser negativa.',
 
             // Torque (opcionais)
-            'torque_max_nm.integer' => 'O torque (Nm) deve ser um número inteiro.',
-            'torque_max_nm.min'     => 'O torque (Nm) não pode ser negativo.',
-            'torque_max_kgfm.numeric' => 'O torque (kgfm) deve ser um número válido.',
-            'torque_max_kgfm.min'     => 'O torque (kgfm) não pode ser negativo.',
+            'torque_max_nm.integer'       => 'O torque (Nm) deve ser um número inteiro.',
+            'torque_max_nm.min_num'       => 'O torque (Nm) não pode ser negativo.',
+            'torque_max_kgfm.numeric'     => 'O torque (kgfm) deve ser um número válido.',
+            'torque_max_kgfm.min_num'     => 'O torque (kgfm) não pode ser negativo.',
 
             // Desempenho
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
-            'aceleracao_0_100_seg.min'     => 'A aceleração 0-100 não pode ser negativa.',
+            'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
             'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
-            'velocidade_max_kmh.min'       => 'A velocidade máxima não pode ser negativa.',
+            'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
 
             // Bateria
             'capacidade_liquida_kwh.required' => 'A capacidade da bateria é obrigatória.',
             'capacidade_liquida_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
-            'capacidade_liquida_kwh.min'      => 'A capacidade da bateria não pode ser negativa.',
+            'capacidade_liquida_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
 
             'saude_bateria_soh.required' => 'A saúde da bateria (SoH) é obrigatória.',
             'saude_bateria_soh.numeric'  => 'A saúde da bateria deve ser um número válido.',
@@ -103,10 +103,10 @@ class VeiculoEletricoRequest extends FormRequest
 
             // Autonomia
             'autonomia_wltp_km.integer' => 'A autonomia WLTP deve ser um número inteiro.',
-            'autonomia_wltp_km.min'     => 'A autonomia WLTP não pode ser negativa.',
+            'autonomia_wltp_km.min_num' => 'A autonomia WLTP não pode ser negativa.',
             'autonomia_inmetro_km.required' => 'A autonomia Inmetro é obrigatória.',
             'autonomia_inmetro_km.integer'  => 'A autonomia Inmetro deve ser um número inteiro.',
-            'autonomia_inmetro_km.min'      => 'A autonomia Inmetro não pode ser negativa.',
+            'autonomia_inmetro_km.min_num'  => 'A autonomia Inmetro não pode ser negativa.',
 
             // Garantia
             'garantia_bateria.max' => 'A garantia da bateria deve ter no máximo :max caracteres.',
@@ -114,7 +114,7 @@ class VeiculoEletricoRequest extends FormRequest
             // Carregamento DC
             'potencia_max_dc_kw.required' => 'A potência máxima de carregamento DC é obrigatória.',
             'potencia_max_dc_kw.integer'  => 'A potência máxima de carregamento DC deve ser um número inteiro.',
-            'potencia_max_dc_kw.min'      => 'A potência máxima de carregamento DC não pode ser negativa.',
+            'potencia_max_dc_kw.min_num'  => 'A potência máxima de carregamento DC não pode ser negativa.',
 
             'tipo_conector_dc.required' => 'O tipo de conector DC é obrigatório.',
             'tipo_conector_dc.max'      => 'O tipo de conector DC deve ter no máximo :max caracteres.',
@@ -124,11 +124,11 @@ class VeiculoEletricoRequest extends FormRequest
 
             // Tempo de carga (opcional)
             'tempo_carga_dc_min.integer' => 'O tempo de carga DC deve ser um número inteiro.',
-            'tempo_carga_dc_min.min'     => 'O tempo de carga DC não pode ser negativo.',
+            'tempo_carga_dc_min.min_num' => 'O tempo de carga DC não pode ser negativo.',
 
             // Consumo energético (opcional)
             'consumo_energetico_kwh_100km.numeric' => 'O consumo energético deve ser um número válido.',
-            'consumo_energetico_kwh_100km.min'     => 'O consumo energético não pode ser negativo.',
+            'consumo_energetico_kwh_100km.min_num' => 'O consumo energético não pode ser negativo.',
         ];
     }
 

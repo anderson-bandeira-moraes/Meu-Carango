@@ -28,52 +28,52 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Motor a combustão
             'motor_combustao_tipo'          => 'required|max:40',
-            'motor_combustao_potencia_cv'   => 'required|integer|min:0',
-            'motor_combustao_torque_kgfm'   => 'nullable|numeric|min:0',
+            'motor_combustao_potencia_cv'   => 'required|integer|min_num:0',
+            'motor_combustao_torque_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Motor elétrico
-            'motor_eletrico_potencia_cv'    => 'required|integer|min:0',
-            'motor_eletrico_torque_kgfm'    => 'nullable|numeric|min:0',
+            'motor_eletrico_potencia_cv'    => 'required|integer|min_num:0',
+            'motor_eletrico_torque_kgfm'    => 'nullable|numeric|min_num:0',
 
             // Potência e torque combinados
-            'potencia_combinada_cv' => 'required|integer|min:0',
-            'torque_combinado_kgfm' => 'required|numeric|min:0',
+            'potencia_combinada_cv' => 'required|integer|min_num:0',
+            'torque_combinado_kgfm' => 'required|numeric|min_num:0',
 
             // Tração e transmissão
             'tracao_tipo'        => 'required|max:10',
             'transmissao_tipo'   => 'required|max:30',
-            'numero_marchas'     => 'nullable|integer|min:0',
+            'numero_marchas'     => 'nullable|integer|min_num:0',
 
             // Bateria
-            'bateria_capacidade_kwh' => 'required|numeric|min:0',
+            'bateria_capacidade_kwh' => 'required|numeric|min_num:0',
             'bateria_tipo'           => 'nullable|max:30',
 
             // Modo elétrico puro
             'modo_eletrico_puro' => 'required|boolean',
 
             // Autonomias
-            'autonomia_eletrica_pbev_km' => 'nullable|integer|min:0',
-            'autonomia_combinada_km'     => 'nullable|integer|min:0',
+            'autonomia_eletrica_pbev_km' => 'nullable|integer|min_num:0',
+            'autonomia_combinada_km'     => 'nullable|integer|min_num:0',
 
             // Garantia da bateria
             'bateria_garantia' => 'nullable|max:40',
 
             // Carregamento (PHEV)
-            'carregamento_potencia_ac_kw' => 'nullable|numeric|min:0',
-            'carregamento_tempo_ac_horas' => 'nullable|numeric|min:0',
-            'carregamento_potencia_dc_kw' => 'nullable|integer|min:0',
+            'carregamento_potencia_ac_kw' => 'nullable|numeric|min_num:0',
+            'carregamento_tempo_ac_horas' => 'nullable|numeric|min_num:0',
+            'carregamento_potencia_dc_kw' => 'nullable|integer|min_num:0',
             'carregamento_tipo_conector_ac' => 'nullable|max:20',
 
             // Consumo
-            'consumo_cidade_kml'   => 'required|numeric|min:0',
-            'consumo_estrada_kml'  => 'required|numeric|min:0',
-            'consumo_medio_kml'    => 'nullable|numeric|min:0',
-            'consumo_cidade_etanol_kml'   => 'nullable|numeric|min:0',
-            'consumo_estrada_etanol_kml'  => 'nullable|numeric|min:0',
-            'consumo_medio_etanol_kml'    => 'nullable|numeric|min:0',
+            'consumo_cidade_kml'   => 'required|numeric|min_num:0',
+            'consumo_estrada_kml'  => 'required|numeric|min_num:0',
+            'consumo_medio_kml'    => 'nullable|numeric|min_num:0',
+            'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
+            'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
+            'consumo_medio_etanol_kml'    => 'nullable|numeric|min_num:0',
 
             // Tanque
-            'capacidade_tanque_l' => 'required|integer|min:0',
+            'capacidade_tanque_l' => 'required|integer|min_num:0',
         ];
     }
 
@@ -96,24 +96,24 @@ class VeiculoHibridoRequest extends FormRequest
             'motor_combustao_tipo.max'      => 'O tipo do motor a combustão deve ter no máximo :max caracteres.',
             'motor_combustao_potencia_cv.required' => 'A potência do motor a combustão é obrigatória.',
             'motor_combustao_potencia_cv.integer'  => 'A potência do motor a combustão deve ser um número inteiro.',
-            'motor_combustao_potencia_cv.min'      => 'A potência do motor a combustão não pode ser negativa.',
+            'motor_combustao_potencia_cv.min_num'  => 'A potência do motor a combustão não pode ser negativa.',
             'motor_combustao_torque_kgfm.numeric'  => 'O torque do motor a combustão deve ser um número válido.',
-            'motor_combustao_torque_kgfm.min'      => 'O torque do motor a combustão não pode ser negativo.',
+            'motor_combustao_torque_kgfm.min_num'  => 'O torque do motor a combustão não pode ser negativo.',
 
             // Motor elétrico
             'motor_eletrico_potencia_cv.required' => 'A potência do motor elétrico é obrigatória.',
             'motor_eletrico_potencia_cv.integer'  => 'A potência do motor elétrico deve ser um número inteiro.',
-            'motor_eletrico_potencia_cv.min'      => 'A potência do motor elétrico não pode ser negativa.',
+            'motor_eletrico_potencia_cv.min_num'  => 'A potência do motor elétrico não pode ser negativa.',
             'motor_eletrico_torque_kgfm.numeric'  => 'O torque do motor elétrico deve ser um número válido.',
-            'motor_eletrico_torque_kgfm.min'      => 'O torque do motor elétrico não pode ser negativo.',
+            'motor_eletrico_torque_kgfm.min_num'  => 'O torque do motor elétrico não pode ser negativo.',
 
             // Potência e torque combinados
             'potencia_combinada_cv.required' => 'A potência combinada é obrigatória.',
             'potencia_combinada_cv.integer'  => 'A potência combinada deve ser um número inteiro.',
-            'potencia_combinada_cv.min'      => 'A potência combinada não pode ser negativa.',
+            'potencia_combinada_cv.min_num'  => 'A potência combinada não pode ser negativa.',
             'torque_combinado_kgfm.required' => 'O torque combinado é obrigatório.',
             'torque_combinado_kgfm.numeric'  => 'O torque combinado deve ser um número válido.',
-            'torque_combinado_kgfm.min'      => 'O torque combinado não pode ser negativo.',
+            'torque_combinado_kgfm.min_num'  => 'O torque combinado não pode ser negativo.',
 
             // Tração e transmissão
             'tracao_tipo.required' => 'O tipo de tração é obrigatório.',
@@ -121,12 +121,12 @@ class VeiculoHibridoRequest extends FormRequest
             'transmissao_tipo.required' => 'O tipo de transmissão é obrigatório.',
             'transmissao_tipo.max'      => 'O tipo de transmissão deve ter no máximo :max caracteres.',
             'numero_marchas.integer'    => 'O número de marchas deve ser um número inteiro.',
-            'numero_marchas.min'        => 'O número de marchas não pode ser negativo.',
+            'numero_marchas.min_num'    => 'O número de marchas não pode ser negativo.',
 
             // Bateria
             'bateria_capacidade_kwh.required' => 'A capacidade da bateria é obrigatória.',
             'bateria_capacidade_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
-            'bateria_capacidade_kwh.min'      => 'A capacidade da bateria não pode ser negativa.',
+            'bateria_capacidade_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
             'bateria_tipo.max'                => 'O tipo da bateria deve ter no máximo :max caracteres.',
 
             // Modo elétrico puro
@@ -135,42 +135,42 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Autonomias
             'autonomia_eletrica_pbev_km.integer' => 'A autonomia elétrica (PBEV) deve ser um número inteiro.',
-            'autonomia_eletrica_pbev_km.min'     => 'A autonomia elétrica (PBEV) não pode ser negativa.',
+            'autonomia_eletrica_pbev_km.min_num' => 'A autonomia elétrica (PBEV) não pode ser negativa.',
             'autonomia_combinada_km.integer'     => 'A autonomia combinada deve ser um número inteiro.',
-            'autonomia_combinada_km.min'         => 'A autonomia combinada não pode ser negativa.',
+            'autonomia_combinada_km.min_num'     => 'A autonomia combinada não pode ser negativa.',
 
             // Garantia da bateria
             'bateria_garantia.max' => 'A garantia da bateria deve ter no máximo :max caracteres.',
 
             // Carregamento
             'carregamento_potencia_ac_kw.numeric' => 'A potência de carregamento AC deve ser um número válido.',
-            'carregamento_potencia_ac_kw.min'     => 'A potência de carregamento AC não pode ser negativa.',
+            'carregamento_potencia_ac_kw.min_num' => 'A potência de carregamento AC não pode ser negativa.',
             'carregamento_tempo_ac_horas.numeric' => 'O tempo de carregamento AC deve ser um número válido.',
-            'carregamento_tempo_ac_horas.min'     => 'O tempo de carregamento AC não pode ser negativo.',
+            'carregamento_tempo_ac_horas.min_num' => 'O tempo de carregamento AC não pode ser negativo.',
             'carregamento_potencia_dc_kw.integer' => 'A potência de carregamento DC deve ser um número inteiro.',
-            'carregamento_potencia_dc_kw.min'     => 'A potência de carregamento DC não pode ser negativa.',
+            'carregamento_potencia_dc_kw.min_num' => 'A potência de carregamento DC não pode ser negativa.',
             'carregamento_tipo_conector_ac.max'   => 'O tipo de conector AC deve ter no máximo :max caracteres.',
 
             // Consumo
             'consumo_cidade_kml.required' => 'O consumo na cidade é obrigatório.',
             'consumo_cidade_kml.numeric'  => 'O consumo na cidade deve ser um número válido.',
-            'consumo_cidade_kml.min'      => 'O consumo na cidade não pode ser negativo.',
+            'consumo_cidade_kml.min_num'  => 'O consumo na cidade não pode ser negativo.',
             'consumo_estrada_kml.required' => 'O consumo na estrada é obrigatório.',
             'consumo_estrada_kml.numeric'  => 'O consumo na estrada deve ser um número válido.',
-            'consumo_estrada_kml.min'      => 'O consumo na estrada não pode ser negativo.',
+            'consumo_estrada_kml.min_num'  => 'O consumo na estrada não pode ser negativo.',
             'consumo_medio_kml.numeric'    => 'O consumo médio deve ser um número válido.',
-            'consumo_medio_kml.min'        => 'O consumo médio não pode ser negativo.',
+            'consumo_medio_kml.min_num'    => 'O consumo médio não pode ser negativo.',
             'consumo_cidade_etanol_kml.numeric' => 'O consumo na cidade com etanol deve ser um número válido.',
-            'consumo_cidade_etanol_kml.min'     => 'O consumo na cidade com etanol não pode ser negativo.',
+            'consumo_cidade_etanol_kml.min_num' => 'O consumo na cidade com etanol não pode ser negativo.',
             'consumo_estrada_etanol_kml.numeric' => 'O consumo na estrada com etanol deve ser um número válido.',
-            'consumo_estrada_etanol_kml.min'     => 'O consumo na estrada com etanol não pode ser negativo.',
+            'consumo_estrada_etanol_kml.min_num' => 'O consumo na estrada com etanol não pode ser negativo.',
             'consumo_medio_etanol_kml.numeric'  => 'O consumo médio com etanol deve ser um número válido.',
-            'consumo_medio_etanol_kml.min'      => 'O consumo médio com etanol não pode ser negativo.',
+            'consumo_medio_etanol_kml.min_num'  => 'O consumo médio com etanol não pode ser negativo.',
 
             // Tanque
             'capacidade_tanque_l.required' => 'A capacidade do tanque é obrigatória.',
             'capacidade_tanque_l.integer'  => 'A capacidade do tanque deve ser um número inteiro.',
-            'capacidade_tanque_l.min'      => 'A capacidade do tanque não pode ser negativa.',
+            'capacidade_tanque_l.min_num'  => 'A capacidade do tanque não pode ser negativa.',
         ];
     }
 
@@ -266,7 +266,6 @@ class VeiculoHibridoRequest extends FormRequest
             $camposFlex = [
                 'consumo_cidade_etanol_kml'   => 'Consumo na cidade com etanol',
                 'consumo_estrada_etanol_kml'  => 'Consumo na estrada com etanol',
-                // 'consumo_medio_etanol_kml' pode ser opcional, deixamos como nullable
             ];
 
             foreach ($camposFlex as $campo => $label) {
@@ -319,5 +318,20 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_estrada_etanol_kml'        => $validated['consumo_estrada_etanol_kml'] ?? null,
             'consumo_medio_etanol_kml'          => $validated['consumo_medio_etanol_kml'] ?? null,
         ];
+    }
+
+    /**
+     * Adiciona um erro ao campo (usado internamente).
+     *
+     * @param string $field
+     * @param string $message
+     * @return void
+     */
+    private function addError(string $field, string $message): void
+    {
+        if (!isset($this->errors[$field])) {
+            $this->errors[$field] = [];
+        }
+        $this->errors[$field][] = $message;
     }
 }

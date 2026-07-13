@@ -258,6 +258,10 @@ abstract class FormRequest extends Request
                 return $this->validateMin($value, $params[0] ?? 0);
             case 'max':
                 return $this->validateMax($value, $params[0] ?? PHP_INT_MAX);
+            case 'min_num':
+                return $this->validateNumericMin($value, $params[0] ?? 0);
+            case 'max_num':
+                return $this->validateNumericMax($value, $params[0] ?? PHP_INT_MAX);
             case 'numeric':
                 return is_numeric($value);
             case 'integer':
@@ -308,6 +312,24 @@ abstract class FormRequest extends Request
     {
         $max = (int) $max;
         return mb_strlen((string) $value) <= $max;
+    }
+
+    /**
+     * Valida se o valor numérico é maior ou igual ao mínimo.
+     */
+    private function validateNumericMin(mixed $value, mixed $min): bool
+    {
+        $min = (float) $min;
+        return is_numeric($value) && (float) $value >= $min;
+    }
+
+    /**
+     * Valida se o valor numérico é menor ou igual ao máximo.
+     */
+    private function validateNumericMax(mixed $value, mixed $max): bool
+    {
+        $max = (float) $max;
+        return is_numeric($value) && (float) $value <= $max;
     }
 
     /**
@@ -381,6 +403,8 @@ abstract class FormRequest extends Request
             'email'    => "O campo {$field} deve ser um e-mail válido.",
             'min'      => "O campo {$field} deve ter no mínimo :min caracteres.",
             'max'      => "O campo {$field} deve ter no máximo :max caracteres.",
+            'min_num'  => "O campo {$field} deve ser maior ou igual a :min.",
+            'max_num'  => "O campo {$field} deve ser menor ou igual a :max.",
             'numeric'  => "O campo {$field} deve ser um número.",
             'integer'  => "O campo {$field} deve ser um número inteiro.",
             'regex'    => "O campo {$field} não tem um formato válido.",

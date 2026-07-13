@@ -35,19 +35,19 @@ class VeiculoGNVRequest extends FormRequest
             'possui_selo_gnv'          => 'nullable|boolean',
 
             // Cilindro
-            'capacidade_cilindro_m3' => 'required|numeric|min:0',
-            'quantidade_cilindros'   => 'required|integer|min:0',
+            'capacidade_cilindro_m3' => 'required|numeric|min_num:0',
+            'quantidade_cilindros'   => 'required|integer|min_num:0',
             'material_cilindro'      => 'nullable|max:20',
             'localizacao_cilindro'   => 'nullable|max:30',
 
             // Consumo (opcionais)
-            'consumo_cidade_m3km'   => 'nullable|numeric|min:0',
-            'consumo_estrada_m3km'  => 'nullable|numeric|min:0',
+            'consumo_cidade_m3km'   => 'nullable|numeric|min_num:0',
+            'consumo_estrada_m3km'  => 'nullable|numeric|min_num:0',
 
             // Autonomia (opcionais)
-            'autonomia_media_km'    => 'nullable|integer|min:0',
-            'autonomia_cidade_km'   => 'nullable|integer|min:0',
-            'autonomia_estrada_km'  => 'nullable|integer|min:0',
+            'autonomia_media_km'    => 'nullable|integer|min_num:0',
+            'autonomia_cidade_km'   => 'nullable|integer|min_num:0',
+            'autonomia_estrada_km'  => 'nullable|integer|min_num:0',
 
             // Instaladora e observações
             'instaladora_certificada' => 'nullable|max:50',
@@ -86,26 +86,26 @@ class VeiculoGNVRequest extends FormRequest
             // Cilindro
             'capacidade_cilindro_m3.required' => 'A capacidade do cilindro em m³ é obrigatória.',
             'capacidade_cilindro_m3.numeric'  => 'A capacidade do cilindro deve ser um número válido.',
-            'capacidade_cilindro_m3.min'      => 'A capacidade do cilindro não pode ser negativa.',
+            'capacidade_cilindro_m3.min_num'  => 'A capacidade do cilindro não pode ser negativa.',
             'quantidade_cilindros.required'   => 'A quantidade de cilindros é obrigatória.',
             'quantidade_cilindros.integer'    => 'A quantidade de cilindros deve ser um número inteiro.',
-            'quantidade_cilindros.min'        => 'A quantidade de cilindros não pode ser negativa.',
+            'quantidade_cilindros.min_num'    => 'A quantidade de cilindros não pode ser negativa.',
             'material_cilindro.max'  => 'O material do cilindro deve ter no máximo :max caracteres.',
             'localizacao_cilindro.max' => 'A localização do cilindro deve ter no máximo :max caracteres.',
 
             // Consumo
             'consumo_cidade_m3km.numeric' => 'O consumo na cidade em m³/km deve ser um número válido.',
-            'consumo_cidade_m3km.min'     => 'O consumo na cidade em m³/km não pode ser negativo.',
+            'consumo_cidade_m3km.min_num' => 'O consumo na cidade em m³/km não pode ser negativo.',
             'consumo_estrada_m3km.numeric' => 'O consumo na estrada em m³/km deve ser um número válido.',
-            'consumo_estrada_m3km.min'     => 'O consumo na estrada em m³/km não pode ser negativo.',
+            'consumo_estrada_m3km.min_num' => 'O consumo na estrada em m³/km não pode ser negativo.',
 
             // Autonomia
             'autonomia_media_km.integer'  => 'A autonomia média deve ser um número inteiro.',
-            'autonomia_media_km.min'      => 'A autonomia média não pode ser negativa.',
+            'autonomia_media_km.min_num'  => 'A autonomia média não pode ser negativa.',
             'autonomia_cidade_km.integer' => 'A autonomia na cidade deve ser um número inteiro.',
-            'autonomia_cidade_km.min'     => 'A autonomia na cidade não pode ser negativa.',
+            'autonomia_cidade_km.min_num' => 'A autonomia na cidade não pode ser negativa.',
             'autonomia_estrada_km.integer' => 'A autonomia na estrada deve ser um número inteiro.',
-            'autonomia_estrada_km.min'     => 'A autonomia na estrada não pode ser negativa.',
+            'autonomia_estrada_km.min_num' => 'A autonomia na estrada não pode ser negativa.',
 
             // Instaladora
             'instaladora_certificada.max' => 'A instaladora certificada deve ter no máximo :max caracteres.',

@@ -58,11 +58,11 @@ class VeiculoRequest extends FormRequest
             // Campos obrigatórios (IDs de marca e modelo)
             'marca_id'       => 'required|integer|exists:marcas,id',
             'modelo_id'      => 'required|integer|exists:modelos,id',
-            'ano_fabricacao' => 'required|integer|min:1900',
-            'ano_modelo'     => 'required|integer|min:1900',
+            'ano_fabricacao' => 'required|integer|min_num:1900',
+            'ano_modelo'     => 'required|integer|min_num:1900',
             'cor'            => 'required|max:30',
-            'quilometragem'  => 'required|integer|min:0',
-            'preco'          => 'required|numeric|min:0',
+            'quilometragem'  => 'required|integer|min_num:0',
+            'preco'          => 'required|numeric|min_num:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
@@ -73,15 +73,15 @@ class VeiculoRequest extends FormRequest
             'numero_assentos'=> 'nullable|integer|between:2,15',
 
             // Dimensões (opcionais)
-            'comprimento_mm' => 'nullable|integer|min:0',
-            'largura_mm'     => 'nullable|integer|min:0',
-            'altura_mm'      => 'nullable|integer|min:0',
-            'distancia_entre_eixos_mm' => 'nullable|integer|min:0',
-            'peso_ordem_marcha_kg'     => 'nullable|integer|min:0',
-            'volume_porta_malas_l'     => 'nullable|integer|min:0',
-            'volume_cacamba_l'         => 'nullable|integer|min:0',
-            'carga_util_kg'            => 'nullable|integer|min:0',
-            'capacidade_reboque_kg'    => 'nullable|integer|min:0',
+            'comprimento_mm' => 'nullable|integer|min_num:0',
+            'largura_mm'     => 'nullable|integer|min_num:0',
+            'altura_mm'      => 'nullable|integer|min_num:0',
+            'distancia_entre_eixos_mm' => 'nullable|integer|min_num:0',
+            'peso_ordem_marcha_kg'     => 'nullable|integer|min_num:0',
+            'volume_porta_malas_l'     => 'nullable|integer|min_num:0',
+            'volume_cacamba_l'         => 'nullable|integer|min_num:0',
+            'carga_util_kg'            => 'nullable|integer|min_num:0',
+            'capacidade_reboque_kg'    => 'nullable|integer|min_num:0',
 
             // Flags e status
             'gnv_instalado'   => 'nullable|boolean',
@@ -109,10 +109,10 @@ class VeiculoRequest extends FormRequest
             // Ano
             'ano_fabricacao.required' => 'O ano de fabricação é obrigatório.',
             'ano_fabricacao.integer'  => 'O ano de fabricação deve ser um número inteiro.',
-            'ano_fabricacao.min'      => 'O ano de fabricação deve ser maior que 1900.',
+            'ano_fabricacao.min_num'  => 'O ano de fabricação deve ser maior que 1900.',
             'ano_modelo.required'     => 'O ano do modelo é obrigatório.',
             'ano_modelo.integer'      => 'O ano do modelo deve ser um número inteiro.',
-            'ano_modelo.min'          => 'O ano do modelo deve ser maior que 1900.',
+            'ano_modelo.min_num'      => 'O ano do modelo deve ser maior que 1900.',
 
             // Cor
             'cor.required' => 'A cor é obrigatória.',
@@ -121,13 +121,12 @@ class VeiculoRequest extends FormRequest
             // Quilometragem
             'quilometragem.required' => 'A quilometragem é obrigatória.',
             'quilometragem.integer'  => 'A quilometragem deve ser um número inteiro.',
-            'quilometragem.min'      => 'A quilometragem não pode ser negativa.',
+            'quilometragem.min_num'  => 'A quilometragem não pode ser negativa.',
 
             // Preço
             'preco.required' => 'O preço é obrigatório.',
             'preco.numeric'  => 'O preço deve ser um número válido.',
-            'preco.min'      => 'O preço não pode ser negativo.',
-            'preco.regex'    => 'Formato de preço inválido. Use o formato brasileiro (ex: 1.500,50 ou 1500,50).',
+            'preco.min_num'  => 'O preço não pode ser negativo.',
 
             // Tipo de veículo
             'tipo_veiculo.required' => 'O tipo de veículo é obrigatório.',
@@ -142,23 +141,23 @@ class VeiculoRequest extends FormRequest
 
             // Dimensões
             'comprimento_mm.integer' => 'O comprimento deve ser um número inteiro.',
-            'comprimento_mm.min'     => 'O comprimento não pode ser negativo.',
+            'comprimento_mm.min_num' => 'O comprimento não pode ser negativo.',
             'largura_mm.integer'     => 'A largura deve ser um número inteiro.',
-            'largura_mm.min'         => 'A largura não pode ser negativa.',
+            'largura_mm.min_num'     => 'A largura não pode ser negativa.',
             'altura_mm.integer'      => 'A altura deve ser um número inteiro.',
-            'altura_mm.min'          => 'A altura não pode ser negativa.',
+            'altura_mm.min_num'      => 'A altura não pode ser negativa.',
             'distancia_entre_eixos_mm.integer' => 'A distância entre eixos deve ser um número inteiro.',
-            'distancia_entre_eixos_mm.min'     => 'A distância entre eixos não pode ser negativa.',
+            'distancia_entre_eixos_mm.min_num' => 'A distância entre eixos não pode ser negativa.',
             'peso_ordem_marcha_kg.integer'     => 'O peso deve ser um número inteiro.',
-            'peso_ordem_marcha_kg.min'         => 'O peso não pode ser negativo.',
+            'peso_ordem_marcha_kg.min_num'     => 'O peso não pode ser negativo.',
             'volume_porta_malas_l.integer'     => 'O volume do porta-malas deve ser um número inteiro.',
-            'volume_porta_malas_l.min'         => 'O volume do porta-malas não pode ser negativo.',
+            'volume_porta_malas_l.min_num'     => 'O volume do porta-malas não pode ser negativo.',
             'volume_cacamba_l.integer'         => 'O volume da caçamba deve ser um número inteiro.',
-            'volume_cacamba_l.min'             => 'O volume da caçamba não pode ser negativo.',
+            'volume_cacamba_l.min_num'         => 'O volume da caçamba não pode ser negativo.',
             'carga_util_kg.integer'            => 'A carga útil deve ser um número inteiro.',
-            'carga_util_kg.min'                => 'A carga útil não pode ser negativa.',
+            'carga_util_kg.min_num'            => 'A carga útil não pode ser negativa.',
             'capacidade_reboque_kg.integer'    => 'A capacidade de reboque deve ser um número inteiro.',
-            'capacidade_reboque_kg.min'        => 'A capacidade de reboque não pode ser negativa.',
+            'capacidade_reboque_kg.min_num'    => 'A capacidade de reboque não pode ser negativa.',
 
             // Flags
             'gnv_instalado.boolean' => 'O campo GNV instalado deve ser verdadeiro ou falso.',
