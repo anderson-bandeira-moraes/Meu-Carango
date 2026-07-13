@@ -108,8 +108,17 @@ abstract class FormRequest extends Request
             }
         }
 
-        // 3. Guarda apenas os campos que passaram (presentes e com regras)
-        $this->validated = array_intersect_key($data, $rules);
+        // 3. Guarda apenas os campos que passaram E foram enviados com valor válido
+        $validated = [];
+        foreach ($rules as $field => $ruleString) {
+            if (array_key_exists($field, $data) && !isset($this->errors[$field])) {
+                $value = $data[$field];
+                if ($value !== null && $value !== '') {
+                    $validated[$field] = $value;
+                }
+            }
+        }
+        $this->validated = $validated;
 
         return empty($this->errors);
     }
@@ -181,7 +190,6 @@ abstract class FormRequest extends Request
     /**
      * Aplica a sanitização básica a todos os dados.
      * - trim() em strings
-     * - null → string vazia
      *
      * @param array $data
      * @return array
@@ -191,9 +199,8 @@ abstract class FormRequest extends Request
         foreach ($data as $key => $value) {
             if (is_string($value)) {
                 $data[$key] = trim($value);
-            } elseif ($value === null) {
-                $data[$key] = '';
             }
+            // null permanece null (não converte para '')
         }
         return $data;
     }
