@@ -124,9 +124,15 @@ class VeiculoController
 
         // Recupera old input e flash
         $old = $this->session->get('old_veiculo_input', []);
+
+        print_r($old);
+        die;
         $this->session->delete('old_veiculo_input');
 
         $error = $this->getFlash('flash_veiculo_error');
+
+        $tipoSelecionado = $old['tipo_veiculo'] ?? null;
+        $opcionaisSelecionados = $old['opcionaisIds'] ?? [];
 
         return $this->view->renderWithLayout(
             'logista/veiculos/form',
@@ -135,7 +141,7 @@ class VeiculoController
                 'tipo'             => null,
                 'complemento'      => null,
                 'gnv'              => null,
-                'opcionais_selecionados' => [],
+                'opcionais_selecionados' => $opcionaisSelecionados,
                 'todos_opcionais'  => $opcionais,
                 'marcas'           => $marcas,
                 'modelos'          => $modelos,

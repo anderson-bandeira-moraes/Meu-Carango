@@ -2091,36 +2091,59 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // =============================================
-        // 1. MODAL DE CATEGORIA (criação)
+        // 1. MODAL DE CATEGORIA E RESTAURAÇÃO DO TIPO
         // =============================================
         <?php if (!$isEdit): ?>
-            const modal = new bootstrap.Modal(document.getElementById('categoriaModal'), {
-                backdrop: 'static',
-                keyboard: false
-            });
-            modal.show();
+            // Verifica se já existe um tipo selecionado (ex: após erro de validação)
+            const tipoInicial = document.getElementById('tipo_veiculo').value;
 
-            document.querySelectorAll('.categoria-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tipo = this.dataset.tipo;
-                    document.getElementById('tipo_veiculo').value = tipo;
-                    mostrarCampos(tipo);
-                    modal.hide();
-                });
-            });
-
-            document.getElementById('categoriaModal').addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
+            if (tipoInicial) {
+                // Tipo já definido – exibe os campos correspondentes sem mostrar o modal
+                mostrarCampos(tipoInicial);
+                if (tipoInicial === 'combustao') {
+                    document.querySelector('.gnv-field').style.display = 'block';
+                    // Se GNV estiver marcado, exibe o bloco
+                    const gnvCheckbox = document.getElementById('gnv_instalado');
+                    if (gnvCheckbox && gnvCheckbox.checked) {
+                        document.getElementById('bloco-gnv').style.display = 'block';
+                    }
                 }
-            });
+            } else {
+                // Nenhum tipo selecionado – exibe o modal de escolha
+                const modal = new bootstrap.Modal(document.getElementById('categoriaModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+
+                document.querySelectorAll('.categoria-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const tipo = this.dataset.tipo;
+                        document.getElementById('tipo_veiculo').value = tipo;
+                        mostrarCampos(tipo);
+                        modal.hide();
+                    });
+                });
+
+                document.getElementById('categoriaModal').addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            }
         <?php else: ?>
+            // Modo edição – carrega o tipo atual
             const tipoAtual = '<?= addslashes($tipoAtual) ?>';
             if (tipoAtual) {
                 mostrarCampos(tipoAtual);
                 if (tipoAtual === 'combustao') {
                     document.querySelector('.gnv-field').style.display = 'block';
+                    // Se GNV estiver marcado, exibe o bloco
+                    const gnvCheckbox = document.getElementById('gnv_instalado');
+                    if (gnvCheckbox && gnvCheckbox.checked) {
+                        document.getElementById('bloco-gnv').style.display = 'block';
+                    }
                 }
             }
         <?php endif; ?>
