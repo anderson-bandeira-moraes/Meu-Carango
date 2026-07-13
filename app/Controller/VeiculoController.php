@@ -124,9 +124,6 @@ class VeiculoController
 
         // Recupera old input e flash
         $old = $this->session->get('old_veiculo_input', []);
-
-        print_r($old);
-        die;
         $this->session->delete('old_veiculo_input');
 
         $error = $this->getFlash('flash_veiculo_error');

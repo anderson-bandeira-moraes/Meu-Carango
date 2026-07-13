@@ -2152,19 +2152,55 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // 2. FUNÇÃO PARA MOSTRAR/OCULTAR CAMPOS
         // =============================================
         function mostrarCampos(tipo) {
-            document.getElementById('campos-combustao').style.display = 'none';
-            document.getElementById('campos-eletrico').style.display = 'none';
-            document.getElementById('campos-hibrido').style.display = 'none';
-            document.querySelector('.gnv-field').style.display = 'none';
+            // 1. Obtém referências para as três seções principais
+            const secoes = {
+                combustao: document.getElementById('campos-combustao'),
+                eletrico: document.getElementById('campos-eletrico'),
+                hibrido: document.getElementById('campos-hibrido')
+            };
+            const gnvField = document.querySelector('.gnv-field');
 
+            // 2. Oculta todas as seções e desabilita seus campos
+            Object.values(secoes).forEach(secao => {
+                if (secao) {
+                    secao.style.display = 'none';
+                    // Desabilita todos os campos (input, select, textarea) dentro da seção
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = true);
+                }
+            });
+
+            // 3. Esconde o campo de GNV (apenas o checkbox) e desabilita seus campos
+            if (gnvField) {
+                gnvField.style.display = 'none';
+                // O bloco GNV em si é controlado separadamente pelo toggleGNV
+            }
+
+            // 4. Exibe e habilita a seção correspondente ao tipo
             if (tipo === 'combustao') {
-                document.getElementById('campos-combustao').style.display = 'block';
-                document.querySelector('.gnv-field').style.display = 'block';
-                toggleFlexFields();
+                const secao = secoes.combustao;
+                if (secao) {
+                    secao.style.display = 'block';
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                    // Exibe o campo GNV (checkbox) e chama toggleGNV para ajustar o bloco
+                    if (gnvField) {
+                        gnvField.style.display = 'block';
+                        // O toggleGNV será chamado após a inicialização; mas já deixamos o bloco conforme o checkbox
+                        toggleGNV(); // chamamos para garantir sincronia
+                    }
+                    toggleFlexFields();
+                }
             } else if (tipo === 'eletrico') {
-                document.getElementById('campos-eletrico').style.display = 'block';
+                const secao = secoes.eletrico;
+                if (secao) {
+                    secao.style.display = 'block';
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                }
             } else if (tipo === 'hibrido') {
-                document.getElementById('campos-hibrido').style.display = 'block';
+                const secao = secoes.hibrido;
+                if (secao) {
+                    secao.style.display = 'block';
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                }
             }
         }
 
@@ -2280,7 +2316,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
         if (gnvCheckbox && gnvBloco) {
             function toggleGNV() {
-                gnvBloco.style.display = gnvCheckbox.checked ? 'block' : 'none';
+                const isChecked = gnvCheckbox.checked;
+                // Exibe ou oculta o bloco
+                gnvBloco.style.display = isChecked ? 'block' : 'none';
+                
+                // Habilita ou desabilita todos os campos dentro do bloco GNV
+                gnvBloco.querySelectorAll('input, select, textarea').forEach(campo => {
+                    campo.disabled = !isChecked;
+                });
             }
             gnvCheckbox.addEventListener('change', toggleGNV);
             // Executa na inicialização (para edição)
