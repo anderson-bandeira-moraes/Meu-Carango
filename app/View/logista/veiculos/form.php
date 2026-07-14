@@ -46,7 +46,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
         baterias_tipos: <?= json_encode(baterias_tipos_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
-        status_vitrine: <?= json_encode(status_vitrine_list()) ?>
+        status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
+        campos: <?= json_encode(campos_list()) ?>
     };
 </script>
 
