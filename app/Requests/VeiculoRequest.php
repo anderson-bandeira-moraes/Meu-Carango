@@ -180,8 +180,8 @@ class VeiculoRequest extends FormRequest
 
         // Normaliza preco: remove pontos de milhar e converte vírgula decimal para ponto
         if (isset($data['preco']) && is_string($data['preco'])) {
-            $data['preco'] = str_replace('.', '', $data['preco']); // remove pontos de milhar
-            $data['preco'] = str_replace(',', '.', $data['preco']); // vírgula -> ponto
+            $data['preco'] = str_replace(' ', '', $data['preco']);
+            $data['preco'] = str_replace(',', '.', $data['preco']);
         }
 
         // Normaliza gnv_instalado para 0 ou 1
