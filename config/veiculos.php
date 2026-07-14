@@ -130,10 +130,9 @@ return [
     |--------------------------------------------------------------------------
     */
     'portas' => [
-        2 => '2 portas (cupê)',
-        3 => '3 portas (hatch 2 portas)',
-        4 => '4 portas (sedã)',
-        5 => '5 portas (hatch 4 portas + mala)',
+        2 => '2 portas',
+        3 => '3 portas',
+        4 => '4 portas',
     ],
 
     /*
