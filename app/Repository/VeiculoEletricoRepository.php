@@ -30,7 +30,7 @@ class VeiculoEletricoRepository
     {
         try {
             $sql = 'INSERT INTO veiculo_eletrico (
-                veiculo_id, tracao_tipo, transmissao_tipo,
+                veiculo_id, tracao_tipo, transmissao_tipo, bateria_tipo,
                 potencia_max_cv, torque_max_nm, torque_max_kgfm,
                 aceleracao_0_100_seg, velocidade_max_kmh,
                 capacidade_liquida_kwh, saude_bateria_soh,
@@ -39,7 +39,7 @@ class VeiculoEletricoRepository
                 potencia_max_dc_kw, tipo_conector_dc, tipo_conector_ac,
                 tempo_carga_dc_min, consumo_energetico_kwh_100km
             ) VALUES (
-                :veiculo_id, :tracao_tipo, :transmissao_tipo,
+                :veiculo_id, :tracao_tipo, :transmissao_tipo, :bateria_tipo,
                 :potencia_max_cv, :torque_max_nm, :torque_max_kgfm,
                 :aceleracao_0_100_seg, :velocidade_max_kmh,
                 :capacidade_liquida_kwh, :saude_bateria_soh,
@@ -50,6 +50,7 @@ class VeiculoEletricoRepository
             ) ON DUPLICATE KEY UPDATE
                 tracao_tipo = VALUES(tracao_tipo),
                 transmissao_tipo = VALUES(transmissao_tipo),
+                bateria_tipo = VALUES(bateria_tipo),
                 potencia_max_cv = VALUES(potencia_max_cv),
                 torque_max_nm = VALUES(torque_max_nm),
                 torque_max_kgfm = VALUES(torque_max_kgfm),
@@ -87,6 +88,37 @@ class VeiculoEletricoRepository
             ]);
             return false;
         }
+    }
+
+    /**
+     * Prepara os dados para a query, garantindo tipos e valores padrão.
+     *
+     * @param array $dados
+     * @return array
+     */
+    private function prepareDados(array $dados): array
+    {
+        return [
+            ':veiculo_id'                    => $dados['veiculo_id'] ?? null,
+            ':tracao_tipo'                   => $dados['tracao_tipo'] ?? null,
+            ':transmissao_tipo'              => $dados['transmissao_tipo'] ?? null,
+            ':bateria_tipo'                  => $dados['bateria_tipo'] ?? null,
+            ':potencia_max_cv'               => $dados['potencia_max_cv'] ?? null,
+            ':torque_max_nm'                 => $dados['torque_max_nm'] ?? null,
+            ':torque_max_kgfm'               => $dados['torque_max_kgfm'] ?? null,
+            ':aceleracao_0_100_seg'          => $dados['aceleracao_0_100_seg'] ?? null,
+            ':velocidade_max_kmh'            => $dados['velocidade_max_kmh'] ?? null,
+            ':capacidade_liquida_kwh'        => $dados['capacidade_liquida_kwh'] ?? null,
+            ':saude_bateria_soh'             => $dados['saude_bateria_soh'] ?? null,
+            ':autonomia_wltp_km'             => $dados['autonomia_wltp_km'] ?? null,
+            ':autonomia_inmetro_km'          => $dados['autonomia_inmetro_km'] ?? null,
+            ':garantia_bateria'              => $dados['garantia_bateria'] ?? null,
+            ':potencia_max_dc_kw'            => $dados['potencia_max_dc_kw'] ?? null,
+            ':tipo_conector_dc'              => $dados['tipo_conector_dc'] ?? null,
+            ':tipo_conector_ac'              => $dados['tipo_conector_ac'] ?? null,
+            ':tempo_carga_dc_min'            => $dados['tempo_carga_dc_min'] ?? null,
+            ':consumo_energetico_kwh_100km'  => $dados['consumo_energetico_kwh_100km'] ?? null,
+        ];
     }
 
     /**
@@ -137,35 +169,5 @@ class VeiculoEletricoRepository
             ]);
             return false;
         }
-    }
-
-    /**
-     * Prepara os dados para a query, garantindo tipos e valores padrão.
-     *
-     * @param array $dados
-     * @return array
-     */
-    private function prepareDados(array $dados): array
-    {
-        return [
-            ':veiculo_id'                    => $dados['veiculo_id'] ?? null,
-            ':tracao_tipo'                   => $dados['tracao_tipo'] ?? null,
-            ':transmissao_tipo'              => $dados['transmissao_tipo'] ?? null,
-            ':potencia_max_cv'               => $dados['potencia_max_cv'] ?? null,
-            ':torque_max_nm'                 => $dados['torque_max_nm'] ?? null,
-            ':torque_max_kgfm'               => $dados['torque_max_kgfm'] ?? null,
-            ':aceleracao_0_100_seg'          => $dados['aceleracao_0_100_seg'] ?? null,
-            ':velocidade_max_kmh'            => $dados['velocidade_max_kmh'] ?? null,
-            ':capacidade_liquida_kwh'        => $dados['capacidade_liquida_kwh'] ?? null,
-            ':saude_bateria_soh'             => $dados['saude_bateria_soh'] ?? null,
-            ':autonomia_wltp_km'             => $dados['autonomia_wltp_km'] ?? null,
-            ':autonomia_inmetro_km'          => $dados['autonomia_inmetro_km'] ?? null,
-            ':garantia_bateria'              => $dados['garantia_bateria'] ?? null,
-            ':potencia_max_dc_kw'            => $dados['potencia_max_dc_kw'] ?? null,
-            ':tipo_conector_dc'              => $dados['tipo_conector_dc'] ?? null,
-            ':tipo_conector_ac'              => $dados['tipo_conector_ac'] ?? null,
-            ':tempo_carga_dc_min'            => $dados['tempo_carga_dc_min'] ?? null,
-            ':consumo_energetico_kwh_100km'  => $dados['consumo_energetico_kwh_100km'] ?? null,
-        ];
     }
 }

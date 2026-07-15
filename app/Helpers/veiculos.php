@@ -361,19 +361,38 @@ if (!function_exists('tipos_hibrido_list')) {
     }
 }
 
-if (!function_exists('baterias_tipos_list')) {
+if (!function_exists('baterias_tipos_hibrido_list')) {
     /**
-     * Retorna a lista de tipos de bateria para veículos híbridos e elétricos (value => label).
+     * Retorna a lista de tipos de bateria para veículos híbridos (HEV, MHEV, PHEV).
      *
      * @return array Array associativo com value => label
      */
-    function baterias_tipos_list(): array
+    function baterias_tipos_hibrido_list(): array
     {
         static $list = null;
 
         if ($list === null) {
             $config = require CONFIG_DIR . '/veiculos.php';
-            $list = $config['baterias_tipos'] ?? [];
+            $list = $config['baterias_tipos_hibrido'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('baterias_tipos_bev_list')) {
+    /**
+     * Retorna a lista de tipos de bateria para veículos 100% elétricos (BEV).
+     *
+     * @return array Array associativo com value => label
+     */
+    function baterias_tipos_bev_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['baterias_tipos_bev'] ?? [];
         }
 
         return $list;

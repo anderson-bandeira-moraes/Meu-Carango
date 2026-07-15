@@ -36,6 +36,7 @@ class VeiculoEletricoRequest extends FormRequest
             'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
 
             // Bateria
+            'bateria_tipo'           => 'nullable|max:30',
             'capacidade_liquida_kwh' => 'required|numeric|min_num:0',
             'saude_bateria_soh'      => 'required|numeric|between:0,100',
 
@@ -96,6 +97,7 @@ class VeiculoEletricoRequest extends FormRequest
             'capacidade_liquida_kwh.required' => 'A capacidade da bateria é obrigatória.',
             'capacidade_liquida_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
             'capacidade_liquida_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
+            'bateria_tipo.max'                => 'O tipo de bateria deve ter no máximo :max caracteres.',
 
             'saude_bateria_soh.required' => 'A saúde da bateria (SoH) é obrigatória.',
             'saude_bateria_soh.numeric'  => 'A saúde da bateria deve ser um número válido.',
@@ -150,6 +152,15 @@ class VeiculoEletricoRequest extends FormRequest
             'saude_bateria_soh',
             'consumo_energetico_kwh_100km',
         ];
+
+        // Sanitiza campos de texto
+        $textFields = ['bateria_tipo'];
+        foreach ($textFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+            }
+        }
+
         foreach ($floatFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (float) $data[$field];

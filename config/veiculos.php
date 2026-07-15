@@ -302,7 +302,7 @@ return [
     | Tipos de bateria para veículos híbridos e elétricos (value => label)
     |--------------------------------------------------------------------------
     */
-    'baterias_tipos' => [
+    'baterias_tipos_hibrido' => [
         'NiMH (Níquel-Hidreto Metálico)'         => 'NiMH (Níquel-Hidreto Metálico)',
         'NMC (Níquel-Manganês-Cobalto)'          => 'NMC (Níquel-Manganês-Cobalto)',
         'NCA (Níquel-Cobalto-Alumínio)'          => 'NCA (Níquel-Cobalto-Alumínio)',
@@ -312,6 +312,13 @@ return [
         'Bateria 48V'                            => 'Bateria 48V',
         'Estado Sólido'                          => 'Estado Sólido',
         'Supercapacitores'                       => 'Supercapacitores',
+    ],
+
+    'baterias_tipos_bev' => [
+        'NMC (Níquel-Manganês-Cobalto)'  => 'NMC (Níquel-Manganês-Cobalto)',
+        'LFP (Fosfato de Ferro e Lítio)' => 'LFP (Fosfato de Ferro e Lítio)',
+        'NCA (Níquel-Cobalto-Alumínio)'  => 'NCA (Níquel-Cobalto-Alumínio)',
+        'LMO (Óxido de Lítio e Manganês)' => 'LMO (Óxido de Lítio e Manganês)',
     ],
 
     /*

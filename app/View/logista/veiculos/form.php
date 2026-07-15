@@ -44,7 +44,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         conectores_dc: <?= json_encode(conectores_dc_list()) ?>,
         conectores_ac: <?= json_encode(conectores_ac_list()) ?>,
         tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
-        baterias_tipos: <?= json_encode(baterias_tipos_list()) ?>,
+        baterias_tipos_hibrido: <?= json_encode(baterias_tipos_hibrido_list()) ?>,
+        baterias_tipos_bev: <?= json_encode(baterias_tipos_bev_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
         status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
         campos: <?= json_encode(campos_list()) ?>
@@ -1212,6 +1213,36 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Tipo da Bateria -->
+                        <div class="col-md-4">
+                            <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
+                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
+                                <option value="">Selecione</option>
+                                <?php foreach (baterias_tipos_bev_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Selecione o tipo de bateria.
+                            </div>
+                            <?php if (isset($errors['bateria_tipo'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
+                            <?php endif; ?>
+
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
+                                   class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
+                                   placeholder="Digite o tipo personalizado" 
+                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            <div class="invalid-feedback">
+                                O tipo de bateria personalizado é obrigatório.
+                            </div>
+                        </div>
+
                         <!-- Potência Máxima -->
                         <div class="col-md-4">
                             <label for="potencia_max_cv" class="form-label">Potência Máxima <span class="text-danger">*</span> <span class="text-muted">(cv)</span></label>
@@ -1718,15 +1749,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo da Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
-                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
-                                <?php foreach (baterias_tipos_list() as $value => $label): ?>
+                                <?php foreach (baterias_tipos_hibrido_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
                                         <?= htmlspecialchars($label) ?>
                                     </option>
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
+                            <div class="invalid-feedback">
+                                Selecione o tipo de bateria.
+                            </div>
                             <?php if (isset($errors['bateria_tipo'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
                             <?php endif; ?>
@@ -2383,24 +2417,23 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         /**
-         * Prepara o campo para submissão: se "outro" estiver selecionado, copia o valor do campo extra para o select.
-         * Retorna false se o campo extra estiver vazio (para impedir submissão).
+         * Prepara o campo para submissão: se "outro" estiver selecionado,
+         * copia o valor do campo extra para o select, mas somente se o campo extra
+         * não estiver vazio. Caso contrário, mantém "outro" no select.
          * @param {string} selectId
          * @param {string} outroInputId
-         * @returns {boolean}
          */
         function prepareSubmit(selectId, outroInputId) {
             const select = document.getElementById(selectId);
             const outroInput = document.getElementById(outroInputId);
-            if (!select || !outroInput) return true;
+            if (!select || !outroInput) return;
             if (select.value === 'outro') {
                 const valor = outroInput.value.trim();
-                if (valor === '') {
-                    return false;
+                if (valor !== '') {
+                    select.value = valor;
                 }
-                select.value = valor;
+                // Se estiver vazio, mantém "outro" no select, não substitui
             }
-            return true;
         }
 
         // =============================================
@@ -2441,19 +2474,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                // 1. Processa campos "Outro"
-                if (!prepareSubmit('motor_tipo', 'motor_tipo_outro')) {
-                    e.preventDefault();
-                    alert('Por favor, digite a motorização personalizada para o motor a combustão.');
-                    document.getElementById('motor_tipo_outro').focus();
-                    return;
-                }
-                if (!prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro')) {
-                    e.preventDefault();
-                    alert('Por favor, digite a motorização personalizada para o motor a combustão (híbrido).');
-                    document.getElementById('motor_combustao_tipo_outro').focus();
-                    return;
-                }
+                // 1. Processa campos "Outro" (copia valores para submissão)
+                prepareSubmit('motor_tipo', 'motor_tipo_outro');
+                prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro');
+                prepareSubmit('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro');
+                prepareSubmit('material_cilindro', 'material_cilindro_outro');
+                prepareSubmit('localizacao_cilindro', 'localizacao_cilindro_outro');
+                prepareSubmit('tipo_conector_dc', 'tipo_conector_dc_outro');
+                prepareSubmit('tipo_conector_ac', 'tipo_conector_ac_outro');
+                prepareSubmit('bateria_tipo', 'bateria_tipo_outro');
+                prepareSubmit('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro');
+
 
                 // 2. Acumulador de erros
                 const erros = [];
@@ -3611,7 +3642,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
         // =============================================
-        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
+        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', CONFIG.baterias_tipos_bev);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
