@@ -134,6 +134,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="brand-model-display">
                                             <span id="marcaDisplay" class="badge bg-secondary p-2">Nenhuma marca selecionada</span>
                                             <span id="modeloDisplay" class="badge bg-secondary p-2">Nenhum modelo selecionado</span>
+
+                                            <!-- Feedback de erro -->
+                                            <div id="marcaModeloFeedback" class="invalid-feedback" style="display: none;">
+                                                Selecione uma marca e um modelo.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -202,6 +207,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Campo oculto para armazenar a cor selecionada -->
                         <input type="hidden" name="cor" id="corSelecionada" value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>">
 
+                        <div id="corFeedback" class="invalid-feedback" style="display: none;">
+                            O nome da cor é obrigatório. 
+                        </div>
+
                         <?php if (isset($errors['cor'])): ?>
                             <div class="invalid-feedback d-block"><?= implode(', ', $errors['cor']) ?></div>
                         <?php endif; ?>
@@ -237,6 +246,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                value="<?= htmlspecialchars($old['cor_outro'] ?? '') ?>" 
                                placeholder="Digite a cor personalizada" 
                                style="display: <?= ($valorSalvo === 'outro') ? 'block' : 'none' ?>;">
+                        <div class="invalid-feedback">
+                            A cor personalizada é obrigatória.
+                        </div>
                     </div>
 
                     <!-- Quilometragem -->
@@ -2429,7 +2441,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                // 1. Processa campos "Outro" (motorização personalizada)
+                // 1. Processa campos "Outro"
                 if (!prepareSubmit('motor_tipo', 'motor_tipo_outro')) {
                     e.preventDefault();
                     alert('Por favor, digite a motorização personalizada para o motor a combustão.');
@@ -2443,45 +2455,91 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     return;
                 }
 
-                // 2. Validação HTML5 (campos com required)
-                if (!this.checkValidity()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.classList.add('was-validated');
-                    // Rola até o primeiro erro (opcional)
-                    const firstInvalid = this.querySelector('.is-invalid');
-                    if (firstInvalid) {
-                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        firstInvalid.focus();
-                    }
-                    return;
-                }
+                // 2. Acumulador de erros
+                const erros = [];
 
-                // 3. Validação adicional para marca/modelo (campos ocultos)
+                // 2a. Validação de marca/modelo
                 const marcaId = document.getElementById('marca_id').value;
                 const modeloId = document.getElementById('modelo_id').value;
-                if (!marcaId || !modeloId) {
+                const feedbackEl = document.getElementById('marcaModeloFeedback');
+                const marcaBadge = document.getElementById('marcaDisplay');
+                const modeloBadge = document.getElementById('modeloDisplay');
+
+                if (!marcaId) {
+                    erros.push('marca');
+                    marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
+                    marcaBadge.textContent = 'Selecione uma marca!';
+                } else {
+                    marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    const marca = marcasData.find(m => m.id == marcaId);
+                    marcaBadge.textContent = marca ? marca.nome : 'Nenhuma marca selecionada';
+                }
+                if (!modeloId) {
+                    erros.push('modelo');
+                    modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
+                    modeloBadge.textContent = 'Selecione um modelo!';
+                } else {
+                    modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    modeloBadge.textContent = modelosData[modeloId] || 'Nenhum modelo selecionado';
+                }
+                if (erros.some(e => e === 'marca' || e === 'modelo')) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.classList.add('d-block');
+                } else {
+                    feedbackEl.style.display = 'none';
+                    feedbackEl.classList.remove('d-block');
+                }
+
+                // 2b. Validação de cor
+                const corSelecionada = document.getElementById('corSelecionada').value;
+                const corInput = document.getElementById('corInput');
+                const corFeedback = document.getElementById('corFeedback');
+
+                if (!corSelecionada) {
+                    erros.push('cor');
+                    corInput.classList.add('is-invalid');
+                    corFeedback.style.display = 'block';
+                    corFeedback.classList.add('d-block');
+                } else {
+                    corInput.classList.remove('is-invalid');
+                    corFeedback.style.display = 'none';
+                    corFeedback.classList.remove('d-block');
+                }
+
+                // 2c. Validação HTML5 (campos com required)
+                if (!this.checkValidity()) {
+                    erros.push('required');
+                    this.classList.add('was-validated');
+                    // Não retornamos ainda, continuamos para exibir todos os erros
+                } else {
+                    this.classList.remove('was-validated');
+                }
+
+                // 3. Se houver qualquer erro, previne o envio e rola até o primeiro
+                if (erros.length > 0) {
                     e.preventDefault();
-                    // Marca o badge como inválido (adiciona classe customizada)
-                    const marcaBadge = document.getElementById('marcaDisplay');
-                    const modeloBadge = document.getElementById('modeloDisplay');
-                    if (!marcaId) {
-                        marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
-                        marcaBadge.textContent = 'Selecione uma marca!';
-                    } else {
-                        marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    e.stopPropagation();
+
+                    // Encontra o primeiro elemento com erro para rolar
+                    let firstErrorElement = null;
+                    if (erros.includes('marca') || erros.includes('modelo')) {
+                        firstErrorElement = document.querySelector('.brand-model-display');
+                    } else if (erros.includes('cor')) {
+                        firstErrorElement = document.getElementById('corInput');
+                    } else if (erros.includes('required')) {
+                        firstErrorElement = this.querySelector('.is-invalid');
                     }
-                    if (!modeloId) {
-                        modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
-                        modeloBadge.textContent = 'Selecione um modelo!';
-                    } else {
-                        modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    if (firstErrorElement) {
+                        firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        if (firstErrorElement.tagName === 'INPUT' || firstErrorElement.tagName === 'SELECT') {
+                            firstErrorElement.focus();
+                        }
                     }
                     return;
                 }
 
-                // 4. Se tudo válido, o formulário é enviado normalmente
-                // (sem preventDefault)
+                // 4. Se chegou até aqui, todos os campos são válidos
+                // O formulário será submetido normalmente
             });
         }
 
@@ -2818,6 +2876,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 modeloDisplay.className = 'badge bg-primary p-2';
                 const modalInstance = bootstrap.Modal.getInstance(modalMarcaModelo);
                 if (modalInstance) modalInstance.hide();
+
+                // Limpa feedback ao abrir o modal
+                const feedbackEl = document.getElementById('marcaModeloFeedback');
+                feedbackEl.style.display = 'none';
+                feedbackEl.classList.remove('d-block');
+                marcaDisplay.classList.remove('badge-danger', 'border', 'border-danger');
+                modeloDisplay.classList.remove('badge-danger', 'border', 'border-danger');
             });
         }
 
@@ -3316,14 +3381,23 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     // Controla campo "Outro"
                     if (cor === 'outro') {
                         corOutro.style.display = 'block';
+                        corOutro.setAttribute('required', 'required');
+                        corOutro.classList.add('requires-validation');
                         corOutro.focus();
                     } else {
                         corOutro.style.display = 'none';
+                        corOutro.removeAttribute('required');
+                        corOutro.classList.remove('requires-validation');
                         corOutro.value = '';
                     }
 
                     // Fecha o dropdown
                     dropdown.style.display = 'none';
+
+                    // Limpa erro de validação
+                    corInput.classList.remove('is-invalid');
+                    corFeedback.style.display = 'none';
+                    corFeedback.classList.remove('d-block');
                 });
             });
         }
