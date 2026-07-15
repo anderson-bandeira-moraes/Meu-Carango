@@ -109,7 +109,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
     <?php endif; ?>
 
     <!-- ========== FORMULÁRIO ========== -->
-    <form id="veiculoForm" action="<?= $isEdit ? "/logista/veiculos/atualizar/{$veiculo['id']}" : '/logista/veiculos/salvar' ?>" method="POST" enctype="multipart/form-data">
+    <form id="veiculoForm" action="<?= $isEdit ? "/logista/veiculos/atualizar/{$veiculo['id']}" : '/logista/veiculos/salvar' ?>" method="POST" enctype="multipart/form-data" novalidate class="needs-validation">
         <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
 
         <!-- Tipo de veículo (hidden) -->
@@ -163,7 +163,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="ano_fabricacao" class="form-label">Ano de Fabricação <span class="text-danger">*</span></label>
                         <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>">
+                               value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>" required>
+                         <div class="invalid-feedback">
+                            O ano de fabricação é obrigatório.
+                        </div>
                         <?php if (isset($errors['ano_fabricacao'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_fabricacao']) ?></div>
                         <?php endif; ?>
@@ -173,7 +176,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="ano_modelo" class="form-label">Ano do Modelo <span class="text-danger">*</span></label>
                         <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>">
+                               value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>" required>
+                        <div class="invalid-feedback">
+                            O ano do modelo é obrigatório.
+                        </div>
                         <?php if (isset($errors['ano_modelo'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['ano_modelo']) ?></div>
                         <?php endif; ?>
@@ -242,8 +248,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        isset($old['quilometragem']) ? number_format($old['quilometragem'], 0, ',', '.') : 
                                        (isset($veiculo['quilometragem']) ? number_format($veiculo['quilometragem'], 0, ',', '.') : '')
                                    ) ?>" 
-                                   placeholder="Ex: 90.000" inputmode="numeric">
+                                   placeholder="Ex: 90.000" inputmode="numeric" required>
                             <span class="input-group-text">km</span>
+                            <div class="invalid-feedback">
+                                A quilometragem é obrigatória.
+                            </div>
                         </div>
                         <!-- Campo oculto com o valor real (sem formatação) -->
                         <input type="hidden" name="quilometragem" id="quilometragem_real" value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
@@ -258,7 +267,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="input-group">
                             <span class="input-group-text">R$</span>
                             <input type="text" id="preco" class="form-control <?= isset($errors['preco']) ? 'is-invalid' : '' ?>" 
-                                   placeholder="Ex: 45.900,00" inputmode="decimal">
+                                   placeholder="Ex: 45.900,00" inputmode="decimal" required>
+                            <div class="invalid-feedback">
+                                O preço é obrigatório.
+                            </div>
                         </div>
                         <input type="hidden" name="preco" id="preco_real" value="<?= htmlspecialchars($old['preco'] ?? $veiculo['preco'] ?? '') ?>">
                         <?php if (isset($errors['preco'])): ?>
@@ -269,7 +281,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Número de Portas -->
                     <div class="col-md-4">
                         <label for="numero_portas" class="form-label">Número de Portas <span class="text-danger">*</span></label>
-                        <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>">
+                        <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" required>
                             <option value="">Selecione</option>
                             <?php foreach (portas_list() as $valor => $label): ?>
                                 <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
@@ -277,6 +289,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="invalid-feedback">
+                            O número de portas é obrigatório.
+                        </div>
                         <?php if (isset($errors['numero_portas'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['numero_portas']) ?></div>
                         <?php endif; ?>
@@ -285,7 +300,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <!-- Número de Assentos -->
                     <div class="col-md-4">
                         <label for="numero_assentos" class="form-label">Número de Assentos <span class="text-danger">*</span></label>
-                        <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>">
+                        <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" required>
                             <option value="">Selecione</option>
                             <?php foreach (assentos_list() as $valor): ?>
                                 <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
@@ -293,6 +308,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="invalid-feedback">
+                            O número de assentos é obrigatório.
+                        </div>
                         <?php if (isset($errors['numero_assentos'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
                         <?php endif; ?>
@@ -311,10 +329,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div id="bloco-gnv" style="display: <?= ($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? 0) ? 'block' : 'none' ?>;" class="mt-3 p-3 border rounded bg-light">
                         <h6 class="mb-3"><i class="bi bi-gas-pump me-2"></i>Dados do Kit GNV</h6>
                         <div class="row g-3">
+
                             <!-- Tipo de Sistema -->
                             <div class="col-md-4">
                                 <label for="tipo_sistema" class="form-label">Tipo de Sistema <span class="text-danger">*</span></label>
-                                <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>">
+                                <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_sistemas_list() as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', $value) ?>>
@@ -322,6 +341,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                                <div class="invalid-feedback">
+                                    O tipo de sistema é obrigatório.
+                                </div>
                                 <?php if (isset($errors['tipo_sistema'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_sistema']) ?></div>
                                 <?php endif; ?>
@@ -330,7 +352,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Geração do Kit -->
                             <div class="col-md-4">
                                 <label for="geracao_kit" class="form-label">Geração do Kit <span class="text-danger">*</span></label>
-                                <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>">
+                                <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_geracoes_list() as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', $value) ?>>
@@ -338,6 +360,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                                <div class="invalid-feedback">
+                                    A geração do kit é obrigatória.
+                                </div>
                                 <?php if (isset($errors['geracao_kit'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['geracao_kit']) ?></div>
                                 <?php endif; ?>
@@ -365,7 +390,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Data da Última Inspeção -->
                             <div class="col-md-4">
-                                <label for="data_inspecao" class="form-label">Data da Última Inspeção <span class="text-danger">*</span></label>
+                                <label for="data_inspecao" class="form-label">Data da Última Inspeção</label>
                                 <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_inspecao'] ?? $complemento['data_inspecao'] ?? '') ?>">
                                 <?php if (isset($errors['data_inspecao'])): ?>
@@ -375,7 +400,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Validade do Cilindro -->
                             <div class="col-md-4">
-                                <label for="data_validade_cilindro" class="form-label">Validade do Cilindro <span class="text-danger">*</span></label>
+                                <label for="data_validade_cilindro" class="form-label">Validade do Cilindro</label>
                                 <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $complemento['data_validade_cilindro'] ?? '') ?>">
                                 <?php if (isset($errors['data_validade_cilindro'])): ?>
@@ -386,8 +411,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Capacidade -->
                             <div class="col-md-3">
                                 <label for="capacidade_cilindro_m3" class="form-label">Capacidade <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>">
+                                <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_capacidades_list() as $valor): ?>
                                         <option value="<?= $valor ?>" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', $valor) ?>>
@@ -395,8 +419,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         </option>
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>                                    
-                                </div>
+                                </select>
+                                                                  
                                 <?php if (isset($errors['capacidade_cilindro_m3'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_cilindro_m3']) ?></div>
                                 <?php endif; ?>
@@ -407,12 +431,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Digite a capacidade em m³" 
                                        style="display: <?= ($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
                                        min="0">
+                                <div class="invalid-feedback">
+                                    A capacidade é obrigatória.
+                                </div>  
                             </div>
 
                             <!-- Quantidade Cilindros -->
                             <div class="col-md-3">
                                 <label for="quantidade_cilindros" class="form-label">Quantidade <span class="text-danger">*</span></label>
-                                <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>">
+                                <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_quantidades_list() as $valor): ?>
                                         <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', $valor) ?>>
@@ -420,6 +447,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                                <div class="invalid-feedback">
+                                    A quantidade é obrigatória.
+                                </div> 
                                 <?php if (isset($errors['quantidade_cilindros'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['quantidade_cilindros']) ?></div>
                                 <?php endif; ?>
@@ -449,8 +479,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Localização Cilindro -->
                             <div class="col-md-3">
-                                <label for="localizacao_cilindro" class="form-label">Localização</label>
-                                <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>">
+                                <label for="localizacao_cilindro" class="form-label">Localização <span class="text-danger">*</span></label>
+                                <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_localizacoes_list() as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', $value) ?>>
@@ -459,6 +489,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    A localização é obrigatória.
+                                </div> 
                                 <?php if (isset($errors['localizacao_cilindro'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['localizacao_cilindro']) ?></div>
                                 <?php endif; ?>
@@ -759,10 +792,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <!-- Combustível e Motor -->
+
+                        <!-- Combustível -->
                         <div class="col-md-6">
                             <label for="combustivel" class="form-label">Combustível <span class="text-danger">*</span></label>
-                            <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>">
+                            <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (combustiveis_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', $value) ?>>
@@ -770,6 +804,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O combustível é obrigatório.
+                            </div>
                             <?php if (isset($errors['combustivel'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
                             <?php endif; ?>
@@ -778,7 +815,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Motorização (cilindrada) -->
                         <div class="col-md-6">
                             <label for="motor_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
-                            <select name="motor_tipo" id="motor_tipo" class="form-select <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="motor_tipo" id="motor_tipo" class="form-select <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (motorizacoes_list() as $valor): ?>
                                     <option value="<?= htmlspecialchars($valor) ?>" <?= selected($old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '', $valor) ?>>
@@ -796,7 +833,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                    value="<?= htmlspecialchars($old['motor_tipo_outro'] ?? '') ?>" 
                                    placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
                                    style="display: none;">
-                            <small class="text-muted">Ex: 1.0, 1.6, 2.0, etc.</small>
+                            <div class="invalid-feedback">
+                                A motorização é obrigatória.
+                            </div>
                         </div>
 
                         <h6 id="titulo-gasolina" class="text-secondary" style="display: none;">
@@ -809,8 +848,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="input-group">
                                 <input type="number" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
-                                       placeholder="Ex: 120" min="0">
+                                       placeholder="Ex: 120" min="0" required>
                                 <span class="input-group-text">cv</span>
+                                <div class="invalid-feedback">
+                                    A potência é obrigatória.
+                                </div>
                             </div>
                             <?php if (isset($errors['potencia_cv'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_cv']) ?></div>
@@ -834,7 +876,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo de Tração -->
                         <div class="col-md-4">
                             <label for="tracao_tipo" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
-                            <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (tracao_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
@@ -842,6 +884,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O tipo de tração é obrigatória.
+                            </div>
                             <?php if (isset($errors['tracao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
                             <?php endif; ?>
@@ -850,7 +895,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo de Transmissão (Combustão) -->
                         <div class="col-md-4">
                             <label for="transmissao_tipo" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
-                            <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
@@ -858,6 +903,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O tipo de transmissão é obrigatória.
+                            </div>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
@@ -865,8 +913,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Número de Marchas -->
                         <div class="col-md-4">
-                            <label for="numero_marchas" class="form-label">Número de Marchas</label>
-                            <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>">
+                            <label for="numero_marchas" class="form-label">Número de Marchas <span class="text-danger">*</span></label>
+                            <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (marchas_list() as $valor): ?>
                                     <option value="<?= $valor ?>" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', $valor) ?>>
@@ -874,6 +922,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O número de marchas é obrigatório.
+                            </div>
                             <?php if (isset($errors['numero_marchas'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
                             <?php endif; ?>
@@ -886,9 +937,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml" 
                                        class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
-                                       placeholder="Ex: 12.5" min="0">
+                                       placeholder="Ex: 12.5" min="0" required>
                                 <span class="input-group-text">km/l</span>
-                            </div>
+                                <div class="invalid-feedback">
+                                    O consumo na cidade é obrigatório.
+                                </div>
+                            </div>  
                             <?php if (isset($errors['consumo_cidade_kml'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
                             <?php endif; ?>
@@ -896,13 +950,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Consumo Estrada -->
                         <div class="col-md-3">
-                            <label for="consumo_estrada_kml" class="form-label">Consumo Estrada</label>
+                            <label for="consumo_estrada_kml" class="form-label">Consumo Estrada <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml" 
                                        class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
-                                       placeholder="Ex: 15.0" min="0">
+                                       placeholder="Ex: 15.0" min="0" required>
                                 <span class="input-group-text">km/l</span>
+                                <div class="invalid-feedback">
+                                    O consumo na estrada é obrigatório.
+                                </div>
                             </div>
                             <?php if (isset($errors['consumo_estrada_kml'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
@@ -931,8 +988,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
-                                       placeholder="Ex: 50" min="0">
+                                       placeholder="Ex: 50" min="0" required>
                                 <span class="input-group-text">L</span>
+                                <div class="invalid-feedback">
+                                    A capacidade do tanque é obrigatória.
+                                </div>
                             </div>
                             <?php if (isset($errors['capacidade_tanque_l'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
@@ -944,6 +1004,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <hr>
                             <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Dados para Etanol (obrigatórios para Flex)</h6>
                             <div class="row g-3">
+
                                 <!-- Potência Etanol -->
                                 <div class="col-md-4">
                                     <label for="potencia_etanol_cv" class="form-label">Potência Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(cv)</span></label>
@@ -951,8 +1012,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <input type="number" name="potencia_etanol_cv" id="potencia_etanol_cv" 
                                                class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['potencia_etanol_cv'] ?? $complemento['potencia_etanol_cv'] ?? '') ?>" 
-                                               placeholder="Ex: 115" min="0">
+                                               placeholder="Ex: 115" min="0" required>
                                         <span class="input-group-text">cv</span>
+                                        <div class="invalid-feedback">
+                                            A potência para etanol é obrigatória.
+                                        </div>
                                     </div>
                                     <?php if (isset($errors['potencia_etanol_cv'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_etanol_cv']) ?></div>
@@ -961,7 +1025,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Torque Etanol -->
                                 <div class="col-md-4">
-                                    <label for="torque_etanol_kgfm" class="form-label">Torque Etanol <span class="text-danger flex-required">*</span> <span class="text-muted">(kgfm)</span></label>
+                                    <label for="torque_etanol_kgfm" class="form-label">Torque Etanol <span class="text-muted">(kgfm)</span></label>
                                     <div class="input-group">
                                         <input type="number" step="0.1" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
                                                class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -981,8 +1045,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <input type="number" step="0.1" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
-                                               placeholder="Ex: 8.5" min="0">
+                                               placeholder="Ex: 8.5" min="0" required>
                                         <span class="input-group-text">km/l</span>
+                                        <div class="invalid-feedback">
+                                            O consumo na cidade para etanol é obrigatório.
+                                        </div>
                                     </div>
                                     <?php if (isset($errors['consumo_cidade_etanol_kml'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
@@ -996,8 +1063,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <input type="number" step="0.1" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
-                                               placeholder="Ex: 10.2" min="0">
+                                               placeholder="Ex: 10.2" min="0" required>
                                         <span class="input-group-text">km/l</span>
+                                        <div class="invalid-feedback">
+                                            O consumo na estrada para etanol é obrigatório.
+                                        </div>
                                     </div>
                                     <?php if (isset($errors['consumo_estrada_etanol_kml'])): ?>
                                         <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
@@ -2255,6 +2325,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             if (!select || !outroInput) return;
             const isOutro = select.value === 'outro';
             outroInput.style.display = isOutro ? 'block' : 'none';
+
+            // Controla required
+            if (isOutro) {
+                outroInput.setAttribute('required', 'required');
+                // Adiciona classe para validação
+                outroInput.classList.add('requires-validation');
+            } else {
+                outroInput.removeAttribute('required');
+                outroInput.classList.remove('requires-validation');
+                outroInput.value = ''; // limpa o valor
+            }
+
             if (!isOutro) outroInput.value = '';
         }
 
@@ -2342,26 +2424,64 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         // =============================================
-        // 6. PREPARAR SUBMISSÃO (garantir que os valores de "Outro" sejam enviados corretamente)
+        // 6. PREPARAR SUBMISSÃO + VALIDAÇÃO FRONT-END
         // =============================================
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                // Validar e preparar campo de combustão
+                // 1. Processa campos "Outro" (motorização personalizada)
                 if (!prepareSubmit('motor_tipo', 'motor_tipo_outro')) {
                     e.preventDefault();
                     alert('Por favor, digite a motorização personalizada para o motor a combustão.');
                     document.getElementById('motor_tipo_outro').focus();
                     return;
                 }
-                // Validar e preparar campo do híbrido
                 if (!prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro')) {
                     e.preventDefault();
                     alert('Por favor, digite a motorização personalizada para o motor a combustão (híbrido).');
                     document.getElementById('motor_combustao_tipo_outro').focus();
                     return;
                 }
-                // O formulário segue normalmente
+
+                // 2. Validação HTML5 (campos com required)
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                    // Rola até o primeiro erro (opcional)
+                    const firstInvalid = this.querySelector('.is-invalid');
+                    if (firstInvalid) {
+                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstInvalid.focus();
+                    }
+                    return;
+                }
+
+                // 3. Validação adicional para marca/modelo (campos ocultos)
+                const marcaId = document.getElementById('marca_id').value;
+                const modeloId = document.getElementById('modelo_id').value;
+                if (!marcaId || !modeloId) {
+                    e.preventDefault();
+                    // Marca o badge como inválido (adiciona classe customizada)
+                    const marcaBadge = document.getElementById('marcaDisplay');
+                    const modeloBadge = document.getElementById('modeloDisplay');
+                    if (!marcaId) {
+                        marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
+                        marcaBadge.textContent = 'Selecione uma marca!';
+                    } else {
+                        marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    }
+                    if (!modeloId) {
+                        modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
+                        modeloBadge.textContent = 'Selecione um modelo!';
+                    } else {
+                        modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                    }
+                    return;
+                }
+
+                // 4. Se tudo válido, o formulário é enviado normalmente
+                // (sem preventDefault)
             });
         }
 

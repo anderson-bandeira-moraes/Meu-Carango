@@ -36,7 +36,7 @@ class VeiculoCombustaoRequest extends FormRequest
 
             // Consumo (cidade obrigatório, estrada opcional)
             'consumo_cidade_kml'   => 'required|numeric|min_num:0',
-            'consumo_estrada_kml'  => 'nullable|numeric|min_num:0',
+            'consumo_estrada_kml'  => 'required|numeric|min_num:0',
             'consumo_medio_kml'    => 'nullable|numeric|min_num:0',
 
             // Tanque
@@ -157,9 +157,8 @@ class VeiculoCombustaoRequest extends FormRequest
         if ($combustivel === 'flex') {
             $camposFlex = [
                 'potencia_etanol_cv'         => 'potência com etanol',
-                'torque_etanol_kgfm'         => 'torque com etanol',
                 'consumo_cidade_etanol_kml'  => 'consumo na cidade com etanol',
-                'consumo_medio_etanol_kml'   => 'consumo médio com etanol',
+                'consumo_estrada_etanol_kml'   => 'consumo na estrada com etanol',
             ];
 
             foreach ($camposFlex as $campo => $nome) {

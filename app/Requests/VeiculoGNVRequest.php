@@ -25,10 +25,10 @@ class VeiculoGNVRequest extends FormRequest
             'geracao_kit'      => 'required|in:3ª,4ª,5ª,6ª',
             'marca_kit'        => 'nullable|max:40',
 
-            // Datas (instalação opcional, inspeção e validade obrigatórias)
+            // Datas
             'data_instalacao'          => 'nullable|date',
-            'data_inspecao'            => 'required|date',
-            'data_validade_cilindro'   => 'required|date',
+            'data_inspecao'            => 'nullable|date',
+            'data_validade_cilindro'   => 'nullable|date',
 
             // Documentação (CSV e Selo GNV)
             'possui_csv'               => 'nullable|boolean',
@@ -37,8 +37,8 @@ class VeiculoGNVRequest extends FormRequest
             // Cilindro
             'capacidade_cilindro_m3' => 'required|numeric|min_num:0',
             'quantidade_cilindros'   => 'required|integer|min_num:0',
-            'material_cilindro'      => 'nullable|max:20',
-            'localizacao_cilindro'   => 'nullable|max:30',
+            'material_cilindro'      => 'nullable|max:40',
+            'localizacao_cilindro'   => 'required|max:40',
 
             // Consumo (opcionais)
             'consumo_cidade_m3km'   => 'nullable|numeric|min_num:0',
