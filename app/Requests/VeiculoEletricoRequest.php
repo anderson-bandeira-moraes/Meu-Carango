@@ -36,9 +36,9 @@ class VeiculoEletricoRequest extends FormRequest
             'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
 
             // Bateria
-            'bateria_tipo'           => 'nullable|max:30',
+            'bateria_tipo'           => 'required|max:30',
             'capacidade_liquida_kwh' => 'required|numeric|min_num:0',
-            'saude_bateria_soh'      => 'required|numeric|between:0,100',
+            'saude_bateria_soh'      => 'nullable|numeric|between:0,100',
 
             // Autonomia
             'autonomia_wltp_km'    => 'nullable|integer|min_num:0',

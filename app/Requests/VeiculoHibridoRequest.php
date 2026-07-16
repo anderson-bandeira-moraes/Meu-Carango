@@ -37,7 +37,7 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Potência e torque combinados
             'potencia_combinada_cv' => 'required|integer|min_num:0',
-            'torque_combinado_kgfm' => 'required|numeric|min_num:0',
+            'torque_combinado_kgfm' => 'nullable|numeric|min_num:0',
 
             // Tração e transmissão
             'tracao_tipo'        => 'required|max:10',
