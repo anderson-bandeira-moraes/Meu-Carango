@@ -484,9 +484,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
-                                <div class="invalid-feedback">
-                                    A localização é obrigatória.
-                                </div> 
+                                
                                 <?php if (isset($errors['localizacao_cilindro'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['localizacao_cilindro']) ?></div>
                                 <?php endif; ?>
@@ -496,6 +494,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        value="<?= htmlspecialchars($old['localizacao_cilindro_outro'] ?? '') ?>" 
                                        placeholder="Digite a localização personalizada" 
                                        style="display: <?= ($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                <div class="invalid-feedback">
+                                    A localização é obrigatória.
+                                </div>  
                             </div>
 
                             <!-- Consumo Cidade -->
@@ -606,7 +607,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Observações -->
                             <div class="col-md-6">
                                 <label for="observacoes" class="form-label">Observações</label>
-                                <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="2"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
+                                <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="3"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
                                 <?php if (isset($errors['observacoes'])): ?>
                                     <div class="invalid-feedback d-block"><?= implode(', ', $errors['observacoes']) ?></div>
                                 <?php endif; ?>
@@ -1116,7 +1117,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Potência Etanol -->
                                 <div class="col-md-4">
-                                    <label for="potencia_etanol_cv" class="form-label">Potência Etanol <span class="text-danger flex-required">*</span></label>
+                                    <label for="potencia_etanol_cv" class="form-label">Potência Máxima Etanol <span class="text-danger flex-required">*</span></label>
                                     <div class="input-group">
                                         <input type="number" name="potencia_etanol_cv" id="potencia_etanol_cv" 
                                                class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
@@ -1124,7 +1125,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 115" min="0" required>
                                         <span class="input-group-text">cv</span>
                                         <div class="invalid-feedback">
-                                            A potência para etanol é obrigatória.
+                                            A potência máxima para etanol é obrigatória.
                                         </div>
                                     </div>
                                     <?php if (isset($errors['potencia_etanol_cv'])): ?>
@@ -1134,7 +1135,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Torque Etanol -->
                                 <div class="col-md-4">
-                                    <label for="torque_etanol_kgfm" class="form-label">Torque Etanol</label>
+                                    <label for="torque_etanol_kgfm" class="form-label">Torque Máxima Etanol</label>
                                     <div class="input-group">
                                         <input type="number" step="0.1" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
                                                class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1874,7 +1875,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Tipo de Bateria -->
                         <div class="col-md-4">
                             <label for="bateria_tipo" class="form-label">Tipo de Bateria <span class="text-danger">*</span></label>
-                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
+                            <select name="bateria_tipo" id="bateria_tipo_hibrido" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (baterias_tipos_hibrido_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
@@ -1889,7 +1890,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
 
                             <!-- Campo extra para "Outro" -->
-                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
+                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro_hibrido" 
                                    class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
                                    placeholder="Digite o tipo personalizado" 
@@ -3670,6 +3671,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
         // =============================================
         setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA HIBRIDO
+        // =============================================
+        setupMotorOutro('bateria_tipo_hibrido', 'bateria_tipo_outro_hibrido', [])
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
