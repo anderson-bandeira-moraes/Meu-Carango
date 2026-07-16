@@ -47,8 +47,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         baterias_tipos_hibrido: <?= json_encode(baterias_tipos_hibrido_list()) ?>,
         baterias_tipos_bev: <?= json_encode(baterias_tipos_bev_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
-        status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
-        campos: <?= json_encode(campos_list()) ?>
+        status_vitrine: <?= json_encode(status_vitrine_list()) ?>
     };
 </script>
 
@@ -271,23 +270,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <input type="hidden" name="quilometragem" id="quilometragem_real" value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
                         <?php if (isset($errors['quilometragem'])): ?>
                             <div class="invalid-feedback d-block"><?= implode(', ', $errors['quilometragem']) ?></div>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Preço -->
-                    <div class="col-md-4">
-                        <label for="preco" class="form-label">Preço <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text">R$</span>
-                            <input type="text" id="preco" class="form-control <?= isset($errors['preco']) ? 'is-invalid' : '' ?>" 
-                                   placeholder="Ex: 45.900,00" inputmode="decimal" required>
-                            <div class="invalid-feedback">
-                                O preço é obrigatório.
-                            </div>
-                        </div>
-                        <input type="hidden" name="preco" id="preco_real" value="<?= htmlspecialchars($old['preco'] ?? $veiculo['preco'] ?? '') ?>">
-                        <?php if (isset($errors['preco'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['preco']) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -3656,129 +3638,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 }
             }
         }
-
-        // ============================================================
-        // MÁSCARA DE PREÇO BRASILEIRA
-        // ============================================================
-        (function() {
-            const precoInput = document.getElementById('preco');
-            const precoHidden = document.getElementById('preco_real');
-
-            if (!precoInput || !precoHidden) return;
-
-            // Converte número (ex: 45900.67) para string formatada (ex: "45.900,67")
-            function formatValue(value) {
-                if (value === undefined || value === null || isNaN(value)) return '';
-                const num = parseFloat(value);
-                if (isNaN(num)) return '';
-                return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-
-            // Obtém apenas os dígitos de uma string
-            function getDigits(str) {
-                return str.replace(/\D/g, '');
-            }
-
-            // Converte uma string de dígitos para um número com 2 casas decimais (centavos)
-            function digitsToNumber(digits) {
-                if (digits === '') return 0;
-                const cents = parseInt(digits, 10);
-                if (isNaN(cents)) return 0;
-                return cents / 100;
-            }
-
-            // Atualiza o campo de exibição e o hidden
-            function updateDisplay(rawDigits) {
-                const digits = getDigits(rawDigits);
-                // Se não houver dígitos, limpa os campos
-                if (digits === '') {
-                    precoInput.value = '';
-                    precoHidden.value = '';
-                    return;
-                }
-
-                // Converte para valor em reais (com 2 casas)
-                const cents = parseInt(digits, 10);
-                const reais = cents / 100;
-                const formatted = formatValue(reais);
-                precoInput.value = formatted;
-                precoHidden.value = reais.toFixed(2);
-            }
-
-            // Obtém os dígitos atuais do campo (ignorando formatação)
-            function getCurrentDigits() {
-                const raw = precoInput.value;
-                return getDigits(raw);
-            }
-
-            // Manipula a entrada do usuário
-            precoInput.addEventListener('input', function(e) {
-                // Pega os dígitos atuais (já que o campo pode ter formatação)
-                let digits = getCurrentDigits();
-
-                // Se o usuário digitou algo que não é número, o campo pode conter caracteres estranhos.
-                // Mas nosso getDigits já filtra.
-                updateDisplay(digits);
-            });
-
-            // Bloqueia teclas que não são números ou vírgula
-            precoInput.addEventListener('keydown', function(e) {
-                const key = e.key;
-                // Permite teclas de navegação, backspace, delete, etc.
-                if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End', 'Enter'].includes(key)) return;
-                if (e.ctrlKey || e.metaKey) return; // Ctrl+C, Ctrl+V, etc.
-                // Permite apenas dígitos e vírgula
-                if (!/^[\d,]$/.test(key)) {
-                    e.preventDefault();
-                }
-            });
-
-            // Lida com paste (colar)
-            precoInput.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const pasteData = (e.clipboardData || window.clipboardData).getData('text');
-                if (!pasteData) return;
-                // Remove tudo que não for dígito
-                const digits = getDigits(pasteData);
-                if (digits === '') return;
-                // Atualiza o display com os dígitos colados
-                updateDisplay(digits);
-            });
-
-            // Inicialização: se houver valor no hidden, formata e exibe
-            function initializeFromHidden() {
-                const realValue = precoHidden.value;
-                if (realValue !== '') {
-                    const num = parseFloat(realValue);
-                    if (!isNaN(num) && num > 0) {
-                        const formatted = formatValue(num);
-                        precoInput.value = formatted;
-                    }
-                }
-            }
-            initializeFromHidden();
-
-            // Sincroniza ao enviar o formulário (garantir que o hidden esteja correto)
-            const form = document.getElementById('veiculoForm');
-            if (form) {
-                form.addEventListener('submit', function() {
-                    // Se o campo de exibição estiver vazio, limpa o hidden
-                    if (precoInput.value === '') {
-                        precoHidden.value = '';
-                    } else {
-                        // Atualiza o hidden com o valor real
-                        const digits = getDigits(precoInput.value);
-                        if (digits === '') {
-                            precoHidden.value = '';
-                        } else {
-                            const cents = parseInt(digits, 10);
-                            const reais = cents / 100;
-                            precoHidden.value = reais.toFixed(2);
-                        }
-                    }
-                });
-            }
-        })();
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA MATERIAL DO CILINDRO

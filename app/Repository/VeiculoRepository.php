@@ -30,7 +30,7 @@ class VeiculoRepository
         try {
             $sql = 'INSERT INTO veiculos (
                 lojista_id, marca_id, modelo_id, versao, 
-                ano_fabricacao, ano_modelo, cor, quilometragem, preco,
+                ano_fabricacao, ano_modelo, cor, quilometragem,
                 numero_portas, numero_assentos,
                 comprimento_mm, largura_mm, altura_mm, distancia_entre_eixos_mm, peso_ordem_marcha_kg,
                 volume_porta_malas_l, volume_cacamba_l, carga_util_kg, capacidade_reboque_kg,
@@ -38,7 +38,7 @@ class VeiculoRepository
                 status_estoque, status_vitrine
             ) VALUES (
                 :lojista_id, :marca_id, :modelo_id, :versao,
-                :ano_fabricacao, :ano_modelo, :cor, :quilometragem, :preco,
+                :ano_fabricacao, :ano_modelo, :cor, :quilometragem,
                 :numero_portas, :numero_assentos,
                 :comprimento_mm, :largura_mm, :altura_mm, :distancia_entre_eixos_mm, :peso_ordem_marcha_kg,
                 :volume_porta_malas_l, :volume_cacamba_l, :carga_util_kg, :capacidade_reboque_kg,
@@ -67,6 +67,42 @@ class VeiculoRepository
             ]);
             return false;
         }
+    }
+
+    /**
+     * Prepara os dados para inserção, garantindo tipos e valores padrão.
+     *
+     * @param array $dados
+     * @return array
+     */
+    private function prepareDados(array $dados): array
+    {
+        return [
+            ':lojista_id'               => $dados['lojista_id'] ?? null,
+            ':marca_id'                 => $dados['marca_id'] ?? null,
+            ':modelo_id'                => $dados['modelo_id'] ?? null,
+            ':versao'                   => $dados['versao'] ?? null,
+            ':ano_fabricacao'           => $dados['ano_fabricacao'] ?? null,
+            ':ano_modelo'               => $dados['ano_modelo'] ?? null,
+            ':cor'                      => $dados['cor'] ?? null,
+            ':quilometragem'            => $dados['quilometragem'] ?? null,
+            ':numero_portas'            => $dados['numero_portas'] ?? null,
+            ':numero_assentos'          => $dados['numero_assentos'] ?? null,
+            ':comprimento_mm'           => $dados['comprimento_mm'] ?? null,
+            ':largura_mm'               => $dados['largura_mm'] ?? null,
+            ':altura_mm'                => $dados['altura_mm'] ?? null,
+            ':distancia_entre_eixos_mm' => $dados['distancia_entre_eixos_mm'] ?? null,
+            ':peso_ordem_marcha_kg'     => $dados['peso_ordem_marcha_kg'] ?? null,
+            ':volume_porta_malas_l'     => $dados['volume_porta_malas_l'] ?? null,
+            ':volume_cacamba_l'         => $dados['volume_cacamba_l'] ?? null,
+            ':carga_util_kg'            => $dados['carga_util_kg'] ?? null,
+            ':capacidade_reboque_kg'    => $dados['capacidade_reboque_kg'] ?? null,
+            ':hash_id'                  => $dados['hash_id'] ?? null,
+            ':slug'                     => $dados['slug'] ?? null,
+            ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,
+            ':status_estoque'           => $dados['status_estoque'] ?? 'disponivel',
+            ':status_vitrine'           => $dados['status_vitrine'] ?? 'inativo',
+        ];
     }
 
     /**
@@ -284,43 +320,6 @@ class VeiculoRepository
             ]);
             return false;
         }
-    }
-
-    /**
-     * Prepara os dados para inserção, garantindo tipos e valores padrão.
-     *
-     * @param array $dados
-     * @return array
-     */
-    private function prepareDados(array $dados): array
-    {
-        return [
-            ':lojista_id'               => $dados['lojista_id'] ?? null,
-            ':marca_id'                 => $dados['marca_id'] ?? null,
-            ':modelo_id'                => $dados['modelo_id'] ?? null,
-            ':versao'                   => $dados['versao'] ?? null,
-            ':ano_fabricacao'           => $dados['ano_fabricacao'] ?? null,
-            ':ano_modelo'               => $dados['ano_modelo'] ?? null,
-            ':cor'                      => $dados['cor'] ?? null,
-            ':quilometragem'            => $dados['quilometragem'] ?? null,
-            ':preco'                    => $dados['preco'] ?? null,
-            ':numero_portas'            => $dados['numero_portas'] ?? null,
-            ':numero_assentos'          => $dados['numero_assentos'] ?? null,
-            ':comprimento_mm'           => $dados['comprimento_mm'] ?? null,
-            ':largura_mm'               => $dados['largura_mm'] ?? null,
-            ':altura_mm'                => $dados['altura_mm'] ?? null,
-            ':distancia_entre_eixos_mm' => $dados['distancia_entre_eixos_mm'] ?? null,
-            ':peso_ordem_marcha_kg'     => $dados['peso_ordem_marcha_kg'] ?? null,
-            ':volume_porta_malas_l'     => $dados['volume_porta_malas_l'] ?? null,
-            ':volume_cacamba_l'         => $dados['volume_cacamba_l'] ?? null,
-            ':carga_util_kg'            => $dados['carga_util_kg'] ?? null,
-            ':capacidade_reboque_kg'    => $dados['capacidade_reboque_kg'] ?? null,
-            ':hash_id'                  => $dados['hash_id'] ?? null,
-            ':slug'                     => $dados['slug'] ?? null,
-            ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,
-            ':status_estoque'           => $dados['status_estoque'] ?? 'disponivel',
-            ':status_vitrine'           => $dados['status_vitrine'] ?? 'inativo',
-        ];
     }
 
     /**

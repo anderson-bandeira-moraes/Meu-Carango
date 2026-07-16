@@ -62,7 +62,6 @@ class VeiculoRequest extends FormRequest
             'ano_modelo'     => 'required|integer|min_num:1900',
             'cor'            => 'required|max:30',
             'quilometragem'  => 'required|integer|min_num:0',
-            'preco'          => 'required|numeric|min_num:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
@@ -123,11 +122,6 @@ class VeiculoRequest extends FormRequest
             'quilometragem.integer'  => 'A quilometragem deve ser um número inteiro.',
             'quilometragem.min_num'  => 'A quilometragem não pode ser negativa.',
 
-            // Preço
-            'preco.required' => 'O preço é obrigatório.',
-            'preco.numeric'  => 'O preço deve ser um número válido.',
-            'preco.min_num'  => 'O preço não pode ser negativo.',
-
             // Tipo de veículo
             'tipo_veiculo.required' => 'O tipo de veículo é obrigatório.',
             'tipo_veiculo.in'       => 'O tipo de veículo deve ser combustão, elétrico ou híbrido.',
@@ -177,12 +171,6 @@ class VeiculoRequest extends FormRequest
     protected function sanitize(array $data): array
     {
         $data = parent::sanitize($data);
-
-        // Normaliza preco: remove pontos de milhar e converte vírgula decimal para ponto
-        if (isset($data['preco']) && is_string($data['preco'])) {
-            $data['preco'] = str_replace(' ', '', $data['preco']);
-            $data['preco'] = str_replace(',', '.', $data['preco']);
-        }
 
         // Normaliza gnv_instalado para 0 ou 1
         if (isset($data['gnv_instalado'])) {

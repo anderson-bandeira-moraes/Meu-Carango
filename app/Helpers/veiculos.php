@@ -455,23 +455,3 @@ if (!function_exists('gnv_quantidades_list')) {
         return $list;
     }
 }
-
-if (!function_exists('campos_list')) {
-    /**
-     * Retorna a lista de campos do formulário de veículos,
-     * com labels, seções e categorias.
-     *
-     * @return array
-     */
-    function campos_list(): array
-    {
-        static $campos = null;
-
-        if ($campos === null) {
-            $config = require CONFIG_DIR . '/veiculos.php';
-            $campos = $config['campos'] ?? [];
-        }
-
-        return $campos;
-    }
-}

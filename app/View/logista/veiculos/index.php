@@ -98,13 +98,6 @@ if (!empty($filtro)) {
                                     </td>
                                     <td><?= htmlspecialchars($veiculo['ano_modelo'] ?? '-') ?></td>
                                     <td>
-                                        <?php if (!empty($veiculo['preco'])): ?>
-                                            R$ <?= number_format((float) $veiculo['preco'], 2, ',', '.') ?>
-                                        <?php else: ?>
-                                            -
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
                                         <?php
                                         $status = $veiculo['status_estoque'] ?? 'disponivel';
                                         $badgeClass = match($status) {
