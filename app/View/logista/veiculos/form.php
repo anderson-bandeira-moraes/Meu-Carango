@@ -857,7 +857,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência -->
                         <div class="col-md-4">
-                            <label for="potencia_cv" class="form-label">Potência <span class="text-danger">*</span></label>
+                            <label for="potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
@@ -874,7 +874,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Torque -->
                         <div class="col-md-4">
-                            <label for="torque_kgfm" class="form-label">Torque</label>
+                            <label for="torque_kgfm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
                                 <input type="number" step="0.1" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
@@ -1181,10 +1181,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
+
+                        <!-- ===== TRAÇÃO E TRANSMISSÃO ===== -->
+                        <div class="col-12">
+                            <h6 class="text-secondary"><i class="bi bi-gear me-2"></i>Tração e Transmissão</h6>
+                        </div>
+
                         <!-- Tipo de Tração -->
                         <div class="col-md-6">
                             <label for="tracao_tipo_eletrico" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
-                            <select name="tracao_tipo" id="tracao_tipo_eletrico" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="tracao_tipo" id="tracao_tipo_eletrico" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (tracao_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
@@ -1192,15 +1198,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O tipo de tração é obrigatório.
+                            </div>
                             <?php if (isset($errors['tracao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
-                        
+
                         <!-- Tipo de Transmissão -->
                         <div class="col-md-6">
                             <label for="transmissao_tipo_eletrico" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
-                            <select name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>">
+                            <select name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (transmissoes_list()['eletrico'] as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
@@ -1208,39 +1217,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback">
+                                O tipo de transmissão é obrigatório.
+                            </div>
                             <?php if (isset($errors['transmissao_tipo'])): ?>
                                 <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Tipo da Bateria -->
-                        <div class="col-md-4">
-                            <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
-                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
-                                <option value="">Selecione</option>
-                                <?php foreach (baterias_tipos_bev_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Selecione o tipo de bateria.
-                            </div>
-                            <?php if (isset($errors['bateria_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
-                            <?php endif; ?>
-
-                            <!-- Campo extra para "Outro" -->
-                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
-                                   class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
-                                   placeholder="Digite o tipo personalizado" 
-                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
-                            <div class="invalid-feedback">
-                                O tipo de bateria personalizado é obrigatório.
-                            </div>
+                        <!-- ===== MOTOR ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-ev-front me-2"></i>Motor</h6>
                         </div>
 
                         <!-- Potência Máxima -->
@@ -1250,9 +1238,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <input type="number" name="potencia_max_cv" id="potencia_max_cv" 
                                        class="form-control <?= isset($errors['potencia_max_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_max_cv'] ?? $complemento['potencia_max_cv'] ?? '') ?>" 
-                                       placeholder="Ex: 150" min="0">
+                                       placeholder="Ex: 150" min="0" required>
                                 <span class="input-group-text">cv</span>
+                                <div class="invalid-feedback">
+                                    A potência máxima é obrigatória.
+                                </div>
                             </div>
+                            
                             <?php if (isset($errors['potencia_max_cv'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_cv']) ?></div>
                             <?php endif; ?>
@@ -1288,8 +1280,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- ===== DESEMPENHO ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
+                        </div>
+
                         <!-- Aceleração 0-100 -->
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="aceleracao_0_100_seg_eletrico" class="form-label">Aceleração 0-100 <span class="text-muted">(s)</span></label>
                             <div class="input-group">
                                 <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" 
@@ -1304,7 +1302,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Velocidade Máxima -->
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="velocidade_max_kmh_eletrico" class="form-label">Velocidade Máxima <span class="text-muted">(km/h)</span></label>
                             <div class="input-group">
                                 <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" 
@@ -1316,6 +1314,40 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php if (isset($errors['velocidade_max_kmh'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
                             <?php endif; ?>
+                        </div>
+
+                        <!-- ===== BATERIA ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-battery me-2"></i>Bateria</h6>
+                        </div>
+
+                        <!-- Tipo da Bateria -->
+                        <div class="col-md-4">
+                            <label for="bateria_tipo" class="form-label">Tipo da Bateria</label>
+                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
+                                <option value="">Selecione</option>
+                                <?php foreach (baterias_tipos_bev_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
+    
+                            <?php if (isset($errors['bateria_tipo'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
+                            <?php endif; ?>
+
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
+                                   class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
+                                   placeholder="Digite o tipo personalizado" 
+                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            <div class="invalid-feedback">
+                                Selecione o tipo de bateria.
+                            </div>
                         </div>
 
                         <!-- Capacidade Líquida -->
@@ -1362,6 +1394,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- ===== AUTONOMIAS ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-speedometer me-2"></i>Autonomias</h6>
+                        </div>
+
                         <!-- Autonomia WLTP -->
                         <div class="col-md-4">
                             <label for="autonomia_wltp_km" class="form-label">Autonomia WLTP <span class="text-muted">(km)</span></label>
@@ -1392,84 +1430,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
-                        <!-- Potência Máxima DC -->
-                        <div class="col-md-4">
-                            <label for="potencia_max_dc_kw" class="form-label">Potência Máxima DC <span class="text-danger">*</span> <span class="text-muted">(kW)</span></label>
-                            <div class="input-group">
-                                <input type="number" name="potencia_max_dc_kw" id="potencia_max_dc_kw" 
-                                       class="form-control <?= isset($errors['potencia_max_dc_kw']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['potencia_max_dc_kw'] ?? $complemento['potencia_max_dc_kw'] ?? '') ?>" 
-                                       placeholder="Ex: 120" min="0">
-                                <span class="input-group-text">kW</span>
-                            </div>
-                            <?php if (isset($errors['potencia_max_dc_kw'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_dc_kw']) ?></div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Tipo de Conector DC -->
-                        <div class="col-md-4">
-                            <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
-                            <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>">
-                                <option value="">Selecione</option>
-                                <?php foreach (conectores_dc_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
-                            <?php if (isset($errors['tipo_conector_dc'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_dc']) ?></div>
-                            <?php endif; ?>
-
-                            <!-- Campo extra para "Outro" -->
-                            <input type="text" name="tipo_conector_dc_outro" id="tipo_conector_dc_outro" 
-                                   class="form-control mt-2 <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['tipo_conector_dc_outro'] ?? '') ?>" 
-                                   placeholder="Digite o conector personalizado" 
-                                   style="display: <?= ($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
-                        </div>
-
-                        <!-- Tempo de Carga DC -->
-                        <div class="col-md-4">
-                            <label for="tempo_carga_dc_min" class="form-label">Tempo de Carga DC <span class="text-muted">(min)</span></label>
-                            <div class="input-group">
-                                <input type="number" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
-                                       class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['tempo_carga_dc_min'] ?? $complemento['tempo_carga_dc_min'] ?? '') ?>" 
-                                       placeholder="Ex: 45" min="0">
-                                <span class="input-group-text">min</span>
-                            </div>
-                            <?php if (isset($errors['tempo_carga_dc_min'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['tempo_carga_dc_min']) ?></div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Tipo de Conector AC -->
-                        <div class="col-md-4">
-                            <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
-                            <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
-                                <option value="">Selecione</option>
-                                <?php foreach (conectores_ac_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
-                            <?php if (isset($errors['tipo_conector_ac'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_ac']) ?></div>
-                            <?php endif; ?>
-
-                            <!-- Campo extra para "Outro" -->
-                            <input type="text" name="tipo_conector_ac_outro" id="tipo_conector_ac_outro" 
-                                   class="form-control mt-2 <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['tipo_conector_ac_outro'] ?? '') ?>" 
-                                   placeholder="Digite o conector personalizado" 
-                                   style="display: <?= ($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
-                        </div>
-
                         <!-- Consumo energético -->
                         <div class="col-md-4">
                             <label for="consumo_energetico_kwh_100km" class="form-label">Consumo Energético <span class="text-muted">(kWh/100km)</span></label>
@@ -1478,11 +1438,97 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        class="form-control <?= isset($errors['consumo_energetico_kwh_100km']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_energetico_kwh_100km'] ?? $complemento['consumo_energetico_kwh_100km'] ?? '') ?>" 
                                        placeholder="Ex: 14.5" min="0">
-                                <span class="input-group-text">kWh/100km</span>
+                                    <span class="input-group-text">kWh/100km</span>
+                                </div>
+                                <?php if (isset($errors['consumo_energetico_kwh_100km'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_energetico_kwh_100km']) ?></div>
+                                <?php endif; ?>
                             </div>
-                            <?php if (isset($errors['consumo_energetico_kwh_100km'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_energetico_kwh_100km']) ?></div>
-                            <?php endif; ?>
+                        </div>
+
+                        <!-- ===== CARREGAMENTO ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-plug me-2"></i>Carregamento</h6>
+                        </div>
+                        <div class="row g-3">
+                            <!-- Potência Máxima DC -->
+                            <div class="col-md-4">
+                                <label for="potencia_max_dc_kw" class="form-label">Potência Máxima DC <span class="text-danger">*</span> <span class="text-muted">(kW)</span></label>
+                                <div class="input-group">
+                                    <input type="number" name="potencia_max_dc_kw" id="potencia_max_dc_kw" 
+                                           class="form-control <?= isset($errors['potencia_max_dc_kw']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['potencia_max_dc_kw'] ?? $complemento['potencia_max_dc_kw'] ?? '') ?>" 
+                                           placeholder="Ex: 120" min="0">
+                                    <span class="input-group-text">kW</span>
+                                </div>
+                                <?php if (isset($errors['potencia_max_dc_kw'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_dc_kw']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Tipo de Conector DC -->
+                            <div class="col-md-4">
+                                <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
+                                <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <?php foreach (conectores_dc_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <option value="outro" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                </select>
+                                <?php if (isset($errors['tipo_conector_dc'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_dc']) ?></div>
+                                <?php endif; ?>
+
+                                <!-- Campo extra para "Outro" -->
+                                <input type="text" name="tipo_conector_dc_outro" id="tipo_conector_dc_outro" 
+                                       class="form-control mt-2 <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['tipo_conector_dc_outro'] ?? '') ?>" 
+                                       placeholder="Digite o conector personalizado" 
+                                       style="display: <?= ($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            </div>
+
+                            <!-- Tempo de Carga DC -->
+                            <div class="col-md-4">
+                                <label for="tempo_carga_dc_min" class="form-label">Tempo de Carga DC <span class="text-muted">(min)</span></label>
+                                <div class="input-group">
+                                    <input type="number" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
+                                           class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['tempo_carga_dc_min'] ?? $complemento['tempo_carga_dc_min'] ?? '') ?>" 
+                                           placeholder="Ex: 45" min="0">
+                                    <span class="input-group-text">min</span>
+                                </div>
+                                <?php if (isset($errors['tempo_carga_dc_min'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tempo_carga_dc_min']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Tipo de Conector AC -->
+                            <div class="col-md-4">
+                                <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
+                                <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
+                                    <option value="">Selecione</option>
+                                    <?php foreach (conectores_ac_list() as $value => $label): ?>
+                                        <option value="<?= $value ?>" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', $value) ?>>
+                                            <?= htmlspecialchars($label) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                </select>
+                                <?php if (isset($errors['tipo_conector_ac'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_ac']) ?></div>
+                                <?php endif; ?>
+
+                                <!-- Campo extra para "Outro" -->
+                                <input type="text" name="tipo_conector_ac_outro" id="tipo_conector_ac_outro" 
+                                       class="form-control mt-2 <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['tipo_conector_ac_outro'] ?? '') ?>" 
+                                       placeholder="Digite o conector personalizado" 
+                                       style="display: <?= ($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1758,9 +1804,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-                            <div class="invalid-feedback">
-                                Selecione o tipo de bateria.
-                            </div>
+                            
                             <?php if (isset($errors['bateria_tipo'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
                             <?php endif; ?>
@@ -1771,6 +1815,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                    value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
                                    placeholder="Digite o tipo personalizado" 
                                    style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            <div class="invalid-feedback">
+                                Selecione o tipo de bateria.
+                            </div>
                         </div>
 
                         <!-- Garantia da Bateria -->
@@ -3642,7 +3689,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
         // =============================================
-        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', CONFIG.baterias_tipos_bev);
+        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)

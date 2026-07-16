@@ -180,8 +180,7 @@ return [
             'Dupla Embreagem'   => 'Dupla Embreagem (DCT)',
         ],
         'eletrico' => [
-            'Relação Única'         => 'Relação Única (Fixed-Ratio)',
-            'Duas Velocidades'      => 'Duas Velocidades (2-Speed)',
+            'Automática'         => 'Automática (Padrão para elétricos)',
         ],
         'hibrido' => [
             'e-CVT'             => 'e-CVT',
