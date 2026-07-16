@@ -59,15 +59,15 @@ class VeiculoHibridoRequest extends FormRequest
             'bateria_garantia' => 'nullable|max:40',
 
             // Carregamento (PHEV)
-            'carregamento_potencia_ac_kw' => 'nullable|numeric|min_num:0',
-            'carregamento_tempo_ac_horas' => 'nullable|numeric|min_num:0',
-            'carregamento_potencia_dc_kw' => 'nullable|integer|min_num:0',
+            'carregamento_potencia_ac_kw'   => 'nullable|numeric|min_num:0',
+            'carregamento_tempo_ac_horas'   => 'nullable|numeric|min_num:0',
+            'carregamento_potencia_dc_kw'   => 'nullable|integer|min_num:0',
             'carregamento_tipo_conector_ac' => 'nullable|max:20',
 
             // Consumo
-            'consumo_cidade_kml'   => 'required|numeric|min_num:0',
-            'consumo_estrada_kml'  => 'required|numeric|min_num:0',
-            'consumo_medio_kml'    => 'nullable|numeric|min_num:0',
+            'consumo_cidade_kml'          => 'required|numeric|min_num:0',
+            'consumo_estrada_kml'         => 'required|numeric|min_num:0',
+            'consumo_medio_kml'           => 'nullable|numeric|min_num:0',
             'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
             'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
             'consumo_medio_etanol_kml'    => 'nullable|numeric|min_num:0',
