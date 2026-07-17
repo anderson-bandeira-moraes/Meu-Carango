@@ -199,9 +199,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <input type="text" id="corInput" class="form-control <?= isset($errors['cor']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>" 
                                    placeholder="Selecione uma cor" readonly>
+                                                        <!-- Swatch de cor -->
+                            <span id="corSwatch" class="input-group-text p-1" style="display: none; width: 38px; background: white; border-left: 0;">
+                                <span id="corSwatchInner" style="display: block; width: 28px; height: 28px; border-radius: 4px; border: 1px solid #ccc;"></span>
+                            </span>
                             <button class="btn btn-outline-secondary" type="button" id="btnAbrirCores">
                                 <i class="bi bi-chevron-down"></i>
                             </button>
+
+
                         </div>
                         
                         <!-- Campo oculto para armazenar a cor selecionada -->
@@ -3520,6 +3526,21 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const corHidden = document.getElementById('corSelecionada');
         const corOutro = document.getElementById('cor_outro');
         const corItems = document.querySelectorAll('.cor-item');
+        const corFeedback = document.getElementById('corFeedback');
+        const corSwatch = document.getElementById('corSwatch');
+        const corSwatchInner = document.getElementById('corSwatchInner');
+
+        // Função para atualizar o swatch de cor
+        function atualizarSwatch(cor, hex) {
+            if (cor && hex && cor !== 'outro') {
+                corSwatchInner.style.backgroundColor = hex;
+                corSwatch.style.display = 'inline-flex';
+                corSwatch.style.alignItems = 'center';
+                corSwatch.style.justifyContent = 'center';
+            } else {
+                corSwatch.style.display = 'none';
+            }
+        }
 
         // Função para abrir/fechar dropdown
         function toggleDropdown() {
@@ -3556,6 +3577,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     // Atualiza o campo oculto
                     corHidden.value = cor;
 
+                    // Atualiza o swatch
+                    atualizarSwatch(cor, hex);
+
                     // Remove destaque de todos
                     corItems.forEach(el => el.style.backgroundColor = '');
                     this.style.backgroundColor = '#e9ecef';
@@ -3590,8 +3614,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             if (valorSalvo === 'outro') {
                 corInput.value = 'Outro (digitar)';
                 corOutro.style.display = 'block';
+                atualizarSwatch(null, null); // oculta swatch para "outro"
             } else {
                 corInput.value = valorSalvo;
+                // Busca o hex da cor salva
+                const item = document.querySelector(`.cor-item[data-cor="${valorSalvo}"]`);
+                if (item) {
+                    const hex = item.dataset.hex;
+                    atualizarSwatch(valorSalvo, hex);
+                }
             }
             corItems.forEach(item => {
                 if (item.dataset.cor === valorSalvo) {
