@@ -585,7 +585,7 @@ class VeiculoController
         foreach ($errors as $field => $msgs) {
             $errorMessages = array_merge($errorMessages, $msgs);
         }
-        $this->session->set('flash_veiculo_error', implode('<br>', $errorMessages));
+        $this->session->set('flash_veiculo_error', implode("\n", $errorMessages));
 
         header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos'));
         exit;
