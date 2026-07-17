@@ -951,7 +951,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                                <input type="number" step="any" inputmode="decimal" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
                                        placeholder="Ex: 120" min="0" required>
                                 <span class="input-group-text">cv</span>
@@ -968,7 +968,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="torque_kgfm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
+                                <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
                                        placeholder="Ex: 18.5" min="0">
                                 <span class="input-group-text">kgfm</span>
@@ -1018,7 +1018,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="aceleracao_0_100_seg" class="form-label">Aceleração 0-100</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
+                                <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
                                        class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
                                        placeholder="Ex: 8.5" min="0">
@@ -1054,7 +1054,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="consumo_cidade_kml" class="form-label">Consumo Cidade <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="consumo_cidade_kml" id="consumo_cidade_kml" 
+                                <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
                                        class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
                                        placeholder="Ex: 12.5" min="0" required>
@@ -1072,7 +1072,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="consumo_estrada_kml" class="form-label">Consumo Estrada <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="consumo_estrada_kml" id="consumo_estrada_kml" 
+                                <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
                                        class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
                                        placeholder="Ex: 15.0" min="0" required>
@@ -1090,7 +1090,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="consumo_medio_kml" class="form-label">Consumo Médio</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="consumo_medio_kml" id="consumo_medio_kml" 
+                                <input type="number" step="any" inputmode="decimal" name="consumo_medio_kml" id="consumo_medio_kml" 
                                        class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_medio_kml'] ?? $complemento['consumo_medio_kml'] ?? '') ?>" 
                                        placeholder="Ex: 13.5" min="0">
@@ -1129,7 +1129,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="col-md-4">
                                     <label for="potencia_etanol_cv" class="form-label">Potência Máxima Etanol <span class="text-danger flex-required">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" name="potencia_etanol_cv" id="potencia_etanol_cv" 
+                                        <input type="number" step="any" inputmode="decimal" name="potencia_etanol_cv" id="potencia_etanol_cv" 
                                                class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['potencia_etanol_cv'] ?? $complemento['potencia_etanol_cv'] ?? '') ?>" 
                                                placeholder="Ex: 115" min="0" required>
@@ -1147,7 +1147,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="col-md-4">
                                     <label for="torque_etanol_kgfm" class="form-label">Torque Máxima Etanol</label>
                                     <div class="input-group">
-                                        <input type="number" step="0.1" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
+                                        <input type="number" step="any" inputmode="decimal" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
                                                class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['torque_etanol_kgfm'] ?? $complemento['torque_etanol_kgfm'] ?? '') ?>" 
                                                placeholder="Ex: 16.8" min="0">
@@ -1162,7 +1162,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="col-md-4">
                                     <label for="consumo_cidade_etanol_kml" class="form-label">Consumo Cidade Etanol <span class="text-danger flex-required">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" step="0.1" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
+                                        <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
                                                placeholder="Ex: 8.5" min="0" required>
@@ -1180,7 +1180,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="col-md-4">
                                     <label for="consumo_estrada_etanol_kml" class="form-label">Consumo Estrada Etanol <span class="text-danger flex-required">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" step="0.1" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
+                                        <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
                                                placeholder="Ex: 10.2" min="0" required>
@@ -1198,7 +1198,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="col-md-4">
                                     <label for="consumo_medio_etanol_kml" class="form-label">Consumo Médio</label>
                                     <div class="input-group">
-                                        <input type="number" step="0.1" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml" 
+                                        <input type="number" step="any" inputmode="decimal" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_medio_etanol_kml']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['consumo_medio_etanol_kml'] ?? $complemento['consumo_medio_etanol_kml'] ?? '') ?>" 
                                                placeholder="Ex: 9.5" min="0">
@@ -1311,7 +1311,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="torque_max_kgfm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="torque_max_kgfm" id="torque_max_kgfm" 
+                                <input type="number" step="any" inputmode="decimal" name="torque_max_kgfm" id="torque_max_kgfm" 
                                        class="form-control <?= isset($errors['torque_max_kgfm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['torque_max_kgfm'] ?? $complemento['torque_max_kgfm'] ?? '') ?>" 
                                        placeholder="Ex: 25.5" min="0">
@@ -1332,7 +1332,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-6">
                             <label for="aceleracao_0_100_seg_eletrico" class="form-label">Aceleração 0-100</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" 
+                                <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" 
                                        class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
                                        placeholder="Ex: 6.5" min="0">
@@ -1687,19 +1687,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência Máxima -->
                         <div class="col-md-4">
-                            <label for="motor_combustao_potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
+                            <label for="potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" 
-                                       class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['motor_combustao_potencia_cv'] ?? $complemento['motor_combustao_potencia_cv'] ?? '') ?>" 
+                                <input type="number" step="any" inputmode="decimal" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
                                        placeholder="Ex: 120" min="0" required>
                                 <span class="input-group-text">cv</span>
                                 <div class="invalid-feedback">
                                     A potência máxima é obrigatória.
                                 </div>
                             </div>
-                            <?php if (isset($errors['motor_combustao_potencia_cv'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_combustao_potencia_cv']) ?></div>
+                            <?php if (isset($errors['potencia_cv'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_cv']) ?></div>
                             <?php endif; ?>
                         </div>
 
@@ -1707,7 +1706,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="motor_combustao_torque_kgfm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" 
+                                <input type="number" step="any" inputmode="decimal" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" 
                                        class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['motor_combustao_torque_kgfm'] ?? $complemento['motor_combustao_torque_kgfm'] ?? '') ?>" 
                                        placeholder="Ex: 18.5" min="0">

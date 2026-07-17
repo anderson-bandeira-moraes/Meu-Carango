@@ -28,7 +28,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'motor_tipo'  => 'required|max:40',
 
             // Potência e torque (principais)
-            'potencia_cv'   => 'required|integer|min_num:0',
+            'potencia_cv'   => 'required|numeric|min_num:0',
             'torque_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Tração
@@ -47,7 +47,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'numero_marchas'   => 'nullable|integer|min_num:0',
 
             // Campos para Flex (condicionais, mas com regras básicas)
-            'potencia_etanol_cv'          => 'nullable|integer|min_num:0',
+            'potencia_etanol_cv'          => 'nullable|numeric|min_num:0',
             'torque_etanol_kgfm'          => 'nullable|numeric|min_num:0',
             'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
             'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
@@ -77,7 +77,7 @@ class VeiculoCombustaoRequest extends FormRequest
 
             // Potência
             'potencia_cv.required'    => 'A potência é obrigatória.',
-            'potencia_cv.integer'     => 'A potência deve ser um número inteiro.',
+            'potencia_cv.numeric'     => 'A potência deve ser um número válido.',
             'potencia_cv.min_num'     => 'A potência não pode ser negativa.',
 
             // Torque
@@ -115,7 +115,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'numero_marchas.min_num'    => 'O número de marchas não pode ser negativo.',
 
             // Campos Flex (condicionais)
-            'potencia_etanol_cv.integer' => 'A potência com etanol deve ser um número inteiro.',
+            'potencia_etanol_cv.numeric' => 'A potência com etanol deve ser um número válido.',
             'potencia_etanol_cv.min_num' => 'A potência com etanol não pode ser negativa.',
             'torque_etanol_kgfm.numeric' => 'O torque com etanol deve ser um número válido.',
             'torque_etanol_kgfm.min_num' => 'O torque com etanol não pode ser negativo.',
@@ -185,15 +185,23 @@ class VeiculoCombustaoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte campos numéricos para float/int onde apropriado
-        $floatFields = ['torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg'];
+        // Converte vírgula decimal para ponto e depois para float
+        $floatFields = ['potencia_cv', 'potencia_etanol_cv', 'torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg'];
+
         foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                $data[$field] = (float) $data[$field];
+            if (isset($data[$field]) && is_string($data[$field])) {
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $data[$field]);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
             }
         }
 
-        $intFields = ['potencia_cv', 'potencia_etanol_cv', 'capacidade_tanque_l', 'numero_marchas', 'regime_potencia_rpm', 'regime_torque_rpm', 'velocidade_max_kmh'];
+        $intFields = ['capacidade_tanque_l', 'numero_marchas', 'regime_potencia_rpm', 'regime_torque_rpm', 'velocidade_max_kmh'];
+        
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (int) $data[$field];
