@@ -61,7 +61,7 @@ class VeiculoRequest extends FormRequest
             'ano_fabricacao' => 'required|integer|min_num:1900',
             'ano_modelo'     => 'required|integer|min_num:1900',
             'cor'            => 'required|max:30',
-            'quilometragem'  => 'required|integer|min_num:0',
+            'quilometragem'  => 'required|numeric|min_num:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
@@ -72,15 +72,15 @@ class VeiculoRequest extends FormRequest
             'numero_assentos'=> 'nullable|integer|between:2,15',
 
             // Dimensões (opcionais)
-            'comprimento_mm' => 'nullable|integer|min_num:0',
-            'largura_mm'     => 'nullable|integer|min_num:0',
-            'altura_mm'      => 'nullable|integer|min_num:0',
-            'distancia_entre_eixos_mm' => 'nullable|integer|min_num:0',
-            'peso_ordem_marcha_kg'     => 'nullable|integer|min_num:0',
-            'volume_porta_malas_l'     => 'nullable|integer|min_num:0',
-            'volume_cacamba_l'         => 'nullable|integer|min_num:0',
-            'carga_util_kg'            => 'nullable|integer|min_num:0',
-            'capacidade_reboque_kg'    => 'nullable|integer|min_num:0',
+            'comprimento_mm'           => 'nullable|numeric|min_num:0',
+            'largura_mm'               => 'nullable|numeric|min_num:0',
+            'altura_mm'                => 'nullable|numeric|min_num:0',
+            'distancia_entre_eixos_mm' => 'nullable|numeric|min_num:0',
+            'peso_ordem_marcha_kg'     => 'nullable|numeric|min_num:0',
+            'volume_porta_malas_l'     => 'nullable|numeric|min_num:0',
+            'volume_cacamba_l'         => 'nullable|numeric|min_num:0',
+            'carga_util_kg'            => 'nullable|numeric|min_num:0',
+            'capacidade_reboque_kg'    => 'nullable|numeric|min_num:0',
 
             // Flags e status
             'gnv_instalado'   => 'nullable|boolean',
@@ -119,7 +119,7 @@ class VeiculoRequest extends FormRequest
 
             // Quilometragem
             'quilometragem.required' => 'A quilometragem é obrigatória.',
-            'quilometragem.integer'  => 'A quilometragem deve ser um número inteiro.',
+            'quilometragem.numeric'  => 'A quilometragem deve ser um número válido.',
             'quilometragem.min_num'  => 'A quilometragem não pode ser negativa.',
 
             // Tipo de veículo
@@ -134,23 +134,23 @@ class VeiculoRequest extends FormRequest
             'numero_assentos.between' => 'O número de assentos deve estar entre :min e :max.',
 
             // Dimensões
-            'comprimento_mm.integer' => 'O comprimento deve ser um número inteiro.',
+            'comprimento_mm.numeric' => 'O comprimento deve ser um número válido.',
             'comprimento_mm.min_num' => 'O comprimento não pode ser negativo.',
-            'largura_mm.integer'     => 'A largura deve ser um número inteiro.',
+            'largura_mm.numeric'     => 'A largura deve ser um número válido.',
             'largura_mm.min_num'     => 'A largura não pode ser negativa.',
-            'altura_mm.integer'      => 'A altura deve ser um número inteiro.',
+            'altura_mm.numeric'      => 'A altura deve ser um número válido.',
             'altura_mm.min_num'      => 'A altura não pode ser negativa.',
-            'distancia_entre_eixos_mm.integer' => 'A distância entre eixos deve ser um número inteiro.',
+            'distancia_entre_eixos_mm.numeric' => 'A distância entre eixos deve ser um número válido.',
             'distancia_entre_eixos_mm.min_num' => 'A distância entre eixos não pode ser negativa.',
-            'peso_ordem_marcha_kg.integer'     => 'O peso deve ser um número inteiro.',
+            'peso_ordem_marcha_kg.numeric'     => 'O peso deve ser um número válido.',
             'peso_ordem_marcha_kg.min_num'     => 'O peso não pode ser negativo.',
-            'volume_porta_malas_l.integer'     => 'O volume do porta-malas deve ser um número inteiro.',
+            'volume_porta_malas_l.numeric'     => 'O volume do porta-malas deve ser um número válido.',
             'volume_porta_malas_l.min_num'     => 'O volume do porta-malas não pode ser negativo.',
-            'volume_cacamba_l.integer'         => 'O volume da caçamba deve ser um número inteiro.',
+            'volume_cacamba_l.numeric'         => 'O volume da caçamba deve ser um número válido.',
             'volume_cacamba_l.min_num'         => 'O volume da caçamba não pode ser negativo.',
-            'carga_util_kg.integer'            => 'A carga útil deve ser um número inteiro.',
+            'carga_util_kg.numeric'            => 'A carga útil deve ser um número válido.',
             'carga_util_kg.min_num'            => 'A carga útil não pode ser negativa.',
-            'capacidade_reboque_kg.integer'    => 'A capacidade de reboque deve ser um número inteiro.',
+            'capacidade_reboque_kg.numeric'    => 'A capacidade de reboque deve ser um número válido.',
             'capacidade_reboque_kg.min_num'    => 'A capacidade de reboque não pode ser negativa.',
 
             // Flags
@@ -171,6 +171,30 @@ class VeiculoRequest extends FormRequest
     protected function sanitize(array $data): array
     {
         $data = parent::sanitize($data);
+
+        // Converte vírgula decimal para ponto nos campos numéricos
+        $decimalFields = [
+            'quilometragem',
+            'comprimento_mm', 'largura_mm', 'altura_mm',
+            'distancia_entre_eixos_mm', 'peso_ordem_marcha_kg',
+            'volume_porta_malas_l', 'volume_cacamba_l',
+            'carga_util_kg', 'capacidade_reboque_kg'
+        ];
+
+        foreach ($decimalFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                // Remove espaços
+                $value = trim($data[$field]);
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $value);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                // Se for numérico, converte para float
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
+            }
+        }
 
         // Normaliza gnv_instalado para 0 ou 1
         if (isset($data['gnv_instalado'])) {

@@ -261,19 +261,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="quilometragem" class="form-label">Quilometragem <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" name="quilometragem_display" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars(
-                                       isset($old['quilometragem']) ? number_format($old['quilometragem'], 0, ',', '.') : 
-                                       (isset($veiculo['quilometragem']) ? number_format($veiculo['quilometragem'], 0, ',', '.') : '')
-                                   ) ?>" 
-                                   placeholder="Ex: 90.000" inputmode="numeric" required>
+                            <input type="number" step="any" inputmode="decimal" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>" 
+                                   placeholder="Ex: 90.000" min="0" required>
                             <span class="input-group-text">km</span>
                             <div class="invalid-feedback">
                                 A quilometragem é obrigatória.
                             </div>
                         </div>
-                        <!-- Campo oculto com o valor real (sem formatação) -->
-                        <input type="hidden" name="quilometragem" id="quilometragem_real" value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
                         <?php if (isset($errors['quilometragem'])): ?>
                             <div class="invalid-feedback d-block"><?= implode(', ', $errors['quilometragem']) ?></div>
                         <?php endif; ?>
@@ -687,10 +682,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <h6 class="text-secondary"><i class="bi bi-rulers me-2"></i>Dimensões Externas</h6>
                     </div>
                     
+                    <!-- Comprimento -->
                     <div class="col-md-3">
                         <label for="comprimento_mm" class="form-label">Comprimento</label>
                         <div class="input-group">
-                            <input type="number" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -699,10 +695,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Largura -->
                     <div class="col-md-3">
                         <label for="largura_mm" class="form-label">Largura</label>
                         <div class="input-group">
-                            <input type="number" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1800">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -711,10 +708,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Altura -->
                     <div class="col-md-3">
                         <label for="altura_mm" class="form-label">Altura</label>
                         <div class="input-group">
-                            <input type="number" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -723,10 +721,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Distância entre eixos -->
                     <div class="col-md-3">
                         <label for="distancia_entre_eixos_mm" class="form-label">Distância entre eixos</label>
                         <div class="input-group">
-                            <input type="number" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0" placeholder="Ex: 2600">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -741,12 +740,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-12">
                         <hr>
                         <h6 class="text-secondary"><i class="bi bi-weight-scale me-2"></i>Pesos</h6>
-                    </div>
+                    </div>  
 
+                    <!-- Peso em ordem de marcha -->
                     <div class="col-md-4">
                         <label for="peso_ordem_marcha_kg" class="form-label">Peso em ordem de marcha</label>
                         <div class="input-group">
-                            <input type="number" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -755,10 +755,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Carga útil -->
                     <div class="col-md-4">
                         <label for="carga_util_kg" class="form-label">Carga útil</label>
                         <div class="input-group">
-                            <input type="number" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0" placeholder="Ex: 750">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -767,10 +768,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Capacidade de reboque -->
                     <div class="col-md-4">
                         <label for="capacidade_reboque_kg" class="form-label">Capacidade de reboque</label>
                         <div class="input-group">
-                            <input type="number" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -787,10 +789,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <h6 class="text-secondary"><i class="bi bi-box-seam me-2"></i>Volumes</h6>
                     </div>
 
+                    <!-- Volume do porta-malas -->
                     <div class="col-md-6">
                         <label for="volume_porta_malas_l" class="form-label">Volume do porta-malas</label>
                         <div class="input-group">
-                            <input type="number" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0" placeholder="Ex: 450">
                             <span class="input-group-text">L</span>
                         </div>
@@ -799,10 +802,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <?php endif; ?>
                     </div>
 
+                    <!-- Volume da caçamba -->
                     <div class="col-md-6">
                         <label for="volume_cacamba_l" class="form-label">Volume da caçamba</label>
                         <div class="input-group">
-                            <input type="number" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0" placeholder="Ex: 800">
                             <span class="input-group-text">L</span>
                         </div>
@@ -3629,46 +3633,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     item.style.backgroundColor = '#e9ecef';
                 }
             });
-        }
-
-        // ============================================================
-        // FORMATAÇÃO DE QUILOMETRAGEM COM PONTOS DE MILHAR
-        // ============================================================
-        const kmInput = document.getElementById('quilometragem');
-        const kmHidden = document.getElementById('quilometragem_real');
-
-        if (kmInput && kmHidden) {
-            kmInput.addEventListener('input', function(e) {
-                // Remove tudo que não for número
-                let raw = this.value.replace(/\D/g, '');
-                
-                // Se estiver vazio, limpa o hidden
-                if (raw === '') {
-                    kmHidden.value = '';
-                    this.value = '';
-                    return;
-                }
-
-                // Converte para número inteiro
-                const numero = parseInt(raw, 10);
-                
-                // Formata com pontos de milhar
-                const formatado = numero.toLocaleString('pt-BR');
-                
-                // Atualiza o campo visível com a formatação
-                this.value = formatado;
-                
-                // Armazena o valor real (sem formatação) no campo hidden
-                kmHidden.value = numero.toString();
-            });
-
-            // Sincroniza o hidden ao carregar (para edição)
-            if (kmHidden.value) {
-                const numero = parseInt(kmHidden.value, 10);
-                if (!isNaN(numero)) {
-                    kmInput.value = numero.toLocaleString('pt-BR');
-                }
-            }
         }
 
         // =============================================
