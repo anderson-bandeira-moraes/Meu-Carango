@@ -686,7 +686,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-3">
                         <label for="comprimento_mm" class="form-label">Comprimento</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -699,7 +699,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-3">
                         <label for="largura_mm" class="form-label">Largura</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1800">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -712,7 +712,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-3">
                         <label for="altura_mm" class="form-label">Altura</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -725,7 +725,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-3">
                         <label for="distancia_entre_eixos_mm" class="form-label">Distância entre eixos</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0" placeholder="Ex: 2600">
                             <span class="input-group-text">mm</span>
                         </div>
@@ -746,7 +746,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="peso_ordem_marcha_kg" class="form-label">Peso em ordem de marcha</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -759,7 +759,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="carga_util_kg" class="form-label">Carga útil</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0" placeholder="Ex: 750">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -772,7 +772,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-4">
                         <label for="capacidade_reboque_kg" class="form-label">Capacidade de reboque</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">kg</span>
                         </div>
@@ -793,7 +793,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-6">
                         <label for="volume_porta_malas_l" class="form-label">Volume do porta-malas</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0" placeholder="Ex: 450">
                             <span class="input-group-text">L</span>
                         </div>
@@ -806,7 +806,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="col-md-6">
                         <label for="volume_cacamba_l" class="form-label">Volume da caçamba</label>
                         <div class="input-group">
-                            <input type="number" step="any" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                            <input type="number" step="any" inputmode="decimal" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0" placeholder="Ex: 800">
                             <span class="input-group-text">L</span>
                         </div>
@@ -1277,7 +1277,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="potencia_max_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" name="potencia_max_cv" id="potencia_max_cv" 
+                                <input type="number" step="any" inputmode="decimal" name="potencia_max_cv" id="potencia_max_cv" 
                                        class="form-control <?= isset($errors['potencia_max_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_max_cv'] ?? $complemento['potencia_max_cv'] ?? '') ?>" 
                                        placeholder="Ex: 150" min="0" required>
@@ -1296,7 +1296,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="torque_max_nm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
-                                <input type="number" name="torque_max_nm" id="torque_max_nm" 
+                                <input type="number" step="any" inputmode="decimal" name="torque_max_nm" id="torque_max_nm" 
                                        class="form-control <?= isset($errors['torque_max_nm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['torque_max_nm'] ?? $complemento['torque_max_nm'] ?? '') ?>" 
                                        placeholder="Ex: 250" min="0">
@@ -1396,7 +1396,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="capacidade_liquida_kwh" class="form-label">Capacidade Líquida <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="capacidade_liquida_kwh" id="capacidade_liquida_kwh" 
+                                <input type="number" step="any" inputmode="decimal" name="capacidade_liquida_kwh" id="capacidade_liquida_kwh" 
                                        class="form-control <?= isset($errors['capacidade_liquida_kwh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['capacidade_liquida_kwh'] ?? $complemento['capacidade_liquida_kwh'] ?? '') ?>" 
                                        placeholder="Ex: 45.5" min="0" required>
@@ -1414,7 +1414,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="saude_bateria_soh" class="form-label">Saúde da Bateria</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="saude_bateria_soh" id="saude_bateria_soh" 
+                                <input type="number" step="any" inputmode="decimal" name="saude_bateria_soh" id="saude_bateria_soh" 
                                        class="form-control <?= isset($errors['saude_bateria_soh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['saude_bateria_soh'] ?? $complemento['saude_bateria_soh'] ?? '') ?>" 
                                        placeholder="Ex: 92.5" min="0" max="100">
@@ -1482,7 +1482,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-4">
                             <label for="consumo_energetico_kwh_100km" class="form-label">Consumo Energético</label>
                             <div class="input-group">
-                                <input type="number" step="0.1" name="consumo_energetico_kwh_100km" id="consumo_energetico_kwh_100km" 
+                                <input type="number" step="any" inputmode="decimal" name="consumo_energetico_kwh_100km" id="consumo_energetico_kwh_100km" 
                                        class="form-control <?= isset($errors['consumo_energetico_kwh_100km']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['consumo_energetico_kwh_100km'] ?? $complemento['consumo_energetico_kwh_100km'] ?? '') ?>" 
                                        placeholder="Ex: 14.5" min="0">
@@ -1505,7 +1505,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-4">
                                 <label for="potencia_max_dc_kw" class="form-label">Potência Máxima DC <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" name="potencia_max_dc_kw" id="potencia_max_dc_kw" 
+                                    <input type="number" step="any" inputmode="decimal" name="potencia_max_dc_kw" id="potencia_max_dc_kw" 
                                            class="form-control <?= isset($errors['potencia_max_dc_kw']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['potencia_max_dc_kw'] ?? $complemento['potencia_max_dc_kw'] ?? '') ?>" 
                                            placeholder="Ex: 120" min="0" required>
@@ -1550,7 +1550,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-4">
                                 <label for="tempo_carga_dc_min" class="form-label">Tempo de Carga DC</label>
                                 <div class="input-group">
-                                    <input type="number" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
+                                    <input type="number" step="any" inputmode="decimal" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
                                            class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['tempo_carga_dc_min'] ?? $complemento['tempo_carga_dc_min'] ?? '') ?>" 
                                            placeholder="Ex: 45" min="0">
