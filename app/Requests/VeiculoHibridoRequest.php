@@ -28,15 +28,15 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Motor a combustão
             'motor_combustao_tipo'          => 'required|max:40',
-            'motor_combustao_potencia_cv'   => 'required|integer|min_num:0',
+            'motor_combustao_potencia_cv'   => 'required|numeric|min_num:0',
             'motor_combustao_torque_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Motor elétrico
-            'motor_eletrico_potencia_cv'    => 'required|integer|min_num:0',
+            'motor_eletrico_potencia_cv'    => 'required|numeric|min_num:0',
             'motor_eletrico_torque_kgfm'    => 'nullable|numeric|min_num:0',
 
             // Potência e torque combinados
-            'potencia_combinada_cv' => 'required|integer|min_num:0',
+            'potencia_combinada_cv' => 'required|numeric|min_num:0',
             'torque_combinado_kgfm' => 'nullable|numeric|min_num:0',
 
             // Tração e transmissão
@@ -61,7 +61,7 @@ class VeiculoHibridoRequest extends FormRequest
             // Carregamento (PHEV)
             'carregamento_potencia_ac_kw'   => 'nullable|numeric|min_num:0',
             'carregamento_tempo_ac_horas'   => 'nullable|numeric|min_num:0',
-            'carregamento_potencia_dc_kw'   => 'nullable|integer|min_num:0',
+            'carregamento_potencia_dc_kw'   => 'nullable|numeric|min_num:0',
             'carregamento_tipo_conector_ac' => 'nullable|max:20',
 
             // Consumo
@@ -95,21 +95,21 @@ class VeiculoHibridoRequest extends FormRequest
             'motor_combustao_tipo.required' => 'O tipo do motor a combustão é obrigatório.',
             'motor_combustao_tipo.max'      => 'O tipo do motor a combustão deve ter no máximo :max caracteres.',
             'motor_combustao_potencia_cv.required' => 'A potência do motor a combustão é obrigatória.',
-            'motor_combustao_potencia_cv.integer'  => 'A potência do motor a combustão deve ser um número inteiro.',
+            'motor_combustao_potencia_cv.numeric'  => 'A potência do motor a combustão deve ser um número válido.',
             'motor_combustao_potencia_cv.min_num'  => 'A potência do motor a combustão não pode ser negativa.',
             'motor_combustao_torque_kgfm.numeric'  => 'O torque do motor a combustão deve ser um número válido.',
             'motor_combustao_torque_kgfm.min_num'  => 'O torque do motor a combustão não pode ser negativo.',
 
             // Motor elétrico
             'motor_eletrico_potencia_cv.required' => 'A potência do motor elétrico é obrigatória.',
-            'motor_eletrico_potencia_cv.integer'  => 'A potência do motor elétrico deve ser um número inteiro.',
+            'motor_eletrico_potencia_cv.numeric'   => 'A potência do motor elétrico deve ser um número válido.',
             'motor_eletrico_potencia_cv.min_num'  => 'A potência do motor elétrico não pode ser negativa.',
             'motor_eletrico_torque_kgfm.numeric'  => 'O torque do motor elétrico deve ser um número válido.',
             'motor_eletrico_torque_kgfm.min_num'  => 'O torque do motor elétrico não pode ser negativo.',
 
             // Potência e torque combinados
             'potencia_combinada_cv.required' => 'A potência combinada é obrigatória.',
-            'potencia_combinada_cv.integer'  => 'A potência combinada deve ser um número inteiro.',
+            'potencia_combinada_cv.numeric'        => 'A potência combinada deve ser um número válido.',
             'potencia_combinada_cv.min_num'  => 'A potência combinada não pode ser negativa.',
             'torque_combinado_kgfm.required' => 'O torque combinado é obrigatório.',
             'torque_combinado_kgfm.numeric'  => 'O torque combinado deve ser um número válido.',
@@ -147,7 +147,7 @@ class VeiculoHibridoRequest extends FormRequest
             'carregamento_potencia_ac_kw.min_num' => 'A potência de carregamento AC não pode ser negativa.',
             'carregamento_tempo_ac_horas.numeric' => 'O tempo de carregamento AC deve ser um número válido.',
             'carregamento_tempo_ac_horas.min_num' => 'O tempo de carregamento AC não pode ser negativo.',
-            'carregamento_potencia_dc_kw.integer' => 'A potência de carregamento DC deve ser um número inteiro.',
+            'carregamento_potencia_dc_kw.numeric'  => 'A potência de carregamento DC deve ser um número válido.',
             'carregamento_potencia_dc_kw.min_num' => 'A potência de carregamento DC não pode ser negativa.',
             'carregamento_tipo_conector_ac.max'   => 'O tipo de conector AC deve ter no máximo :max caracteres.',
 
@@ -184,13 +184,17 @@ class VeiculoHibridoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte campos numéricos para float/int onde apropriado
+        // Converte vírgula decimal para ponto e depois para float
         $floatFields = [
+            'motor_combustao_potencia_cv',    
             'motor_combustao_torque_kgfm',
+            'motor_eletrico_potencia_cv',    
             'motor_eletrico_torque_kgfm',
+            'potencia_combinada_cv',         
             'torque_combinado_kgfm',
             'bateria_capacidade_kwh',
             'carregamento_potencia_ac_kw',
+            'carregamento_potencia_dc_kw',   
             'carregamento_tempo_ac_horas',
             'consumo_cidade_kml',
             'consumo_estrada_kml',
@@ -199,22 +203,27 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_estrada_etanol_kml',
             'consumo_medio_etanol_kml',
         ];
+
         foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                $data[$field] = (float) $data[$field];
+            if (isset($data[$field]) && is_string($data[$field])) {
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $data[$field]);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
             }
         }
 
+        // Campos que permanecem inteiros
         $intFields = [
-            'motor_combustao_potencia_cv',
-            'motor_eletrico_potencia_cv',
-            'potencia_combinada_cv',
             'numero_marchas',
             'autonomia_eletrica_pbev_km',
             'autonomia_combinada_km',
-            'carregamento_potencia_dc_kw',
             'capacidade_tanque_l',
         ];
+
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (int) $data[$field];
