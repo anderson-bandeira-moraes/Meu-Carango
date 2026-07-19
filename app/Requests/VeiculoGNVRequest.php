@@ -45,9 +45,9 @@ class VeiculoGNVRequest extends FormRequest
             'consumo_estrada_m3km'  => 'nullable|numeric|min_num:0',
 
             // Autonomia (opcionais)
-            'autonomia_media_km'    => 'nullable|integer|min_num:0',
-            'autonomia_cidade_km'   => 'nullable|integer|min_num:0',
-            'autonomia_estrada_km'  => 'nullable|integer|min_num:0',
+            'autonomia_media_km'    => 'nullable|numeric|min_num:0',
+            'autonomia_cidade_km'   => 'nullable|numeric|min_num:0',
+            'autonomia_estrada_km'  => 'nullable|numeric|min_num:0',
 
             // Instaladora e observações
             'instaladora_certificada' => 'nullable|max:50',
@@ -73,14 +73,12 @@ class VeiculoGNVRequest extends FormRequest
             'marca_kit.max' => 'A marca do kit deve ter no máximo :max caracteres.',
 
             // Datas
-            'data_instalacao.date' => 'A data de instalação deve ser uma data válida.',
-            'data_inspecao.required' => 'A data da última inspeção é obrigatória.',
-            'data_inspecao.date'     => 'A data da inspeção deve ser uma data válida.',
-            'data_validade_cilindro.required' => 'A data de validade do cilindro é obrigatória.',
+            'data_instalacao.date'            => 'A data de instalação deve ser uma data válida.',
+            'data_inspecao.date'              => 'A data da inspeção deve ser uma data válida.',
             'data_validade_cilindro.date'     => 'A data de validade do cilindro deve ser uma data válida.',
 
             // Documentação
-            'possui_csv.boolean' => 'O campo CSV deve ser verdadeiro ou falso.',
+            'possui_csv.boolean'      => 'O campo CSV deve ser verdadeiro ou falso.',
             'possui_selo_gnv.boolean' => 'O campo selo GNV deve ser verdadeiro ou falso.',
 
             // Cilindro
@@ -90,21 +88,21 @@ class VeiculoGNVRequest extends FormRequest
             'quantidade_cilindros.required'   => 'A quantidade de cilindros é obrigatória.',
             'quantidade_cilindros.integer'    => 'A quantidade de cilindros deve ser um número inteiro.',
             'quantidade_cilindros.min_num'    => 'A quantidade de cilindros não pode ser negativa.',
-            'material_cilindro.max'  => 'O material do cilindro deve ter no máximo :max caracteres.',
-            'localizacao_cilindro.max' => 'A localização do cilindro deve ter no máximo :max caracteres.',
+            'material_cilindro.max'           => 'O material do cilindro deve ter no máximo :max caracteres.',
+            'localizacao_cilindro.max'        => 'A localização do cilindro deve ter no máximo :max caracteres.',
 
             // Consumo
-            'consumo_cidade_m3km.numeric' => 'O consumo na cidade em m³/km deve ser um número válido.',
-            'consumo_cidade_m3km.min_num' => 'O consumo na cidade em m³/km não pode ser negativo.',
+            'consumo_cidade_m3km.numeric'  => 'O consumo na cidade em m³/km deve ser um número válido.',
+            'consumo_cidade_m3km.min_num'  => 'O consumo na cidade em m³/km não pode ser negativo.',
             'consumo_estrada_m3km.numeric' => 'O consumo na estrada em m³/km deve ser um número válido.',
             'consumo_estrada_m3km.min_num' => 'O consumo na estrada em m³/km não pode ser negativo.',
 
             // Autonomia
-            'autonomia_media_km.integer'  => 'A autonomia média deve ser um número inteiro.',
-            'autonomia_media_km.min_num'  => 'A autonomia média não pode ser negativa.',
-            'autonomia_cidade_km.integer' => 'A autonomia na cidade deve ser um número inteiro.',
-            'autonomia_cidade_km.min_num' => 'A autonomia na cidade não pode ser negativa.',
-            'autonomia_estrada_km.integer' => 'A autonomia na estrada deve ser um número inteiro.',
+            'autonomia_media_km.numeric'   => 'A autonomia média deve ser um número válido.',
+            'autonomia_media_km.min_num'   => 'A autonomia média não pode ser negativa.',
+            'autonomia_cidade_km.numeric'  => 'A autonomia na cidade deve ser um número válido.',
+            'autonomia_cidade_km.min_num'  => 'A autonomia na cidade não pode ser negativa.',
+            'autonomia_estrada_km.numeric' => 'A autonomia na estrada deve ser um número válido.',
             'autonomia_estrada_km.min_num' => 'A autonomia na estrada não pode ser negativa.',
 
             // Instaladora
@@ -148,18 +146,25 @@ class VeiculoGNVRequest extends FormRequest
             'capacidade_cilindro_m3',
             'consumo_cidade_m3km',
             'consumo_estrada_m3km',
+            'autonomia_media_km',
+            'autonomia_cidade_km',
+            'autonomia_estrada_km',
         ];
+
         foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                $data[$field] = (float) $data[$field];
+            if (isset($data[$field]) && is_string($data[$field])) {
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $data[$field]);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
             }
         }
 
         $intFields = [
             'quantidade_cilindros',
-            'autonomia_media_km',
-            'autonomia_cidade_km',
-            'autonomia_estrada_km',
         ];
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {

@@ -422,7 +422,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
 
                                 <!-- Campo extra para "Outro" -->
-                                <input type="number" step="0.01" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
+                                <input type="number" step="any" inputmode="decimal" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['capacidade_cilindro_m3_outro'] ?? '') ?>" 
                                        placeholder="Digite a capacidade em m³" 
                                        style="display: <?= ($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
@@ -504,7 +504,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-3">
                                 <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade</label>
                                 <div class="input-group">
-                                    <input placeholder="12,5" type="number" step="0.01" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="12,5" type="number" step="any" inputmode="decimal" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
@@ -517,7 +517,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-3">
                                 <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada</label>
                                 <div class="input-group">
-                                    <input placeholder="16,6" type="number" step="0.01" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="16,6" type="number" step="any" inputmode="decimal" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
@@ -530,7 +530,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_media_km" class="form-label">Autonomia Média</label>
                                 <div class="input-group">
-                                    <input placeholder="180" type="number" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="180" type="number" step="any" inputmode="decimal" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
@@ -543,7 +543,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade</label>
                                 <div class="input-group">
-                                    <input placeholder="150" type="number" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="150" type="number" step="any" inputmode="decimal" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
@@ -556,7 +556,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-2">
                                 <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada</label>
                                 <div class="input-group">
-                                    <input placeholder="210" type="number" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                    <input placeholder="210" type="number" step="any" inputmode="decimal" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
