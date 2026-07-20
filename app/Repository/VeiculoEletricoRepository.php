@@ -37,7 +37,7 @@ class VeiculoEletricoRepository
                 autonomia_wltp_km, autonomia_inmetro_km,
                 garantia_bateria,
                 potencia_max_dc_kw, tipo_conector_dc, tipo_conector_ac,
-                tempo_carga_dc_min, consumo_energetico_kwh_100km
+                tempo_carga_dc_min, consumo_energetico_kwh_100km, sistema_eletrico_tensao
             ) VALUES (
                 :veiculo_id, :tracao_tipo, :transmissao_tipo, :bateria_tipo,
                 :potencia_max_cv, :torque_max_nm, :torque_max_kgfm,
@@ -46,7 +46,7 @@ class VeiculoEletricoRepository
                 :autonomia_wltp_km, :autonomia_inmetro_km,
                 :garantia_bateria,
                 :potencia_max_dc_kw, :tipo_conector_dc, :tipo_conector_ac,
-                :tempo_carga_dc_min, :consumo_energetico_kwh_100km
+                :tempo_carga_dc_min, :consumo_energetico_kwh_100km, :sistema_eletrico_tensao
             ) ON DUPLICATE KEY UPDATE
                 tracao_tipo = VALUES(tracao_tipo),
                 transmissao_tipo = VALUES(transmissao_tipo),
@@ -65,7 +65,8 @@ class VeiculoEletricoRepository
                 tipo_conector_dc = VALUES(tipo_conector_dc),
                 tipo_conector_ac = VALUES(tipo_conector_ac),
                 tempo_carga_dc_min = VALUES(tempo_carga_dc_min),
-                consumo_energetico_kwh_100km = VALUES(consumo_energetico_kwh_100km)';
+                consumo_energetico_kwh_100km = VALUES(consumo_energetico_kwh_100km),
+                sistema_eletrico_tensao = VALUES(sistema_eletrico_tensao)';
 
             $stmt = $this->pdo->prepare($sql);
             $success = $stmt->execute($this->prepareDados($dados));
@@ -118,6 +119,7 @@ class VeiculoEletricoRepository
             ':tipo_conector_ac'              => $dados['tipo_conector_ac'] ?? null,
             ':tempo_carga_dc_min'            => $dados['tempo_carga_dc_min'] ?? null,
             ':consumo_energetico_kwh_100km'  => $dados['consumo_energetico_kwh_100km'] ?? null,
+            ':sistema_eletrico_tensao' => $dados['sistema_eletrico_tensao'] ?? null,
         ];
     }
 

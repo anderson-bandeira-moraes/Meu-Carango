@@ -1392,6 +1392,34 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </div>
                         </div>
 
+                        <!-- Tensão da Bateria -->
+                        <div class="col-md-4">
+                            <label for="sistema_eletrico_tensao_eletrico" class="form-label">Tensão da Bateria</label>
+                            <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_eletrico" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <?php foreach (sistema_eletrico_tensoes_bev_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="outro" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                            </select>
+
+                            <?php if (isset($errors['sistema_eletrico_tensao'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['sistema_eletrico_tensao']) ?></div>
+                            <?php endif; ?>
+
+                            <!-- Campo extra para "Outro" -->
+                            <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_eletrico" 
+                                   class="form-control mt-2 <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['sistema_eletrico_tensao_outro'] ?? '') ?>" 
+                                   placeholder="Digite a tensão personalizada (ex: 520V)" 
+                                   style="display: <?= ($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            <div class="invalid-feedback">
+                                A tensão personalizada é obrigatória.
+                            </div>
+                        </div>
+
                         <!-- Capacidade Líquida -->
                         <div class="col-md-4">
                             <label for="capacidade_liquida_kwh" class="form-label">Capacidade Líquida <span class="text-danger">*</span></label>
@@ -1911,8 +1939,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tensão do Sistema Elétrico -->
                         <div class="col-md-4">
-                            <label for="sistema_eletrico_tensao" class="form-label">Tensão da Bateria</label>
-                            <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
+                            <label for="sistema_eletrico_tensao_hibrido" class="form-label">Tensão da Bateria</label>
+                            <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_hibrido" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (sistema_eletrico_tensoes_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', $value) ?>>
@@ -1927,7 +1955,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
 
                             <!-- Campo extra para "Outro" -->
-                            <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro" 
+                            <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_hibrido" 
                                    class="form-control mt-2 <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['sistema_eletrico_tensao_outro'] ?? '') ?>" 
                                    placeholder="Digite a tensão personalizada (ex: 520V)" 
@@ -2672,8 +2700,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 prepareSubmit('tipo_conector_ac', 'tipo_conector_ac_outro');
                 prepareSubmit('bateria_tipo', 'bateria_tipo_outro');
                 prepareSubmit('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro');
-                prepareSubmit('sistema_eletrico_tensao', 'sistema_eletrico_tensao_outro');
-
+                prepareSubmit('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido');
+                prepareSubmit('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico');
 
                 // 2. Acumulador de erros
                 const erros = [];
@@ -3708,7 +3736,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // =============================================
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA HIBRIDO
         // =============================================
-        setupMotorOutro('sistema_eletrico_tensao', 'sistema_eletrico_tensao_outro', []);
+        setupMotorOutro('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA ELETRICO
+        // =============================================
+        setupMotorOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico', []);
 
         // ============================================================
         // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS

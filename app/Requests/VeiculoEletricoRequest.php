@@ -36,9 +36,10 @@ class VeiculoEletricoRequest extends FormRequest
             'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
 
             // Bateria
-            'bateria_tipo'           => 'required|max:30',
-            'capacidade_liquida_kwh' => 'required|numeric|min_num:0',
-            'saude_bateria_soh'      => 'nullable|numeric|between:0,100',
+            'bateria_tipo'            => 'required|max:30',
+            'capacidade_liquida_kwh'  => 'required|numeric|min_num:0',
+            'saude_bateria_soh'       => 'nullable|numeric|between:0,100',
+            'sistema_eletrico_tensao' => 'nullable|max:10',
 
             // Autonomia
             'autonomia_wltp_km'    => 'nullable|integer|min_num:0',
@@ -98,6 +99,7 @@ class VeiculoEletricoRequest extends FormRequest
             'capacidade_liquida_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
             'capacidade_liquida_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
             'bateria_tipo.max'                => 'O tipo de bateria deve ter no máximo :max caracteres.',
+            'sistema_eletrico_tensao.max'     => 'A tensão da bateria deve ter no máximo :max caracteres.',
 
             'saude_bateria_soh.numeric'  => 'A saúde da bateria deve ser um número válido.',
             'saude_bateria_soh.between'  => 'A saúde da bateria deve estar entre 0 e 100%.',
@@ -191,6 +193,11 @@ class VeiculoEletricoRequest extends FormRequest
             if (isset($data[$field]) && is_string($data[$field])) {
                 $data[$field] = trim($data[$field]);
             }
+        }
+
+        // Normaliza sistema_eletrico_tensao
+        if (isset($data['sistema_eletrico_tensao']) && is_string($data['sistema_eletrico_tensao'])) {
+            $data['sistema_eletrico_tensao'] = trim($data['sistema_eletrico_tensao']);
         }
 
         return $data;
