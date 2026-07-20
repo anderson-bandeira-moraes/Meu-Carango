@@ -42,7 +42,7 @@ class VeiculoHibridoRepository
                 carregamento_potencia_dc_kw, carregamento_tipo_conector_ac,
                 consumo_cidade_kml, consumo_estrada_kml, consumo_medio_kml,
                 consumo_cidade_etanol_kml, consumo_estrada_etanol_kml, consumo_medio_etanol_kml,
-                capacidade_tanque_l
+                capacidade_tanque_l, sistema_eletrico_tensao
             ) VALUES (
                 :veiculo_id, :tipo, :combustivel,
                 :motor_combustao_tipo, :motor_combustao_potencia_cv, :motor_combustao_torque_kgfm,
@@ -56,7 +56,7 @@ class VeiculoHibridoRepository
                 :carregamento_potencia_dc_kw, :carregamento_tipo_conector_ac,
                 :consumo_cidade_kml, :consumo_estrada_kml, :consumo_medio_kml,
                 :consumo_cidade_etanol_kml, :consumo_estrada_etanol_kml, :consumo_medio_etanol_kml,
-                :capacidade_tanque_l
+                :capacidade_tanque_l, :sistema_eletrico_tensao
             ) ON DUPLICATE KEY UPDATE
                 tipo = VALUES(tipo),
                 combustivel = VALUES(combustivel),
@@ -86,7 +86,8 @@ class VeiculoHibridoRepository
                 consumo_cidade_etanol_kml = VALUES(consumo_cidade_etanol_kml),
                 consumo_estrada_etanol_kml = VALUES(consumo_estrada_etanol_kml),
                 consumo_medio_etanol_kml = VALUES(consumo_medio_etanol_kml),
-                capacidade_tanque_l = VALUES(capacidade_tanque_l)';
+                capacidade_tanque_l = VALUES(capacidade_tanque_l),
+                sistema_eletrico_tensao = VALUES(sistema_eletrico_tensao)';
 
             $stmt = $this->pdo->prepare($sql);
             $success = $stmt->execute($this->prepareDados($dados));
@@ -197,11 +198,11 @@ class VeiculoHibridoRepository
             ':consumo_cidade_kml'                => $dados['consumo_cidade_kml'] ?? null,
             ':consumo_estrada_kml'               => $dados['consumo_estrada_kml'] ?? null,
             ':consumo_medio_kml'                 => $dados['consumo_medio_kml'] ?? null,
-            // NOVOS CAMPOS DE CONSUMO COM ETANOL
             ':consumo_cidade_etanol_kml'         => $dados['consumo_cidade_etanol_kml'] ?? null,
             ':consumo_estrada_etanol_kml'        => $dados['consumo_estrada_etanol_kml'] ?? null,
             ':consumo_medio_etanol_kml'          => $dados['consumo_medio_etanol_kml'] ?? null,
             ':capacidade_tanque_l'               => $dados['capacidade_tanque_l'] ?? null,
+            ':sistema_eletrico_tensao'           => $dados['sistema_eletrico_tensao'] ?? null,
         ];
     }
 

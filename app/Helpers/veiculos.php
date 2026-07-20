@@ -455,3 +455,20 @@ if (!function_exists('gnv_quantidades_list')) {
         return $list;
     }
 }
+
+if (!function_exists('sistema_eletrico_tensoes_list')) {
+    /**
+     * Retorna a lista de tensões do sistema elétrico para veículos híbridos.
+     *
+     * @return array Array associativo com value => label (ex: '48V' => '48V')
+     */
+    function sistema_eletrico_tensoes_list(): array
+    {
+        static $list = null;
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['sistema_eletrico_tensoes'] ?? [];
+        }
+        return $list;
+    }
+}

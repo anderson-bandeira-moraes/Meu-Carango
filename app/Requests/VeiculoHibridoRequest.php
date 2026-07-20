@@ -45,8 +45,9 @@ class VeiculoHibridoRequest extends FormRequest
             'numero_marchas'     => 'nullable|integer|min_num:0',
 
             // Bateria
-            'bateria_capacidade_kwh' => 'required|numeric|min_num:0',
-            'bateria_tipo'           => 'nullable|max:30',
+            'bateria_capacidade_kwh'  => 'required|numeric|min_num:0',
+            'bateria_tipo'            => 'nullable|max:30',
+            'sistema_eletrico_tensao' => 'nullable|max:10',
 
             // Modo elétrico puro
             'modo_eletrico_puro' => 'required|boolean',
@@ -128,6 +129,7 @@ class VeiculoHibridoRequest extends FormRequest
             'bateria_capacidade_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
             'bateria_capacidade_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
             'bateria_tipo.max'                => 'O tipo da bateria deve ter no máximo :max caracteres.',
+            'sistema_eletrico_tensao.max'     => 'A tensão do sistema elétrico deve ter no máximo :max caracteres.',
 
             // Modo elétrico puro
             'modo_eletrico_puro.required' => 'O campo modo elétrico puro é obrigatório.',
@@ -233,6 +235,11 @@ class VeiculoHibridoRequest extends FormRequest
         // Normaliza modo_eletrico_puro para 0 ou 1
         if (isset($data['modo_eletrico_puro'])) {
             $data['modo_eletrico_puro'] = (int) (bool) $data['modo_eletrico_puro'];
+        }
+
+        // Normaliza sistema_eletrico_tensao (remove espaços extras)
+        if (isset($data['sistema_eletrico_tensao']) && is_string($data['sistema_eletrico_tensao'])) {
+            $data['sistema_eletrico_tensao'] = trim($data['sistema_eletrico_tensao']);
         }
 
         return $data;
