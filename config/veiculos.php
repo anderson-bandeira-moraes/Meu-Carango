@@ -367,4 +367,84 @@ return [
         'ativo'   => 'Ativo',
         'inativo' => 'Inativo',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Listas de medidas para pneus (largura, perfil, aro, índice de carga e símbolo de velocidade)
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Larguras de pneu (em mm)
+    |--------------------------------------------------------------------------
+    |
+    | Valores comuns de largura de pneus para veículos de passeio.
+    | Ex: 165, 195, 225, etc.
+    |
+    */
+    'larguras_pneu' => [
+        '145', '155', '165', '175', '185',
+        '195', '205', '215',
+        '225', '235', '245',
+        '255', '265', '275', '285',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Perfis de pneu (série + construção)
+    |--------------------------------------------------------------------------
+    |
+    | O número indica a proporção entre a altura do flanco e a largura do pneu.
+    | A letra "R" indica que o pneu é de construção radial.
+    | Ex: 60R, 70R, etc.
+    |
+    */
+    'perfis_pneu' => [
+        '30R', '35R', '40R', '45R', '50R',
+        '55R', '60R', '65R', '70R', '75R', '80R',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Aros de pneu (em polegadas)
+    |--------------------------------------------------------------------------
+    |
+    | Diâmetro interno do pneu, que deve corresponder ao tamanho da roda.
+    | Ex: 14, 15, 16, 17, etc.
+    |
+    */
+    'aros_pneu' => [
+        '12', '13', '14', '15', '16', '17',
+        '18', '19', '20', '21', '22',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Índices de carga de pneu
+    |--------------------------------------------------------------------------
+    |
+    | Número que indica a capacidade máxima de carga suportada pelo pneu.
+    | Cada número corresponde a um peso específico (ex: 88 = 560 kg).
+    | Ex: 88, 91, 94, 97, 100, 104, 107, 110, 116.
+    |
+    */
+    'indices_carga_pneu' => [
+        '85', '88', '91', '94', '97',
+        '100', '104', '107', '110', '116',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Símbolos de velocidade de pneu
+    |--------------------------------------------------------------------------
+    |
+    | Letra que indica a velocidade máxima que o pneu pode suportar.
+    | Ex: T (190 km/h), H (210 km/h), V (240 km/h), ZR (> 240 km/h), etc.
+    |
+    */
+    'simbolos_velocidade_pneu' => [
+        'Q', 'R', 'S', 'T', 'U',
+        'H', 'V', 'W', 'Y', 'ZR',
+    ],
 ];

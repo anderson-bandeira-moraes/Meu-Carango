@@ -16,6 +16,7 @@ use App\Repository\OpcionalRepository;
 use App\Repository\VeiculoImagemRepository;
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
+use App\Service\PneuService;
 use App\Helpers\UploadHelper;
 use Psr\Log\LoggerInterface;
 use PDO;
@@ -41,6 +42,7 @@ class VeiculoService
         private VeiculoImagemRepository $veiculoImagemRepo,
         private MarcaRepository $marcaRepo,
         private ModeloRepository $modeloRepo,
+        private PneuService $pneuService,
         private PDO $pdo,
         private LoggerInterface $logger,
     ) {}
@@ -77,6 +79,9 @@ class VeiculoService
         $dados['gnv_instalado'] = $dados['gnv_instalado'] ?? 0;
         $dados['status_estoque'] = $dados['status_estoque'] ?? 'disponivel';
         $dados['status_vitrine'] = $dados['status_vitrine'] ?? 'inativo';
+
+        // Dados dos pneus
+        $dadosPneu = $this->extrairDadosPneu($dados);
 
         $this->pdo->beginTransaction();
 
@@ -122,7 +127,15 @@ class VeiculoService
                 return false;
             }
 
-            // 6. Commit final
+            // 6. Salva pneus
+            $pneuSalvo = $this->pneuService->salvar($veiculoId, $dadosPneu);
+            if (!$pneuSalvo) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao salvar pneus', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            // 7. Commit final
             $this->pdo->commit();
 
             $this->logger->info('Veículo criado com sucesso', [
@@ -178,6 +191,9 @@ class VeiculoService
         $tipoAtual = $this->detectarTipoAtual($veiculoId);
         $deveDeletarComplementoAntigo = ($tipoAtual !== null && $tipoAtual !== $tipoVeiculo);
 
+        // Dados dos pneus
+        $dadosPneu = $this->extrairDadosPneu($dados);
+
         $this->pdo->beginTransaction();
 
         try {
@@ -231,7 +247,15 @@ class VeiculoService
                 return false;
             }
 
-            // 7. Commit final
+            // 7. Atualiza pneus
+            $pneuAtualizado = $this->pneuService->salvar($veiculoId, $dadosPneu);
+            if (!$pneuAtualizado) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao atualizar pneus', ['veiculo_id' => $veiculoId]);
+                return false;
+            }
+
+            // 8. Commit final
             $this->pdo->commit();
 
             $this->logger->info('Veículo atualizado com sucesso', ['veiculo_id' => $veiculoId]);
@@ -524,6 +548,9 @@ class VeiculoService
         // Busca imagens do veículo
         $imagens = $this->veiculoImagemRepo->findByVeiculo($veiculoId);
 
+        // Busca dados dos pneus
+        $pneus = $this->pneuService->buscar($veiculoId);
+
         return [
             'veiculo'                => $veiculo,
             'tipo'                   => $tipo,
@@ -534,6 +561,7 @@ class VeiculoService
             'imagens'                => $imagens,
             'marca_nome'             => $marcaNome,
             'modelo_nome'            => $modeloNome,
+            'pneus'                  => $pneus,
         ];
     }
 
@@ -1037,6 +1065,33 @@ class VeiculoService
             'estoque'   => ['status_estoque' => 'disponivel', 'status_vitrine' => 'inativo'],
             default     => [],
         };
+    }
+
+    private function extrairDadosPneu(array $dados): array
+    {
+        return [
+            'dianteiro' => [
+                'largura'  => $dados['pneu_largura_d'] ?? null,
+                'perfil'   => $dados['pneu_perfil_d'] ?? null,
+                'aro'      => $dados['pneu_aro_d'] ?? null,
+                'indice_carga' => $dados['pneu_carga_d'] ?? null,
+                'simbolo_velocidade' => $dados['pneu_velocidade_d'] ?? null,
+            ],
+            'traseiro' => [
+                'largura'  => $dados['pneu_largura_t'] ?? null,
+                'perfil'   => $dados['pneu_perfil_t'] ?? null,
+                'aro'      => $dados['pneu_aro_t'] ?? null,
+                'indice_carga' => $dados['pneu_carga_t'] ?? null,
+                'simbolo_velocidade' => $dados['pneu_velocidade_t'] ?? null,
+            ],
+            'estepe' => [
+                'largura'  => $dados['pneu_largura_s'] ?? null,
+                'perfil'   => $dados['pneu_perfil_s'] ?? null,
+                'aro'      => $dados['pneu_aro_s'] ?? null,
+                'indice_carga' => $dados['pneu_carga_s'] ?? null,
+                'simbolo_velocidade' => $dados['pneu_velocidade_s'] ?? null,
+            ],
+        ];
     }
 
 }

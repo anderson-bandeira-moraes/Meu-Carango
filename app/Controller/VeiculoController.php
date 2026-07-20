@@ -9,6 +9,7 @@ use App\Core\ViewRenderer;
 use App\Core\Contracts\SessionInterface;
 use App\Service\VeiculoService;
 use App\Service\MarcaModeloService;
+use App\Service\PneuService;
 use App\Requests\VeiculoRequest;
 use App\Requests\VeiculoCombustaoRequest;
 use App\Requests\VeiculoEletricoRequest;
@@ -39,6 +40,7 @@ class VeiculoController
         private MarcaRepository $marcaRepo,
         private ModeloRepository $modeloRepo,
         private MarcaModeloService $marcaModeloService,
+        private PneuService $pneuService,
     ) {}
 
     /**
@@ -153,6 +155,11 @@ class VeiculoController
                 'modelos'          => $modelosData,
                 'old'              => $old,
                 'error'            => $error,
+                'pneus' => [
+                    'dianteiro' => null,
+                    'traseiro'  => null,
+                    'estepe'    => null,
+                ],
                 'isEdit'           => false,
             ],
             'layouts/main',
@@ -178,6 +185,9 @@ class VeiculoController
         if ($dadosEdicao['veiculo']['lojista_id'] != $this->getLojistaId()) {
             $this->redirectWithError('Acesso negado.');
         }
+
+        // Busca os pneus
+        $pneus = $this->pneuService->buscar($id);
 
         // Busca marcas com a URL da logo (via service)
         $marcas = $this->marcaModeloService->listarMarcas();
@@ -216,6 +226,7 @@ class VeiculoController
                 'modelos'          => $modelosData,
                 'old'              => [],
                 'error'            => $error,
+                'pneus'            => $pneus,
                 'isEdit'           => true,
             ],
             'layouts/main',
