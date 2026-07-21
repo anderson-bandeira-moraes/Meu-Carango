@@ -86,25 +86,6 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'   => 'nullable|boolean',
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
-
-            // Campos de pneu (dianteiro, traseiro, estepe)
-            'pneu_largura_d'  => 'required|max:4',
-            'pneu_perfil_d'   => 'required|max:4',
-            'pneu_aro_d'      => 'required|max:3',
-            'pneu_carga_d'    => 'required|max:4',
-            'pneu_velocidade_d' => 'required|max:3',
-
-            'pneu_largura_t'  => 'required|max:4',
-            'pneu_perfil_t'   => 'required|max:4',
-            'pneu_aro_t'      => 'required|max:3',
-            'pneu_carga_t'    => 'required|max:4',
-            'pneu_velocidade_t' => 'required|max:3',
-
-            'pneu_largura_s'  => 'required|max:4',
-            'pneu_perfil_s'   => 'required|max:4',
-            'pneu_aro_s'      => 'required|max:3',
-            'pneu_carga_s'    => 'required|max:4',
-            'pneu_velocidade_s' => 'required|max:3',
         ];
     }
 
@@ -178,78 +159,6 @@ class VeiculoRequest extends FormRequest
             // Status
             'status_estoque.in' => 'O status de estoque deve ser disponível, vendido ou reservado.',
             'status_vitrine.in' => 'O status da vitrine deve ser ativo ou inativo.',
-            
-            // ============================================================
-            // MENSAGENS PARA CAMPOS DE PNEU (DIANTEIRO)
-            // ============================================================
-
-            // Largura
-            'pneu_largura_d.required' => 'A largura do pneu dianteiro é obrigatória.',
-            'pneu_largura_d.max'      => 'A largura do pneu dianteiro deve ter no máximo :max caracteres.',
-
-            // Perfil
-            'pneu_perfil_d.required' => 'O perfil do pneu dianteiro é obrigatório.',
-            'pneu_perfil_d.max'      => 'O perfil do pneu dianteiro deve ter no máximo :max caracteres.',
-
-            // Aro
-            'pneu_aro_d.required' => 'O aro do pneu dianteiro é obrigatório.',
-            'pneu_aro_d.max'      => 'O aro do pneu dianteiro deve ter no máximo :max caracteres.',
-
-            // Índice de carga
-            'pneu_carga_d.required' => 'O índice de carga do pneu dianteiro é obrigatório.',
-            'pneu_carga_d.max'      => 'O índice de carga do pneu dianteiro deve ter no máximo :max caracteres.',
-
-            // Símbolo de velocidade
-            'pneu_velocidade_d.required' => 'O símbolo de velocidade do pneu dianteiro é obrigatório.',
-            'pneu_velocidade_d.max'      => 'O símbolo de velocidade do pneu dianteiro deve ter no máximo :max caracteres.',
-
-            // ============================================================
-            // MENSAGENS PARA CAMPOS DE PNEU (TRASEIRO)
-            // ============================================================
-
-            // Largura
-            'pneu_largura_t.required' => 'A largura do pneu traseiro é obrigatória.',
-            'pneu_largura_t.max'      => 'A largura do pneu traseiro deve ter no máximo :max caracteres.',
-
-            // Perfil
-            'pneu_perfil_t.required' => 'O perfil do pneu traseiro é obrigatório.',
-            'pneu_perfil_t.max'      => 'O perfil do pneu traseiro deve ter no máximo :max caracteres.',
-
-            // Aro
-            'pneu_aro_t.required' => 'O aro do pneu traseiro é obrigatório.',
-            'pneu_aro_t.max'      => 'O aro do pneu traseiro deve ter no máximo :max caracteres.',
-
-            // Índice de carga
-            'pneu_carga_t.required' => 'O índice de carga do pneu traseiro é obrigatório.',
-            'pneu_carga_t.max'      => 'O índice de carga do pneu traseiro deve ter no máximo :max caracteres.',
-
-            // Símbolo de velocidade
-            'pneu_velocidade_t.required' => 'O símbolo de velocidade do pneu traseiro é obrigatório.',
-            'pneu_velocidade_t.max'      => 'O símbolo de velocidade do pneu traseiro deve ter no máximo :max caracteres.',
-
-            // ============================================================
-            // MENSAGENS PARA CAMPOS DE PNEU (ESTEPE)
-            // ============================================================
-
-            // Largura
-            'pneu_largura_s.required' => 'A largura do pneu estepe é obrigatória.',
-            'pneu_largura_s.max'      => 'A largura do pneu estepe deve ter no máximo :max caracteres.',
-
-            // Perfil
-            'pneu_perfil_s.required' => 'O perfil do pneu estepe é obrigatório.',
-            'pneu_perfil_s.max'      => 'O perfil do pneu estepe deve ter no máximo :max caracteres.',
-
-            // Aro
-            'pneu_aro_s.required' => 'O aro do pneu estepe é obrigatório.',
-            'pneu_aro_s.max'      => 'O aro do pneu estepe deve ter no máximo :max caracteres.',
-
-            // Índice de carga
-            'pneu_carga_s.required' => 'O índice de carga do pneu estepe é obrigatório.',
-            'pneu_carga_s.max'      => 'O índice de carga do pneu estepe deve ter no máximo :max caracteres.',
-
-            // Símbolo de velocidade
-            'pneu_velocidade_s.required' => 'O símbolo de velocidade do pneu estepe é obrigatório.',
-            'pneu_velocidade_s.max'      => 'O símbolo de velocidade do pneu estepe deve ter no máximo :max caracteres.',
         ];
     }
 
@@ -284,18 +193,6 @@ class VeiculoRequest extends FormRequest
                 if (is_numeric($value)) {
                     $data[$field] = (float) $value;
                 }
-            }
-        }
-
-        $pneuFields = [
-            'pneu_largura_d', 'pneu_perfil_d', 'pneu_aro_d', 'pneu_carga_d', 'pneu_velocidade_d',
-            'pneu_largura_t', 'pneu_perfil_t', 'pneu_aro_t', 'pneu_carga_t', 'pneu_velocidade_t',
-            'pneu_largura_s', 'pneu_perfil_s', 'pneu_aro_s', 'pneu_carga_s', 'pneu_velocidade_s',
-        ];
-
-        foreach ($pneuFields as $field) {
-            if (isset($data[$field]) && is_string($data[$field])) {
-                $data[$field] = trim($data[$field]);
             }
         }
 
