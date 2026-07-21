@@ -47,7 +47,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         baterias_tipos_hibrido: <?= json_encode(baterias_tipos_hibrido_list()) ?>,
         baterias_tipos_bev: <?= json_encode(baterias_tipos_bev_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
-        status_vitrine: <?= json_encode(status_vitrine_list()) ?>
+        status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
+        carrocerias: <?= json_encode(carrocerias_list()) ?>,
+        tipos_direcao: <?= json_encode(tipos_direcao_list()) ?>,
+        tipos_roda: <?= json_encode(tipos_roda_list()) ?>,
+        tipos_freio: <?= json_encode(tipos_freio_list()) ?>,
+        aros_pneu: <?= json_encode(aros_pneu_list()) ?>
     };
 </script>
 
@@ -151,6 +156,32 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Campos ocultos para armazenar os IDs -->
                             <input type="hidden" name="marca_id" id="marca_id" value="<?= $veiculo['marca_id'] ?? $old['marca_id'] ?? '' ?>">
                             <input type="hidden" name="modelo_id" id="modelo_id" value="<?= $veiculo['modelo_id'] ?? $old['modelo_id'] ?? '' ?>">
+                        </div>
+                    </div>
+
+                    <!-- Carroceria -->
+                    <div class="col-md-4">
+                        <label for="carroceria" class="form-label">Carroceria</label>
+                        <select name="carroceria" id="carroceria" class="form-select <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (carrocerias_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['carroceria'] ?? $veiculo['carroceria'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                            <option value="outro" <?= selected($old['carroceria'] ?? $veiculo['carroceria'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                        </select>
+                        <?php if (isset($errors['carroceria'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['carroceria']) ?></div>
+                        <?php endif; ?>
+
+                        <!-- Campo extra para "Outro" -->
+                        <input type="text" name="carroceria_outro" id="carroceria_outro" class="form-control mt-2 <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['carroceria_outro'] ?? '') ?>" 
+                               placeholder="Digite a carroceria personalizada" 
+                               style="display: <?= ($old['carroceria'] ?? $veiculo['carroceria'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                        <div class="invalid-feedback">
+                            A carroceria personalizada é obrigatória.
                         </div>
                     </div>
 
@@ -309,6 +340,97 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <?php if (isset($errors['numero_assentos'])): ?>
                             <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Tipo de Direção -->
+                    <div class="col-md-4">
+                        <label for="tipo_direcao" class="form-label">Tipo de Direção</label>
+                        <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (tipos_direcao_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['tipo_direcao'] ?? $veiculo['tipo_direcao'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['tipo_direcao'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_direcao']) ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Freio Dianteiro -->
+                    <div class="col-md-4">
+                        <label for="freio_dianteiro" class="form-label">Freio Dianteiro</label>
+                        <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (tipos_freio_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['freio_dianteiro'] ?? $veiculo['freio_dianteiro'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['freio_dianteiro'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['freio_dianteiro']) ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Freio Traseiro -->
+                    <div class="col-md-4">
+                        <label for="freio_traseiro" class="form-label">Freio Traseiro</label>
+                        <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (tipos_freio_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['freio_traseiro'] ?? $veiculo['freio_traseiro'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['freio_traseiro'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['freio_traseiro']) ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Aro do Pneu -->
+                    <div class="col-md-4">
+                        <label for="pneu_aro" class="form-label">Aro do Pneu (polegadas)</label>
+                        <select name="pneu_aro" id="pneu_aro" class="form-select <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (aros_pneu_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                            <option value="outro" <?= selected($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                        </select>
+                        <?php if (isset($errors['pneu_aro'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['pneu_aro']) ?></div>
+                        <?php endif; ?>
+
+                        <!-- Campo extra para "Outro" -->
+                        <input type="number" name="pneu_aro_outro" id="pneu_aro_outro" class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['pneu_aro_outro'] ?? '') ?>" 
+                               placeholder="Digite o aro personalizado" 
+                               style="display: <?= ($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
+                               min="10" max="30">
+                        <div class="invalid-feedback">
+                            O aro personalizado é obrigatório.
+                        </div>
+                    </div>
+
+                    <!-- Tipo de Roda -->
+                    <div class="col-md-4">
+                        <label for="tipo_roda" class="form-label">Tipo de Roda</label>
+                        <select name="tipo_roda" id="tipo_roda" class="form-select <?= isset($errors['tipo_roda']) ? 'is-invalid' : '' ?>">
+                            <option value="">Selecione</option>
+                            <?php foreach (tipos_roda_list() as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= selected($old['tipo_roda'] ?? $veiculo['tipo_roda'] ?? '', $value) ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($errors['tipo_roda'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_roda']) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -2702,6 +2824,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 prepareSubmit('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro');
                 prepareSubmit('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido');
                 prepareSubmit('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico');
+                prepareSubmit('carroceria', 'carroceria_outro');
+                prepareSubmit('pneu_aro', 'pneu_aro_outro');
 
                 // 2. Acumulador de erros
                 const erros = [];
@@ -3742,6 +3866,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA ELETRICO
         // =============================================
         setupMotorOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA CARROCERIA
+        // =============================================
+        setupMotorOutro('carroceria', 'carroceria_outro', []);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA ARO DO PNEU
+        // =============================================
+        setupMotorOutro('pneu_aro', 'pneu_aro_outro', []);
+
 
         // ============================================================
         // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS

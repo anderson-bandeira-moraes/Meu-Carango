@@ -34,6 +34,8 @@ class VeiculoRepository
                 numero_portas, numero_assentos,
                 comprimento_mm, largura_mm, altura_mm, distancia_entre_eixos_mm, peso_ordem_marcha_kg,
                 volume_porta_malas_l, volume_cacamba_l, carga_util_kg, capacidade_reboque_kg,
+                carroceria, tipo_direcao, altura_solo_mm,
+                pneu_aro, tipo_roda, freio_dianteiro, freio_traseiro,
                 hash_id, slug, gnv_instalado,
                 status_estoque, status_vitrine
             ) VALUES (
@@ -42,6 +44,8 @@ class VeiculoRepository
                 :numero_portas, :numero_assentos,
                 :comprimento_mm, :largura_mm, :altura_mm, :distancia_entre_eixos_mm, :peso_ordem_marcha_kg,
                 :volume_porta_malas_l, :volume_cacamba_l, :carga_util_kg, :capacidade_reboque_kg,
+                :carroceria, :tipo_direcao, :altura_solo_mm,
+                :pneu_aro, :tipo_roda, :freio_dianteiro, :freio_traseiro,
                 :hash_id, :slug, :gnv_instalado,
                 :status_estoque, :status_vitrine
             )';
@@ -97,6 +101,13 @@ class VeiculoRepository
             ':volume_cacamba_l'         => $dados['volume_cacamba_l'] ?? null,
             ':carga_util_kg'            => $dados['carga_util_kg'] ?? null,
             ':capacidade_reboque_kg'    => $dados['capacidade_reboque_kg'] ?? null,
+            ':carroceria'               => $dados['carroceria'] ?? null,
+            ':tipo_direcao'             => $dados['tipo_direcao'] ?? null,
+            ':altura_solo_mm'           => $dados['altura_solo_mm'] ?? null,
+            ':pneu_aro'                 => $dados['pneu_aro'] ?? null,
+            ':tipo_roda'                => $dados['tipo_roda'] ?? null,
+            ':freio_dianteiro'          => $dados['freio_dianteiro'] ?? null,
+            ':freio_traseiro'           => $dados['freio_traseiro'] ?? null,
             ':hash_id'                  => $dados['hash_id'] ?? null,
             ':slug'                     => $dados['slug'] ?? null,
             ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,

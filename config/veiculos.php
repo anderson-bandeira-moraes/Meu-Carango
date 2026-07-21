@@ -226,10 +226,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'gnv_materiais' => [
-        'Aço' => 'Aço',
-        'Alumínio' => 'Alumínio',
+        'Aço'                          => 'Aço',
+        'Alumínio'                     => 'Alumínio',
         'Compósito (Fibra de Carbono)' => 'Compósito (Fibra de Carbono)',
-        'Compósito (Fibra de Vidro)' => 'Compósito (Fibra de Vidro)',
+        'Compósito (Fibra de Vidro)'   => 'Compósito (Fibra de Vidro)',
     ],
 
     /*
@@ -366,5 +366,75 @@ return [
     'status_vitrine' => [
         'ativo'   => 'Ativo',
         'inativo' => 'Inativo',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de carroceria (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'carrocerias' => [
+        'hatch'        => 'Hatch',
+        'sedan'        => 'Sedã',
+        'suv'          => 'SUV',
+        'picape'       => 'Picape',
+        'perua'        => 'Perua',
+        'coupe'        => 'Cupê',
+        'fastback'     => 'Fastback',
+        'conversivel'  => 'Conversível',
+        'minivan'      => 'Minivan',
+        'jipe'         => 'Jipe',
+        'crossover'    => 'Crossover',
+        'utilitario'   => 'Utilitário',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de direção (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'tipos_direcao' => [
+        'mecanica'          => 'Mecânica',
+        'hidraulica'        => 'Hidráulica',
+        'eletrica'          => 'Elétrica',
+        'eletro-hidraulica' => 'Eletro-hidráulica',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de roda (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'tipos_roda' => [
+        'liga_leve' => 'Liga Leve',
+        'calota'    => 'Calota',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de freio (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'tipos_freio' => [
+        'disco'  => 'Disco',
+        'tambor' => 'Tambor',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Aros de roda em polegadas (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'aros_pneu' => [
+        13 => '13"',
+        14 => '14"',
+        15 => '15"',
+        16 => '16"',
+        17 => '17"',
+        18 => '18"',
+        19 => '19"',
+        20 => '20"',
+        21 => '21"',
+        22 => '22"',
     ],
 ];

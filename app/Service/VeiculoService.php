@@ -651,8 +651,9 @@ class VeiculoService
             'comprimento_mm', 'largura_mm', 'altura_mm', 'distancia_entre_eixos_mm',
             'peso_ordem_marcha_kg', 'volume_porta_malas_l', 'volume_cacamba_l',
             'carga_util_kg', 'capacidade_reboque_kg', 'gnv_instalado',
-            'status_estoque', 'status_vitrine',
-            'slug' // Adicionado para permitir atualização na edição
+            'status_estoque', 'status_vitrine','slug',
+            'carroceria', 'tipo_direcao', 'altura_solo_mm',
+            'pneu_aro', 'tipo_roda', 'freio_dianteiro', 'freio_traseiro'
         ];
         return array_intersect_key($dados, array_flip($allowed));
     }

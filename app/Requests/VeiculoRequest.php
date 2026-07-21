@@ -86,6 +86,15 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'   => 'nullable|boolean',
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
+
+            // Novos campos opcionais
+            'carroceria'           => 'nullable|string|max:30',
+            'tipo_direcao'         => 'nullable|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
+            'altura_solo_mm'       => 'nullable|integer|min:0',
+            'pneu_aro'             => 'nullable|integer|min:10|max:30',
+            'tipo_roda'            => 'nullable|in:liga_leve,calota',
+            'freio_dianteiro'      => 'nullable|in:disco,tambor',
+            'freio_traseiro'       => 'nullable|in:disco,tambor',
         ];
     }
 
@@ -159,6 +168,29 @@ class VeiculoRequest extends FormRequest
             // Status
             'status_estoque.in' => 'O status de estoque deve ser disponível, vendido ou reservado.',
             'status_vitrine.in' => 'O status da vitrine deve ser ativo ou inativo.',
+
+            // Carroceria
+            'carroceria.string' => 'O tipo de carroceria deve ser um texto.',
+            'carroceria.max'    => 'O tipo de carroceria deve ter no máximo :max caracteres.',
+
+            // Direção
+            'tipo_direcao.in'   => 'O tipo de direção deve ser: mecânica, hidráulica, elétrica ou eletro-hidráulica.',
+
+            // Altura do solo
+            'altura_solo_mm.integer' => 'A altura do solo deve ser um número inteiro.',
+            'altura_solo_mm.min'     => 'A altura do solo não pode ser negativa.',
+
+            // Aro
+            'pneu_aro.integer' => 'O aro do pneu deve ser um número inteiro.',
+            'pneu_aro.min'     => 'O aro do pneu deve ser no mínimo 10 polegadas.',
+            'pneu_aro.max'     => 'O aro do pneu deve ser no máximo 30 polegadas.',
+
+            // Tipo de roda
+            'tipo_roda.in'     => 'O tipo de roda deve ser liga leve ou calota.',
+
+            // Freios
+            'freio_dianteiro.in' => 'O tipo de freio dianteiro deve ser disco ou tambor.',
+            'freio_traseiro.in'  => 'O tipo de freio traseiro deve ser disco ou tambor.',
         ];
     }
 
@@ -216,12 +248,28 @@ class VeiculoRequest extends FormRequest
             'distancia_entre_eixos_mm', 'peso_ordem_marcha_kg',
             'volume_porta_malas_l', 'volume_cacamba_l',
             'carga_util_kg', 'capacidade_reboque_kg',
-            'numero_portas', 'numero_assentos'
+            'numero_portas', 'numero_assentos',
+            'altura_solo_mm', 'pneu_aro'
         ];
 
         foreach ($numericOptionalFields as $field) {
             if (isset($data[$field]) && $data[$field] === '') {
                 $data[$field] = null;
+            }
+        }
+
+        // Converte strings vazias para null em campos de texto/enum opcionais
+        $stringOptionalFields = [
+            'carroceria', 'tipo_direcao', 'tipo_roda',
+            'freio_dianteiro', 'freio_traseiro'
+        ];
+
+        foreach ($stringOptionalFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                if ($data[$field] === '') {
+                    $data[$field] = null;
+                }
             }
         }
 

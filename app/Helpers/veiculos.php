@@ -489,3 +489,98 @@ if (!function_exists('sistema_eletrico_tensoes_bev_list')) {
         return $list;
     }
 }
+
+if (!function_exists('carrocerias_list')) {
+    /**
+     * Retorna a lista de tipos de carroceria disponíveis.
+     *
+     * @return array Array de strings com os tipos (ex: 'hatch', 'sedan', 'suv')
+     */
+    function carrocerias_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['carrocerias'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('tipos_direcao_list')) {
+    /**
+     * Retorna a lista de tipos de direção disponíveis.
+     *
+     * @return array Array de strings com os tipos (ex: 'mecanica', 'hidraulica')
+     */
+    function tipos_direcao_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['tipos_direcao'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('tipos_roda_list')) {
+    /**
+     * Retorna a lista de tipos de roda disponíveis.
+     *
+     * @return array Array de strings com os tipos (ex: 'liga_leve', 'calota')
+     */
+    function tipos_roda_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['tipos_roda'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('tipos_freio_list')) {
+    /**
+     * Retorna a lista de tipos de freio disponíveis.
+     *
+     * @return array Array de strings com os tipos (ex: 'disco', 'tambor')
+     */
+    function tipos_freio_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['tipos_freio'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('aros_pneu_list')) {
+    /**
+     * Retorna a lista de aros de roda disponíveis (em polegadas).
+     *
+     * @return array Array de inteiros com os aros (ex: 13, 14, 15, 16, 17, 18)
+     */
+    function aros_pneu_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['aros_pneu'] ?? [];
+        }
+
+        return $list;
+    }
+}
