@@ -443,7 +443,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                     </div>
 
-                    <!-- Bloco GNV (exibido apenas se o checkbox estiver marcado) -->
+                    <!-- Bloco GNV -->
                     <div id="bloco-gnv" style="display: <?= ($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? 0) ? 'block' : 'none' ?>;" class="mt-3 p-3 border rounded bg-light">
                         <h6 class="mb-3"><i class="bi bi-gas-pump me-2"></i>Dados do Kit GNV</h6>
                         <div class="row g-3">
@@ -739,62 +739,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
                 </div>
 
-                <!-- ========== OPCIONAIS ========== -->
-                <div class="card shadow-sm my-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0"><i class="bi bi-check2-square me-2"></i>Opcionais</h5>
-                    </div>
-                    <div class="card-body">
-                        <?php if (empty($todos_opcionais)): ?>
-                            <p class="text-muted">Nenhum opcional cadastrado.</p>
-                        <?php else: ?>
-                            <div class="accordion" id="accordionOpcionais">
-                                <?php $i = 0; ?>
-                                <?php foreach ($todos_opcionais as $categoria => $opcionais): ?>
-                                    <?php $id = 'collapse_' . $i; ?>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="heading_<?= $i ?>">
-                                            <button class="accordion-button collapsed" 
-                                                    type="button" 
-                                                    data-bs-toggle="collapse" 
-                                                    data-bs-target="#<?= $id ?>" 
-                                                    aria-expanded="false" 
-                                                    aria-controls="<?= $id ?>">
-                                                <?= htmlspecialchars($categoria) ?>
-                                            </button>
-                                        </h2>
-                                        <div id="<?= $id ?>" 
-                                             class="accordion-collapse collapse" 
-                                             aria-labelledby="heading_<?= $i ?>" 
-                                             data-bs-parent="#accordionOpcionais">
-                                            <div class="accordion-body">
-                                                <div class="row g-2">
-                                                    <?php foreach ($opcionais as $opcional): ?>
-                                                        <div class="col-md-4 col-lg-3">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" 
-                                                                       name="opcionaisIds[]" 
-                                                                       value="<?= $opcional['id'] ?>" 
-                                                                       class="form-check-input" 
-                                                                       id="opcional_<?= $opcional['id'] ?>"
-                                                                       <?= (in_array($opcional['id'], $opcionais_selecionados ?? [])) ? 'checked' : '' ?>>
-                                                                <label class="form-check-label" for="opcional_<?= $opcional['id'] ?>">
-                                                                    <?= htmlspecialchars($opcional['nome']) ?>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php $i++; ?>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
                 <!-- ===== DIMENSÕES E CAPACIDADES ===== -->
                 <hr class="my-4">
 
@@ -832,7 +776,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Altura -->
                     <div class="col-md-3">
-                        <label for="altura_mm" class="form-label">Altura</label>
+                        <label for="altura_mm" class="form-label">Altura do Veículo</label>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
@@ -840,6 +784,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <?php if (isset($errors['altura_mm'])): ?>
                             <div class="invalid-feedback d-block"><?= implode(', ', $errors['altura_mm']) ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Altura Solo -->
+                    <div class="col-md-3">
+                        <label for="altura_solo_mm" class="form-label">Altura do Solo</label>
+                        <div class="input-group">
+                            <input type="number" name="altura_solo_mm" id="altura_solo_mm" 
+                                   class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>" 
+                                   placeholder="Ex: 180" min="0">
+                            <span class="input-group-text">mm</span>
+                            <div class="invalid-feedback">
+                                A altura do solo deve ser um número inteiro.
+                            </div>
+                        </div>
+                        <?php if (isset($errors['altura_solo_mm'])): ?>
+                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['altura_solo_mm']) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -861,7 +823,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 <div class="row g-3 mt-2">
                     <div class="col-12">
                         <hr>
-                        <h6 class="text-secondary"><i class="bi bi-weight-scale me-2"></i>Pesos</h6>
+                        <h6 class="text-secondary"><i class="bi bi-truck"></i> Pesos</h6>
                     </div>  
 
                     <!-- Peso em ordem de marcha -->
@@ -934,6 +896,62 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <?php if (isset($errors['volume_cacamba_l'])): ?>
                             <div class="invalid-feedback d-block"><?= implode(', ', $errors['volume_cacamba_l']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- ========== OPCIONAIS ========== -->
+                <div class="card shadow-sm my-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-check2-square me-2"></i>Opcionais</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (empty($todos_opcionais)): ?>
+                            <p class="text-muted">Nenhum opcional cadastrado.</p>
+                        <?php else: ?>
+                            <div class="accordion" id="accordionOpcionais">
+                                <?php $i = 0; ?>
+                                <?php foreach ($todos_opcionais as $categoria => $opcionais): ?>
+                                    <?php $id = 'collapse_' . $i; ?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading_<?= $i ?>">
+                                            <button class="accordion-button collapsed" 
+                                                    type="button" 
+                                                    data-bs-toggle="collapse" 
+                                                    data-bs-target="#<?= $id ?>" 
+                                                    aria-expanded="false" 
+                                                    aria-controls="<?= $id ?>">
+                                                <?= htmlspecialchars($categoria) ?>
+                                            </button>
+                                        </h2>
+                                        <div id="<?= $id ?>" 
+                                             class="accordion-collapse collapse" 
+                                             aria-labelledby="heading_<?= $i ?>" 
+                                             data-bs-parent="#accordionOpcionais">
+                                            <div class="accordion-body">
+                                                <div class="row g-2">
+                                                    <?php foreach ($opcionais as $opcional): ?>
+                                                        <div class="col-md-4 col-lg-3">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" 
+                                                                       name="opcionaisIds[]" 
+                                                                       value="<?= $opcional['id'] ?>" 
+                                                                       class="form-check-input" 
+                                                                       id="opcional_<?= $opcional['id'] ?>"
+                                                                       <?= (in_array($opcional['id'], $opcionais_selecionados ?? [])) ? 'checked' : '' ?>>
+                                                                <label class="form-check-label" for="opcional_<?= $opcional['id'] ?>">
+                                                                    <?= htmlspecialchars($opcional['nome']) ?>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
