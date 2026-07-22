@@ -30,7 +30,7 @@ class VeiculoCombustaoRepository
     {
         try {
             $sql = 'INSERT INTO veiculo_combustao (
-                veiculo_id, combustivel, motor_tipo,
+                veiculo_id, combustivel, aspiracao, motor_tipo,
                 potencia_cv, potencia_etanol_cv,
                 torque_kgfm, torque_etanol_kgfm,
                 regime_potencia_rpm, regime_torque_rpm,
@@ -40,7 +40,7 @@ class VeiculoCombustaoRepository
                 consumo_cidade_etanol_kml, consumo_estrada_etanol_kml, consumo_medio_etanol_kml,
                 capacidade_tanque_l, transmissao_tipo, numero_marchas
             ) VALUES (
-                :veiculo_id, :combustivel, :motor_tipo,
+                :veiculo_id, :combustivel, :aspiracao, :motor_tipo,
                 :potencia_cv, :potencia_etanol_cv,
                 :torque_kgfm, :torque_etanol_kgfm,
                 :regime_potencia_rpm, :regime_torque_rpm,
@@ -51,6 +51,7 @@ class VeiculoCombustaoRepository
                 :capacidade_tanque_l, :transmissao_tipo, :numero_marchas
             ) ON DUPLICATE KEY UPDATE
                 combustivel = VALUES(combustivel),
+                aspiracao = VALUES(aspiracao),
                 motor_tipo = VALUES(motor_tipo),
                 potencia_cv = VALUES(potencia_cv),
                 potencia_etanol_cv = VALUES(potencia_etanol_cv),
@@ -155,6 +156,7 @@ class VeiculoCombustaoRepository
         return [
             ':veiculo_id'                    => $dados['veiculo_id'] ?? null,
             ':combustivel'                   => $dados['combustivel'] ?? null,
+            ':aspiracao'                     => $dados['aspiracao'] ?? null,
             ':motor_tipo'                    => $dados['motor_tipo'] ?? null,
             ':potencia_cv'                   => $dados['potencia_cv'] ?? null,
             ':potencia_etanol_cv'            => $dados['potencia_etanol_cv'] ?? null,

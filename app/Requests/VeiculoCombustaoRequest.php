@@ -24,6 +24,9 @@ class VeiculoCombustaoRequest extends FormRequest
             // Combustível (ENUM)
             'combustivel' => 'required|in:alcool,diesel,flex,gasolina',
 
+            // Aspiração (ENUM)
+            'aspiracao' => 'nullable|in:aspirado,turbo,supercharger',
+
             // Motor
             'motor_tipo'  => 'required|max:40',
 
@@ -57,7 +60,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'regime_potencia_rpm'  => 'nullable|integer|min_num:0',
             'regime_torque_rpm'    => 'nullable|integer|min_num:0',
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
-            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
         ];
     }
 
@@ -70,6 +73,9 @@ class VeiculoCombustaoRequest extends FormRequest
             // Combustível
             'combustivel.required' => 'O tipo de combustível é obrigatório.',
             'combustivel.in'       => 'O tipo de combustível deve ser: álcool, diesel, flex ou gasolina',
+
+            // Aspiração
+            'aspiracao.in' => 'O tipo de aspiração deve ser aspirado, turbo ou supercharger.',
 
             // Motor
             'motor_tipo.required' => 'O tipo do motor é obrigatório.',
@@ -125,13 +131,13 @@ class VeiculoCombustaoRequest extends FormRequest
             'consumo_estrada_etanol_kml.min_num' => 'O consumo na estrada com etanol não pode ser negativo.',
 
             // Desempenho
-            'regime_potencia_rpm.integer' => 'O regime de potência deve ser um número inteiro.',
-            'regime_potencia_rpm.min_num' => 'O regime de potência não pode ser negativo.',
-            'regime_torque_rpm.integer'   => 'O regime de torque deve ser um número inteiro.',
-            'regime_torque_rpm.min_num'   => 'O regime de torque não pode ser negativo.',
+            'regime_potencia_rpm.integer'  => 'O regime de potência deve ser um número inteiro.',
+            'regime_potencia_rpm.min_num'  => 'O regime de potência não pode ser negativo.',
+            'regime_torque_rpm.integer'    => 'O regime de torque deve ser um número inteiro.',
+            'regime_torque_rpm.min_num'    => 'O regime de torque não pode ser negativo.',
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
             'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
-            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
+            'velocidade_max_kmh.numeric'   => 'A velocidade máxima deve ser um número válido.',
             'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
         ];
     }
@@ -186,7 +192,7 @@ class VeiculoCombustaoRequest extends FormRequest
         $data = parent::sanitize($data);
 
         // Converte vírgula decimal para ponto e depois para float
-        $floatFields = ['potencia_cv', 'potencia_etanol_cv', 'torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg'];
+        $floatFields = ['potencia_cv', 'potencia_etanol_cv', 'torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg', 'velocidade_max_kmh'];
 
         foreach ($floatFields as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
@@ -200,7 +206,7 @@ class VeiculoCombustaoRequest extends FormRequest
             }
         }
 
-        $intFields = ['capacidade_tanque_l', 'numero_marchas', 'regime_potencia_rpm', 'regime_torque_rpm', 'velocidade_max_kmh'];
+        $intFields = ['capacidade_tanque_l', 'numero_marchas', 'regime_potencia_rpm', 'regime_torque_rpm'];
         
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {

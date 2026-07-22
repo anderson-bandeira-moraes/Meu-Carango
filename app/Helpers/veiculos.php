@@ -584,3 +584,22 @@ if (!function_exists('aros_pneu_list')) {
         return $list;
     }
 }
+
+if (!function_exists('aspiracao_list')) {
+    /**
+     * Retorna a lista de tipos de aspiração para motores a combustão.
+     *
+     * @return array Array associativo com value => label (ex: 'aspirado' => 'Aspirado')
+     */
+    function aspiracao_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['aspiracao'] ?? [];
+        }
+
+        return $list;
+    }
+}

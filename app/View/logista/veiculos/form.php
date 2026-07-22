@@ -32,6 +32,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         portas: <?= json_encode(portas_list()) ?>,
         assentos: <?= json_encode(assentos_list()) ?>,
         combustiveis: <?= json_encode(combustiveis_list()) ?>,
+        aspiracao: <?= json_encode(aspiracao_list()) ?>,
         tracao: <?= json_encode(tracao_list()) ?>,
         transmissoes: <?= json_encode(transmissoes_list()) ?>,
         marchas: <?= json_encode(marchas_list()) ?>,
@@ -974,7 +975,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Combustível -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="combustivel" class="form-label">Combustível <span class="text-danger">*</span></label>
                             <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
@@ -992,8 +993,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- Aspiração -->
+                        <div class="col-md-4">
+                            <label for="aspiracao" class="form-label">Tipo de Aspiração</label>
+                            <select name="aspiracao" id="aspiracao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <?php foreach (aspiracao_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['aspiracao'] ?? $complemento['aspiracao'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="invalid-feedback">
+                                Selecione um tipo de aspiração válido.
+                            </div>
+                            <?php if (isset($errors['aspiracao'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aspiracao']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
                         <!-- Motorização (cilindrada) -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="motor_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
                             <select name="motor_tipo" id="motor_tipo" class="form-select <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
@@ -1173,7 +1193,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="velocidade_max_kmh" class="form-label">Velocidade Máxima</label>
                             <div class="input-group">
-                                <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh" 
+                                <input type="number" inputmode="decimal" name="velocidade_max_kmh" id="velocidade_max_kmh" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
                                        placeholder="Ex: 220" min="0">
