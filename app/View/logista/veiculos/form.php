@@ -42,8 +42,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         gnv_localizacoes: <?= json_encode(gnv_localizacoes_list()) ?>,
         gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
         gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
-        conectores_dc: <?= json_encode(conectores_dc_list()) ?>,
-        conectores_ac: <?= json_encode(conectores_ac_list()) ?>,
+        conectores_eletricos_dc: <?= json_encode(conectores_eletricos_dc_list()) ?>,
+        conectores_eletricos_ac: <?= json_encode(conectores_eletricos_ac_list()) ?>,
+        conectores_hibridos_dc: <?= json_encode(conectores_hibridos_dc_list()) ?>,
+        conectores_hibridos_ac: <?= json_encode(conectores_hibridos_ac_list()) ?>,
         tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
         baterias_tipos_hibrido: <?= json_encode(baterias_tipos_hibrido_list()) ?>,
         baterias_tipos_bev: <?= json_encode(baterias_tipos_bev_list()) ?>,
@@ -995,8 +997,8 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Aspiração -->
                         <div class="col-md-4">
-                            <label for="aspiracao" class="form-label">Tipo de Aspiração</label>
-                            <select name="aspiracao" id="aspiracao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
+                            <label for="aspiracao_combustao" class="form-label">Tipo de Aspiração</label>
+                            <select name="aspiracao" id="aspiracao_combustao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (aspiracao_list() as $value => $label): ?>
                                     <option value="<?= $value ?>" <?= selected($old['aspiracao'] ?? $complemento['aspiracao'] ?? '', $value) ?>>
@@ -1712,7 +1714,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
                                 <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
-                                    <?php foreach (conectores_dc_list() as $value => $label): ?>
+                                    <?php foreach (conectores_eletricos_dc_list()as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
@@ -1772,7 +1774,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
                                 <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
-                                    <?php foreach (conectores_ac_list() as $value => $label): ?>
+                                    <?php foreach (conectores_eletricos_ac_list() as $value => $label): ?>
                                         <option value="<?= $value ?>" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
@@ -1879,6 +1881,25 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O tipo de combustível é obrigatório.
                             </div>
+                        </div>
+
+                        <!-- Aspiração -->
+                        <div class="col-md-4">
+                            <label for="aspiracao_hibrido" class="form-label">Tipo de Aspiração</label>
+                            <select name="aspiracao" id="aspiracao_hibrido" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
+                                <option value="">Selecione</option>
+                                <?php foreach (aspiracao_list() as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= selected($old['aspiracao'] ?? $complemento['aspiracao'] ?? '', $value) ?>>
+                                        <?= htmlspecialchars($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="invalid-feedback">
+                                Selecione um tipo de aspiração válido.
+                            </div>
+                            <?php if (isset($errors['aspiracao'])): ?>
+                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aspiracao']) ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Motorização -->
@@ -2219,57 +2240,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <h6 class="text-secondary"><i class="bi bi-plug me-2"></i>Carregamento (específico para PHEV)</h6>
                                 </div>
 
-                                <!-- Potência AC (kW) -->
-                                <div class="col-md-3">
-                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC</label>
-                                    <div class="input-group">
-                                        <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
-                                               class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
-                                               value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" 
-                                               placeholder="Ex: 7.4" min="0">
-                                        <span class="input-group-text">kW</span>
-                                    </div>
-                                    <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Tempo AC (horas) -->
-                                <div class="col-md-3">
-                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC</label>
-                                    <div class="input-group">
-                                        <input type="number" step="any" inputmode="decimal" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
-                                               class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
-                                               value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" 
-                                               placeholder="Ex: 4.5" min="0">
-                                        <span class="input-group-text">h</span>
-                                    </div>
-                                    <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Potência DC (kW) -->
-                                <div class="col-md-3">
-                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC</label>
-                                    <div class="input-group">
-                                        <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
-                                               class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
-                                               value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" 
-                                               placeholder="Ex: 50" min="0">
-                                        <span class="input-group-text">kW</span>
-                                    </div>
-                                    <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
-                                    <?php endif; ?>
-                                </div>
-
                                 <!-- Tipo de Conector AC -->
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
                                     <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                         <option value="">Selecione</option>
-                                        <?php foreach (conectores_ac_list() as $value => $label): ?>
+                                        <?php foreach (conectores_hibridos_ac_list() as $value => $label): ?>
                                             <option value="<?= $value ?>" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', $value) ?>>
                                                 <?= htmlspecialchars($label) ?>
                                             </option>
@@ -2286,6 +2262,96 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac_outro'] ?? '') ?>" 
                                            placeholder="Digite o conector personalizado" 
                                            style="display: <?= ($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                </div>
+
+                                <!-- Potência AC (kW) -->
+                                <div class="col-md-4">
+                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
+                                               class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_potencia_ac_kw'] ?? $complemento['carregamento_potencia_ac_kw'] ?? '') ?>" 
+                                               placeholder="Ex: 7.4" min="0">
+                                        <span class="input-group-text">kW</span>
+                                    </div>
+                                    <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Tempo AC (horas) -->
+                                <div class="col-md-4">
+                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" inputmode="decimal" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
+                                               class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_tempo_ac_horas'] ?? $complemento['carregamento_tempo_ac_horas'] ?? '') ?>" 
+                                               placeholder="Ex: 4.5" min="0">
+                                        <span class="input-group-text">h</span>
+                                    </div>
+                                    <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Tipo de Conector DC -->
+                                <div class="col-md-4">
+                                    <label for="carregamento_tipo_conector_dc" class="form-label">Tipo de Conector DC</label>
+                                    <select name="carregamento_tipo_conector_dc" id="carregamento_tipo_conector_dc" class="form-select <?= isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : '' ?>">
+                                        <option value="">Selecione</option>
+                                        <?php foreach (conectores_hibridos_dc_list() as $value => $label): ?>
+                                            <option value="<?= $value ?>" <?= selected($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '', $value) ?>>
+                                                <?= htmlspecialchars($label) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                        <option value="outro" <?= selected($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    </select>
+                                    <?php if (isset($errors['carregamento_tipo_conector_dc'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tipo_conector_dc']) ?></div>
+                                    <?php endif; ?>
+
+                                    <!-- Campo extra para "Outro" -->
+                                    <input type="text" name="carregamento_tipo_conector_dc_outro" id="carregamento_tipo_conector_dc_outro" 
+                                           class="form-control mt-2 <?= isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_dc_outro'] ?? '') ?>" 
+                                           placeholder="Digite o conector personalizado" 
+                                           style="display: <?= ($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                    <div class="invalid-feedback">
+                                        O tipo de conector personalizado é obrigatório.
+                                    </div>
+                                </div>
+
+                                <!-- Potência DC (kW) -->
+                                <div class="col-md-4">
+                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
+                                               class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_potencia_dc_kw'] ?? $complemento['carregamento_potencia_dc_kw'] ?? '') ?>" 
+                                               placeholder="Ex: 50" min="0">
+                                        <span class="input-group-text">kW</span>
+                                    </div>
+                                    <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Tempo de Carga DC -->
+                                <div class="col-md-4">
+                                    <label for="carregamento_tempo_dc_min" class="form-label">Tempo de Carga DC</label>
+                                    <div class="input-group">
+                                        <input type="number" step="any" inputmode="decimal" name="carregamento_tempo_dc_min" id="carregamento_tempo_dc_min" 
+                                               class="form-control <?= isset($errors['carregamento_tempo_dc_min']) ? 'is-invalid' : '' ?>" 
+                                               value="<?= htmlspecialchars($old['carregamento_tempo_dc_min'] ?? $complemento['carregamento_tempo_dc_min'] ?? '') ?>" 
+                                               placeholder="Ex: 30" min="0">
+                                        <span class="input-group-text">min</span>
+                                        <div class="invalid-feedback">
+                                            O tempo de carga DC deve ser um número válido.
+                                        </div>
+                                    </div>
+                                    <?php if (isset($errors['carregamento_tempo_dc_min'])): ?>
+                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_dc_min']) ?></div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

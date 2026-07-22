@@ -304,38 +304,76 @@ if (!function_exists('gnv_capacidades_list')) {
     }
 }
 
-if (!function_exists('conectores_dc_list')) {
+if (!function_exists('conectores_eletricos_dc_list')) {
     /**
      * Retorna a lista de conectores DC para veículos elétricos (value => label).
      *
      * @return array Array associativo com value => label
      */
-    function conectores_dc_list(): array
+    function conectores_eletricos_dc_list(): array
     {
         static $list = null;
 
         if ($list === null) {
             $config = require CONFIG_DIR . '/veiculos.php';
-            $list = $config['conectores_dc'] ?? [];
+            $list = $config['conectores_eletricos_dc'] ?? [];
         }
 
         return $list;
     }
 }
 
-if (!function_exists('conectores_ac_list')) {
+if (!function_exists('conectores_eletricos_ac_list')) {
     /**
-     * Retorna a lista de conectores AC para veículos elétricos e PHEV (value => label).
+     * Retorna a lista de conectores AC para veículos elétricos (value => label).
      *
      * @return array Array associativo com value => label
      */
-    function conectores_ac_list(): array
+    function conectores_eletricos_ac_list(): array
     {
         static $list = null;
 
         if ($list === null) {
             $config = require CONFIG_DIR . '/veiculos.php';
-            $list = $config['conectores_ac'] ?? [];
+            $list = $config['conectores_eletricos_ac'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('conectores_hibridos_dc_list')) {
+    /**
+     * Retorna a lista de conectores DC para veículos híbridos (PHEV) (value => label).
+     *
+     * @return array Array associativo com value => label
+     */
+    function conectores_hibridos_dc_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['conectores_hibridos_dc'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('conectores_hibridos_ac_list')) {
+    /**
+     * Retorna a lista de conectores AC para veículos híbridos (PHEV) (value => label).
+     *
+     * @return array Array associativo com value => label
+     */
+    function conectores_hibridos_ac_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['conectores_hibridos_ac'] ?? [];
         }
 
         return $list;

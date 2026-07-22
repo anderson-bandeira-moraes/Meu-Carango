@@ -274,26 +274,35 @@ return [
     | Conectores DC para veículos elétricos (value => label)
     |--------------------------------------------------------------------------
     */
-    'conectores_dc' => [
+    'conectores_eletricos_dc' => [
         'CCS2 (Combo 2)' => 'CCS2 (Combo 2) – Padrão Brasil/Europa',
-        'CCS1 (Combo 1)' => 'CCS1 (Combo 1) – Padrão América do Norte',
-        'NACS'           => 'NACS – Padrão Tesla (América do Norte)',
-        'CHAdeMO'        => 'CHAdeMO – Padrão Japonês (Nissan, Mitsubishi)',
-        'GB/T'           => 'GB/T – Padrão Chinês',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Conectores AC para veículos elétricos e PHEV (value => label)
+    | Conectores AC para veículos elétricos (value => label)
     |--------------------------------------------------------------------------
     */
-    'conectores_ac' => [
+    'conectores_eletricos_ac' => [
         'Tipo 2 (Mennekes)'       => 'Tipo 2 (Mennekes) – Padrão Brasil/Europa',
-        'Tipo 1 (SAE J1772)'      => 'Tipo 1 (SAE J1772) – Padrão América do Norte/Japão',
-        'NACS'                    => 'NACS – Padrão Tesla (América do Norte)',
-        'GB/T'                    => 'GB/T – Padrão Chinês',
-        'Tipo 3 (Scame)'          => 'Tipo 3 (Scame) – Padrão Europeu (França/Itália)',
-        'Schuko'                  => 'Schuko – Tomada doméstica (carga lenta)',
+    ],
+
+        /*
+    |--------------------------------------------------------------------------
+    | Conectores DC para veículos híbridos (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'conectores_hibridos_dc' => [
+        'CCS2 (Combo 2)' => 'CCS2 (Combo 2) – Padrão Brasil/Europa',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Conectores AC para veículos elétricos (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'conectores_hibridos_ac' => [
+        'Tipo 2 (Mennekes)'       => 'Tipo 2 (Mennekes) – Padrão Brasil/Europa',
     ],
 
     /*

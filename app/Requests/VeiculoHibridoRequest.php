@@ -64,6 +64,8 @@ class VeiculoHibridoRequest extends FormRequest
             'carregamento_tempo_ac_horas'   => 'nullable|numeric|min_num:0',
             'carregamento_potencia_dc_kw'   => 'nullable|numeric|min_num:0',
             'carregamento_tipo_conector_ac' => 'nullable|max:20',
+            'carregamento_tempo_dc_min'     => 'nullable|numeric|min_num:0',
+            'carregamento_tipo_conector_dc' => 'nullable|max:20',
 
             // Consumo
             'consumo_cidade_kml'          => 'required|numeric|min_num:0',
@@ -75,6 +77,13 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Tanque
             'capacidade_tanque_l' => 'required|integer|min_num:0',
+
+            // Aspiração (motor a combustão)
+            'aspiracao' => 'nullable|in:aspirado,turbo,supercharger',
+
+            // Desempenho
+            'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
         ];
     }
 
@@ -152,6 +161,9 @@ class VeiculoHibridoRequest extends FormRequest
             'carregamento_potencia_dc_kw.numeric'  => 'A potência de carregamento DC deve ser um número válido.',
             'carregamento_potencia_dc_kw.min_num' => 'A potência de carregamento DC não pode ser negativa.',
             'carregamento_tipo_conector_ac.max'   => 'O tipo de conector AC deve ter no máximo :max caracteres.',
+            'carregamento_tempo_dc_min.numeric' => 'O tempo de carga DC deve ser um número válido.',
+            'carregamento_tempo_dc_min.min_num' => 'O tempo de carga DC não pode ser negativo.',
+            'carregamento_tipo_conector_dc.max' => 'O tipo de conector DC deve ter no máximo :max caracteres.',
 
             // Consumo
             'consumo_cidade_kml.required' => 'O consumo na cidade é obrigatório.',
@@ -173,6 +185,15 @@ class VeiculoHibridoRequest extends FormRequest
             'capacidade_tanque_l.required' => 'A capacidade do tanque é obrigatória.',
             'capacidade_tanque_l.integer'  => 'A capacidade do tanque deve ser um número inteiro.',
             'capacidade_tanque_l.min_num'  => 'A capacidade do tanque não pode ser negativa.',
+
+            // Aspiração
+            'aspiracao.in' => 'O tipo de aspiração deve ser aspirado, turbo ou supercharger.',
+
+            // Desempenho
+            'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
+            'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
+            'velocidade_max_kmh.numeric'   => 'A velocidade máxima deve ser um número válido.',
+            'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
         ];
     }
 
@@ -204,6 +225,8 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_cidade_etanol_kml',
             'consumo_estrada_etanol_kml',
             'consumo_medio_etanol_kml',
+            'aceleracao_0_100_seg',
+            'velocidade_max_kmh',
         ];
 
         foreach ($floatFields as $field) {
@@ -224,6 +247,7 @@ class VeiculoHibridoRequest extends FormRequest
             'autonomia_eletrica_pbev_km',
             'autonomia_combinada_km',
             'capacidade_tanque_l',
+            'carregamento_tempo_dc_min',
         ];
 
         foreach ($intFields as $field) {

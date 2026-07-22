@@ -42,7 +42,9 @@ class VeiculoHibridoRepository
                 carregamento_potencia_dc_kw, carregamento_tipo_conector_ac,
                 consumo_cidade_kml, consumo_estrada_kml, consumo_medio_kml,
                 consumo_cidade_etanol_kml, consumo_estrada_etanol_kml, consumo_medio_etanol_kml,
-                capacidade_tanque_l, sistema_eletrico_tensao
+                capacidade_tanque_l, sistema_eletrico_tensao,
+                aspiracao, aceleracao_0_100_seg, velocidade_max_kmh,
+                carregamento_tempo_dc_min, carregamento_tipo_conector_dc
             ) VALUES (
                 :veiculo_id, :tipo, :combustivel,
                 :motor_combustao_tipo, :motor_combustao_potencia_cv, :motor_combustao_torque_kgfm,
@@ -56,7 +58,9 @@ class VeiculoHibridoRepository
                 :carregamento_potencia_dc_kw, :carregamento_tipo_conector_ac,
                 :consumo_cidade_kml, :consumo_estrada_kml, :consumo_medio_kml,
                 :consumo_cidade_etanol_kml, :consumo_estrada_etanol_kml, :consumo_medio_etanol_kml,
-                :capacidade_tanque_l, :sistema_eletrico_tensao
+                :capacidade_tanque_l, :sistema_eletrico_tensao,
+                :aspiracao, :aceleracao_0_100_seg, :velocidade_max_kmh,
+                :carregamento_tempo_dc_min, :carregamento_tipo_conector_dc
             ) ON DUPLICATE KEY UPDATE
                 tipo = VALUES(tipo),
                 combustivel = VALUES(combustivel),
@@ -87,7 +91,12 @@ class VeiculoHibridoRepository
                 consumo_estrada_etanol_kml = VALUES(consumo_estrada_etanol_kml),
                 consumo_medio_etanol_kml = VALUES(consumo_medio_etanol_kml),
                 capacidade_tanque_l = VALUES(capacidade_tanque_l),
-                sistema_eletrico_tensao = VALUES(sistema_eletrico_tensao)';
+                sistema_eletrico_tensao = VALUES(sistema_eletrico_tensao),
+                aspiracao = VALUES(aspiracao),
+                aceleracao_0_100_seg = VALUES(aceleracao_0_100_seg),
+                velocidade_max_kmh = VALUES(velocidade_max_kmh),
+                carregamento_tempo_dc_min = VALUES(carregamento_tempo_dc_min),
+                carregamento_tipo_conector_dc = VALUES(carregamento_tipo_conector_dc)';
 
             $stmt = $this->pdo->prepare($sql);
             $success = $stmt->execute($this->prepareDados($dados));
@@ -203,6 +212,11 @@ class VeiculoHibridoRepository
             ':consumo_medio_etanol_kml'          => $dados['consumo_medio_etanol_kml'] ?? null,
             ':capacidade_tanque_l'               => $dados['capacidade_tanque_l'] ?? null,
             ':sistema_eletrico_tensao'           => $dados['sistema_eletrico_tensao'] ?? null,
+            ':aspiracao'                         => $dados['aspiracao'] ?? null,
+            ':aceleracao_0_100_seg'              => $dados['aceleracao_0_100_seg'] ?? null,
+            ':velocidade_max_kmh'                => $dados['velocidade_max_kmh'] ?? null,
+            ':carregamento_tempo_dc_min'         => $dados['carregamento_tempo_dc_min'] ?? null,
+            ':carregamento_tipo_conector_dc'     => $dados['carregamento_tipo_conector_dc'] ?? null,
         ];
     }
 
