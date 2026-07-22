@@ -35,18 +35,18 @@ class VeiculoEletricoRepository
                 aceleracao_0_100_seg, velocidade_max_kmh,
                 capacidade_liquida_kwh, saude_bateria_soh,
                 autonomia_wltp_km, autonomia_inmetro_km,
-                garantia_bateria,
-                potencia_max_dc_kw, tipo_conector_dc, tipo_conector_ac,
-                tempo_carga_dc_min, consumo_energetico_kwh_100km, sistema_eletrico_tensao
+                garantia_bateria, potencia_max_dc_kw, potencia_max_ac_kw, 
+                tipo_conector_dc, tipo_conector_ac, tempo_carga_dc_min, tempo_carga_ac_horas, 
+                consumo_energetico_kwh_100km, sistema_eletrico_tensao
             ) VALUES (
                 :veiculo_id, :tracao_tipo, :transmissao_tipo, :bateria_tipo,
                 :potencia_max_cv, :torque_max_nm, :torque_max_kgfm,
                 :aceleracao_0_100_seg, :velocidade_max_kmh,
                 :capacidade_liquida_kwh, :saude_bateria_soh,
                 :autonomia_wltp_km, :autonomia_inmetro_km,
-                :garantia_bateria,
-                :potencia_max_dc_kw, :tipo_conector_dc, :tipo_conector_ac,
-                :tempo_carga_dc_min, :consumo_energetico_kwh_100km, :sistema_eletrico_tensao
+                :garantia_bateria, :potencia_max_dc_kw, :potencia_max_ac_kw, :tipo_conector_dc, 
+                :tipo_conector_ac, :tempo_carga_dc_min, :tempo_carga_ac_horas,
+                :consumo_energetico_kwh_100km, :sistema_eletrico_tensao
             ) ON DUPLICATE KEY UPDATE
                 tracao_tipo = VALUES(tracao_tipo),
                 transmissao_tipo = VALUES(transmissao_tipo),
@@ -62,9 +62,11 @@ class VeiculoEletricoRepository
                 autonomia_inmetro_km = VALUES(autonomia_inmetro_km),
                 garantia_bateria = VALUES(garantia_bateria),
                 potencia_max_dc_kw = VALUES(potencia_max_dc_kw),
+                potencia_max_ac_kw = VALUES(potencia_max_ac_kw),
                 tipo_conector_dc = VALUES(tipo_conector_dc),
                 tipo_conector_ac = VALUES(tipo_conector_ac),
                 tempo_carga_dc_min = VALUES(tempo_carga_dc_min),
+                tempo_carga_ac_horas = VALUES(tempo_carga_ac_horas),
                 consumo_energetico_kwh_100km = VALUES(consumo_energetico_kwh_100km),
                 sistema_eletrico_tensao = VALUES(sistema_eletrico_tensao)';
 
@@ -115,9 +117,11 @@ class VeiculoEletricoRepository
             ':autonomia_inmetro_km'          => $dados['autonomia_inmetro_km'] ?? null,
             ':garantia_bateria'              => $dados['garantia_bateria'] ?? null,
             ':potencia_max_dc_kw'            => $dados['potencia_max_dc_kw'] ?? null,
+            ':potencia_max_ac_kw'            => $dados['potencia_max_ac_kw'] ?? null,
             ':tipo_conector_dc'              => $dados['tipo_conector_dc'] ?? null,
             ':tipo_conector_ac'              => $dados['tipo_conector_ac'] ?? null,
             ':tempo_carga_dc_min'            => $dados['tempo_carga_dc_min'] ?? null,
+            ':tempo_carga_ac_horas'          => $dados['tempo_carga_ac_horas'] ?? null,
             ':consumo_energetico_kwh_100km'  => $dados['consumo_energetico_kwh_100km'] ?? null,
             ':sistema_eletrico_tensao' => $dados['sistema_eletrico_tensao'] ?? null,
         ];

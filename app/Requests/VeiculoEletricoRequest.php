@@ -33,7 +33,7 @@ class VeiculoEletricoRequest extends FormRequest
 
             // Desempenho (opcionais)
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
-            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
 
             // Bateria
             'bateria_tipo'            => 'required|max:30',
@@ -51,12 +51,12 @@ class VeiculoEletricoRequest extends FormRequest
             // Carregamento DC
             'potencia_max_dc_kw' => 'required|numeric|min_num:0',
             'tipo_conector_dc'   => 'required|max:20',
+            'tempo_carga_dc_min' => 'nullable|numeric|min_num:0',
 
             // Carregamento AC (opcional)
-            'tipo_conector_ac' => 'nullable|max:20',
-
-            // Tempo de carga (opcional)
-            'tempo_carga_dc_min' => 'nullable|numeric|min_num:0',
+            'tipo_conector_ac'     => 'nullable|max:20',
+            'potencia_max_ac_kw'   => 'nullable|numeric|min_num:0',
+            'tempo_carga_ac_horas' => 'nullable|numeric|min_num:0',
 
             // Consumo energético (opcional)
             'consumo_energetico_kwh_100km' => 'nullable|numeric|min_num:0',
@@ -91,7 +91,7 @@ class VeiculoEletricoRequest extends FormRequest
             // Desempenho
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
             'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
-            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
+            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número válido.',
             'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
 
             // Bateria
@@ -118,12 +118,15 @@ class VeiculoEletricoRequest extends FormRequest
             'potencia_max_dc_kw.required' => 'A potência máxima de carregamento DC é obrigatória.',
             'potencia_max_dc_kw.numeric'  => 'A potência máxima de carregamento DC deve ser um número válido.',
             'potencia_max_dc_kw.min_num'  => 'A potência máxima de carregamento DC não pode ser negativa.',
-
-            'tipo_conector_dc.required' => 'O tipo de conector DC é obrigatório.',
-            'tipo_conector_dc.max'      => 'O tipo de conector DC deve ter no máximo :max caracteres.',
+            'tipo_conector_dc.required'   => 'O tipo de conector DC é obrigatório.',
+            'tipo_conector_dc.max'        => 'O tipo de conector DC deve ter no máximo :max caracteres.',
 
             // Carregamento AC (opcional)
             'tipo_conector_ac.max' => 'O tipo de conector AC deve ter no máximo :max caracteres.',
+            'potencia_max_ac_kw.numeric'   => 'A potência máxima AC deve ser um número válido.',
+            'potencia_max_ac_kw.min_num'   => 'A potência máxima AC não pode ser negativa.',
+            'tempo_carga_ac_horas.numeric' => 'O tempo de carga AC deve ser um número válido.',
+            'tempo_carga_ac_horas.min_num' => 'O tempo de carga AC não pode ser negativo.',
 
             // Tempo de carga (opcional)
             'tempo_carga_dc_min.numeric'  => 'O tempo de carga DC deve ser um número válido.',
@@ -147,15 +150,18 @@ class VeiculoEletricoRequest extends FormRequest
 
         // Converte vírgula decimal para ponto e depois para float
         $floatFields = [
-            'potencia_max_cv',          // <-- ADICIONADO
-            'torque_max_nm',            // <-- ADICIONADO
+            'potencia_max_cv',          
+            'torque_max_nm',            
             'torque_max_kgfm',
             'aceleracao_0_100_seg',
             'capacidade_liquida_kwh',
             'saude_bateria_soh',
             'consumo_energetico_kwh_100km',
-            'potencia_max_dc_kw',       // <-- ADICIONADO
-            'tempo_carga_dc_min',       // <-- ADICIONADO
+            'potencia_max_dc_kw',       
+            'tempo_carga_dc_min', 
+            'velocidade_max_kmh', 
+            'potencia_max_ac_kw',
+            'tempo_carga_ac_horas',     
         ];
 
         foreach ($floatFields as $field) {
@@ -172,13 +178,8 @@ class VeiculoEletricoRequest extends FormRequest
 
         // Os campos que permanecem inteiros
         $intFields = [
-            'velocidade_max_kmh',
             'autonomia_wltp_km',
             'autonomia_inmetro_km',
-            // 'potencia_max_cv' removido
-            // 'torque_max_nm' removido
-            // 'potencia_max_dc_kw' removido
-            // 'tempo_carga_dc_min' removido
         ];
 
         foreach ($intFields as $field) {

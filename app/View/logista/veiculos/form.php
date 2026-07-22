@@ -1749,6 +1749,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Potência Máxima AC -->
+                            <div class="col-md-4">
+                                <label for="potencia_max_ac_kw" class="form-label">Potência Máxima AC</label>
+                                <div class="input-group">
+                                    <input type="number" step="any" inputmode="decimal" name="potencia_max_ac_kw" id="potencia_max_ac_kw" 
+                                           class="form-control <?= isset($errors['potencia_max_ac_kw']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['potencia_max_ac_kw'] ?? $complemento['potencia_max_ac_kw'] ?? '') ?>" 
+                                           placeholder="Ex: 7.4" min="0">
+                                    <span class="input-group-text">kW</span>
+                                    <div class="invalid-feedback">
+                                        A potência máxima AC deve ser um número válido.
+                                    </div>
+                                </div>
+                                <?php if (isset($errors['potencia_max_ac_kw'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_ac_kw']) ?></div>
+                                <?php endif; ?>
+                            </div>
+
                             <!-- Tipo de Conector AC -->
                             <div class="col-md-4">
                                 <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
@@ -1771,6 +1789,24 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        value="<?= htmlspecialchars($old['tipo_conector_ac_outro'] ?? '') ?>" 
                                        placeholder="Digite o conector personalizado" 
                                        style="display: <?= ($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                            </div>
+
+                            <!-- Tempo de Carga AC -->
+                            <div class="col-md-4">
+                                <label for="tempo_carga_ac_horas" class="form-label">Tempo de Carga AC</label>
+                                <div class="input-group">
+                                    <input type="number" step="any" inputmode="decimal" name="tempo_carga_ac_horas" id="tempo_carga_ac_horas" 
+                                           class="form-control <?= isset($errors['tempo_carga_ac_horas']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['tempo_carga_ac_horas'] ?? $complemento['tempo_carga_ac_horas'] ?? '') ?>" 
+                                           placeholder="Ex: 6.5" min="0">
+                                    <span class="input-group-text">horas</span>
+                                    <div class="invalid-feedback">
+                                        O tempo de carga AC deve ser um número válido.
+                                    </div>
+                                </div>
+                                <?php if (isset($errors['tempo_carga_ac_horas'])): ?>
+                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tempo_carga_ac_horas']) ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
