@@ -1110,7 +1110,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Potência Máxima -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
@@ -1127,7 +1127,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Torque Máximo -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="torque_kgfm" class="form-label">Torque Máximo</label>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1138,12 +1138,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php if (isset($errors['torque_kgfm'])): ?>
                                 <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_kgfm']) ?></div>
                             <?php endif; ?>
-                        </div>
-
-                        <!-- ===== DESEMPENHO ===== -->
-                        <div class="col-12">
-                            <hr>
-                            <h6 class="text-secondary"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
                         </div>
 
                         <!-- Regime Potência (RPM) -->
@@ -1176,6 +1170,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endif; ?>
                         </div>
 
+                        <!-- ===== DESEMPENHO ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
+                        </div>
+
                         <!-- Aceleração 0-100 -->
                         <div class="col-md-3">
                             <label for="aceleracao_0_100_seg" class="form-label">Aceleração 0-100</label>
@@ -1195,7 +1195,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="col-md-3">
                             <label for="velocidade_max_kmh" class="form-label">Velocidade Máxima</label>
                             <div class="input-group">
-                                <input type="number" inputmode="decimal" name="velocidade_max_kmh" id="velocidade_max_kmh" 
+                                <input type="number" step="any" inputmode="decimal" name="velocidade_max_kmh" id="velocidade_max_kmh" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
                                        placeholder="Ex: 220" min="0">

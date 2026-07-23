@@ -46,7 +46,7 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Bateria
             'bateria_capacidade_kwh'  => 'required|numeric|min_num:0',
-            'bateria_tipo'            => 'nullable|max:30',
+            'bateria_tipo'            => 'required|max:30',
             'sistema_eletrico_tensao' => 'nullable|max:10',
 
             // Modo elétrico puro
