@@ -322,15 +322,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'baterias_tipos_hibrido' => [
-        'NiMH (Níquel-Hidreto Metálico)'         => 'NiMH (Níquel-Hidreto Metálico)',
-        'NMC (Níquel-Manganês-Cobalto)'          => 'NMC (Níquel-Manganês-Cobalto)',
-        'NCA (Níquel-Cobalto-Alumínio)'          => 'NCA (Níquel-Cobalto-Alumínio)',
-        'LFP (Fosfato de Ferro e Lítio)'         => 'LFP (Fosfato de Ferro e Lítio)',
-        'LMO (Óxido de Lítio e Manganês)'        => 'LMO (Óxido de Lítio e Manganês)',
-        'LTO (Óxido de Lítio e Titânio)'         => 'LTO (Óxido de Lítio e Titânio)',
-        'Bateria 48V'                            => 'Bateria 48V',
-        'Estado Sólido'                          => 'Estado Sólido',
-        'Supercapacitores'                       => 'Supercapacitores',
+        'NiMH'  => 'NiMH (Níquel-Hidreto Metálico)',
+        'NMC'   => 'NMC (Níquel-Manganês-Cobalto)',
+        'LFP'   => 'LFP (Fosfato de Ferro e Lítio)',
+        '48V'   => 'Bateria 48V (Híbrido Leve)',
     ],
 
     'baterias_tipos_bev' => [
