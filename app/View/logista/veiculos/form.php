@@ -164,7 +164,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Carroceria -->
                     <div class="col-md-4">
-                        <label for="carroceria" class="form-label">Carroceria</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="carroceria" class="form-label mb-0">Carroceria</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de carroceria do veículo (ex: hatch, sedan, SUV, etc.)">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="carroceria" id="carroceria" class="form-select <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (carrocerias_list() as $value => $label): ?>
@@ -396,7 +405,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Aro do Pneu -->
                     <div class="col-md-4">
-                        <label for="pneu_aro" class="form-label">Aro do Pneu (polegadas)</label>
+                        <label for="pneu_aro" class="form-label">Aro do Pneu</label>
                         <select name="pneu_aro" id="pneu_aro" class="form-select <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (aros_pneu_list() as $value => $label): ?>
@@ -423,7 +432,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Tipo de Roda -->
                     <div class="col-md-4">
-                        <label for="tipo_roda" class="form-label">Tipo de Roda</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="tipo_roda" class="form-label mb-0">Tipo de Roda</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Material da roda: liga leve (alumínio, magnésio) ou aço com calota.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="tipo_roda" id="tipo_roda" class="form-select <?= isset($errors['tipo_roda']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (tipos_roda_list() as $value => $label): ?>
@@ -453,7 +471,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Tipo de Sistema -->
                             <div class="col-md-4">
-                                <label for="tipo_sistema" class="form-label">Tipo de Sistema <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="tipo_sistema" class="form-label mb-0">Tipo de Sistema <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Tipo de sistema GNV: GNC (Gás Natural Comprimido) ou GLP (Gás Liquefeito de Petróleo). Ambos são combustíveis alternativos, mas o GNC é mais comum em veículos convertidos e o GLP é mais utilizado em aplicações específicas.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_sistemas_list() as $value => $label): ?>
@@ -472,7 +499,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Geração do Kit -->
                             <div class="col-md-4">
-                                <label for="geracao_kit" class="form-label">Geração do Kit <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="geracao_kit" class="form-label mb-0">Geração do Kit <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Geração do sistema de injeção eletrônica do kit GNV. Cada geração representa um avanço tecnológico, com maior eficiência, durabilidade e compatibilidade com os sistemas modernos de injeção do veículo (ex: 3ª, 4ª, 5ª e 6ª geração).">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_geracoes_list() as $value => $label): ?>
@@ -501,7 +537,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Data de Instalação -->
                             <div class="col-md-4">
-                                <label for="data_instalacao" class="form-label">Data de Instalação</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="data_instalacao" class="form-label mb-0">Data de Instalação</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Data em que o kit GNV foi instalado no veículo. Importante para verificar a idade do sistema e a validade do cilindro.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <input type="date" name="data_instalacao" id="data_instalacao" class="form-control <?= isset($errors['data_instalacao']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_instalacao'] ?? $complemento['data_instalacao'] ?? '') ?>">
                                 <?php if (isset($errors['data_instalacao'])): ?>
@@ -511,7 +556,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Data da Última Inspeção -->
                             <div class="col-md-4">
-                                <label for="data_inspecao" class="form-label">Data da Última Inspeção</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="data_inspecao" class="form-label mb-0">Data da Última Inspeção</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Data da última inspeção periódica obrigatória do kit GNV. A inspeção deve ser realizada anualmente para garantir a segurança e validade do sistema.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_inspecao'] ?? $complemento['data_inspecao'] ?? '') ?>">
                                 <?php if (isset($errors['data_inspecao'])): ?>
@@ -521,7 +575,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Validade do Cilindro -->
                             <div class="col-md-4">
-                                <label for="data_validade_cilindro" class="form-label">Validade do Cilindro</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="data_validade_cilindro" class="form-label mb-0">Validade do Cilindro</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Data de validade do cilindro de GNV. O cilindro deve ser substituído ou inspecionado ao final do prazo de validade, que geralmente é de 10 anos. Essencial para a segurança do veículo.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $complemento['data_validade_cilindro'] ?? '') ?>">
                                 <?php if (isset($errors['data_validade_cilindro'])): ?>
@@ -531,7 +594,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Capacidade -->
                             <div class="col-md-3">
-                                <label for="capacidade_cilindro_m3" class="form-label">Capacidade <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="capacidade_cilindro_m3" class="form-label mb-0">Capacidade <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Capacidade total do cilindro em metros cúbicos (m³). Define a autonomia do veículo no GNV. Quanto maior a capacidade, maior a quilometragem com o sistema.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_capacidades_list() as $valor): ?>
@@ -559,7 +631,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Quantidade Cilindros -->
                             <div class="col-md-3">
-                                <label for="quantidade_cilindros" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="quantidade_cilindros" class="form-label mb-0">Quantidade <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Número de cilindros de GNV instalados no veículo. A quantidade influencia a capacidade total de armazenamento e, consequentemente, a autonomia do sistema. Valores comuns: 1 a 5 cilindros.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_quantidades_list() as $valor): ?>
@@ -578,7 +659,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Material Cilindro -->
                             <div class="col-md-3">
-                                <label for="material_cilindro" class="form-label">Material do Cilindro</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="material_cilindro" class="form-label mb-0">Material do Cilindro</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Material de fabricação do cilindro de GNV. Aço é mais resistente e pesado; alumínio é mais leve; compósitos (fibra de carbono/vidro) são mais leves e seguros, mas com custo mais elevado.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="material_cilindro" id="material_cilindro" class="form-select <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_materiais_list() as $value => $label): ?>
@@ -600,7 +690,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Localização Cilindro -->
                             <div class="col-md-3">
-                                <label for="localizacao_cilindro" class="form-label">Localização <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="localizacao_cilindro" class="form-label mb-0">Localização <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Local onde o cilindro de GNV está instalado no veículo. A localização afeta o espaço útil do porta-malas ou da caçamba. Exemplos: porta-malas, sob o assoalho, atrás dos bancos ou sobre o assoalho.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_localizacoes_list() as $value => $label): ?>
@@ -695,30 +794,59 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <hr>
                                 <h6 class="text-secondary"><i class="bi bi-file-earmark-text me-2"></i>Documentação do Kit GNV</h6>
                                 <div class="row g-3">
+                                    <!-- Certificado de Segurança Veicular (CSV) -->
                                     <div class="col-md-6">
                                         <div class="form-check mt-2">
                                             <input type="hidden" name="possui_csv" value="0">
                                             <input type="checkbox" name="possui_csv" id="possui_csv" class="form-check-input" value="1"
                                                    <?= ($old['possui_csv'] ?? $complemento['possui_csv'] ?? 0) ? 'checked' : '' ?>>
-                                            <label class="form-check-label" for="possui_csv">
-                                                <strong>Certificado de Segurança Veicular (CSV)</strong>
-                                                <br><small class="text-muted">Laudo do INMETRO que aprova a instalação</small>
+                                            <label class="form-check-label" for="possui_csv" style="width: 100%;">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <strong>Certificado de Segurança Veicular (CSV)</strong>
+                                                        <br>
+                                                        <small class="text-muted">Laudo do INMETRO que aprova a instalação</small>
+                                                    </div>
+                                                    <button type="button" 
+                                                            class="btn btn-link btn-sm p-0 text-secondary flex-shrink-0" 
+                                                            data-bs-toggle="tooltip" 
+                                                            data-bs-placement="top" 
+                                                            title="O Certificado de Segurança Veicular (CSV) é um laudo do INMETRO que atesta que a instalação do kit GNV atende aos requisitos de segurança. Essencial para a regularidade do veículo e para aprovação em vistorias.">
+                                                        <i class="bi bi-info-circle-fill"></i>
+                                                    </button>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
+
+                                    <!-- Selo GNV atualizado -->
                                     <div class="col-md-6">
                                         <div class="form-check mt-2">
                                             <input type="hidden" name="possui_selo_gnv" value="0">
                                             <input type="checkbox" name="possui_selo_gnv" id="possui_selo_gnv" class="form-check-input" value="1"
                                                    <?= ($old['possui_selo_gnv'] ?? $complemento['possui_selo_gnv'] ?? 0) ? 'checked' : '' ?>>
-                                            <label class="form-check-label" for="possui_selo_gnv">
-                                                <strong>Selo GNV atualizado (válido)</strong>
-                                                <br><small class="text-muted">Renovação anual em dia</small>
+                                            <label class="form-check-label" for="possui_selo_gnv" style="width: 100%;">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <strong>Selo GNV atualizado</strong>
+                                                        <br>
+                                                        <small class="text-muted">Renovação anual em dia</small>
+                                                    </div>
+                                                    <button type="button" 
+                                                            class="btn btn-link btn-sm p-0 text-secondary flex-shrink-0" 
+                                                            data-bs-toggle="tooltip" 
+                                                            data-bs-placement="top" 
+                                                            title="O selo GNV é um adesivo de renovação anual obrigatório que comprova que o veículo está regularizado e aprovado na inspeção periódica do sistema GNV. Sem o selo atualizado, o veículo não pode circular legalmente com o kit instalado.">
+                                                        <i class="bi bi-info-circle-fill"></i>
+                                                    </button>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <hr>
 
                             <!-- Instaladora Certificada -->
                             <div class="col-md-6">
@@ -753,7 +881,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     
                     <!-- Comprimento -->
                     <div class="col-md-3">
-                        <label for="comprimento_mm" class="form-label">Comprimento</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="comprimento_mm" class="form-label mb-0">Comprimento</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Comprimento total do veículo medido em milímetros (mm). Valores comuns: 3800 a 5200 mm. Afeta a manobrabilidade e o espaço interno disponível.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
@@ -766,7 +903,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Largura -->
                     <div class="col-md-3">
-                        <label for="largura_mm" class="form-label">Largura</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="largura_mm" class="form-label mb-0">Largura</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Largura total do veículo medida em milímetros (mm), geralmente sem os retrovisores. Valores comuns: 1700 a 2000 mm. Influencia a estabilidade, o espaço interno e a facilidade em vagas estreitas.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1800">
@@ -779,7 +925,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Altura -->
                     <div class="col-md-3">
-                        <label for="altura_mm" class="form-label">Altura do Veículo</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="altura_mm" class="form-label mb-0">Altura do Veículo</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Altura total do veículo medida em milímetros (mm). Valores comuns: 1400 a 1900 mm. Influencia o centro de gravidade, a estabilidade e a aerodinâmica do veículo.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
@@ -792,7 +947,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Altura Solo -->
                     <div class="col-md-3">
-                        <label for="altura_solo_mm" class="form-label">Altura do Solo</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="altura_solo_mm" class="form-label mb-0">Altura do Solo</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Distância do ponto mais baixo do veículo (geralmente o cárter) ao solo, medida em milímetros. Valores comuns: 120 a 300 mm. Veículos com maior altura do solo têm melhor capacidade para enfrentar ruas irregulares, rampas e off-road.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" name="altura_solo_mm" id="altura_solo_mm" 
                                    class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
@@ -810,7 +974,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Distância entre eixos -->
                     <div class="col-md-3">
-                        <label for="distancia_entre_eixos_mm" class="form-label">Distância entre eixos</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="distancia_entre_eixos_mm" class="form-label mb-0">Distância entre eixos</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Distância entre os eixos dianteiro e traseiro do veículo, medida em milímetros (mm). Valores comuns: 2400 a 3000 mm. Quanto maior a distância entre eixos, maior tende a ser o espaço interno e a estabilidade em linha reta, influenciando também o raio de giro.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0" placeholder="Ex: 2600">
@@ -830,8 +1003,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>  
 
                     <!-- Peso em ordem de marcha -->
-                    <div class="col-md-4">
-                        <label for="peso_ordem_marcha_kg" class="form-label">Peso em ordem de marcha</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="peso_ordem_marcha_kg" class="form-label mb-0">Peso em ordem de marcha</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Peso do veículo com todos os fluidos (óleo, água, combustível), ferramentas e acessórios de série, sem carga e sem ocupantes. Medido em quilogramas (kg). Valores comuns: 1000 a 2500 kg. Afeta o consumo de combustível e o desempenho.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
@@ -843,8 +1025,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Carga útil -->
-                    <div class="col-md-4">
-                        <label for="carga_util_kg" class="form-label">Carga útil</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="carga_util_kg" class="form-label mb-0">Carga útil</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Capacidade máxima de carga que o veículo pode transportar, considerando passageiros, bagagem e demais itens. Medida em quilogramas (kg). Valores comuns: 300 a 1200 kg.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="carga_util_kg" id="carga_util_kg" class="form-control <?= isset($errors['carga_util_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0" placeholder="Ex: 750">
@@ -856,8 +1047,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Capacidade de reboque -->
-                    <div class="col-md-4">
-                        <label for="capacidade_reboque_kg" class="form-label">Capacidade de reboque</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="capacidade_reboque_kg" class="form-label mb-0">Capacidade de reboque</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Peso máximo que o veículo pode rebocar, medido em quilogramas (kg). Valores comuns: 500 a 3500 kg. Essencial para quem utiliza o veículo para transporte de cargas, trailers, barcos ou caravanas. Verifique se o veículo possui engate de reboque.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="capacidade_reboque_kg" id="capacidade_reboque_kg" class="form-control <?= isset($errors['capacidade_reboque_kg']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0" placeholder="Ex: 1500">
@@ -877,8 +1077,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Volume do porta-malas -->
-                    <div class="col-md-6">
-                        <label for="volume_porta_malas_l" class="form-label">Volume do porta-malas</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="volume_porta_malas_l" class="form-label mb-0">Volume do porta-malas</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Capacidade de carga do porta-malas, medida em litros (L). Valores comuns: 200 a 600 L para hatches e sedans; 400 a 800 L para SUVs e peruas. Afeta a praticidade para viagens e transporte de bagagens.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0" placeholder="Ex: 450">
@@ -890,8 +1099,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Volume da caçamba -->
-                    <div class="col-md-6">
-                        <label for="volume_cacamba_l" class="form-label">Volume da caçamba</label>
+                    <div class="col-md-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="volume_cacamba_l" class="form-label mb-0">Volume da caçamba</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Capacidade de carga da caçamba, medida em litros (L). Valores comuns: 300 a 1500 L, dependendo do tamanho da picape. Essencial para quem utiliza o veículo para transporte de cargas, mudanças ou atividades profissionais.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0" placeholder="Ex: 800">
@@ -978,7 +1196,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Combustível -->
                         <div class="col-md-4">
-                            <label for="combustivel" class="form-label">Combustível <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="combustivel" class="form-label mb-0">Combustível <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de combustível utilizado pelo veículo. Opções: Álcool, Diesel, Flex (Álcool/Gasolina) ou Gasolina. Essencial para o comprador saber o custo de abastecimento e a disponibilidade do combustível em sua região.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (combustiveis_list() as $value => $label): ?>
@@ -997,7 +1224,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Aspiração -->
                         <div class="col-md-4">
-                            <label for="aspiracao_combustao" class="form-label">Tipo de Aspiração</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="aspiracao_combustao" class="form-label mb-0">Tipo de Aspiração</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Como o ar é admitido no motor: Aspirado (natural, sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="aspiracao" id="aspiracao_combustao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (aspiracao_list() as $value => $label): ?>
@@ -1016,7 +1252,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Motorização (cilindrada) -->
                         <div class="col-md-4">
-                            <label for="motor_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_tipo" class="form-label mb-0">Motorização <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Cilindrada do motor, que determina sua capacidade volumétrica. Valores comuns: 1.0, 1.6, 2.0, etc. Quanto maior a cilindrada, maior a potência e o consumo de combustível.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="motor_tipo" id="motor_tipo" class="form-select <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (motorizacoes_list() as $valor): ?>
@@ -1048,7 +1293,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tipo de Tração -->
                         <div class="col-md-4">
-                            <label for="tracao_tipo" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="tracao_tipo" class="form-label mb-0">Tipo de Tração <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de tração do veículo: Dianteira (mais comum e econômica), Traseira (esportiva, derrapagem controlada), Integral (melhor aderência em pistas molhadas/off-road) ou 4x4 (tração nas quatro rodas com reduzida para uso severo). Afeta a dirigibilidade, a estabilidade e o consumo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (tracao_list() as $value => $label): ?>
@@ -1067,7 +1321,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tipo de Transmissão (Combustão) -->
                         <div class="col-md-4">
-                            <label for="transmissao_tipo" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="transmissao_tipo" class="form-label mb-0">Tipo de Transmissão <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de transmissão do veículo: Manual (MT), Automática Convencional (AT), Automática CVT (sem marchas fixas), Automatizada (AMT) ou Dupla Embreagem (DCT). Afeta a experiência de direção, o consumo e a manutenção.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
@@ -1086,7 +1349,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Número de Marchas -->
                         <div class="col-md-4">
-                            <label for="numero_marchas" class="form-label">Número de Marchas <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="numero_marchas" class="form-label mb-0">Número de Marchas <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Quantidade de marchas da transmissão. Valores comuns: 4 a 6 marchas. Mais marchas geralmente proporcionam melhor desempenho e menor consumo de combustível. Para transmissões CVT, este campo não se aplica.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (marchas_list() as $valor): ?>
@@ -1111,7 +1383,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência Máxima -->
                         <div class="col-md-3">
-                            <label for="potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="potencia_cv" class="form-label mb-0">Potência Máxima <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Potência máxima do motor em cavalos-vapor (cv). Valores comuns: 60 a 600 cv. Quanto maior a potência, melhor o desempenho em aceleração e retomadas, mas geralmente com maior consumo de combustível.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
@@ -1128,7 +1409,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Torque Máximo -->
                         <div class="col-md-3">
-                            <label for="torque_kgfm" class="form-label">Torque Máximo</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="torque_kgfm" class="form-label mb-0">Torque Máximo</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque máximo do motor em quilograma-força-metro (kgfm). Valores comuns: 10 a 80 kgfm. Indica a força de giro do motor, influenciando a capacidade de arrancada, retomada e capacidade de reboque.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
@@ -1142,7 +1432,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Regime Potência (RPM) -->
                         <div class="col-md-3">
-                            <label for="regime_potencia_rpm" class="form-label">Regime Potência</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="regime_potencia_rpm" class="form-label mb-0">Regime Potência</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Rotações por minuto (RPM) nas quais o motor atinge sua potência máxima. Valores comuns: 4000 a 7500 RPM. Indica o ponto de maior desempenho do motor.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="regime_potencia_rpm" id="regime_potencia_rpm" 
                                        class="form-control <?= isset($errors['regime_potencia_rpm']) ? 'is-invalid' : '' ?>" 
@@ -1157,7 +1456,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Regime Torque (RPM) -->
                         <div class="col-md-3">
-                            <label for="regime_torque_rpm" class="form-label">Regime Torque</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="regime_torque_rpm" class="form-label mb-0">Regime Torque</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Rotação em RPM onde o motor atinge seu torque máximo. Valores comuns: 1500 a 4500 RPM. Quanto mais baixo e amplo o regime de torque, melhor a dirigibilidade em baixas rotações, ideal para uso urbano e arrancadas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="regime_torque_rpm" id="regime_torque_rpm" 
                                        class="form-control <?= isset($errors['regime_torque_rpm']) ? 'is-invalid' : '' ?>" 
@@ -1178,7 +1486,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Aceleração 0-100 -->
                         <div class="col-md-3">
-                            <label for="aceleracao_0_100_seg" class="form-label">Aceleração 0-100</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="aceleracao_0_100_seg" class="form-label mb-0">Aceleração 0-100</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tempo necessário para o veículo acelerar de 0 a 100 km/h, medido em segundos (s). Valores comuns: 6 a 12 segundos para veículos de passeio. Quanto menor o tempo, melhor o desempenho.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
                                        class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
@@ -1193,7 +1510,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Velocidade Máxima -->
                         <div class="col-md-3">
-                            <label for="velocidade_max_kmh" class="form-label">Velocidade Máxima</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="velocidade_max_kmh" class="form-label mb-0">Velocidade Máxima</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Velocidade máxima que o veículo pode atingir, medida em km/h. Valores comuns: 150 a 300 km/h. Importante para viagens longas em rodovias, mas deve ser considerada com responsabilidade.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="velocidade_max_kmh" id="velocidade_max_kmh" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
@@ -1289,7 +1615,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Potência Etanol -->
                                 <div class="col-md-4">
-                                    <label for="potencia_etanol_cv" class="form-label">Potência Máxima Etanol <span class="text-danger flex-required">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="potencia_etanol_cv" class="form-label mb-0">Potência Máxima Etanol <span class="text-danger flex-required">*</span></label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Potência máxima do motor quando abastecido com etanol, medida em cavalos-vapor (cv). Valores comuns: 60 a 600 cv. Geralmente, a potência com etanol é ligeiramente superior à da gasolina.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="potencia_etanol_cv" id="potencia_etanol_cv" 
                                                class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
@@ -1307,7 +1642,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Torque Etanol -->
                                 <div class="col-md-4">
-                                    <label for="torque_etanol_kgfm" class="form-label">Torque Máxima Etanol</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="torque_etanol_kgfm" class="form-label mb-0">Torque Máxima Etanol</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Torque máximo do motor quando abastecido com etanol, medido em quilograma-força-metro (kgfm). Valores comuns: 10 a 80 kgfm. Geralmente, o torque com etanol é ligeiramente superior ao da gasolina, proporcionando melhor desempenho em arrancadas e retomadas.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="torque_etanol_kgfm" id="torque_etanol_kgfm" 
                                                class="form-control <?= isset($errors['torque_etanol_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1392,8 +1736,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Tipo de Tração -->
-                        <div class="col-md-6">
-                            <label for="tracao_tipo_eletrico" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="tracao_tipo_eletrico" class="form-label mb-0">Tipo de Tração <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de tração do veículo: Dianteira (mais comum e econômica), Traseira (esportiva), Integral (melhor aderência) ou 4x4 (off-road). Em veículos elétricos, a tração integral é comum em modelos com dois motores (um em cada eixo).">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="tracao_tipo" id="tracao_tipo_eletrico" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (tracao_list() as $value => $label): ?>
@@ -1411,8 +1764,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Tipo de Transmissão -->
-                        <div class="col-md-6">
-                            <label for="transmissao_tipo_eletrico" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="transmissao_tipo_eletrico" class="form-label mb-0">Tipo de Transmissão <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de transmissão do veículo elétrico. A maioria dos veículos elétricos utiliza transmissão de uma única marcha (relação fixa), devido à alta rotação dos motores elétricos, que dispensam múltiplas marchas. Alguns modelos podem ter duas ou mais marchas para otimizar desempenho em altas velocidades.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="transmissao_tipo" id="transmissao_tipo_eletrico" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (transmissoes_list()['eletrico'] as $value => $label): ?>
@@ -1436,8 +1798,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Potência Máxima -->
-                        <div class="col-md-4">
-                            <label for="potencia_max_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="potencia_max_cv" class="form-label mb-0">Potência Máxima <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Potência máxima do motor elétrico em cavalos-vapor (cv). Valores comuns: 80 a 600 cv. Em veículos elétricos, a potência é entregue instantaneamente, proporcionando aceleração rápida desde baixas rotações.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="potencia_max_cv" id="potencia_max_cv" 
                                        class="form-control <?= isset($errors['potencia_max_cv']) ? 'is-invalid' : '' ?>" 
@@ -1455,8 +1826,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Torque Máximo (Nm) -->
-                        <div class="col-md-4">
-                            <label for="torque_max_nm" class="form-label">Torque Máximo</label>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="torque_max_nm" class="form-label mb-0">Torque Máximo em Nm</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque máximo do motor elétrico em Newton-metro (Nm). Valores comuns: 150 a 1000 Nm. Motores elétricos entregam torque máximo instantaneamente, proporcionando arrancadas e retomadas muito rápidas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="torque_max_nm" id="torque_max_nm" 
                                        class="form-control <?= isset($errors['torque_max_nm']) ? 'is-invalid' : '' ?>" 
@@ -1470,8 +1850,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Torque Máximo (kgfm) -->
-                        <div class="col-md-4">
-                            <label for="torque_max_kgfm" class="form-label">Torque Máximo</label>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="torque_max_kgfm" class="form-label mb-0">Torque Máximo em kgfm</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque máximo do motor elétrico em quilograma-força-metro (kgfm). Valores comuns: 15 a 80 kgfm. Em veículos elétricos, o torque máximo está disponível desde 0 RPM, proporcionando arrancadas vigorosas e respostas imediatas ao acelerador.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="torque_max_kgfm" id="torque_max_kgfm" 
                                        class="form-control <?= isset($errors['torque_max_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -1491,8 +1880,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Aceleração 0-100 -->
-                        <div class="col-md-6">
-                            <label for="aceleracao_0_100_seg_eletrico" class="form-label">Aceleração 0-100</label>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="aceleracao_0_100_seg_eletrico" class="form-label mb-0">Aceleração 0-100</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tempo necessário para acelerar de 0 a 100 km/h, medido em segundos (s). Em veículos elétricos, a aceleração é geralmente mais rápida devido à entrega instantânea de torque. Valores comuns: 3 a 8 segundos.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg_eletrico" 
                                        class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
@@ -1506,8 +1904,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Velocidade Máxima -->
-                        <div class="col-md-6">
-                            <label for="velocidade_max_kmh_eletrico" class="form-label">Velocidade Máxima</label>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="velocidade_max_kmh_eletrico" class="form-label mb-0">Velocidade Máxima</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Velocidade máxima do veículo em km/h. Em veículos elétricos, a velocidade máxima pode ser limitada eletronicamente para preservar a bateria, com valores comuns entre 150 e 280 km/h.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
@@ -1528,7 +1935,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tipo de Bateria -->
                         <div class="col-md-4">
-                            <label for="bateria_tipo" class="form-label">Tipo de Bateria <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="bateria_tipo" class="form-label mb-0">Tipo de Bateria <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de bateria utilizada no veículo elétrico. Química predominante: NMC (Níquel-Manganês-Cobalto), LFP (Fosfato de Ferro e Lítio), NCA (Níquel-Cobalto-Alumínio) ou LMO (Óxido de Lítio e Manganês). Cada tipo tem características diferentes de densidade energética, vida útil, segurança e custo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (baterias_tipos_bev_list() as $value => $label): ?>
@@ -1556,7 +1972,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tensão da Bateria -->
                         <div class="col-md-4">
-                            <label for="sistema_eletrico_tensao_eletrico" class="form-label">Tensão da Bateria</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="sistema_eletrico_tensao_eletrico" class="form-label mb-0">Tensão da Bateria</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tensão nominal da bateria do veículo elétrico, medida em volts (V). Valores comuns: 300V, 400V, 800V. Arquiteturas de 800V permitem carregamento mais rápido e maior eficiência, sendo uma tecnologia avançada em veículos premium.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_eletrico" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (sistema_eletrico_tensoes_bev_list() as $value => $label): ?>
@@ -1584,7 +2009,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Capacidade Líquida -->
                         <div class="col-md-4">
-                            <label for="capacidade_liquida_kwh" class="form-label">Capacidade Líquida <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="capacidade_liquida_kwh" class="form-label mb-0">Capacidade Líquida <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Capacidade útil da bateria em quilowatts-hora (kWh). Valores comuns: 20 a 120 kWh. A capacidade líquida determina a autonomia do veículo. Quanto maior, maior a distância percorrida com uma carga completa.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="capacidade_liquida_kwh" id="capacidade_liquida_kwh" 
                                        class="form-control <?= isset($errors['capacidade_liquida_kwh']) ? 'is-invalid' : '' ?>" 
@@ -1602,7 +2036,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Saúde da Bateria -->
                         <div class="col-md-4">
-                            <label for="saude_bateria_soh" class="form-label">Saúde da Bateria</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="saude_bateria_soh" class="form-label mb-0">Saúde da Bateria</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Estado de saúde da bateria (State of Health - SoH), medido em porcentagem (%). Valores comuns: 80% a 100%. Indica a capacidade atual da bateria em relação à capacidade original. Essencial para compradores de veículos elétricos usados, pois reflete a degradação da bateria ao longo do tempo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="saude_bateria_soh" id="saude_bateria_soh" 
                                        class="form-control <?= isset($errors['saude_bateria_soh']) ? 'is-invalid' : '' ?>" 
@@ -1617,7 +2060,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Garantia da Bateria -->
                         <div class="col-md-4">
-                            <label for="garantia_bateria" class="form-label">Garantia da Bateria</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="garantia_bateria" class="form-label mb-0">Garantia da Bateria</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Período de garantia da bateria oferecido pelo fabricante, geralmente em anos ou quilometragem (ex: 8 anos / 160.000 km). Informação essencial para compradores de veículos elétricos, pois indica a cobertura contra degradação prematura e falhas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="text" name="garantia_bateria" id="garantia_bateria" 
                                        class="form-control <?= isset($errors['garantia_bateria']) ? 'is-invalid' : '' ?>" 
@@ -1637,7 +2089,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia WLTP -->
                         <div class="col-md-4">
-                            <label for="autonomia_wltp_km" class="form-label">Autonomia WLTP</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="autonomia_wltp_km" class="form-label mb-0">Autonomia WLTP</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Autonomia do veículo elétrico segundo o ciclo WLTP (Worldwide Harmonised Light Vehicles Test Procedure), medido em quilômetros (km). É o padrão internacional mais realista para estimar a autonomia real do veículo, simulando condições de uso urbano, rodoviário e misto.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="autonomia_wltp_km" id="autonomia_wltp_km" 
                                        class="form-control <?= isset($errors['autonomia_wltp_km']) ? 'is-invalid' : '' ?>" 
@@ -1652,7 +2113,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia Inmetro -->
                         <div class="col-md-4">
-                            <label for="autonomia_inmetro_km" class="form-label">Autonomia Inmetro <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="autonomia_inmetro_km" class="form-label mb-0">Autonomia Inmetro <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Autonomia do veículo elétrico medida pelo Inmetro em condições padronizadas no Brasil, em quilômetros (km). Serve como referência nacional para comparação entre veículos e para fins de etiquetagem veicular.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="autonomia_inmetro_km" id="autonomia_inmetro_km" 
                                        class="form-control <?= isset($errors['autonomia_inmetro_km']) ? 'is-invalid' : '' ?>" 
@@ -1670,7 +2140,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Consumo energético -->
                         <div class="col-md-4">
-                            <label for="consumo_energetico_kwh_100km" class="form-label">Consumo Energético</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="consumo_energetico_kwh_100km" class="form-label mb-0">Consumo Energético</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Consumo médio de energia elétrica do veículo, medido em kWh a cada 100 km percorridos. Valores comuns: 12 a 25 kWh/100km. Quanto menor o consumo, maior a eficiência energética do veículo elétrico.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="consumo_energetico_kwh_100km" id="consumo_energetico_kwh_100km" 
                                        class="form-control <?= isset($errors['consumo_energetico_kwh_100km']) ? 'is-invalid' : '' ?>" 
@@ -1693,7 +2172,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Potência Máxima DC -->
                             <div class="col-md-4">
-                                <label for="potencia_max_dc_kw" class="form-label">Potência Máxima DC <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="potencia_max_dc_kw" class="form-label mb-0">Potência Máxima DC <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Potência máxima de carregamento em corrente contínua (DC), medida em kW. Valores comuns: 50 a 350 kW. Quanto maior a potência, mais rápido é o carregamento em postos de carga rápida. Afeta o tempo de recarga em viagens.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="potencia_max_dc_kw" id="potencia_max_dc_kw" 
                                            class="form-control <?= isset($errors['potencia_max_dc_kw']) ? 'is-invalid' : '' ?>" 
@@ -1711,7 +2199,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Tipo de Conector DC -->
                             <div class="col-md-4">
-                                <label for="tipo_conector_dc" class="form-label">Tipo de Conector DC <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="tipo_conector_dc" class="form-label mb-0">Tipo de Conector DC <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Padrão do conector para carregamento rápido em corrente contínua (DC). Os principais padrões no Brasil são CCS2 (Combo 2), CHAdeMO, NACS e GB/T. O CCS2 é o padrão dominante no mercado brasileiro e europeu.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (conectores_eletricos_dc_list()as $value => $label): ?>
@@ -1738,7 +2235,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Tempo de Carga DC -->
                             <div class="col-md-4">
-                                <label for="tempo_carga_dc_min" class="form-label">Tempo de Carga DC</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="tempo_carga_dc_min" class="form-label mb-0">Tempo de Carga DC</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Tempo estimado para carregamento rápido em corrente contínua (DC), medido em minutos. Geralmente considerado o tempo para carregar de 10% a 80% da bateria. Valores comuns: 15 a 60 minutos, dependendo da potência do carregador e da capacidade da bateria.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
                                            class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
@@ -1753,7 +2259,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Potência Máxima AC -->
                             <div class="col-md-4">
-                                <label for="potencia_max_ac_kw" class="form-label">Potência Máxima AC</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="potencia_max_ac_kw" class="form-label mb-0">Potência Máxima AC</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Potência máxima de carregamento em corrente alternada (AC), medida em kW. Valores comuns: 3.7 kW, 7.4 kW, 11 kW ou 22 kW. Determinada pelo carregador de bordo do veículo (OBC) e afeta o tempo de recarga em carregadores domésticos e wallboxes.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="potencia_max_ac_kw" id="potencia_max_ac_kw" 
                                            class="form-control <?= isset($errors['potencia_max_ac_kw']) ? 'is-invalid' : '' ?>" 
@@ -1771,7 +2286,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Tipo de Conector AC -->
                             <div class="col-md-4">
-                                <label for="tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="tipo_conector_ac" class="form-label mb-0">Tipo de Conector AC</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Padrão do conector para carregamento em corrente alternada (AC). Os principais padrões são Tipo 2 (Mennekes - padrão Brasil/Europa) e Tipo 1 (SAE J1772 - padrão americano). O Tipo 2 é o mais comum em veículos novos e permite carregamento mais rápido.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
                                     <?php foreach (conectores_eletricos_ac_list() as $value => $label): ?>
@@ -1795,7 +2319,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Tempo de Carga AC -->
                             <div class="col-md-4">
-                                <label for="tempo_carga_ac_horas" class="form-label">Tempo de Carga AC</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="tempo_carga_ac_horas" class="form-label mb-0">Tempo de Carga AC</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Tempo estimado para carregamento em corrente alternada (AC), medido em horas. Geralmente considerado o tempo para carga completa (0% a 100%). Valores comuns: 4 a 12 horas, dependendo da potência do carregador e da capacidade da bateria.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="tempo_carga_ac_horas" id="tempo_carga_ac_horas" 
                                            class="form-control <?= isset($errors['tempo_carga_ac_horas']) ? 'is-invalid' : '' ?>" 
@@ -2684,6 +3217,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 modeloDisplay.className = 'badge bg-secondary p-2';
             }
         }
+
+        // Inicializa tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
         // Executa a atualização dos badges ao carregar a página
         atualizarBadges();
