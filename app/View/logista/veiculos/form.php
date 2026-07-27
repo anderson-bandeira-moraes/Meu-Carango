@@ -199,7 +199,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Versão -->
                     <div class="col-md-4">
-                        <label for="versao" class="form-label">Versão do Modelo</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="versao" class="form-label mb-0">Versão do Modelo</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Versão de acabamento do modelo. Define o nível de equipamentos, motorização e diferenciação estética do veículo. Importante para que o comprador identifique corretamente o veículo anunciado.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <input title="Versão do modelo (Ex: GL, EX, Sport, Turbo)" placeholder="ex: GL, EX, Sport, Turbo" type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['versao'] ?? $veiculo['versao'] ?? '') ?>">
                         <?php if (isset($errors['versao'])): ?>
@@ -209,7 +218,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Ano Fabricação -->
                     <div class="col-md-4">
-                        <label for="ano_fabricacao" class="form-label">Ano de Fabricação <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="ano_fabricacao" class="form-label mb-0">Ano de Fabricação <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Ano em que o veículo foi fabricado, com 4 dígitos (ex: 2023). O ano de fabricação influencia diretamente o valor de mercado, a depreciação e a disponibilidade de peças. Geralmente é igual ou próximo ao ano do modelo.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>" required>
                          <div class="invalid-feedback">
@@ -222,7 +240,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Ano Modelo -->
                     <div class="col-md-4">
-                        <label for="ano_modelo" class="form-label">Ano do Modelo <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="ano_modelo" class="form-label mb-0">Ano do Modelo <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Ano do modelo do veículo (ex: 2024). Refere-se ao ano de lançamento da versão do veículo, que pode ser igual ou posterior ao ano de fabricação. É um dos principais fatores que influenciam o valor de mercado e a depreciação do veículo.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>" required>
                         <div class="invalid-feedback">
@@ -235,7 +262,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Cor -->
                     <div class="col-md-4">
-                        <label for="corInput" class="form-label">Cor <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="corInput" class="form-label mb-0">Cor <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Cor do veículo. A cor é um dos principais fatores de decisão de compra. Cores metálicas ou perolizadas geralmente são mais valorizadas e podem influenciar o preço de revenda.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         
                         <!-- Input + botão para abrir a lista -->
                         <div class="input-group">
@@ -302,7 +338,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Quilometragem -->
                     <div class="col-md-4">
-                        <label for="quilometragem" class="form-label">Quilometragem <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="quilometragem" class="form-label mb-0">Quilometragem <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Quilometragem total percorrida pelo veículo, medida em quilômetros (km). É um dos principais fatores que influenciam o valor de mercado e a depreciação do veículo. Quanto menor a quilometragem, maior tende a ser o valor de revenda.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <div class="input-group">
                             <input type="number" step="any" inputmode="decimal" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>" 
@@ -319,7 +364,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Número de Portas -->
                     <div class="col-md-4">
-                        <label for="numero_portas" class="form-label">Número de Portas <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="numero_portas" class="form-label mb-0">Número de Portas <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Quantidade de portas do veículo (ex: 2, 3, 4). Veículos com 2 ou 3 portas geralmente são mais esportivos ou compactos, enquanto 4 portas oferecem maior acessibilidade para passageiros. É um fator importante para famílias e uso diário.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" required>
                             <option value="">Selecione</option>
                             <?php foreach (portas_list() as $valor => $label): ?>
@@ -338,7 +392,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Número de Assentos -->
                     <div class="col-md-4">
-                        <label for="numero_assentos" class="form-label">Número de Assentos <span class="text-danger">*</span></label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="numero_assentos" class="form-label mb-0">Número de Assentos <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Quantidade de assentos do veículo. Valores comuns: 2 a 15 assentos. Veículos com 2 ou 3 assentos são geralmente esportivos ou utilitários; 4 a 5 assentos é o padrão para veículos de passeio; 6 a 8 assentos são comuns em SUVs grandes, minivans e picapes; 9 a 15 assentos são típicos de vans e micro-ônibus.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" required>
                             <option value="">Selecione</option>
                             <?php foreach (assentos_list() as $valor): ?>
@@ -357,7 +420,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Tipo de Direção -->
                     <div class="col-md-4">
-                        <label for="tipo_direcao" class="form-label">Tipo de Direção</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="tipo_direcao" class="form-label mb-0">Tipo de Direção</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de sistema de direção do veículo: Mecânica (sem assistência, mais comum em veículos antigos), Hidráulica (assistida por bomba hidráulica, comum em veículos mais antigos), Elétrica (assistida por motor elétrico, mais eficiente e comum em veículos atuais) ou Eletro-Hidráulica (combinação das duas tecnologias).">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (tipos_direcao_list() as $value => $label): ?>
@@ -373,7 +445,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Freio Dianteiro -->
                     <div class="col-md-4">
-                        <label for="freio_dianteiro" class="form-label">Freio Dianteiro</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="freio_dianteiro" class="form-label mb-0">Freio Dianteiro</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de freio nas rodas dianteiras: Disco (melhor dissipação de calor e desempenho em frenagens) ou Tambor (mais simples e econômico). Veículos modernos geralmente utilizam freios a disco nas quatro rodas ou disco na dianteira e tambor na traseira.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (tipos_freio_list() as $value => $label): ?>
@@ -389,7 +470,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Freio Traseiro -->
                     <div class="col-md-4">
-                        <label for="freio_traseiro" class="form-label">Freio Traseiro</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="freio_traseiro" class="form-label mb-0">Freio Traseiro</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de freio nas rodas traseiras: Disco (melhor dissipação de calor e desempenho em frenagens) ou Tambor (mais simples e econômico). Muitos veículos utilizam disco na dianteira e tambor na traseira para equilibrar custo e desempenho.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (tipos_freio_list() as $value => $label): ?>
@@ -405,7 +495,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                     <!-- Aro do Pneu -->
                     <div class="col-md-4">
-                        <label for="pneu_aro" class="form-label">Aro do Pneu</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="pneu_aro" class="form-label mb-0">Aro do Pneu</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Diâmetro interno do pneu em polegadas (ex: 15, 16, 17). É uma das principais informações para compradores, pois influencia a estética, o conforto de rodagem, a disponibilidade de pneus e o custo de substituição. Aros comuns variam de 12 a 22 polegadas.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
                         <select name="pneu_aro" id="pneu_aro" class="form-select <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
                             <?php foreach (aros_pneu_list() as $value => $label): ?>
@@ -1540,7 +1639,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Consumo Cidade -->
                         <div class="col-md-3">
-                            <label for="consumo_cidade_kml" class="form-label">Consumo Cidade <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="consumo_cidade_kml" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Consumo de combustível em condições urbanas (com trânsito, semáforos e paradas), medido em quilômetros por litro (km/l). Valores comuns: 8 a 15 km/l. Essencial para o comprador avaliar o custo de uso diário do veículo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
                                        class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
@@ -1558,7 +1666,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Consumo Estrada -->
                         <div class="col-md-3">
-                            <label for="consumo_estrada_kml" class="form-label">Consumo Estrada <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="consumo_estrada_kml" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Consumo de combustível em condições de estrada/rodovia, medido em quilômetros por litro (km/l). Valores comuns: 12 a 20 km/l. Essencial para avaliar o custo em viagens e percursos de longa distância.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
                                        class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
@@ -1576,7 +1693,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Consumo Médio -->
                         <div class="col-md-3">
-                            <label for="consumo_medio_kml" class="form-label">Consumo Médio</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="consumo_medio_kml" class="form-label mb-0">Consumo Médio</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Consumo médio de combustível, medido em quilômetros por litro (km/l). É uma média ponderada entre o consumo urbano e o rodoviário. Valores comuns: 10 a 18 km/l. Ajuda a ter uma visão geral da eficiência do veículo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="consumo_medio_kml" id="consumo_medio_kml" 
                                        class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
@@ -1591,7 +1717,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Capacidade Tanque -->
                         <div class="col-md-3">
-                            <label for="capacidade_tanque_l" class="form-label">Capacidade Tanque <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="capacidade_tanque_l" class="form-label mb-0">Capacidade Tanque <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Capacidade total do tanque de combustível, medida em litros (L). Valores comuns: 30 a 80 L. A capacidade do tanque influencia diretamente a autonomia do veículo e a frequência de abastecimento.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
@@ -1666,7 +1801,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Cidade Etanol -->
                                 <div class="col-md-4">
-                                    <label for="consumo_cidade_etanol_kml" class="form-label">Consumo Cidade Etanol <span class="text-danger flex-required">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade Etanol <span class="text-danger flex-required">*</span></label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo de etanol em ciclo urbano, medido em km/l. Valores comuns: 5 a 12 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina, impactando diretamente o custo de abastecimento para o comprador.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
@@ -1684,7 +1828,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Estrada Etanol -->
                                 <div class="col-md-4">
-                                    <label for="consumo_estrada_etanol_kml" class="form-label">Consumo Estrada Etanol <span class="text-danger flex-required">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada Etanol <span class="text-danger flex-required">*</span></label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo de etanol em ciclo rodoviário, medido em km/l. Valores comuns: 7 a 14 km/l. Obrigatório para veículos flex, pois o consumo com etanol em estrada é geralmente 20-30% maior que com gasolina, impactando o custo em viagens longas.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
@@ -1702,7 +1855,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Médio Etanol -->
                                 <div class="col-md-4">
-                                    <label for="consumo_medio_etanol_kml" class="form-label">Consumo Médio</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_medio_etanol_kml" class="form-label mb-0">Consumo Médio</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo médio de etanol, medido em quilômetros por litro (km/l). É uma média ponderada entre o consumo urbano e o rodoviário com etanol. Valores comuns: 6 a 13 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml" 
                                                class="form-control <?= isset($errors['consumo_medio_etanol_kml']) ? 'is-invalid' : '' ?>" 
@@ -2357,8 +2519,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     <div class="row g-3">
 
                         <!-- Tipo de Híbrido -->
-                        <div class="col-md-6">
-                            <label for="tipo_hibrido" class="form-label">Tipo de Híbrido <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="tipo_hibrido" class="form-label mb-0">Tipo de Híbrido <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Categoria do sistema híbrido: HEV (híbrido convencional, sem recarga externa), MHEV (híbrido leve 48V, com pequena bateria para auxiliar o motor) e PHEV (híbrido plug-in, com recarga externa e maior bateria).">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="tipo" id="tipo_hibrido" class="form-select <?= isset($errors['tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (tipos_hibrido_list() as $value => $label): ?>
@@ -2376,8 +2547,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Modo Elétrico Puro -->
-                        <div class="col-md-6">
-                            <label for="modo_eletrico_puro" class="form-label">Modo Elétrico Puro <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="modo_eletrico_puro" class="form-label mb-0">Modo Elétrico Puro <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Indica se o veículo híbrido pode rodar exclusivamente no modo elétrico (modo EV). Apenas veículos PHEV possuem essa funcionalidade completa, enquanto HEV e MHEV têm modos elétricos limitados ou não possuem.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="modo_eletrico_puro" id="modo_eletrico_puro" class="form-select <?= isset($errors['modo_eletrico_puro']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <option value="1" <?= selected($old['modo_eletrico_puro'] ?? $complemento['modo_eletrico_puro'] ?? '', 1) ?>>Sim</option>
@@ -2399,7 +2579,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Combustível -->
                         <div class="col-md-4">
-                            <label for="combustivel_hibrido" class="form-label">Combustível <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="combustivel_hibrido" class="form-label mb-0">Combustível <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de combustível utilizado pelo motor a combustão do veículo híbrido. Opções: Álcool, Diesel, Flex (Álcool/Gasolina) ou Gasolina.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="combustivel" id="combustivel_hibrido" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (combustiveis_list() as $value => $label): ?>
@@ -2418,7 +2607,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Aspiração -->
                         <div class="col-md-4">
-                            <label for="aspiracao_hibrido" class="form-label">Tipo de Aspiração</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="aspiracao_hibrido" class="form-label mb-0">Tipo de Aspiração</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Como o ar é admitido no motor a combustão do veículo híbrido: Aspirado (natural, sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="aspiracao" id="aspiracao_hibrido" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (aspiracao_list() as $value => $label): ?>
@@ -2437,7 +2635,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Motorização -->
                         <div class="col-md-4">
-                            <label for="motor_combustao_tipo" class="form-label">Motorização <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_combustao_tipo" class="form-label mb-0">Motorização <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Cilindrada do motor a combustão, medida em litros (ex: 1.0, 1.4, 1.6, 1.8, 2.0, etc.). A motorização influencia diretamente o desempenho e o consumo de combustível. A opção 'Outro' permite valores personalizados.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-select <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (motorizacoes_list() as $valor): ?>
@@ -2465,7 +2672,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Potência Máxima -->
                         <div class="col-md-4">
-                            <label for="motor_combustao_potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_combustao_potencia_cv" class="form-label mb-0">Potência Máxima <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Potência máxima do motor a combustão do veículo híbrido, medida em cavalos-vapor (cv). Valores comuns: 60 a 600 cv. Quanto maior a potência, melhor o desempenho em aceleração e retomadas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="motor_combustao_potencia_cv" id="motor_combustao_potencia_cv" class="form-control <?= isset($errors['motor_combustao_potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['motor_combustao_potencia_cv'] ?? $complemento['motor_combustao_potencia_cv'] ?? '') ?>" 
@@ -2482,7 +2698,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Torque (kgfm) -->
                         <div class="col-md-4">
-                            <label for="motor_combustao_torque_kgfm" class="form-label">Torque Máximo</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_combustao_torque_kgfm" class="form-label mb-0">Torque Máximo</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque máximo do motor a combustão do veículo híbrido, medido em quilograma-força-metro (kgfm). Valores comuns: 10 a 80 kgfm. Indica a força de giro do motor, influenciando a capacidade de arrancada, retomada e eficiência do sistema híbrido.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="motor_combustao_torque_kgfm" id="motor_combustao_torque_kgfm" 
                                        class="form-control <?= isset($errors['motor_combustao_torque_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -2502,8 +2727,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         
                         <!-- Potência Máxima -->
-                        <div class="col-md-6">
-                            <label for="motor_eletrico_potencia_cv" class="form-label">Potência Máxima <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_eletrico_potencia_cv" class="form-label mb-0">Potência Máxima <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Potência máxima do motor elétrico do veículo híbrido, medida em cavalos-vapor (cv). Valores comuns: 20 a 200 cv. O motor elétrico complementa o motor a combustão, fornecendo torque instantâneo e melhorando a eficiência do veículo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="motor_eletrico_potencia_cv" id="motor_eletrico_potencia_cv" 
                                        class="form-control <?= isset($errors['motor_eletrico_potencia_cv']) ? 'is-invalid' : '' ?>" 
@@ -2520,8 +2754,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Torque (kgfm) -->
-                        <div class="col-md-6">
-                            <label for="motor_eletrico_torque_kgfm" class="form-label">Torque Máximo</label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="motor_eletrico_torque_kgfm" class="form-label mb-0">Torque Máximo</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque máximo do motor elétrico do veículo híbrido, medido em quilograma-força-metro (kgfm). Valores comuns: 5 a 40 kgfm. O torque elétrico está disponível desde 0 RPM, proporcionando arrancadas suaves e resposta imediata ao acelerador, complementando o motor a combustão.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="motor_eletrico_torque_kgfm" id="motor_eletrico_torque_kgfm" 
                                        class="form-control <?= isset($errors['motor_eletrico_torque_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -2541,8 +2784,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Potência Máxima Combinada -->
-                        <div class="col-md-6">
-                            <label for="potencia_combinada_cv" class="form-label">Potência Máxima Combinada <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="potencia_combinada_cv" class="form-label mb-0">Potência Máxima Combinada <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Potência total do sistema híbrido, somando a potência do motor a combustão e do motor elétrico, medida em cavalos-vapor (cv). Valores comuns: 100 a 800 cv. É o principal indicador de desempenho do veículo híbrido.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>                      
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="potencia_combinada_cv" id="potencia_combinada_cv" 
                                        class="form-control <?= isset($errors['potencia_combinada_cv']) ? 'is-invalid' : '' ?>" 
@@ -2559,8 +2811,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
 
                         <!-- Torque Combinado (kgfm) -->
-                        <div class="col-md-6">
-                            <label for="torque_combinado_kgfm" class="form-label">Torque Máximo Combinado</label>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="torque_combinado_kgfm" class="form-label mb-0">Torque Máximo Combinado</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Torque total do sistema híbrido, combinando o torque do motor a combustão e do motor elétrico, medido em quilograma-força-metro (kgfm). Valores comuns: 15 a 100 kgfm. Indica a força de arrancada e a capacidade de retomada do veículo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="torque_combinado_kgfm" id="torque_combinado_kgfm" 
                                        class="form-control <?= isset($errors['torque_combinado_kgfm']) ? 'is-invalid' : '' ?>" 
@@ -2581,7 +2842,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tipo de Tração -->
                         <div class="col-md-4">
-                            <label for="tracao_tipo_hibrido" class="form-label">Tipo de Tração <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="tracao_tipo_hibrido" class="form-label mb-0">Tipo de Tração <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de tração do veículo híbrido: Dianteira (mais comum e econômica), Traseira (esportiva), Integral (melhor aderência) ou 4x4 (off-road). Em híbridos, a tração integral é comum em modelos com motor elétrico no eixo traseiro.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="tracao_tipo" id="tracao_tipo_hibrido" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <option value="dianteira" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'dianteira') ?>>Dianteira</option>
@@ -2599,7 +2869,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         
                         <!-- Tipo de Transmissão (Híbrido) -->
                         <div class="col-md-4">
-                            <label for="transmissao_tipo_hibrido" class="form-label">Tipo de Transmissão <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="transmissao_tipo_hibrido" class="form-label mb-0">Tipo de Transmissão <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de transmissão do veículo híbrido. Opções comuns: e-CVT (transmissão continuamente variável para híbridos), Automática Convencional, Dupla Embreagem (DCT), CVT ou Manual. A e-CVT é específica para híbridos e oferece eficiência e suavidade.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="transmissao_tipo" id="transmissao_tipo_hibrido" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (transmissoes_list()['hibrido'] as $value => $label): ?>
@@ -2618,7 +2897,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Número de Marchas -->
                         <div class="col-md-4">
-                            <label for="numero_marchas_hibrido" class="form-label">Número de Marchas <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="numero_marchas_hibrido" class="form-label mb-0">Número de Marchas <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Quantidade de marchas da transmissão do veículo híbrido. Valores comuns: 4 a 10 marchas. Para transmissões CVT ou e-CVT, este campo não se aplica, pois não possuem marchas fixas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="numero_marchas" id="numero_marchas_hibrido" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (marchas_list() as $valor): ?>
@@ -2643,7 +2931,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Capacidade Líquida -->
                         <div class="col-md-4">
-                            <label for="bateria_capacidade_kwh" class="form-label">Capacidade Líquida <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="bateria_capacidade_kwh" class="form-label mb-0">Capacidade Líquida <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Capacidade útil da bateria do veículo híbrido, medida em quilowatts-hora (kWh). A capacidade líquida determina a autonomia elétrica do veículo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" step="any" inputmode="decimal" name="bateria_capacidade_kwh" id="bateria_capacidade_kwh" 
                                        class="form-control <?= isset($errors['bateria_capacidade_kwh']) ? 'is-invalid' : '' ?>" 
@@ -2661,7 +2958,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tipo de Bateria -->
                         <div class="col-md-4">
-                            <label for="bateria_tipo" class="form-label">Tipo de Bateria <span class="text-danger">*</span></label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="bateria_tipo" class="form-label mb-0">Tipo de Bateria <span class="text-danger">*</span></label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tipo de bateria do veículo híbrido. Tecnologias comuns: NiMH (Níquel-Hidreto Metálico) em HEV tradicionais, NMC e LFP em PHEV modernos, e Bateria 48V em sistemas híbridos leves (MHEV). Cada tipo tem características diferentes de densidade energética, vida útil e custo.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="bateria_tipo" id="bateria_tipo_hibrido" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
                                 <option value="">Selecione</option>
                                 <?php foreach (baterias_tipos_hibrido_list() as $value => $label): ?>
@@ -2689,7 +2995,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Tensão do Sistema Elétrico -->
                         <div class="col-md-4">
-                            <label for="sistema_eletrico_tensao_hibrido" class="form-label">Tensão da Bateria</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="sistema_eletrico_tensao_hibrido" class="form-label mb-0">Tensão da Bateria</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tensão nominal do sistema elétrico do veículo híbrido, medida em volts (V). Valores comuns: 12V (bateria auxiliar), 48V (híbridos leves MHEV), 300V a 800V (híbridos plug-in PHEV). Tensões mais altas permitem maior eficiência e potência.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_hibrido" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
                                 <option value="">Selecione</option>
                                 <?php foreach (sistema_eletrico_tensoes_list() as $value => $label): ?>
@@ -2717,7 +3032,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Garantia da Bateria -->
                         <div class="col-md-4">
-                            <label for="bateria_garantia" class="form-label">Garantia da Bateria</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="bateria_garantia" class="form-label mb-0">Garantia da Bateria</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Período de garantia da bateria oferecido pelo fabricante, geralmente em anos ou quilometragem (ex: 8 anos / 160.000 km). Informação essencial para compradores de veículos híbridos e elétricos, pois indica a cobertura contra degradação prematura e falhas.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="text" name="bateria_garantia" id="bateria_garantia" 
                                        class="form-control <?= isset($errors['bateria_garantia']) ? 'is-invalid' : '' ?>" 
@@ -2737,7 +3061,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia Elétrica -->
                         <div id="autonomia_eletrica_container" class="col-md-4">
-                            <label for="autonomia_eletrica_pbev_km" class="form-label">Autonomia Elétrica</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="autonomia_eletrica_pbev_km" class="form-label mb-0">Autonomia Elétrica</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Autonomia do veículo híbrido plug-in (PHEV) em modo 100% elétrico, medida em quilômetros (km). Valores comuns: 30 a 100 km. Indica a distância que o veículo pode percorrer usando apenas o motor elétrico, sem consumir combustível.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="autonomia_eletrica_pbev_km" id="autonomia_eletrica_pbev_km" 
                                        class="form-control <?= isset($errors['autonomia_eletrica_pbev_km']) ? 'is-invalid' : '' ?>" 
@@ -2752,7 +3085,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                         <!-- Autonomia Combinada -->
                         <div id="autonomia_combinada_container" class="col-md-4">
-                            <label for="autonomia_combinada_km" class="form-label">Autonomia Combinada</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="autonomia_combinada_km" class="form-label mb-0">Autonomia Combinada</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Autonomia total do veículo híbrido combinando os modos elétrico e a combustão, medida em quilômetros (km). Valores comuns: 300 a 1000 km. É a soma da autonomia elétrica com a autonomia do motor a combustão, considerando o uso misto.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
                             <div class="input-group">
                                 <input type="number" name="autonomia_combinada_km" id="autonomia_combinada_km" 
                                        class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
@@ -2775,7 +3117,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Tipo de Conector AC -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_tipo_conector_ac" class="form-label">Tipo de Conector AC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_tipo_conector_ac" class="form-label mb-0">Tipo de Conector AC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Padrão do conector para carregamento em corrente alternada (AC) do veículo híbrido plug-in (PHEV). Os principais padrões são Tipo 2 (Mennekes - padrão Brasil/Europa) e Tipo 1 (SAE J1772 - padrão americano). O Tipo 2 é o mais comum em veículos novos.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
                                         <option value="">Selecione</option>
                                         <?php foreach (conectores_hibridos_ac_list() as $value => $label): ?>
@@ -2799,7 +3150,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Potência AC (kW) -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_potencia_ac_kw" class="form-label">Potência AC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_potencia_ac_kw" class="form-label mb-0">Potência AC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Potência máxima de carregamento em corrente alternada (AC) do veículo híbrido plug-in (PHEV), medida em kW. Valores comuns: 3.7 kW, 7.4 kW, 11 kW, 22 kW. Quanto maior a potência, mais rápido é o carregamento em wallboxes e carregadores públicos AC.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_ac_kw" id="carregamento_potencia_ac_kw" 
                                                class="form-control <?= isset($errors['carregamento_potencia_ac_kw']) ? 'is-invalid' : '' ?>" 
@@ -2814,7 +3174,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Tempo AC (horas) -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_tempo_ac_horas" class="form-label">Tempo AC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_tempo_ac_horas" class="form-label mb-0">Tempo AC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Tempo estimado para carga completa em corrente alternada (AC), medido em horas. Valores comuns: 4 a 12 horas, dependendo da potência do carregador e da capacidade da bateria. Este é o tempo típico para carregamento em casa ou em wallboxes.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="carregamento_tempo_ac_horas" id="carregamento_tempo_ac_horas" 
                                                class="form-control <?= isset($errors['carregamento_tempo_ac_horas']) ? 'is-invalid' : '' ?>" 
@@ -2829,7 +3198,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Tipo de Conector DC -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_tipo_conector_dc" class="form-label">Tipo de Conector DC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_tipo_conector_dc" class="form-label mb-0">Tipo de Conector DC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Padrão do conector para carregamento rápido em corrente contínua (DC) do veículo híbrido plug-in (PHEV). Os principais padrões são CCS2 (padrão Brasil/Europa) e CHAdeMO (padrão japonês). O CCS2 é o mais comum em veículos PHEV vendidos no Brasil.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <select name="carregamento_tipo_conector_dc" id="carregamento_tipo_conector_dc" class="form-select <?= isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : '' ?>">
                                         <option value="">Selecione</option>
                                         <?php foreach (conectores_hibridos_dc_list() as $value => $label): ?>
@@ -2856,7 +3234,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Potência DC (kW) -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_potencia_dc_kw" class="form-label">Potência DC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_potencia_dc_kw" class="form-label mb-0">Potência DC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Potência máxima de carregamento em corrente contínua (DC) do veículo híbrido plug-in (PHEV), medida em kW. Valores comuns: 50 a 350 kW. Quanto maior a potência, mais rápido é o carregamento em postos de carga rápida.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="carregamento_potencia_dc_kw" id="carregamento_potencia_dc_kw" 
                                                class="form-control <?= isset($errors['carregamento_potencia_dc_kw']) ? 'is-invalid' : '' ?>" 
@@ -2871,7 +3258,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Tempo de Carga DC -->
                                 <div class="col-md-4">
-                                    <label for="carregamento_tempo_dc_min" class="form-label">Tempo de Carga DC</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="carregamento_tempo_dc_min" class="form-label mb-0">Tempo de Carga DC</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Tempo estimado para carregamento rápido em corrente contínua (DC) do veículo híbrido plug-in (PHEV), medido em minutos. Geralmente considerado o tempo para carregar de 10% a 80% da bateria. Valores comuns: 15 a 60 minutos, dependendo da potência do carregador e da capacidade da bateria.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="carregamento_tempo_dc_min" id="carregamento_tempo_dc_min" 
                                                class="form-control <?= isset($errors['carregamento_tempo_dc_min']) ? 'is-invalid' : '' ?>" 
@@ -2900,7 +3296,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Consumo Cidade -->
                             <div class="col-md-3">
-                                <label for="consumo_cidade_kml_hibrido" class="form-label">Consumo Cidade <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="consumo_cidade_kml_hibrido" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Consumo de combustível do veículo híbrido em condições urbanas (com trânsito, semáforos e paradas), medido em quilômetros por litro (km/l). Valores comuns: 8 a 20 km/l. Neste ciclo, o sistema híbrido costuma ter melhor desempenho devido à regeneração de energia e ao uso do modo elétrico.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml_hibrido" 
                                            class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
@@ -2918,7 +3323,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Consumo Estrada -->
                             <div class="col-md-3">
-                                <label for="consumo_estrada_kml_hibrido" class="form-label">Consumo Estrada <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="consumo_estrada_kml_hibrido" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Consumo de combustível do veículo híbrido em condições de estrada/rodovia, medido em quilômetros por litro (km/l). Valores comuns: 12 a 25 km/l. Em estrada, o consumo tende a ser mais estável e eficiente que no ciclo urbano.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml_hibrido" 
                                            class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
@@ -2936,7 +3350,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Consumo Médio -->
                             <div class="col-md-3">
-                                <label for="consumo_medio_kml_hibrido" class="form-label">Consumo Médio</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="consumo_medio_kml_hibrido" class="form-label mb-0">Consumo Médio</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Consumo médio de combustível do veículo híbrido, medido em quilômetros por litro (km/l). Valores comuns: 10 a 30 km/l. Representa a eficiência média em condições mistas de condução.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" step="any" inputmode="decimal" name="consumo_medio_kml" id="consumo_medio_kml_hibrido" 
                                            class="form-control <?= isset($errors['consumo_medio_kml']) ? 'is-invalid' : '' ?>" 
@@ -2951,7 +3374,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Capacidade Tanque -->
                             <div class="col-md-3">
-                                <label for="capacidade_tanque_l_hibrido" class="form-label">Capacidade Tanque <span class="text-danger">*</span></label>
+                               <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="capacidade_tanque_l_hibrido" class="form-label mb-0">Capacidade Tanque <span class="text-danger">*</span></label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Capacidade total do tanque de combustível do veículo híbrido, medida em litros (L). Valores comuns: 30 a 80 L. A capacidade do tanque influencia a autonomia total do veículo no modo a combustão e a frequência de abastecimento.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l_hibrido" 
                                            class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
@@ -3603,7 +4035,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
         function aplicarRegrasHibrido(tipo) {
             const phevContainer = document.getElementById('phev-container');
-            const modoContainer = modoEletricoPuro ? modoEletricoPuro.closest('.col-md-6') : null;
+            const modoContainer = modoEletricoPuro ? modoEletricoPuro.closest('.col-md-4') : null;
             const autonomiaEletricaContainer = document.getElementById('autonomia_eletrica_container');
             const autonomiaCombinadaContainer = document.getElementById('autonomia_combinada_container');
 
