@@ -91,7 +91,7 @@ class VeiculoRequest extends FormRequest
             'carroceria'           => 'nullable|string|max:30',
             'tipo_direcao'         => 'nullable|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
             'altura_solo_mm'       => 'nullable|integer|min:0',
-            'pneu_aro'             => 'nullable|integer|min:10|max:30',
+            'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
             'tipo_roda'            => 'nullable|in:liga_leve,calota',
             'freio_dianteiro'      => 'nullable|in:disco,tambor',
             'freio_traseiro'       => 'nullable|in:disco,tambor',

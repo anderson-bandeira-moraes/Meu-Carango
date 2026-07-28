@@ -170,7 +170,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
-                                    title="Tipo de carroceria do veículo (ex: hatch, sedan, SUV, etc.)">
+                                    title="Tipo de carroceria do veículo (ex: hatch, sedan, SUV). Define a estrutura, o design e a finalidade do modelo. A carroceria influencia diretamente o espaço interno, a dirigibilidade, o consumo e o valor de revenda do veículo. A opção 'Outro' permite valores personalizados.">
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
@@ -268,7 +268,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
-                                    title="Cor do veículo. A cor é um dos principais fatores de decisão de compra. Cores metálicas ou perolizadas geralmente são mais valorizadas e podem influenciar o preço de revenda.">
+                                    title="Cor do veículo. A cor é um dos principais fatores de decisão de compra. Cores metálicas ou perolizadas geralmente são mais valorizadas e podem influenciar o preço de revenda. A opção 'Outro' permite valores personalizados.">
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
@@ -501,7 +501,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
-                                    title="Diâmetro interno do pneu em polegadas (ex: 15, 16, 17). É uma das principais informações para compradores, pois influencia a estética, o conforto de rodagem, a disponibilidade de pneus e o custo de substituição. Aros comuns variam de 12 a 22 polegadas.">
+                                    title="Diâmetro interno do pneu em polegadas (ex: 15, 16, 17). É uma das principais informações para compradores, pois influencia a estética, o conforto de rodagem, a disponibilidade de pneus e o custo de substituição. Aros comuns variam de 12 a 22 polegadas. A opção 'Outro' permite valores personalizados.">
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
@@ -626,7 +626,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Marca do Kit -->
                             <div class="col-md-4">
-                                <label for="marca_kit" class="form-label">Marca do Kit</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="marca_kit" class="form-label mb-0">Marca do Kit</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Marca do fabricante do kit GNV (ex: Landirenzo, Lovato, BRC, etc.). Informação relevante para identificar a procedência e qualidade do sistema instalado.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <input placeholder="Ex: Landirenzo, Lovato, BRC" type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['marca_kit'] ?? $complemento['marca_kit'] ?? '') ?>" maxlength="40">
                                 <?php if (isset($errors['marca_kit'])): ?>
@@ -699,7 +708,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
-                                            title="Capacidade total do cilindro em metros cúbicos (m³). Define a autonomia do veículo no GNV. Quanto maior a capacidade, maior a quilometragem com o sistema.">
+                                            title="Capacidade total do cilindro em metros cúbicos (m³). Define a autonomia do veículo no GNV. Quanto maior a capacidade, maior a quilometragem com o sistema. A opção 'Outro' permite valores personalizados.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
@@ -764,7 +773,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
-                                            title="Material de fabricação do cilindro de GNV. Aço é mais resistente e pesado; alumínio é mais leve; compósitos (fibra de carbono/vidro) são mais leves e seguros, mas com custo mais elevado.">
+                                            title="Material de fabricação do cilindro de GNV. Aço é mais resistente e pesado; alumínio é mais leve; compósitos (fibra de carbono/vidro) são mais leves e seguros, mas com custo mais elevado. A opção 'Outro' permite valores personalizados.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
@@ -795,7 +804,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
-                                            title="Local onde o cilindro de GNV está instalado no veículo. A localização afeta o espaço útil do porta-malas ou da caçamba. Exemplos: porta-malas, sob o assoalho, atrás dos bancos ou sobre o assoalho.">
+                                            title="Local onde o cilindro de GNV está instalado no veículo. A localização afeta o espaço útil do porta-malas ou da caçamba. Exemplos: porta-malas, sob o assoalho, atrás dos bancos ou sobre o assoalho. A opção 'Outro' permite valores personalizados.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
@@ -825,7 +834,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Consumo Cidade -->
                             <div class="col-md-3">
-                                <label for="consumo_cidade_m3km" class="form-label">Consumo Cidade</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="consumo_cidade_m3km" class="form-label mb-0">Consumo Cidade</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Consumo de GNV em ciclo urbano, medido em km/m³. Valores comuns: 8 a 15 km/m³. Indica a eficiência do veículo no uso do gás natural em condições de trânsito com paradas e acelerações.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input placeholder="12,5" type="number" step="any" inputmode="decimal" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
@@ -838,7 +856,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Consumo Estrada -->
                             <div class="col-md-3">
-                                <label for="consumo_estrada_m3km" class="form-label">Consumo Estrada</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="consumo_estrada_m3km" class="form-label mb-0">Consumo Estrada</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Consumo de GNV em ciclo rodoviário, medido em km/m³. Valores comuns: 10 a 18 km/m³. Indica a eficiência do veículo no uso do gás natural em condições de estrada, com velocidades constantes e maior economia.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input placeholder="16,6" type="number" step="any" inputmode="decimal" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
@@ -851,7 +878,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Autonomia Média -->
                             <div class="col-md-2">
-                                <label for="autonomia_media_km" class="form-label">Autonomia Média</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="autonomia_media_km" class="form-label mb-0">Autonomia Média</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Distância média que o veículo pode percorrer com GNV, medida em quilômetros (km). Valores comuns: 150 a 400 km. Indica a autonomia média entre o ciclo urbano e rodoviário.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input placeholder="180" type="number" step="any" inputmode="decimal" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
@@ -864,7 +900,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Autonomia Cidade -->
                             <div class="col-md-2">
-                                <label for="autonomia_cidade_km" class="form-label">Autonomia Cidade</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="autonomia_cidade_km" class="form-label mb-0">Autonomia Cidade</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Distância que o veículo pode percorrer com GNV em ciclo urbano, medida em quilômetros (km). Valores comuns: 150 a 350 km. Reflete a autonomia em condições de trânsito com paradas e acelerações, onde o consumo tende a ser maior.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>
                                 <div class="input-group">
                                     <input placeholder="150" type="number" step="any" inputmode="decimal" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
@@ -877,8 +922,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                             <!-- Autonomia Estrada -->
                             <div class="col-md-2">
-                                <label for="autonomia_estrada_km" class="form-label">Autonomia Estrada</label>
-                                <div class="input-group">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="autonomia_estrada_km" class="form-label mb-0">Autonomia Estrada</label>
+                                    <button type="button" 
+                                            class="btn btn-link btn-sm p-0 text-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Distância que o veículo pode percorrer com GNV em ciclo rodoviário, medida em quilômetros (km). Valores comuns: 200 a 450 km. Reflete a autonomia em condições de estrada, com velocidades constantes e maior eficiência de consumo.">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </button>
+                                </div>                                <div class="input-group">
                                     <input placeholder="210" type="number" step="any" inputmode="decimal" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
@@ -1153,7 +1206,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
-                                    title="Peso máximo que o veículo pode rebocar, medido em quilogramas (kg). Valores comuns: 500 a 3500 kg. Essencial para quem utiliza o veículo para transporte de cargas, trailers, barcos ou caravanas. Verifique se o veículo possui engate de reboque.">
+                                    title="Peso máximo que o veículo pode rebocar, medido em quilogramas (kg). Valores comuns: 500 a 3500 kg. Essencial para quem utiliza o veículo para transporte de cargas, trailers, barcos ou caravanas.">
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
@@ -1329,7 +1382,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Como o ar é admitido no motor: Aspirado (natural, sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
+                                        title="Como o ar é admitido no motor: Aspirado (sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -1357,7 +1410,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Cilindrada do motor, que determina sua capacidade volumétrica. Valores comuns: 1.0, 1.6, 2.0, etc. Quanto maior a cilindrada, maior a potência e o consumo de combustível.">
+                                        title="Cilindrada do motor, que determina sua capacidade volumétrica. Valores comuns: 1.0, 1.6, 2.0, etc. Quanto maior a cilindrada, maior a potência e o consumo de combustível. A opção 'Outro' permite valores personalizados.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -1615,7 +1668,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Velocidade máxima que o veículo pode atingir, medida em km/h. Valores comuns: 150 a 300 km/h. Importante para viagens longas em rodovias, mas deve ser considerada com responsabilidade.">
+                                        title="Velocidade máxima que o veículo pode atingir, medida em km/h. Valores comuns: 150 a 300 km/h. Importante para viagens longas em rodovias.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -2103,7 +2156,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Tipo de bateria utilizada no veículo elétrico. Química predominante: NMC (Níquel-Manganês-Cobalto), LFP (Fosfato de Ferro e Lítio), NCA (Níquel-Cobalto-Alumínio) ou LMO (Óxido de Lítio e Manganês). Cada tipo tem características diferentes de densidade energética, vida útil, segurança e custo.">
+                                        title="Tipo de bateria utilizada no veículo elétrico. Química predominante: NMC, LFP, NCA ou LMO. Cada tipo tem características diferentes de densidade energética, vida útil, segurança e custo. A opção 'Outro' permite valores personalizados.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -2140,7 +2193,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Tensão nominal da bateria do veículo elétrico, medida em volts (V). Valores comuns: 300V, 400V, 800V. Arquiteturas de 800V permitem carregamento mais rápido e maior eficiência, sendo uma tecnologia avançada em veículos premium.">
+                                        title="Tensão nominal da bateria do veículo elétrico, medida em volts (V). Valores comuns: 300V, 400V, 800V. Arquiteturas de 800V permitem carregamento mais rápido e maior eficiência. A opção 'Outro' permite valores personalizados.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -2367,7 +2420,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
-                                            title="Padrão do conector para carregamento rápido em corrente contínua (DC). Os principais padrões no Brasil são CCS2 (Combo 2), CHAdeMO, NACS e GB/T. O CCS2 é o padrão dominante no mercado brasileiro e europeu.">
+                                            title="Padrão do conector para carregamento rápido em corrente contínua (DC). O CCS2 é o padrão dominante no mercado brasileiro e europeu. A opção 'Outro' permite valores personalizados.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
@@ -2454,7 +2507,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
-                                            title="Padrão do conector para carregamento em corrente alternada (AC). Os principais padrões são Tipo 2 (Mennekes - padrão Brasil/Europa) e Tipo 1 (SAE J1772 - padrão americano). O Tipo 2 é o mais comum em veículos novos e permite carregamento mais rápido.">
+                                            title="Padrão do conector para carregamento em corrente alternada (AC). O Tipo 2 é o mais comum em veículos novos e permite carregamento mais rápido. A opção 'Outro' permite valores personalizados.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
@@ -2613,7 +2666,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Como o ar é admitido no motor a combustão do veículo híbrido: Aspirado (natural, sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
+                                        title="Como o ar é admitido no motor a combustão do veículo híbrido: Aspirado (sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -2964,7 +3017,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Tipo de bateria do veículo híbrido. Tecnologias comuns: NiMH (Níquel-Hidreto Metálico) em HEV tradicionais, NMC e LFP em PHEV modernos, e Bateria 48V em sistemas híbridos leves (MHEV). Cada tipo tem características diferentes de densidade energética, vida útil e custo.">
+                                        title="Tipo de bateria do veículo híbrido. Tecnologias comuns: NiMH em HEV tradicionais, NMC e LFP em PHEV, e Bateria 48V em sistemas híbridos leves (MHEV). Cada tipo tem características diferentes de densidade energética, vida útil e custo. A opção 'Outro' permite valores personalizados.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
@@ -3123,7 +3176,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
                                                 data-bs-placement="top" 
-                                                title="Padrão do conector para carregamento em corrente alternada (AC) do veículo híbrido plug-in (PHEV). Os principais padrões são Tipo 2 (Mennekes - padrão Brasil/Europa) e Tipo 1 (SAE J1772 - padrão americano). O Tipo 2 é o mais comum em veículos novos.">
+                                                title="Padrão do conector para carregamento em corrente alternada (AC) do veículo híbrido plug-in (PHEV). Os principais padrões são Tipo 2 e Tipo 1. O Tipo 2 é o mais comum. A opção 'Outro' permite valores personalizados.">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </button>
                                     </div>
@@ -3204,7 +3257,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
                                                 data-bs-placement="top" 
-                                                title="Padrão do conector para carregamento rápido em corrente contínua (DC) do veículo híbrido plug-in (PHEV). Os principais padrões são CCS2 (padrão Brasil/Europa) e CHAdeMO (padrão japonês). O CCS2 é o mais comum em veículos PHEV vendidos no Brasil.">
+                                                title="Padrão do conector para carregamento rápido em corrente contínua (DC) do veículo híbrido plug-in (PHEV). Os principais padrões são CCS2 e CHAdeMO. O CCS2 é o mais comum em veículos PHEV vendidos no Brasil. A opção 'Outro' permite valores personalizados.">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </button>
                                     </div>
@@ -3408,7 +3461,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Cidade Etanol -->
                                 <div class="col-md-3">
-                                    <label for="consumo_cidade_etanol_kml_hibrido" class="form-label">Consumo Cidade <span class="text-danger">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_cidade_etanol_kml_hibrido" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo de etanol em ciclo urbano para veículos híbridos, medido em km/l. Valores comuns: 6 a 14 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina, impactando diretamente o custo de abastecimento no dia a dia.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml_hibrido" 
                                                class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
@@ -3426,7 +3488,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Estrada Etanol -->
                                 <div class="col-md-3">
-                                    <label for="consumo_estrada_etanol_kml_hibrido" class="form-label">Consumo Estrada <span class="text-danger">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_estrada_etanol_kml_hibrido" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo de etanol em ciclo rodoviário para veículos híbridos, medido em km/l. Valores comuns: 7 a 16 km/l. Obrigatório para veículos flex, pois o consumo com etanol em estrada é geralmente 20-30% maior que com gasolina, impactando o custo em viagens longas.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml_hibrido" 
                                                class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
@@ -3444,7 +3515,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
                                 <!-- Consumo Médio Etanol -->
                                 <div class="col-md-3">
-                                    <label for="consumo_medio_etanol_kml_hibrido" class="form-label">Consumo Médio</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label for="consumo_medio_etanol_kml_hibrido" class="form-label mb-0">Consumo Médio</label>
+                                        <button type="button" 
+                                                class="btn btn-link btn-sm p-0 text-secondary" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Consumo médio de etanol para veículos híbridos, medido em km/l. É uma média ponderada entre o consumo urbano e rodoviário com etanol. Valores comuns: 6 a 15 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina.">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
                                     <div class="input-group">
                                         <input type="number" step="any" inputmode="decimal" name="consumo_medio_etanol_kml" id="consumo_medio_etanol_kml_hibrido" 
                                                class="form-control <?= isset($errors['consumo_medio_etanol_kml']) ? 'is-invalid' : '' ?>" 
