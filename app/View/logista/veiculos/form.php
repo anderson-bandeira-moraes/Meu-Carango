@@ -185,9 +185,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endforeach; ?>
                             <option value="outro" <?= selected($old['carroceria'] ?? $veiculo['carroceria'] ?? '', 'outro') ?>>Outro (digitar)</option>
                         </select>
-                        <?php if (isset($errors['carroceria'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['carroceria']) ?></div>
-                        <?php endif; ?>
 
                         <!-- Campo extra para "Outro" -->
                         <input type="text" name="carroceria_outro" id="carroceria_outro" class="form-control mt-2 <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>" 
@@ -213,9 +210,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                         <input title="Versão do modelo (Ex: GL, EX, Sport, Turbo)" placeholder="ex: GL, EX, Sport, Turbo" type="text" name="versao" id="versao" class="form-control <?= isset($errors['versao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['versao'] ?? $veiculo['versao'] ?? '') ?>">
-                        <?php if (isset($errors['versao'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['versao']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Ano Fabricação -->
@@ -230,14 +224,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="number" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" min="1900" max="<?= date('Y') ?>" required>
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" required>
+
                          <div class="invalid-feedback">
                             O ano de fabricação é obrigatório.
                         </div>
-                        <?php if (isset($errors['ano_fabricacao'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['ano_fabricacao']) ?></div>
-                        <?php endif; ?>
+
+                        <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                            Este campo não aceita ponto (.) ou vírgula (,)
+                        </div>
                     </div>
 
                     <!-- Ano Modelo -->
@@ -252,14 +248,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="number" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" min="1900" max="<?= date('Y') + 1 ?>" required>
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" required>
+
                         <div class="invalid-feedback">
                             O ano do modelo é obrigatório.
                         </div>
-                        <?php if (isset($errors['ano_modelo'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['ano_modelo']) ?></div>
-                        <?php endif; ?>
+
+                        <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                            Este campo não aceita ponto (.) ou vírgula (,)
+                        </div>
                     </div>
 
                     <!-- Cor -->
@@ -297,10 +295,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div id="corFeedback" class="invalid-feedback" style="display: none;">
                             O nome da cor é obrigatório. 
                         </div>
-
-                        <?php if (isset($errors['cor'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['cor']) ?></div>
-                        <?php endif; ?>
 
                         <!-- Dropdown com a lista de cores -->
                         <div id="dropdownCores" class="border rounded shadow-sm mt-1" style="display: none; max-height: 200px; overflow-y: auto; position: relative; z-index: 1000; background: white;">
@@ -350,18 +344,20 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>" 
-                                   placeholder="Ex: 90.000" min="0" required>
+                                   placeholder="Ex: 90.000" required>
                             <span class="input-group-text">km</span>
+
                             <div class="invalid-feedback">
                                 A quilometragem é obrigatória.
                             </div>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['quilometragem'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['quilometragem']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Número de Portas -->
@@ -387,9 +383,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="invalid-feedback">
                             O número de portas é obrigatório.
                         </div>
-                        <?php if (isset($errors['numero_portas'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_portas']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Número de Assentos -->
@@ -415,9 +408,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <div class="invalid-feedback">
                             O número de assentos é obrigatório.
                         </div>
-                        <?php if (isset($errors['numero_assentos'])): ?>
-                            <div class="invalid-feedback"><?= implode(', ', $errors['numero_assentos']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Tipo de Direção -->
@@ -440,9 +430,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <?php if (isset($errors['tipo_direcao'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_direcao']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Freio Dianteiro -->
@@ -465,9 +452,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <?php if (isset($errors['freio_dianteiro'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['freio_dianteiro']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Freio Traseiro -->
@@ -490,9 +474,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <?php if (isset($errors['freio_traseiro'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['freio_traseiro']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Aro do Pneu -->
@@ -516,18 +497,19 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <?php endforeach; ?>
                             <option value="outro" <?= selected($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                         </select>
-                        <?php if (isset($errors['pneu_aro'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['pneu_aro']) ?></div>
-                        <?php endif; ?>
 
                         <!-- Campo extra para "Outro" -->
-                        <input type="number" name="pneu_aro_outro" id="pneu_aro_outro" class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
+                        <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="pneu_aro_outro" id="pneu_aro_outro" class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['pneu_aro_outro'] ?? '') ?>" 
                                placeholder="Digite o aro personalizado" 
-                               style="display: <?= ($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
-                               min="10" max="30">
+                               style="display: <?= ($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+
                         <div class="invalid-feedback">
                             O aro personalizado é obrigatório.
+                        </div>
+
+                        <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                            Este campo não aceita ponto (.) ou vírgula (,)
                         </div>
                     </div>
 
@@ -551,9 +533,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <?php if (isset($errors['tipo_roda'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_roda']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- GNV Instalado (apenas para combustão) -->
@@ -851,9 +830,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
-                                <?php if (isset($errors['consumo_cidade_m3km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_m3km']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Consumo Estrada -->
@@ -873,9 +849,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
-                                <?php if (isset($errors['consumo_estrada_m3km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_m3km']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Autonomia Média -->
@@ -895,9 +868,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
-                                <?php if (isset($errors['autonomia_media_km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_media_km']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Autonomia Cidade -->
@@ -917,9 +887,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
-                                <?php if (isset($errors['autonomia_cidade_km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_cidade_km']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Autonomia Estrada -->
@@ -933,14 +900,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             title="Distância que o veículo pode percorrer com GNV em ciclo rodoviário, medida em quilômetros (km). Valores comuns: 200 a 450 km. Reflete a autonomia em condições de estrada, com velocidades constantes e maior eficiência de consumo.">
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
-                                </div>                                <div class="input-group">
+                                </div>                                
+                                <div class="input-group">
                                     <input placeholder="210" type="number" step="any" inputmode="decimal" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km</span>
                                 </div>
-                                <?php if (isset($errors['autonomia_estrada_km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_estrada_km']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Documentação GNV -->
@@ -1045,14 +1010,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
                             <span class="input-group-text">mm</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['comprimento_mm'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['comprimento_mm']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Largura -->
@@ -1067,14 +1033,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1800">
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" placeholder="Ex: 1800">
                             <span class="input-group-text">mm</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['largura_mm'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['largura_mm']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Altura -->
@@ -1089,14 +1056,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">mm</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['altura_mm'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['altura_mm']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Altura Solo -->
@@ -1111,19 +1079,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" name="altura_solo_mm" id="altura_solo_mm" 
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="altura_solo_mm" id="altura_solo_mm" 
                                    class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>" 
-                                   placeholder="Ex: 180" min="0">
+                                   placeholder="Ex: 180">
                             <span class="input-group-text">mm</span>
-                            <div class="invalid-feedback">
-                                A altura do solo deve ser um número inteiro.
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
                             </div>
                         </div>
-                        <?php if (isset($errors['altura_solo_mm'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['altura_solo_mm']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Distância entre eixos -->
@@ -1138,14 +1104,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" min="0" placeholder="Ex: 2600">
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" placeholder="Ex: 2600">
                             <span class="input-group-text">mm</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['distancia_entre_eixos_mm'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['distancia_entre_eixos_mm']) ?></div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -1173,9 +1140,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                    value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
                             <span class="input-group-text">kg</span>
                         </div>
-                        <?php if (isset($errors['peso_ordem_marcha_kg'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['peso_ordem_marcha_kg']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Carga útil -->
@@ -1195,9 +1159,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                    value="<?= htmlspecialchars($old['carga_util_kg'] ?? $veiculo['carga_util_kg'] ?? '') ?>" min="0" placeholder="Ex: 750">
                             <span class="input-group-text">kg</span>
                         </div>
-                        <?php if (isset($errors['carga_util_kg'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['carga_util_kg']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Capacidade de reboque -->
@@ -1217,9 +1178,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                    value="<?= htmlspecialchars($old['capacidade_reboque_kg'] ?? $veiculo['capacidade_reboque_kg'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">kg</span>
                         </div>
-                        <?php if (isset($errors['capacidade_reboque_kg'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_reboque_kg']) ?></div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -1242,14 +1200,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" min="0" placeholder="Ex: 450">
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" placeholder="Ex: 450">
                             <span class="input-group-text">L</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['volume_porta_malas_l'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['volume_porta_malas_l']) ?></div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Volume da caçamba -->
@@ -1264,14 +1223,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <div class="input-group">
-                            <input type="number" step="any" inputmode="decimal" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" min="0" placeholder="Ex: 800">
+                        <div class="input-group has-validation">
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" placeholder="Ex: 800">
                             <span class="input-group-text">L</span>
+
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
                         </div>
-                        <?php if (isset($errors['volume_cacamba_l'])): ?>
-                            <div class="invalid-feedback d-block"><?= implode(', ', $errors['volume_cacamba_l']) ?></div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -3732,10 +3692,71 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             }
         }
 
-        // Inicializa tooltips
+        // ================================================
+        // INICIALIZAÇÃO TOOLTIPS
+        // ================================================
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // ================================================
+        // VALIDAÇÃO DE PONTO/VÍRGULA PARA CAMPOS INTEIROS
+        // ================================================
+
+        //Seleciona todos os campos com data-tipo="inteiro"
+        const camposInteiros = document.querySelectorAll('[data-tipo="inteiro"]');
+
+        if (camposInteiros.length === 0) return;
+
+        // Para cada campo, adiciona o listener
+        camposInteiros.forEach(function(campo) {
+            campo.addEventListener('input', function() {
+                // Obtém o valor atual
+                const valor = this.value;
+
+                // Verifica se contém ponto ou vírgula
+                const contemPontoVirgula = /[.,]/.test(valor);
+
+                // Encontra os elementos de feedback (irmãos ou dentro do mesmo container)
+                const container = this.closest('.input-group, .col-md-4, .mb-3') || this.parentNode;
+                const feedbackRequired = container.querySelector('.invalid-feedback:not(.feedback-pontovirgula)');
+                const feedbackPontovirgula = container.querySelector('.feedback-pontovirgula');
+
+                if (contemPontoVirgula) {
+                    // Caso contenha ponto ou vírgula
+                    // Adiciona classe is-invalid
+                    this.classList.add('is-invalid');
+
+                    // Exibe o feedback de ponto/vírgula
+                    if (feedbackPontovirgula) {
+                        feedbackPontovirgula.style.display = 'block';
+                        feedbackPontovirgula.classList.remove('d-none');
+                    }
+
+                    // Oculta o feedback de required (para não conflitar)
+                    if (feedbackRequired) {
+                        feedbackRequired.style.display = 'none';
+                        feedbackRequired.classList.add('d-none');
+                    }
+                } else {
+                    // Caso NÃO contenha ponto ou vírgula   
+                    // Remove a classe is-invalid
+                    this.classList.remove('is-invalid');
+
+                    // Oculta o feedback de ponto/vírgula
+                    if (feedbackPontovirgula) {
+                        feedbackPontovirgula.style.display = 'none';
+                        feedbackPontovirgula.classList.add('d-none');
+                    }
+
+                    // Restaura o feedback de required (para que o navegador possa exibi-lo)
+                    if (feedbackRequired) {
+                        feedbackRequired.style.display = ''; // Remove o inline display
+                        feedbackRequired.classList.remove('d-none');
+                    }
+                }
+            });
         });
 
         // Executa a atualização dos badges ao carregar a página
@@ -4020,7 +4041,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 prepareSubmit('carroceria', 'carroceria_outro');
                 prepareSubmit('pneu_aro', 'pneu_aro_outro');
 
-                // 2. Acumulador de erros
+                // 2. Acumulador de erros (apenas para controle, não mais usado para prioridade)
                 const erros = [];
 
                 // 2a. Validação de marca/modelo
@@ -4071,11 +4092,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     corFeedback.classList.remove('d-block');
                 }
 
-                // 2c. Validação HTML5 (campos com required)
+                // 2c. Validação de ponto/vírgula (campos com data-tipo="inteiro" e is-invalid)
+                const camposPontoVirgula = document.querySelectorAll('[data-tipo="inteiro"].is-invalid');
+                if (camposPontoVirgula.length > 0) {
+                    erros.push('pontovirgula');
+                }
+
+                // 2d. Validação HTML5 (campos com required)
                 if (!this.checkValidity()) {
                     erros.push('required');
                     this.classList.add('was-validated');
-                    // Não retornamos ainda, continuamos para exibir todos os erros
                 } else {
                     this.classList.remove('was-validated');
                 }
@@ -4085,19 +4111,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Encontra o primeiro elemento com erro para rolar
-                    let firstErrorElement = null;
-                    if (erros.includes('marca') || erros.includes('modelo')) {
-                        firstErrorElement = document.querySelector('.brand-model-display');
-                    } else if (erros.includes('cor')) {
-                        firstErrorElement = document.getElementById('corInput');
-                    } else if (erros.includes('required')) {
-                        firstErrorElement = this.querySelector('.is-invalid');
-                    }
-                    if (firstErrorElement) {
-                        firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        if (firstErrorElement.tagName === 'INPUT' || firstErrorElement.tagName === 'SELECT') {
-                            firstErrorElement.focus();
+                    // Encontra o primeiro elemento com .is-invalid (ordem DOM)
+                    const primeiroInvalido = this.querySelector('.is-invalid');
+
+                    if (primeiroInvalido) {
+                        primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Foca se for um elemento de formulário
+                        if (primeiroInvalido.tagName === 'INPUT' || 
+                            primeiroInvalido.tagName === 'SELECT' || 
+                            primeiroInvalido.tagName === 'TEXTAREA') {
+                            primeiroInvalido.focus();
                         }
                     }
                     return;

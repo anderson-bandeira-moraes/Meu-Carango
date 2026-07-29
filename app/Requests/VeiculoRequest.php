@@ -61,7 +61,7 @@ class VeiculoRequest extends FormRequest
             'ano_fabricacao' => 'required|integer|min_num:1900',
             'ano_modelo'     => 'required|integer|min_num:1900',
             'cor'            => 'required|max:30',
-            'quilometragem'  => 'required|numeric|min_num:0',
+            'quilometragem'  => 'required|integer|min_num:0',
 
             // Tipo de veículo (obrigatório para decidir o complemento)
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
@@ -72,13 +72,13 @@ class VeiculoRequest extends FormRequest
             'numero_assentos'=> 'required|integer|between:2,15',
 
             // Dimensões (opcionais)
-            'comprimento_mm'           => 'nullable|numeric|min_num:0',
-            'largura_mm'               => 'nullable|numeric|min_num:0',
-            'altura_mm'                => 'nullable|numeric|min_num:0',
-            'distancia_entre_eixos_mm' => 'nullable|numeric|min_num:0',
+            'comprimento_mm'           => 'nullable|integer|min_num:0',
+            'largura_mm'               => 'nullable|integer|min_num:0',
+            'altura_mm'                => 'nullable|integer|min_num:0',
+            'distancia_entre_eixos_mm' => 'nullable|integer|min_num:0',
             'peso_ordem_marcha_kg'     => 'nullable|numeric|min_num:0',
-            'volume_porta_malas_l'     => 'nullable|numeric|min_num:0',
-            'volume_cacamba_l'         => 'nullable|numeric|min_num:0',
+            'volume_porta_malas_l'     => 'nullable|integer|min_num:0',
+            'volume_cacamba_l'         => 'nullable|integer|min_num:0',
             'carga_util_kg'            => 'nullable|numeric|min_num:0',
             'capacidade_reboque_kg'    => 'nullable|numeric|min_num:0',
 
@@ -128,7 +128,7 @@ class VeiculoRequest extends FormRequest
 
             // Quilometragem
             'quilometragem.required' => 'A quilometragem é obrigatória.',
-            'quilometragem.numeric'  => 'A quilometragem deve ser um número válido.',
+            'quilometragem.integer'  => 'A quilometragem deve ser um número inteiro.',
             'quilometragem.min_num'  => 'A quilometragem não pode ser negativa.',
 
             // Tipo de veículo
@@ -143,24 +143,24 @@ class VeiculoRequest extends FormRequest
             'numero_assentos.between' => 'O número de assentos deve estar entre :min e :max.',
 
             // Dimensões
-            'comprimento_mm.numeric' => 'O comprimento deve ser um número válido.',
-            'comprimento_mm.min_num' => 'O comprimento não pode ser negativo.',
-            'largura_mm.numeric'     => 'A largura deve ser um número válido.',
-            'largura_mm.min_num'     => 'A largura não pode ser negativa.',
-            'altura_mm.numeric'      => 'A altura deve ser um número válido.',
-            'altura_mm.min_num'      => 'A altura não pode ser negativa.',
-            'distancia_entre_eixos_mm.numeric' => 'A distância entre eixos deve ser um número válido.',
-            'distancia_entre_eixos_mm.min_num' => 'A distância entre eixos não pode ser negativa.',
-            'peso_ordem_marcha_kg.numeric'     => 'O peso deve ser um número válido.',
-            'peso_ordem_marcha_kg.min_num'     => 'O peso não pode ser negativo.',
-            'volume_porta_malas_l.numeric'     => 'O volume do porta-malas deve ser um número válido.',
-            'volume_porta_malas_l.min_num'     => 'O volume do porta-malas não pode ser negativo.',
-            'volume_cacamba_l.numeric'         => 'O volume da caçamba deve ser um número válido.',
-            'volume_cacamba_l.min_num'         => 'O volume da caçamba não pode ser negativo.',
-            'carga_util_kg.numeric'            => 'A carga útil deve ser um número válido.',
-            'carga_util_kg.min_num'            => 'A carga útil não pode ser negativa.',
-            'capacidade_reboque_kg.numeric'    => 'A capacidade de reboque deve ser um número válido.',
-            'capacidade_reboque_kg.min_num'    => 'A capacidade de reboque não pode ser negativa.',
+            'comprimento_mm.integer'            => 'O comprimento deve ser um número inteiro.',
+            'comprimento_mm.min_num'            => 'O comprimento não pode ser negativo.',
+            'largura_mm.integer'                => 'A largura deve ser um número inteiro.',
+            'largura_mm.min_num'                => 'A largura não pode ser negativa.',
+            'altura_mm.integer'                 => 'A altura deve ser um número inteiro.',
+            'altura_mm.min_num'                 => 'A altura não pode ser negativa.',
+            'distancia_entre_eixos_mm.integer'  => 'A distância entre eixos deve ser um número inteiro.',
+            'distancia_entre_eixos_mm.min_num'  => 'A distância entre eixos não pode ser negativa.',
+            'peso_ordem_marcha_kg.numeric'      => 'O peso deve ser um número válido.',
+            'peso_ordem_marcha_kg.min_num'      => 'O peso não pode ser negativo.',
+            'volume_porta_malas_l.integer'      => 'O volume do porta-malas deve ser um número inteiro.',
+            'volume_porta_malas_l.min_num'      => 'O volume do porta-malas não pode ser negativo.',
+            'volume_cacamba_l.integer'          => 'O volume da caçamba deve ser um número inteiro.',
+            'volume_cacamba_l.min_num'          => 'O volume da caçamba não pode ser negativo.',
+            'carga_util_kg.numeric'             => 'A carga útil deve ser um número válido.',
+            'carga_util_kg.min_num'             => 'A carga útil não pode ser negativa.',
+            'capacidade_reboque_kg.numeric'     => 'A capacidade de reboque deve ser um número válido.',
+            'capacidade_reboque_kg.min_num'     => 'A capacidade de reboque não pode ser negativa.',
 
             // Flags
             'gnv_instalado.boolean' => 'O campo GNV instalado deve ser verdadeiro ou falso.',
@@ -204,73 +204,95 @@ class VeiculoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte vírgula decimal para ponto nos campos numéricos
-        $decimalFields = [
+        // 1. Converter strings vazias para NULL em TODOS os campos (independente de obrigatoriedade)
+        foreach ($data as $key => $value) {
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
+        }
+
+        // 2. Listas de campos por tipo
+        $intFields = [
+            'marca_id', 'modelo_id',
+            'ano_fabricacao', 'ano_modelo',
             'quilometragem',
+            'numero_portas', 'numero_assentos',
+            'pneu_aro', 'pneu_aro_outro',
             'comprimento_mm', 'largura_mm', 'altura_mm',
-            'distancia_entre_eixos_mm', 'peso_ordem_marcha_kg',
-            'volume_porta_malas_l', 'volume_cacamba_l',
-            'carga_util_kg', 'capacidade_reboque_kg'
+            'altura_solo_mm',
+            'distancia_entre_eixos_mm',
+            'volume_porta_malas_l', 'volume_cacamba_l'
         ];
 
+        $decimalFields = [
+            'peso_ordem_marcha_kg',
+            'carga_util_kg',
+            'capacidade_reboque_kg'
+        ];
+
+        $stringFields = [
+            'carroceria', 'carroceria_outro',
+            'versao',
+            'cor', 'cor_outro',
+            'tipo_direcao',
+            'freio_dianteiro', 'freio_traseiro',
+            'tipo_roda',
+            'status_estoque', 'status_vitrine'
+        ];
+
+        $booleanFields = [
+            'gnv_instalado'
+        ];
+
+        // 3. Converter inteiros
+        foreach ($intFields as $field) {
+            if (isset($data[$field]) && is_numeric($data[$field])) {
+                $data[$field] = (int) $data[$field];
+            }
+        }
+
+        // 4. Converter decimais (com tratamento de vírgula/ponto)
         foreach ($decimalFields as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
-                // Remove espaços
                 $value = trim($data[$field]);
                 // Remove pontos de milhar (ex: 1.500 -> 1500)
                 $value = str_replace('.', '', $value);
                 // Converte vírgula para ponto (ex: 12,5 -> 12.5)
                 $value = str_replace(',', '.', $value);
-                // Se for numérico, converte para float
                 if (is_numeric($value)) {
                     $data[$field] = (float) $value;
+                }
+            } elseif (isset($data[$field]) && is_numeric($data[$field])) {
+                // Se já for numérico, converte para float
+                $data[$field] = (float) $data[$field];
+            }
+        }
+
+        // 5. Sanitizar strings (trim e null se vazio)
+        foreach ($stringFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                // Reforça a conversão para null (já feita no passo 1, mas mantido por segurança)
+                if ($data[$field] === '') {
+                    $data[$field] = null;
                 }
             }
         }
 
-        // Normaliza gnv_instalado para 0 ou 1
-        if (isset($data['gnv_instalado'])) {
-            $data['gnv_instalado'] = (int) (bool) $data['gnv_instalado'];
+        // 6. Converter booleanos
+        foreach ($booleanFields as $field) {
+            if (isset($data[$field])) {
+                $data[$field] = (int) (bool) $data[$field];
+            }
         }
 
-        // Normaliza status_estoque e status_vitrine (garantir valores válidos)
+        // 7. Normaliza status_estoque e status_vitrine (garantir valores válidos)
         if (isset($data['status_estoque']) && !in_array($data['status_estoque'], ['disponivel', 'vendido', 'reservado'], true)) {
             $data['status_estoque'] = 'disponivel';
         }
 
         if (isset($data['status_vitrine']) && !in_array($data['status_vitrine'], ['ativo', 'inativo'], true)) {
             $data['status_vitrine'] = 'inativo';
-        }
-
-        // Converte strings vazias para null em campos numéricos opcionais
-        $numericOptionalFields = [
-            'comprimento_mm', 'largura_mm', 'altura_mm',
-            'distancia_entre_eixos_mm', 'peso_ordem_marcha_kg',
-            'volume_porta_malas_l', 'volume_cacamba_l',
-            'carga_util_kg', 'capacidade_reboque_kg',
-            'numero_portas', 'numero_assentos',
-            'altura_solo_mm', 'pneu_aro'
-        ];
-
-        foreach ($numericOptionalFields as $field) {
-            if (isset($data[$field]) && $data[$field] === '') {
-                $data[$field] = null;
-            }
-        }
-
-        // Converte strings vazias para null em campos de texto/enum opcionais
-        $stringOptionalFields = [
-            'carroceria', 'tipo_direcao', 'tipo_roda',
-            'freio_dianteiro', 'freio_traseiro'
-        ];
-
-        foreach ($stringOptionalFields as $field) {
-            if (isset($data[$field]) && is_string($data[$field])) {
-                $data[$field] = trim($data[$field]);
-                if ($data[$field] === '') {
-                    $data[$field] = null;
-                }
-            }
         }
 
         return $data;
@@ -298,18 +320,15 @@ class VeiculoRequest extends FormRequest
             return false;
         }
 
-        // 4. Verifica se marca_id e modelo_id estão presentes (já validados)
-        $marcaId = $data['marca_id'] ?? null;
-        $modeloId = $data['modelo_id'] ?? null;
+        // 4. Extrai os IDs e o ano do modelo dos dados validados
+        $marcaId = (int) ($data['marca_id'] ?? 0);
+        $modeloId = (int) ($data['modelo_id'] ?? 0);
         $anoModelo = (int) ($data['ano_modelo'] ?? 0);
 
-        // Converte para inteiro antes de usar
-        $marcaId = (int) $marcaId;
-        $modeloId = (int) $modeloId;
-
-        if (!$marcaId || !$modeloId || !$anoModelo) {
-            // Isso não deve ocorrer porque são obrigatórios, mas mantemos segurança
-            return true; // não geramos erro aqui, pois os campos já foram validados
+        // Verifica se os IDs são válidos (redundante, pois são obrigatórios, mas seguro)
+        if ($marcaId === 0 || $modeloId === 0 || $anoModelo === 0) {
+            // Isso não deve ocorrer devido à validação required, mas mantemos segurança
+            return true;
         }
 
         // 5. Busca os nomes da marca e modelo
@@ -391,3 +410,78 @@ class VeiculoRequest extends FormRequest
         return !empty($validated['gnv_instalado']);
     }
 }
+
+/**
+ * ========================================================================
+ * FORM REQUEST PARA VEÍCULOS (PRINCIPAIS)
+ * ========================================================================
+ * 
+ * Este FormRequest gerencia a validação e sanitização dos campos
+ * principais da tabela `veiculos`.
+ * 
+ * CARACTERÍSTICAS PRINCIPAIS:
+ * 
+ * 1. VALIDAÇÃO DECLARATIVA (rules())
+ *    - Define regras por campo (obrigatoriedade, tipo, tamanho, valores)
+ *    - Usa regras customizadas do sistema: `min_num`, `max_num`, `exists`, etc.
+ *    - Separa campos obrigatórios (`required`) de opcionais (`nullable`)
+ *    - Inclui validação de existência no banco (`exists:marcas,id`)
+ * 
+ * 2. MENSAGENS PERSONALIZADAS (messages())
+ *    - Mensagens para cada regra de cada campo
+ *    - Permite placeholders como `:min`, `:max`, `:values`
+ *    - Deve cobrir todas as regras definidas em rules()
+ * 
+ * 3. SANITIZAÇÃO GENÉRICA (sanitize())
+ *    - **Filosofia:** Tratar todos os campos igualmente, sem distinguir
+ *      obrigatórios de opcionais. A validação `required` é feita depois.
+ *    - **Passo 1:** Converter TODAS as strings vazias para `NULL`.
+ *      Isso unifica valores vazios para todos os campos.
+ *    - **Passo 2:** Aplicar conversão de tipo conforme listas:
+ *        - `$intFields`    → (int) para campos numéricos inteiros
+ *        - `$decimalFields` → (float) com tratamento de vírgula/ponto
+ *        - `$stringFields`  → trim() e null se vazio
+ *        - `$booleanFields` → (int) (bool) para 0/1
+ *    - **Importante:** A sanitização NÃO deve saber se o campo é obrigatório.
+ *      A validação `required` irá falhar se o campo vier `NULL` ou vazio.
+ * 
+ * 4. VALIDAÇÃO CUSTOMIZADA (validate())
+ *    - Executada APÓS a validação base (parent::validate())
+ *    - Adiciona regras de negócio que não são cobertas pelas regras simples:
+ *        - Validação condicional (ex: GNV só em veículos a combustão)
+ *        - Geração automática de slug com base em marca, modelo e ano
+ *        - Verificação de unicidade do slug (com tratamento para edição)
+ *    - Pode adicionar erros customizados via `addError()`
+ * 
+ * 5. MÉTODOS AUXILIARES
+ *    - `getDadosPrincipais()` → retorna apenas os dados validados
+ *    - `getTipoVeiculo()` → retorna o tipo selecionado
+ *    - `hasGNV()` → verifica se o veículo possui GNV
+ *    - `setRouteId()` → define o ID da rota para ignorar próprio registro na edição
+ * 
+ * ========================================================================
+ * COMO ADAPTAR PARA OUTROS FORM REQUESTS:
+ * 
+ * 1. Defina as regras em `rules()`
+ * 2. Defina as mensagens em `messages()`
+ * 3. No `sanitize()`:
+ *    - Mantenha a conversão genérica de strings vazias para NULL
+ *    - Crie listas de campos por tipo (int, decimal, string, boolean)
+ *    - Aplique as conversões apropriadas
+ *    - Adicione normalizações específicas se necessário
+ * 4. No `validate()`:
+ *    - Adicione regras de negócio específicas
+ *    - Use `addError()` para erros customizados
+ *    - Não se preocupe com obrigatoriedade (já tratada em rules)
+ * 
+ * ========================================================================
+ * EXEMPLO DE FLUXO:
+ * 
+ * 1. Dados chegam → `sanitize()` limpa e converte tipos
+ * 2. `validate()` executa regras base (parent::validate())
+ * 3. `validate()` executa regras customizadas
+ * 4. Dados validados ficam disponíveis em `validated()`
+ * 5. Controller chama `getDadosPrincipais()` para obter dados limpos
+ * 
+ * ========================================================================
+ */ 
