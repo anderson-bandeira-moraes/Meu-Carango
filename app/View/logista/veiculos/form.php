@@ -55,7 +55,9 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         tipos_direcao: <?= json_encode(tipos_direcao_list()) ?>,
         tipos_roda: <?= json_encode(tipos_roda_list()) ?>,
         tipos_freio: <?= json_encode(tipos_freio_list()) ?>,
-        aros_pneu: <?= json_encode(aros_pneu_list()) ?>
+        aros_pneu: <?= json_encode(aros_pneu_list()) ?>,
+        tensoes_hibridos: <?= json_encode(sistema_eletrico_tensoes_list()) ?>,
+        tensoes_eletricos: <?= json_encode(sistema_eletrico_tensoes_bev_list()) ?>
     };
 </script>
 
@@ -5009,64 +5011,67 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // =============================================
         // CONFIGURAR "OUTRO" PARA MATERIAL DO CILINDRO
         // =============================================
-        setupMotorOutro('material_cilindro', 'material_cilindro_outro', []); 
-        // Passamos array vazio porque não há lista fixa para verificação
-        // (a lógica de edição que verifica se o valor está na lista não será aplicada)
+        setupMotorOutro('material_cilindro', 'material_cilindro_outro', CONFIG.gnv_materiais); 
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA CAPACIDADE DO CILINDRO
         // =============================================
-        setupMotorOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro', []);
+        setupMotorOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro', CONFIG.gnv_capacidades);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA LOCALIZAÇÃO DO CILINDRO
         // =============================================
-        setupMotorOutro('localizacao_cilindro', 'localizacao_cilindro_outro', []);
+        setupMotorOutro('localizacao_cilindro', 'localizacao_cilindro_outro', CONFIG.gnv_localizacoes);
 
         // =============================================
-        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC
+        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC ELETRICO
         // =============================================
-        setupMotorOutro('tipo_conector_dc', 'tipo_conector_dc_outro', []);
+        setupMotorOutro('tipo_conector_dc', 'tipo_conector_dc_outro', CONFIG.conectores_eletricos_dc);
 
         // =============================================
-        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC
+        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC ELETRICO
         // =============================================
-        setupMotorOutro('tipo_conector_ac', 'tipo_conector_ac_outro', []);
+        setupMotorOutro('tipo_conector_ac', 'tipo_conector_ac_outro', CONFIG.conectores_eletricos_ac);
 
         // =============================================
-        // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA
+        // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA ELETRICO
         // =============================================
-        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', []);
+        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', CONFIG.baterias_tipos_bev);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA HIBRIDO
         // =============================================
-        setupMotorOutro('bateria_tipo_hibrido', 'bateria_tipo_outro_hibrido', [])
+        setupMotorOutro('bateria_tipo_hibrido', 'bateria_tipo_outro_hibrido', CONFIG.baterias_tipos_hibrido)
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
         // =============================================
-        setupMotorOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro', []);
+        setupMotorOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro', CONFIG.conectores_hibridos_ac);
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC (PHEV)
+        // =============================================
+        setupMotorOutro('carregamento_tipo_conector_dc', 'carregamento_tipo_conector_dc_outro', CONFIG.conectores_hibridos_dc);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA HIBRIDO
         // =============================================
-        setupMotorOutro('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido', []);
+        setupMotorOutro('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido', CONFIG.tensoes_hibridos);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA ELETRICO
         // =============================================
-        setupMotorOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico', []);
+        setupMotorOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico', CONFIG.tensoes_eletricos);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA CARROCERIA
         // =============================================
-        setupMotorOutro('carroceria', 'carroceria_outro', []);
+        setupMotorOutro('carroceria', 'carroceria_outro', CONFIG.carrocerias);
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA ARO DO PNEU
         // =============================================
-        setupMotorOutro('pneu_aro', 'pneu_aro_outro', []);
+        setupMotorOutro('pneu_aro', 'pneu_aro_outro', CONFIG.aros_pneu);
 
 
         // ============================================================

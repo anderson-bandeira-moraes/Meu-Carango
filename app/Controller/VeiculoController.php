@@ -320,7 +320,7 @@ class VeiculoController
         // 7. Chama o Service
         $result = $this->veiculoService->salvar($dados, $opcionaisIds, $tipoVeiculo);
         if ($result === false) {
-            $this->redirectWithError('Falha ao criar veículo. Tente novamente.');
+            $this->redirectWithError('Falha ao criar veículo. Tente novamente.', $allData);
         }
 
         $this->session->set('flash_veiculo_success', 'Veículo criado com sucesso!');
@@ -596,10 +596,16 @@ class VeiculoController
      *
      * @param string $message
      * @param string|null $redirectTo
+     * @param array|null $old Dados anteriores para repopular o formulário (opcional)
      * @return void
      */
-    private function redirectWithError(string $message, ?string $redirectTo = null): void
+    private function redirectWithError(string $message, ?array $old = null, ?string $redirectTo = null): void
     {
+        // Se $old for fornecido, armazena na sessão (mesma chave usada pelo handleValidationErrors)
+        if ($old !== null) {
+            $this->session->set('old_veiculo_input', $old);
+        }
+
         $this->session->set('flash_veiculo_error', $message);
         $url = $redirectTo ?? ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos');
         header('Location: ' . $url);
