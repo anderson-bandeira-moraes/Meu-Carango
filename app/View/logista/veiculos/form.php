@@ -572,9 +572,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback">
                                     O tipo de sistema é obrigatório.
                                 </div>
-                                <?php if (isset($errors['tipo_sistema'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_sistema']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Geração do Kit -->
@@ -600,9 +597,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback">
                                     A geração do kit é obrigatória.
                                 </div>
-                                <?php if (isset($errors['geracao_kit'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['geracao_kit']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Marca do Kit -->
@@ -619,9 +613,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <input placeholder="Ex: Landirenzo, Lovato, BRC" type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['marca_kit'] ?? $complemento['marca_kit'] ?? '') ?>" maxlength="40">
-                                <?php if (isset($errors['marca_kit'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['marca_kit']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Data de Instalação -->
@@ -638,9 +629,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <input type="date" name="data_instalacao" id="data_instalacao" class="form-control <?= isset($errors['data_instalacao']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_instalacao'] ?? $complemento['data_instalacao'] ?? '') ?>">
-                                <?php if (isset($errors['data_instalacao'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_instalacao']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Data da Última Inspeção -->
@@ -657,9 +645,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_inspecao'] ?? $complemento['data_inspecao'] ?? '') ?>">
-                                <?php if (isset($errors['data_inspecao'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_inspecao']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Validade do Cilindro -->
@@ -676,9 +661,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $complemento['data_validade_cilindro'] ?? '') ?>">
-                                <?php if (isset($errors['data_validade_cilindro'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['data_validade_cilindro']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Capacidade -->
@@ -702,10 +684,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
-                                                                  
-                                <?php if (isset($errors['capacidade_cilindro_m3'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_cilindro_m3']) ?></div>
-                                <?php endif; ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="number" step="any" inputmode="decimal" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
@@ -741,9 +719,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <div class="invalid-feedback">
                                     A quantidade é obrigatória.
                                 </div> 
-                                <?php if (isset($errors['quantidade_cilindros'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['quantidade_cilindros']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Material Cilindro -->
@@ -798,10 +773,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
-                                
-                                <?php if (isset($errors['localizacao_cilindro'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['localizacao_cilindro']) ?></div>
-                                <?php endif; ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
@@ -863,10 +834,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <div class="input-group">
-                                    <input placeholder="180" type="number" step="any" inputmode="decimal" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>" min="0">
+                                <div class="input-group has-validation">
+                                    <input placeholder="180" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
+
+                                    <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                        Este campo não aceita ponto (.) ou vírgula (,)
+                                    </div>
                                 </div>
                             </div>
 
@@ -882,10 +857,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <div class="input-group">
-                                    <input placeholder="150" type="number" step="any" inputmode="decimal" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>" min="0">
+                                <div class="input-group has-validation">
+                                    <input placeholder="150" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
+
+                                    <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                        Este campo não aceita ponto (.) ou vírgula (,)
+                                    </div>
                                 </div>
                             </div>
 
@@ -901,10 +880,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>                                
-                                <div class="input-group">
-                                    <input placeholder="210" type="number" step="any" inputmode="decimal" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>" min="0">
+                                <div class="input-group has-validation">
+                                    <input placeholder="210" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                           value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
+
+                                    <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                        Este campo não aceita ponto (.) ou vírgula (,)
+                                    </div>
                                 </div>
                             </div>
 
@@ -972,18 +955,12 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <label for="instaladora_certificada" class="form-label">Instaladora Certificada</label>
                                 <input placeholder="Nome da oficina credenciada que instalou o kit" type="text" name="instaladora_certificada" id="instaladora_certificada" class="form-control <?= isset($errors['instaladora_certificada']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['instaladora_certificada'] ?? $complemento['instaladora_certificada'] ?? '') ?>" maxlength="50">
-                                <?php if (isset($errors['instaladora_certificada'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['instaladora_certificada']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Observações -->
                             <div class="col-md-6">
                                 <label for="observacoes" class="form-label">Observações</label>
                                 <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="3"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
-                                <?php if (isset($errors['observacoes'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['observacoes']) ?></div>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
