@@ -31,7 +31,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'motor_tipo'  => 'required|max:40',
 
             // Potência e torque (principais)
-            'potencia_cv'   => 'required|numeric|min_num:0',
+            'potencia_cv'   => 'required|integer|min_num:0',
             'torque_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Tração
@@ -50,7 +50,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'numero_marchas'   => 'nullable|integer|min_num:0',
 
             // Campos para Flex (condicionais, mas com regras básicas)
-            'potencia_etanol_cv'          => 'nullable|numeric|min_num:0',
+            'potencia_etanol_cv'          => 'nullable|integer|min_num:0',
             'torque_etanol_kgfm'          => 'nullable|numeric|min_num:0',
             'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
             'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
@@ -60,7 +60,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'regime_potencia_rpm'  => 'nullable|integer|min_num:0',
             'regime_torque_rpm'    => 'nullable|integer|min_num:0',
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
-            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
         ];
     }
 
@@ -83,7 +83,7 @@ class VeiculoCombustaoRequest extends FormRequest
 
             // Potência
             'potencia_cv.required'    => 'A potência é obrigatória.',
-            'potencia_cv.numeric'     => 'A potência deve ser um número válido.',
+            'potencia_cv.integer'     => 'A potência deve ser um número inteiro.',
             'potencia_cv.min_num'     => 'A potência não pode ser negativa.',
 
             // Torque
@@ -121,7 +121,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'numero_marchas.min_num'    => 'O número de marchas não pode ser negativo.',
 
             // Campos Flex (condicionais)
-            'potencia_etanol_cv.numeric' => 'A potência com etanol deve ser um número válido.',
+            'potencia_etanol_cv.integer' => 'A potência com etanol deve ser um número inteiro.',
             'potencia_etanol_cv.min_num' => 'A potência com etanol não pode ser negativa.',
             'torque_etanol_kgfm.numeric' => 'O torque com etanol deve ser um número válido.',
             'torque_etanol_kgfm.min_num' => 'O torque com etanol não pode ser negativo.',
@@ -137,7 +137,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'regime_torque_rpm.min_num'    => 'O regime de torque não pode ser negativo.',
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
             'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
-            'velocidade_max_kmh.numeric'   => 'A velocidade máxima deve ser um número válido.',
+            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
             'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
         ];
     }
@@ -191,26 +191,77 @@ class VeiculoCombustaoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte vírgula decimal para ponto e depois para float
-        $floatFields = ['potencia_cv', 'potencia_etanol_cv', 'torque_kgfm', 'torque_etanol_kgfm', 'consumo_cidade_kml', 'consumo_estrada_kml', 'consumo_medio_kml', 'consumo_cidade_etanol_kml', 'consumo_estrada_etanol_kml', 'consumo_medio_etanol_kml', 'aceleracao_0_100_seg', 'velocidade_max_kmh'];
+        // 1. Converter strings vazias para NULL em TODOS os campos (independente de obrigatoriedade)
+        foreach ($data as $key => $value) {
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
+        }
 
-        foreach ($floatFields as $field) {
+        // 2. Listas de campos por tipo
+        $intFields = [
+            'numero_marchas',
+            'potencia_cv',
+            'regime_potencia_rpm',
+            'regime_torque_rpm',
+            'velocidade_max_kmh',
+            'capacidade_tanque_l',
+            'potencia_etanol_cv'
+        ];
+
+        $decimalFields = [
+            'torque_kgfm',
+            'aceleracao_0_100_seg',
+            'consumo_cidade_kml',
+            'consumo_estrada_kml',
+            'consumo_medio_kml',
+            'torque_etanol_kgfm',
+            'consumo_cidade_etanol_kml',
+            'consumo_estrada_etanol_kml',
+            'consumo_medio_etanol_kml'
+        ];
+
+        $stringFields = [
+            'combustivel',
+            'aspiracao',
+            'motor_tipo',
+            'motor_tipo_outro',
+            'tracao_tipo',
+            'transmissao_tipo'
+        ];
+
+        // 3. Converter inteiros
+        foreach ($intFields as $field) {
+            if (isset($data[$field]) && is_numeric($data[$field])) {
+                $data[$field] = (int) $data[$field];
+            }
+        }
+
+        // 4. Converter decimais (com tratamento de vírgula/ponto)
+        foreach ($decimalFields as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
+                $value = trim($data[$field]);
                 // Remove pontos de milhar (ex: 1.500 -> 1500)
-                $value = str_replace('.', '', $data[$field]);
+                $value = str_replace('.', '', $value);
                 // Converte vírgula para ponto (ex: 12,5 -> 12.5)
                 $value = str_replace(',', '.', $value);
                 if (is_numeric($value)) {
                     $data[$field] = (float) $value;
                 }
+            } elseif (isset($data[$field]) && is_numeric($data[$field])) {
+                // Se já for numérico, converte para float
+                $data[$field] = (float) $data[$field];
             }
         }
 
-        $intFields = ['capacidade_tanque_l', 'numero_marchas', 'regime_potencia_rpm', 'regime_torque_rpm'];
-        
-        foreach ($intFields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                $data[$field] = (int) $data[$field];
+        // 5. Sanitizar strings (trim e null se vazio)
+        foreach ($stringFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                // Reforça a conversão para null (já feita no passo 1, mas mantido por segurança)
+                if ($data[$field] === '') {
+                    $data[$field] = null;
+                }
             }
         }
 

@@ -224,7 +224,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2025" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="ano_fabricacao" id="ano_fabricacao" class="form-control <?= isset($errors['ano_fabricacao']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_fabricacao'] ?? $veiculo['ano_fabricacao'] ?? '') ?>" required>
 
                          <div class="invalid-feedback">
@@ -248,7 +248,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
+                        <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" required>
 
                         <div class="invalid-feedback">
@@ -1533,16 +1533,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="regime_potencia_rpm" id="regime_potencia_rpm" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="regime_potencia_rpm" id="regime_potencia_rpm" 
                                        class="form-control <?= isset($errors['regime_potencia_rpm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['regime_potencia_rpm'] ?? $complemento['regime_potencia_rpm'] ?? '') ?>" 
-                                       placeholder="Ex: 6250" min="0">
+                                       placeholder="Ex: 6250">
                                 <span class="input-group-text">RPM</span>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['regime_potencia_rpm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['regime_potencia_rpm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Regime Torque (RPM) -->
@@ -1557,16 +1557,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="regime_torque_rpm" id="regime_torque_rpm" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="regime_torque_rpm" id="regime_torque_rpm" 
                                        class="form-control <?= isset($errors['regime_torque_rpm']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['regime_torque_rpm'] ?? $complemento['regime_torque_rpm'] ?? '') ?>" 
-                                       placeholder="Ex: 3000" min="0">
+                                       placeholder="Ex: 3000">
                                 <span class="input-group-text">RPM</span>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['regime_torque_rpm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['regime_torque_rpm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== DESEMPENHO ===== -->
@@ -1611,16 +1611,16 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" step="any" inputmode="decimal" name="velocidade_max_kmh" id="velocidade_max_kmh" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="velocidade_max_kmh" id="velocidade_max_kmh" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
-                                       placeholder="Ex: 220" min="0">
+                                       placeholder="Ex: 220">
                                 <span class="input-group-text">km/h</span>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['velocidade_max_kmh'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== CONSUMO E TANQUE ===== -->
@@ -1719,19 +1719,20 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="capacidade_tanque_l" id="capacidade_tanque_l" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
-                                       placeholder="Ex: 50" min="0" required>
+                                       placeholder="Ex: 50" required>
                                 <span class="input-group-text">L</span>
                                 <div class="invalid-feedback">
                                     A capacidade do tanque é obrigatória.
                                 </div>
+
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['capacidade_tanque_l'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_tanque_l']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== DADOS PARA ETANOL (CONDICIONAL) ===== -->
@@ -1752,19 +1753,19 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             <i class="bi bi-info-circle-fill"></i>
                                         </button>
                                     </div>
-                                    <div class="input-group">
-                                        <input type="number" step="any" inputmode="decimal" name="potencia_etanol_cv" id="potencia_etanol_cv" 
+                                    <div class="input-group has-validation">
+                                        <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_etanol_cv" id="potencia_etanol_cv" 
                                                class="form-control <?= isset($errors['potencia_etanol_cv']) ? 'is-invalid' : '' ?>" 
                                                value="<?= htmlspecialchars($old['potencia_etanol_cv'] ?? $complemento['potencia_etanol_cv'] ?? '') ?>" 
-                                               placeholder="Ex: 115" min="0" required>
+                                               placeholder="Ex: 115" required>
                                         <span class="input-group-text">cv</span>
                                         <div class="invalid-feedback">
                                             A potência máxima para etanol é obrigatória.
                                         </div>
+                                        <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                            Este campo não aceita ponto (.) ou vírgula (,)
+                                        </div>
                                     </div>
-                                    <?php if (isset($errors['potencia_etanol_cv'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_etanol_cv']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Torque Etanol -->
