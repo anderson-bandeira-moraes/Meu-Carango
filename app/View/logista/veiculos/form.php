@@ -1484,18 +1484,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" step="any" inputmode="decimal" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
-                                       placeholder="Ex: 120" min="0" required>
+                                       placeholder="Ex: 120" required>
                                 <span class="input-group-text">cv</span>
                                 <div class="invalid-feedback">
                                     A potência máxima é obrigatória.
                                 </div>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['potencia_cv'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_cv']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Torque Máximo -->
@@ -3678,58 +3678,82 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         });
 
         // ================================================
-        // VALIDAÇÃO DE PONTO/VÍRGULA PARA CAMPOS INTEIROS
+        // VALIDAÇÃO DE PONTO/VÍRGULA E BLOQUEIO DE CARACTERES INVÁLIDOS
         // ================================================
 
-        //Seleciona todos os campos com data-tipo="inteiro"
+        // Seleciona todos os campos com data-tipo="inteiro"
         const camposInteiros = document.querySelectorAll('[data-tipo="inteiro"]');
 
         if (camposInteiros.length === 0) return;
 
-        // Para cada campo, adiciona o listener
+        // Função para validar se o caractere é permitido (número, ponto ou vírgula)
+        function isCaracterePermitido(tecla) {
+            // Permite teclas de navegação e controle
+            if (tecla === 'Backspace' || tecla === 'Delete' || tecla === 'Tab' ||
+                tecla === 'ArrowLeft' || tecla === 'ArrowRight' || tecla === 'ArrowUp' || tecla === 'ArrowDown' ||
+                tecla === 'Home' || tecla === 'End' || tecla === 'Enter') {
+                return true;
+            }
+
+            // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
+            if (event.ctrlKey || event.metaKey) {
+                return true;
+            }
+
+            // Verifica se a tecla é um número, ponto ou vírgula
+            return /^[0-9.,]$/.test(tecla);
+        }
+
+        // Para cada campo, adiciona os listeners
         camposInteiros.forEach(function(campo) {
+            // 1. Listener keydown: bloqueia caracteres inválidos antes de serem inseridos
+            campo.addEventListener('keydown', function(event) {
+                if (!isCaracterePermitido(event.key)) {
+                    event.preventDefault(); // Impede a entrada do caractere
+                }
+            });
+
+            // 2. Listener input: validação de ponto/vírgula + limpeza de colagem
             campo.addEventListener('input', function() {
-                // Obtém o valor atual
+                // 2a. Limpeza de caracteres inválidos (fallback para colagem)
+                // Remove qualquer caractere que não seja número, ponto ou vírgula
+                this.value = this.value.replace(/[^0-9.,]/g, '');
+
+                // 2b. Obtém o valor atual (já limpo)
                 const valor = this.value;
 
-                // Verifica se contém ponto ou vírgula
+                // 2c. Verifica se contém ponto ou vírgula
                 const contemPontoVirgula = /[.,]/.test(valor);
 
-                // Encontra os elementos de feedback (irmãos ou dentro do mesmo container)
+                // 2d. Encontra os elementos de feedback
                 const container = this.closest('.input-group, .col-md-4, .mb-3') || this.parentNode;
                 const feedbackRequired = container.querySelector('.invalid-feedback:not(.feedback-pontovirgula)');
                 const feedbackPontovirgula = container.querySelector('.feedback-pontovirgula');
 
                 if (contemPontoVirgula) {
                     // Caso contenha ponto ou vírgula
-                    // Adiciona classe is-invalid
                     this.classList.add('is-invalid');
 
-                    // Exibe o feedback de ponto/vírgula
                     if (feedbackPontovirgula) {
                         feedbackPontovirgula.style.display = 'block';
                         feedbackPontovirgula.classList.remove('d-none');
                     }
 
-                    // Oculta o feedback de required (para não conflitar)
                     if (feedbackRequired) {
                         feedbackRequired.style.display = 'none';
                         feedbackRequired.classList.add('d-none');
                     }
                 } else {
-                    // Caso NÃO contenha ponto ou vírgula   
-                    // Remove a classe is-invalid
+                    // Caso NÃO contenha ponto ou vírgula
                     this.classList.remove('is-invalid');
 
-                    // Oculta o feedback de ponto/vírgula
                     if (feedbackPontovirgula) {
                         feedbackPontovirgula.style.display = 'none';
                         feedbackPontovirgula.classList.add('d-none');
                     }
 
-                    // Restaura o feedback de required (para que o navegador possa exibi-lo)
                     if (feedbackRequired) {
-                        feedbackRequired.style.display = ''; // Remove o inline display
+                        feedbackRequired.style.display = '';
                         feedbackRequired.classList.remove('d-none');
                     }
                 }
