@@ -108,12 +108,12 @@ abstract class FormRequest extends Request
             }
         }
 
-        // 3. Guarda apenas os campos que passaram E foram enviados com valor válido
+        // 3. Guarda os campos que passaram (incluindo null)
         $validated = [];
         foreach ($rules as $field => $ruleString) {
             if (array_key_exists($field, $data) && !isset($this->errors[$field])) {
                 $value = $data[$field];
-                if ($value !== null && $value !== '') {
+                if ($value !== '') {
                     $validated[$field] = $value;
                 }
             }
