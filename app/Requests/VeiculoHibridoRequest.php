@@ -28,15 +28,15 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Motor a combustão
             'motor_combustao_tipo'          => 'required|max:40',
-            'motor_combustao_potencia_cv'   => 'required|numeric|min_num:0',
+            'motor_combustao_potencia_cv'   => 'required|integer|min_num:0',
             'motor_combustao_torque_kgfm'   => 'nullable|numeric|min_num:0',
 
             // Motor elétrico
-            'motor_eletrico_potencia_cv'    => 'required|numeric|min_num:0',
+            'motor_eletrico_potencia_cv'    => 'required|integer|min_num:0',
             'motor_eletrico_torque_kgfm'    => 'nullable|numeric|min_num:0',
 
             // Potência e torque combinados
-            'potencia_combinada_cv' => 'required|numeric|min_num:0',
+            'potencia_combinada_cv' => 'required|integer|min_num:0',
             'torque_combinado_kgfm' => 'nullable|numeric|min_num:0',
 
             // Tração e transmissão
@@ -64,7 +64,7 @@ class VeiculoHibridoRequest extends FormRequest
             'carregamento_tempo_ac_horas'   => 'nullable|numeric|min_num:0',
             'carregamento_potencia_dc_kw'   => 'nullable|numeric|min_num:0',
             'carregamento_tipo_conector_ac' => 'nullable|max:20',
-            'carregamento_tempo_dc_min'     => 'nullable|numeric|min_num:0',
+            'carregamento_tempo_dc_min'     => 'nullable|integer|min_num:0',
             'carregamento_tipo_conector_dc' => 'nullable|max:20',
 
             // Consumo
@@ -83,7 +83,7 @@ class VeiculoHibridoRequest extends FormRequest
 
             // Desempenho
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
-            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
         ];
     }
 
@@ -105,21 +105,21 @@ class VeiculoHibridoRequest extends FormRequest
             'motor_combustao_tipo.required' => 'O tipo do motor a combustão é obrigatório.',
             'motor_combustao_tipo.max'      => 'O tipo do motor a combustão deve ter no máximo :max caracteres.',
             'motor_combustao_potencia_cv.required' => 'A potência do motor a combustão é obrigatória.',
-            'motor_combustao_potencia_cv.numeric'  => 'A potência do motor a combustão deve ser um número válido.',
+            'motor_combustao_potencia_cv.integer'  => 'A potência do motor a combustão deve ser um número inteiro.',
             'motor_combustao_potencia_cv.min_num'  => 'A potência do motor a combustão não pode ser negativa.',
             'motor_combustao_torque_kgfm.numeric'  => 'O torque do motor a combustão deve ser um número válido.',
             'motor_combustao_torque_kgfm.min_num'  => 'O torque do motor a combustão não pode ser negativo.',
 
             // Motor elétrico
             'motor_eletrico_potencia_cv.required' => 'A potência do motor elétrico é obrigatória.',
-            'motor_eletrico_potencia_cv.numeric'   => 'A potência do motor elétrico deve ser um número válido.',
+            'motor_eletrico_potencia_cv.integer'  => 'A potência do motor elétrico deve ser um número inteiro.',
             'motor_eletrico_potencia_cv.min_num'  => 'A potência do motor elétrico não pode ser negativa.',
             'motor_eletrico_torque_kgfm.numeric'  => 'O torque do motor elétrico deve ser um número válido.',
             'motor_eletrico_torque_kgfm.min_num'  => 'O torque do motor elétrico não pode ser negativo.',
 
             // Potência e torque combinados
             'potencia_combinada_cv.required' => 'A potência combinada é obrigatória.',
-            'potencia_combinada_cv.numeric'        => 'A potência combinada deve ser um número válido.',
+            'potencia_combinada_cv.integer'  => 'A potência combinada deve ser um número inteiro.',
             'potencia_combinada_cv.min_num'  => 'A potência combinada não pode ser negativa.',
             'torque_combinado_kgfm.required' => 'O torque combinado é obrigatório.',
             'torque_combinado_kgfm.numeric'  => 'O torque combinado deve ser um número válido.',
@@ -158,28 +158,28 @@ class VeiculoHibridoRequest extends FormRequest
             'carregamento_potencia_ac_kw.min_num' => 'A potência de carregamento AC não pode ser negativa.',
             'carregamento_tempo_ac_horas.numeric' => 'O tempo de carregamento AC deve ser um número válido.',
             'carregamento_tempo_ac_horas.min_num' => 'O tempo de carregamento AC não pode ser negativo.',
-            'carregamento_potencia_dc_kw.numeric'  => 'A potência de carregamento DC deve ser um número válido.',
+            'carregamento_potencia_dc_kw.numeric' => 'A potência de carregamento DC deve ser um número válido.',
             'carregamento_potencia_dc_kw.min_num' => 'A potência de carregamento DC não pode ser negativa.',
             'carregamento_tipo_conector_ac.max'   => 'O tipo de conector AC deve ter no máximo :max caracteres.',
-            'carregamento_tempo_dc_min.numeric' => 'O tempo de carga DC deve ser um número válido.',
-            'carregamento_tempo_dc_min.min_num' => 'O tempo de carga DC não pode ser negativo.',
-            'carregamento_tipo_conector_dc.max' => 'O tipo de conector DC deve ter no máximo :max caracteres.',
+            'carregamento_tempo_dc_min.integer'   => 'O tempo de carga DC deve ser um número inteiro.',
+            'carregamento_tempo_dc_min.min_num'   => 'O tempo de carga DC não pode ser negativo.',
+            'carregamento_tipo_conector_dc.max'   => 'O tipo de conector DC deve ter no máximo :max caracteres.',
 
             // Consumo
-            'consumo_cidade_kml.required' => 'O consumo na cidade é obrigatório.',
-            'consumo_cidade_kml.numeric'  => 'O consumo na cidade deve ser um número válido.',
-            'consumo_cidade_kml.min_num'  => 'O consumo na cidade não pode ser negativo.',
+            'consumo_cidade_kml.required'  => 'O consumo na cidade é obrigatório.',
+            'consumo_cidade_kml.numeric'   => 'O consumo na cidade deve ser um número válido.',
+            'consumo_cidade_kml.min_num'   => 'O consumo na cidade não pode ser negativo.',
             'consumo_estrada_kml.required' => 'O consumo na estrada é obrigatório.',
             'consumo_estrada_kml.numeric'  => 'O consumo na estrada deve ser um número válido.',
             'consumo_estrada_kml.min_num'  => 'O consumo na estrada não pode ser negativo.',
             'consumo_medio_kml.numeric'    => 'O consumo médio deve ser um número válido.',
             'consumo_medio_kml.min_num'    => 'O consumo médio não pode ser negativo.',
-            'consumo_cidade_etanol_kml.numeric' => 'O consumo na cidade com etanol deve ser um número válido.',
-            'consumo_cidade_etanol_kml.min_num' => 'O consumo na cidade com etanol não pode ser negativo.',
+            'consumo_cidade_etanol_kml.numeric'  => 'O consumo na cidade com etanol deve ser um número válido.',
+            'consumo_cidade_etanol_kml.min_num'  => 'O consumo na cidade com etanol não pode ser negativo.',
             'consumo_estrada_etanol_kml.numeric' => 'O consumo na estrada com etanol deve ser um número válido.',
             'consumo_estrada_etanol_kml.min_num' => 'O consumo na estrada com etanol não pode ser negativo.',
-            'consumo_medio_etanol_kml.numeric'  => 'O consumo médio com etanol deve ser um número válido.',
-            'consumo_medio_etanol_kml.min_num'  => 'O consumo médio com etanol não pode ser negativo.',
+            'consumo_medio_etanol_kml.numeric'   => 'O consumo médio com etanol deve ser um número válido.',
+            'consumo_medio_etanol_kml.min_num'   => 'O consumo médio com etanol não pode ser negativo.',
 
             // Tanque
             'capacidade_tanque_l.required' => 'A capacidade do tanque é obrigatória.',
@@ -192,7 +192,7 @@ class VeiculoHibridoRequest extends FormRequest
             // Desempenho
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
             'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
-            'velocidade_max_kmh.numeric'   => 'A velocidade máxima deve ser um número válido.',
+            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
             'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
         ];
     }
@@ -207,17 +207,33 @@ class VeiculoHibridoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte vírgula decimal para ponto e depois para float
-        $floatFields = [
-            'motor_combustao_potencia_cv',    
+        // 1. Converter strings vazias para NULL em TODOS os campos (independente de obrigatoriedade)
+        foreach ($data as $key => $value) {
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
+        }
+
+        // 2. Listas de campos por tipo
+        $intFields = [
+            'numero_marchas',
+            'motor_combustao_potencia_cv',
+            'motor_eletrico_potencia_cv',
+            'potencia_combinada_cv',
+            'velocidade_max_kmh',
+            'carregamento_tempo_dc_min',
+            'autonomia_eletrica_pbev_km',
+            'autonomia_combinada_km',
+            'capacidade_tanque_l'
+        ];
+
+        $decimalFields = [
             'motor_combustao_torque_kgfm',
-            'motor_eletrico_potencia_cv',    
             'motor_eletrico_torque_kgfm',
-            'potencia_combinada_cv',         
             'torque_combinado_kgfm',
             'bateria_capacidade_kwh',
             'carregamento_potencia_ac_kw',
-            'carregamento_potencia_dc_kw',   
+            'carregamento_potencia_dc_kw',
             'carregamento_tempo_ac_horas',
             'consumo_cidade_kml',
             'consumo_estrada_kml',
@@ -225,45 +241,72 @@ class VeiculoHibridoRequest extends FormRequest
             'consumo_cidade_etanol_kml',
             'consumo_estrada_etanol_kml',
             'consumo_medio_etanol_kml',
-            'aceleracao_0_100_seg',
-            'velocidade_max_kmh',
+            'aceleracao_0_100_seg'
         ];
 
-        foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_string($data[$field])) {
-                // Remove pontos de milhar (ex: 1.500 -> 1500)
-                $value = str_replace('.', '', $data[$field]);
-                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
-                $value = str_replace(',', '.', $value);
-                if (is_numeric($value)) {
-                    $data[$field] = (float) $value;
-                }
-            }
-        }
-
-        // Campos que permanecem inteiros
-        $intFields = [
-            'numero_marchas',
-            'autonomia_eletrica_pbev_km',
-            'autonomia_combinada_km',
-            'capacidade_tanque_l',
-            'carregamento_tempo_dc_min',
+        $stringFields = [
+            'tipo',
+            'combustivel',
+            'motor_combustao_tipo',
+            'motor_combustao_tipo_outro',
+            'tracao_tipo',
+            'transmissao_tipo',
+            'bateria_tipo',
+            'bateria_tipo_outro',
+            'sistema_eletrico_tensao',
+            'sistema_eletrico_tensao_outro',
+            'bateria_garantia',
+            'carregamento_tipo_conector_ac',
+            'carregamento_tipo_conector_ac_outro',
+            'carregamento_tipo_conector_dc',
+            'carregamento_tipo_conector_dc_outro',
+            'aspiracao'
         ];
 
+        $booleanFields = [
+            'modo_eletrico_puro'
+        ];
+
+        // 3. Converter inteiros
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (int) $data[$field];
             }
         }
 
-        // Normaliza modo_eletrico_puro para 0 ou 1
-        if (isset($data['modo_eletrico_puro'])) {
-            $data['modo_eletrico_puro'] = (int) (bool) $data['modo_eletrico_puro'];
+        // 4. Converter decimais (com tratamento de vírgula/ponto)
+        foreach ($decimalFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $value = trim($data[$field]);
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $value);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
+            } elseif (isset($data[$field]) && is_numeric($data[$field])) {
+                // Se já for numérico, converte para float
+                $data[$field] = (float) $data[$field];
+            }
         }
 
-        // Normaliza sistema_eletrico_tensao (remove espaços extras)
-        if (isset($data['sistema_eletrico_tensao']) && is_string($data['sistema_eletrico_tensao'])) {
-            $data['sistema_eletrico_tensao'] = trim($data['sistema_eletrico_tensao']);
+        // 5. Sanitizar strings (trim e null se vazio)
+        foreach ($stringFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                // Reforça a conversão para null (já feita no passo 1, mas mantido por segurança)
+                if ($data[$field] === '') {
+                    $data[$field] = null;
+                }
+            }
+        }
+
+        // 6. Converter booleanos
+        foreach ($booleanFields as $field) {
+            if (isset($data[$field])) {
+                $data[$field] = (int) (bool) $data[$field];
+            }
         }
 
         return $data;
