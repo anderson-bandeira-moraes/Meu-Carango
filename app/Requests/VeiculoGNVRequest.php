@@ -45,9 +45,9 @@ class VeiculoGNVRequest extends FormRequest
             'consumo_estrada_m3km'  => 'nullable|numeric|min_num:0',
 
             // Autonomia (opcionais)
-            'autonomia_media_km'    => 'nullable|numeric|min_num:0',
-            'autonomia_cidade_km'   => 'nullable|numeric|min_num:0',
-            'autonomia_estrada_km'  => 'nullable|numeric|min_num:0',
+            'autonomia_media_km'    => 'nullable|integer|min_num:0',
+            'autonomia_cidade_km'   => 'nullable|integer|min_num:0',
+            'autonomia_estrada_km'  => 'nullable|integer|min_num:0',
 
             // Instaladora e observações
             'instaladora_certificada' => 'nullable|max:50',
@@ -98,11 +98,11 @@ class VeiculoGNVRequest extends FormRequest
             'consumo_estrada_m3km.min_num' => 'O consumo na estrada em m³/km não pode ser negativo.',
 
             // Autonomia
-            'autonomia_media_km.numeric'   => 'A autonomia média deve ser um número válido.',
+            'autonomia_media_km.integer'   => 'A autonomia média deve ser um número válido.',
             'autonomia_media_km.min_num'   => 'A autonomia média não pode ser negativa.',
-            'autonomia_cidade_km.numeric'  => 'A autonomia na cidade deve ser um número válido.',
+            'autonomia_cidade_km.integer'  => 'A autonomia na cidade deve ser um número válido.',
             'autonomia_cidade_km.min_num'  => 'A autonomia na cidade não pode ser negativa.',
-            'autonomia_estrada_km.numeric' => 'A autonomia na estrada deve ser um número válido.',
+            'autonomia_estrada_km.integer' => 'A autonomia na estrada deve ser um número válido.',
             'autonomia_estrada_km.min_num' => 'A autonomia na estrada não pode ser negativa.',
 
             // Instaladora
@@ -121,16 +121,90 @@ class VeiculoGNVRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte booleanos para 0 ou 1
-        $boolFields = ['possui_csv', 'possui_selo_gnv'];
-        foreach ($boolFields as $field) {
+        // 1. Converter strings vazias para NULL em TODOS os campos (independente de obrigatoriedade)
+        foreach ($data as $key => $value) {
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
+        }
+
+        // 2. Listas de campos por tipo
+        $intFields = [
+            'quantidade_cilindros',
+            'autonomia_media_km',
+            'autonomia_cidade_km',
+            'autonomia_estrada_km'
+        ];
+
+        $decimalFields = [
+            'capacidade_cilindro_m3',
+            'capacidade_cilindro_m3_outro',
+            'consumo_cidade_m3km',
+            'consumo_estrada_m3km'
+        ];
+
+        $stringFields = [
+            'marca_kit',
+            'material_cilindro_outro',
+            'localizacao_cilindro_outro',
+            'instaladora_certificada',
+            'observacoes'
+        ];
+
+        $booleanFields = [
+            'possui_csv',
+            'possui_selo_gnv'
+        ];
+
+        $dateFields = [
+            'data_instalacao',
+            'data_inspecao',
+            'data_validade_cilindro'
+        ];
+
+        // 3. Converter inteiros
+        foreach ($intFields as $field) {
+            if (isset($data[$field]) && is_numeric($data[$field])) {
+                $data[$field] = (int) $data[$field];
+            }
+        }
+
+        // 4. Converter decimais (com tratamento de vírgula/ponto)
+        foreach ($decimalFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $value = trim($data[$field]);
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $value);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
+            } elseif (isset($data[$field]) && is_numeric($data[$field])) {
+                // Se já for numérico, converte para float
+                $data[$field] = (float) $data[$field];
+            }
+        }
+
+        // 5. Sanitizar strings (trim e null se vazio)
+        foreach ($stringFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                // Reforça a conversão para null (já feita no passo 1, mas mantido por segurança)
+                if ($data[$field] === '') {
+                    $data[$field] = null;
+                }
+            }
+        }
+
+        // 6. Converter booleanos
+        foreach ($booleanFields as $field) {
             if (isset($data[$field])) {
                 $data[$field] = (int) (bool) $data[$field];
             }
         }
 
-        // Converte datas do formato brasileiro (dd/mm/aaaa) para Y-m-d
-        $dateFields = ['data_instalacao', 'data_inspecao', 'data_validade_cilindro'];
+        // 7. Converter datas do formato brasileiro (dd/mm/aaaa) para Y-m-d
         foreach ($dateFields as $field) {
             if (isset($data[$field]) && is_string($data[$field]) && $data[$field] !== '') {
                 // Tenta converter se estiver no formato dd/mm/aaaa
@@ -138,37 +212,6 @@ class VeiculoGNVRequest extends FormRequest
                 if (count($parts) === 3 && checkdate((int) $parts[1], (int) $parts[0], (int) $parts[2])) {
                     $data[$field] = sprintf('%04d-%02d-%02d', $parts[2], $parts[1], $parts[0]);
                 }
-            }
-        }
-
-        // Converte campos numéricos para float/int
-        $floatFields = [
-            'capacidade_cilindro_m3',
-            'consumo_cidade_m3km',
-            'consumo_estrada_m3km',
-            'autonomia_media_km',
-            'autonomia_cidade_km',
-            'autonomia_estrada_km',
-        ];
-
-        foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_string($data[$field])) {
-                // Remove pontos de milhar (ex: 1.500 -> 1500)
-                $value = str_replace('.', '', $data[$field]);
-                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
-                $value = str_replace(',', '.', $value);
-                if (is_numeric($value)) {
-                    $data[$field] = (float) $value;
-                }
-            }
-        }
-
-        $intFields = [
-            'quantidade_cilindros',
-        ];
-        foreach ($intFields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                $data[$field] = (int) $data[$field];
             }
         }
 
@@ -185,3 +228,53 @@ class VeiculoGNVRequest extends FormRequest
         return $this->validated();
     }
 }
+
+/**
+ * ========================================================================
+ * FORM REQUEST PARA DADOS DO KIT GNV
+ * ========================================================================
+ * 
+ * Este FormRequest gerencia a validação e sanitização dos campos
+ * específicos do kit GNV (tabela `veiculo_gnv`).
+ * 
+ * CARACTERÍSTICAS PRINCIPAIS:
+ * 
+ * 1. VALIDAÇÃO DECLARATIVA (rules())
+ *    - Define regras por campo (obrigatoriedade, tipo, valores permitidos)
+ *    - Campos obrigatórios: tipo_sistema, geracao_kit, capacidade_cilindro_m3,
+ *      quantidade_cilindros, localizacao_cilindro
+ *    - Campos opcionais (nullable): marca_kit, datas, consumos, autonomias,
+ *      documentação, instaladora, observações
+ *    - Usa `in` para campos com valores fixos (ex: GNC, GLP)
+ *    - Usa `date` para campos de data
+ *    - Autonomias são `integer` (km), capacidade e consumo são `numeric`
+ * 
+ * 2. MENSAGENS PERSONALIZADAS (messages())
+ *    - Mensagens para cada regra de cada campo
+ *    - Inclui mensagens para `required`, `in`, `max`, `numeric`, `integer`, `min_num`, `date`
+ * 
+ * 3. SANITIZAÇÃO GENÉRICA (sanitize())
+ *    - **Passo 1:** Converter TODAS as strings vazias para `NULL`.
+ *      Isso unifica valores vazios para todos os campos.
+ *    - **Passo 2:** Aplicar conversão de tipo conforme listas:
+ *        - `$intFields`    → (int) para quantidade_cilindros e autonomias (km)
+ *        - `$decimalFields` → (float) para capacidade e consumo (m³, km/m³)
+ *        - `$stringFields`  → trim() e null se vazio (marca, materiais, localização, instaladora, observações)
+ *        - `$booleanFields` → (int) (bool) para possui_csv e possui_selo_gnv (0/1)
+ *        - `$dateFields`    → converte datas do formato BR (dd/mm/aaaa) para ISO (Y-m-d)
+ *    - **Importante:** A sanitização NÃO distingue obrigatórios de opcionais.
+ *      A validação `required` é feita posteriormente no `validate()`.
+ * 
+ * 4. MÉTODOS AUXILIARES
+ *    - `getDadosGNV()` → retorna os dados validados para uso no Service
+ * 
+ * ========================================================================
+ * FLUXO DE EXECUÇÃO:
+ * 
+ * 1. Dados chegam → `sanitize()` limpa e converte tipos
+ * 2. `validate()` executa regras base (parent::validate())
+ * 3. Dados validados ficam disponíveis em `validated()`
+ * 4. Controller chama `getDadosGNV()` para obter dados limpos
+ * 
+ * ========================================================================
+ */
