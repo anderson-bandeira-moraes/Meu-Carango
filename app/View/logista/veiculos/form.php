@@ -1964,20 +1964,21 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" step="any" inputmode="decimal" name="potencia_max_cv" id="potencia_max_cv" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_max_cv" id="potencia_max_cv" 
                                        class="form-control <?= isset($errors['potencia_max_cv']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['potencia_max_cv'] ?? $complemento['potencia_max_cv'] ?? '') ?>" 
-                                       placeholder="Ex: 150" min="0" required>
+                                       placeholder="Ex: 150" required>
                                 <span class="input-group-text">cv</span>
+
                                 <div class="invalid-feedback">
                                     A potência máxima é obrigatória.
                                 </div>
+
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            
-                            <?php if (isset($errors['potencia_max_cv'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_cv']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Torque Máximo (Nm) -->
@@ -2070,16 +2071,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="velocidade_max_kmh" id="velocidade_max_kmh_eletrico" 
                                        class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
-                                       placeholder="Ex: 180" min="0">
+                                       placeholder="Ex: 180">
                                 <span class="input-group-text">km/h</span>
+
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['velocidade_max_kmh'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['velocidade_max_kmh']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== BATERIA ===== -->
@@ -2254,16 +2256,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="autonomia_wltp_km" id="autonomia_wltp_km" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_wltp_km" id="autonomia_wltp_km" 
                                        class="form-control <?= isset($errors['autonomia_wltp_km']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['autonomia_wltp_km'] ?? $complemento['autonomia_wltp_km'] ?? '') ?>" 
-                                       placeholder="Ex: 400" min="0">
+                                       placeholder="Ex: 400">
                                 <span class="input-group-text">km</span>
+
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['autonomia_wltp_km'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_wltp_km']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Autonomia Inmetro -->
@@ -2278,19 +2281,20 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="number" name="autonomia_inmetro_km" id="autonomia_inmetro_km" 
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_inmetro_km" id="autonomia_inmetro_km" 
                                        class="form-control <?= isset($errors['autonomia_inmetro_km']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['autonomia_inmetro_km'] ?? $complemento['autonomia_inmetro_km'] ?? '') ?>" 
-                                       placeholder="Ex: 350" min="0" required>
+                                       placeholder="Ex: 350" required>
                                 <span class="input-group-text">km</span>
                                 <div class="invalid-feedback">
                                     A autonomia Inmetro é obrigatória.
                                 </div>
+
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
                             </div>
-                            <?php if (isset($errors['autonomia_inmetro_km'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['autonomia_inmetro_km']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Consumo energético -->
@@ -2400,16 +2404,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <div class="input-group">
-                                    <input type="number" step="any" inputmode="decimal" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
+                                <div class="input-group has-validation">
+                                    <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="tempo_carga_dc_min" id="tempo_carga_dc_min" 
                                            class="form-control <?= isset($errors['tempo_carga_dc_min']) ? 'is-invalid' : '' ?>" 
                                            value="<?= htmlspecialchars($old['tempo_carga_dc_min'] ?? $complemento['tempo_carga_dc_min'] ?? '') ?>" 
-                                           placeholder="Ex: 45" min="0">
+                                           placeholder="Ex: 45">
                                     <span class="input-group-text">min</span>
+
+                                    <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                        Este campo não aceita ponto (.) ou vírgula (,)
+                                    </div>
                                 </div>
-                                <?php if (isset($errors['tempo_carga_dc_min'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tempo_carga_dc_min']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Potência Máxima AC -->

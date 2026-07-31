@@ -25,7 +25,7 @@ class VeiculoEletricoRequest extends FormRequest
             'transmissao_tipo'  => 'required|max:30',
 
             // Motorização
-            'potencia_max_cv'   => 'required|numeric|min_num:0',
+            'potencia_max_cv'   => 'required|integer|min_num:0',
 
             // Torque (opcionais)
             'torque_max_nm'     => 'nullable|numeric|min_num:0',
@@ -33,7 +33,7 @@ class VeiculoEletricoRequest extends FormRequest
 
             // Desempenho (opcionais)
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
-            'velocidade_max_kmh'   => 'nullable|numeric|min_num:0',
+            'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
 
             // Bateria
             'bateria_tipo'            => 'required|max:40',
@@ -51,7 +51,7 @@ class VeiculoEletricoRequest extends FormRequest
             // Carregamento DC
             'potencia_max_dc_kw' => 'required|numeric|min_num:0',
             'tipo_conector_dc'   => 'required|max:20',
-            'tempo_carga_dc_min' => 'nullable|numeric|min_num:0',
+            'tempo_carga_dc_min' => 'nullable|integer|min_num:0',
 
             // Carregamento AC (opcional)
             'tipo_conector_ac'     => 'nullable|max:20',
@@ -79,7 +79,7 @@ class VeiculoEletricoRequest extends FormRequest
 
             // Potência máxima
             'potencia_max_cv.required'    => 'A potência máxima é obrigatória.',
-            'potencia_max_cv.numeric'     => 'A potência máxima deve ser um número válido.',
+            'potencia_max_cv.integer'     => 'A potência máxima deve ser um número inteiro.',
             'potencia_max_cv.min_num'     => 'A potência máxima não pode ser negativa.',
 
             // Torque (opcionais)
@@ -91,7 +91,7 @@ class VeiculoEletricoRequest extends FormRequest
             // Desempenho
             'aceleracao_0_100_seg.numeric' => 'A aceleração 0-100 deve ser um número válido.',
             'aceleracao_0_100_seg.min_num' => 'A aceleração 0-100 não pode ser negativa.',
-            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número válido.',
+            'velocidade_max_kmh.integer'   => 'A velocidade máxima deve ser um número inteiro.',
             'velocidade_max_kmh.min_num'   => 'A velocidade máxima não pode ser negativa.',
 
             // Bateria
@@ -129,7 +129,7 @@ class VeiculoEletricoRequest extends FormRequest
             'tempo_carga_ac_horas.min_num' => 'O tempo de carga AC não pode ser negativo.',
 
             // Tempo de carga (opcional)
-            'tempo_carga_dc_min.numeric'  => 'O tempo de carga DC deve ser um número válido.',
+            'tempo_carga_dc_min.integer'  => 'O tempo de carga DC deve ser um número inteiro.',
             'tempo_carga_dc_min.min_num' => 'O tempo de carga DC não pode ser negativo.',
 
             // Consumo energético (opcional)
@@ -148,57 +148,81 @@ class VeiculoEletricoRequest extends FormRequest
     {
         $data = parent::sanitize($data);
 
-        // Converte vírgula decimal para ponto e depois para float
-        $floatFields = [
-            'potencia_max_cv',          
-            'torque_max_nm',            
+        // 1. Converter strings vazias para NULL em TODOS os campos (independente de obrigatoriedade)
+        foreach ($data as $key => $value) {
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
+        }
+
+        // 2. Listas de campos por tipo
+        $intFields = [
+            'potencia_max_cv',
+            'velocidade_max_kmh',
+            'tempo_carga_dc_min',
+            'autonomia_wltp_km',
+            'autonomia_inmetro_km'
+        ];
+
+        $decimalFields = [
+            'torque_max_nm',
             'torque_max_kgfm',
             'aceleracao_0_100_seg',
             'capacidade_liquida_kwh',
             'saude_bateria_soh',
             'consumo_energetico_kwh_100km',
-            'potencia_max_dc_kw',       
-            'tempo_carga_dc_min', 
-            'velocidade_max_kmh', 
+            'potencia_max_dc_kw',
             'potencia_max_ac_kw',
-            'tempo_carga_ac_horas',     
+            'tempo_carga_ac_horas'
         ];
 
-        foreach ($floatFields as $field) {
-            if (isset($data[$field]) && is_string($data[$field])) {
-                // Remove pontos de milhar (ex: 1.500 -> 1500)
-                $value = str_replace('.', '', $data[$field]);
-                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
-                $value = str_replace(',', '.', $value);
-                if (is_numeric($value)) {
-                    $data[$field] = (float) $value;
-                }
-            }
-        }
-
-        // Os campos que permanecem inteiros
-        $intFields = [
-            'autonomia_wltp_km',
-            'autonomia_inmetro_km',
+        $stringFields = [
+            'tracao_tipo',
+            'transmissao_tipo',
+            'bateria_tipo',
+            'bateria_tipo_outro',
+            'sistema_eletrico_tensao',
+            'sistema_eletrico_tensao_outro',
+            'garantia_bateria',
+            'tipo_conector_dc',
+            'tipo_conector_dc_outro',
+            'tipo_conector_ac',
+            'tipo_conector_ac_outro'
         ];
 
+        // 3. Converter inteiros
         foreach ($intFields as $field) {
             if (isset($data[$field]) && is_numeric($data[$field])) {
                 $data[$field] = (int) $data[$field];
             }
         }
 
-        // Sanitização de textos (existente)
-        $textFields = ['bateria_tipo'];
-        foreach ($textFields as $field) {
+        // 4. Converter decimais (com tratamento de vírgula/ponto)
+        foreach ($decimalFields as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
-                $data[$field] = trim($data[$field]);
+                $value = trim($data[$field]);
+                // Remove pontos de milhar (ex: 1.500 -> 1500)
+                $value = str_replace('.', '', $value);
+                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                $value = str_replace(',', '.', $value);
+                if (is_numeric($value)) {
+                    $data[$field] = (float) $value;
+                }
+            } elseif (isset($data[$field]) && is_numeric($data[$field])) {
+                // Se já for numérico, converte para float
+                $data[$field] = (float) $data[$field];
             }
         }
 
-        // Normaliza sistema_eletrico_tensao
-        if (isset($data['sistema_eletrico_tensao']) && is_string($data['sistema_eletrico_tensao'])) {
-            $data['sistema_eletrico_tensao'] = trim($data['sistema_eletrico_tensao']);
+        // 5. Sanitizar strings (trim e null se vazio)
+        foreach ($stringFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field])) {
+                $data[$field] = trim($data[$field]);
+                // Reforça a conversão para null (já feita no passo 1, mas mantido por segurança)
+                if ($data[$field] === '') {
+                    $data[$field] = null;
+                }
+            }
         }
 
         return $data;
