@@ -27,44 +27,42 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 <script>
     const CONFIG = {
         // Listas indexadas (mantêm json_encode normal)
-        motorizacoes: <?= json_encode(motorizacoes_list()) ?>,
-        assentos: <?= json_encode(assentos_list()) ?>,
-        marchas: <?= json_encode(marchas_list()) ?>,
+        motorizacoes:    <?= json_encode(motorizacoes_list()) ?>,
+        assentos:        <?= json_encode(assentos_list()) ?>,
+        marchas:         <?= json_encode(marchas_list()) ?>,
         gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
         gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
 
         // Listas associativas que NÃO são usadas em setupMotorOutro (mantêm json_encode normal)
-        regrasHibrido: <?= json_encode(regras_hibrido()) ?>,
-        cores: <?= json_encode(cores_list()) ?>,
-        portas: <?= json_encode(portas_list()) ?>,
-        combustiveis: <?= json_encode(combustiveis_list()) ?>,
-        aspiracao: <?= json_encode(aspiracao_list()) ?>,
-        tracao: <?= json_encode(tracao_list()) ?>,
-        transmissoes: <?= json_encode(transmissoes_list()) ?>,
-        gnv_sistemas: <?= json_encode(gnv_sistemas_list()) ?>,
-        gnv_geracoes: <?= json_encode(gnv_geracoes_list()) ?>,
-        tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
+        regrasHibrido:  <?= json_encode(regras_hibrido()) ?>,
+        cores:          <?= json_encode(cores_list()) ?>,
+        portas:         <?= json_encode(portas_list()) ?>,
+        combustiveis:   <?= json_encode(combustiveis_list()) ?>,
+        aspiracao:      <?= json_encode(aspiracao_list()) ?>,
+        tracao:         <?= json_encode(tracao_list()) ?>,
+        transmissoes:   <?= json_encode(transmissoes_list()) ?>,
+        gnv_sistemas:   <?= json_encode(gnv_sistemas_list()) ?>,
+        gnv_geracoes:   <?= json_encode(gnv_geracoes_list()) ?>,
+        tipos_hibrido:  <?= json_encode(tipos_hibrido_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
         status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
-        tipos_direcao: <?= json_encode(tipos_direcao_list()) ?>,
-        tipos_roda: <?= json_encode(tipos_roda_list()) ?>,
-        tipos_freio: <?= json_encode(tipos_freio_list()) ?>,
+        tipos_direcao:  <?= json_encode(tipos_direcao_list()) ?>,
+        tipos_roda:     <?= json_encode(tipos_roda_list()) ?>,
+        tipos_freio:    <?= json_encode(tipos_freio_list()) ?>,
 
         // Listas associativas usadas em setupMotorOutro (devem ser convertidas para chaves)
-        gnv_materiais: <?= json_encode(array_keys(gnv_materiais_list())) ?>,
-        gnv_localizacoes: <?= json_encode(array_keys(gnv_localizacoes_list())) ?>,
+        gnv_materiais:           <?= json_encode(array_keys(gnv_materiais_list())) ?>,
+        gnv_localizacoes:        <?= json_encode(array_keys(gnv_localizacoes_list())) ?>,
         conectores_eletricos_dc: <?= json_encode(array_keys(conectores_eletricos_dc_list())) ?>,
         conectores_eletricos_ac: <?= json_encode(array_keys(conectores_eletricos_ac_list())) ?>,
-        conectores_hibridos_dc: <?= json_encode(array_keys(conectores_hibridos_dc_list())) ?>,
-        conectores_hibridos_ac: <?= json_encode(array_keys(conectores_hibridos_ac_list())) ?>,
-        baterias_tipos_hibrido: <?= json_encode(array_keys(baterias_tipos_hibrido_list())) ?>,
-        baterias_tipos_bev: <?= json_encode(array_keys(baterias_tipos_bev_list())) ?>,
-        carrocerias: <?= json_encode(array_keys(carrocerias_list())) ?>,
-        tensoes_hibridos: <?= json_encode(array_keys(sistema_eletrico_tensoes_list())) ?>,
-        tensoes_eletricos: <?= json_encode(array_keys(sistema_eletrico_tensoes_bev_list())) ?>,
-
-        // aros_pneu: chaves numéricas convertidas para string
-        aros_pneu: <?= json_encode(array_map('strval', array_keys(aros_pneu_list()))) ?>,
+        conectores_hibridos_dc:  <?= json_encode(array_keys(conectores_hibridos_dc_list())) ?>,
+        conectores_hibridos_ac:  <?= json_encode(array_keys(conectores_hibridos_ac_list())) ?>,
+        baterias_tipos_hibrido:  <?= json_encode(array_keys(baterias_tipos_hibrido_list())) ?>,
+        baterias_tipos_bev:      <?= json_encode(array_keys(baterias_tipos_bev_list())) ?>,
+        carrocerias:             <?= json_encode(array_keys(carrocerias_list())) ?>,
+        tensoes_hibridos:        <?= json_encode(array_keys(sistema_eletrico_tensoes_list())) ?>,
+        tensoes_eletricos:       <?= json_encode(array_keys(sistema_eletrico_tensoes_bev_list())) ?>,
+        aros_pneu:               <?= json_encode(array_map('strval', array_keys(aros_pneu_list()))) ?>
     };
 </script>
 
@@ -3716,12 +3714,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             };
             const gnvField = document.querySelector('.gnv-field');
 
-            // 2. Oculta todas as seções e desabilita seus campos
+            // 2. Oculta todas as seções e desabilita seus campos (removendo required)
             Object.values(secoes).forEach(secao => {
                 if (secao) {
                     secao.style.display = 'none';
-                    // Desabilita todos os campos (input, select, textarea) dentro da seção
-                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = true);
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => {
+                        campo.disabled = true;
+                        campo.removeAttribute('required');
+                    });
                 }
             });
 
@@ -3736,12 +3736,17 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 const secao = secoes.combustao;
                 if (secao) {
                     secao.style.display = 'block';
-                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => {
+                        campo.disabled = false;
+                        // Se o campo originalmente tem required (atributo data-required), adiciona de volta
+                        if (campo.dataset.required === 'true' || campo.hasAttribute('required')) {
+                            campo.setAttribute('required', 'required');
+                        }
+                    });
                     // Exibe o campo GNV (checkbox) e chama toggleGNV para ajustar o bloco
                     if (gnvField) {
                         gnvField.style.display = 'block';
-                        // O toggleGNV será chamado após a inicialização; mas já deixamos o bloco conforme o checkbox
-                        toggleGNV(); // chamamos para garantir sincronia
+                        toggleGNV();
                     }
                     toggleFlexFields();
                 }
@@ -3749,17 +3754,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 const secao = secoes.eletrico;
                 if (secao) {
                     secao.style.display = 'block';
-                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => {
+                        campo.disabled = false;
+                        if (campo.dataset.required === 'true' || campo.hasAttribute('required')) {
+                            campo.setAttribute('required', 'required');
+                        }
+                    });
                 }
             } else if (tipo === 'hibrido') {
                 const secao = secoes.hibrido;
                 if (secao) {
                     secao.style.display = 'block';
-                    secao.querySelectorAll('input, select, textarea').forEach(campo => campo.disabled = false);
+                    secao.querySelectorAll('input, select, textarea').forEach(campo => {
+                        campo.disabled = false;
+                        if (campo.dataset.required === 'true' || campo.hasAttribute('required')) {
+                            campo.setAttribute('required', 'required');
+                        }
+                    });
                 }
             }
         }
-
+        
         // =============================================
         // 4. FUNÇÕES GENÉRICAS PARA "OUTRO" (MOTORIZAÇÃO)
         // =============================================
@@ -3862,6 +3877,14 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                 gnvBloco.style.display = isChecked ? 'block' : 'none';
                 gnvBloco.querySelectorAll('input, select, textarea').forEach(campo => {
                     campo.disabled = !isChecked;
+                    if (isChecked) {
+                        // Se o campo originalmente tem required, adiciona de volta
+                        if (campo.dataset.required === 'true' || campo.hasAttribute('required')) {
+                            campo.setAttribute('required', 'required');
+                        }
+                    } else {
+                        campo.removeAttribute('required');
+                    }
                 });
             }
         }
@@ -3881,6 +3904,40 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
+                const form = document.getElementById('veiculoForm');
+const invalidFields = [];
+
+// Itera sobre todos os campos com validação
+form.querySelectorAll('input, select, textarea').forEach(campo => {
+    if (campo.validity && !campo.validity.valid) {
+        const errors = [];
+        const validity = campo.validity;
+        if (validity.valueMissing) errors.push('valueMissing (vazio)');
+        if (validity.typeMismatch) errors.push('typeMismatch (tipo inválido)');
+        if (validity.patternMismatch) errors.push('patternMismatch (padrão inválido)');
+        if (validity.tooLong) errors.push('tooLong (muito longo)');
+        if (validity.tooShort) errors.push('tooShort (muito curto)');
+        if (validity.rangeUnderflow) errors.push('rangeUnderflow (abaixo do mínimo)');
+        if (validity.rangeOverflow) errors.push('rangeOverflow (acima do máximo)');
+        if (validity.stepMismatch) errors.push('stepMismatch (step inválido)');
+        if (validity.badInput) errors.push('badInput (entrada inválida)');
+        if (validity.customError) errors.push('customError (erro personalizado)');
+        
+        invalidFields.push({
+            nome: campo.name || campo.id || 'sem-nome',
+            tipo: campo.type || campo.tagName,
+            valor: campo.value,
+            erros: errors.join(', ')
+        });
+    }
+});
+
+console.log('Campos inválidos:', invalidFields);
+if (invalidFields.length === 0) {
+    console.log('Nenhum campo inválido encontrado!');
+} else {
+    console.log('Total de campos inválidos:', invalidFields.length);
+}
                 // 1. Processa campos "Outro" (copia valores para submissão)
                 prepareSubmit('motor_tipo', 'motor_tipo_outro');
                 prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro');
