@@ -173,15 +173,14 @@ class VeiculoGNVRequest extends FormRequest
         foreach ($decimalFields as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
                 $value = trim($data[$field]);
-                // Remove pontos de milhar (ex: 1.500 -> 1500)
-                $value = str_replace('.', '', $value);
-                // Converte vírgula para ponto (ex: 12,5 -> 12.5)
+                // Converte vírgula para ponto (caso venha do front)
                 $value = str_replace(',', '.', $value);
+                // Remove caracteres não numéricos (exceto ponto decimal)
+                $value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 if (is_numeric($value)) {
                     $data[$field] = (float) $value;
                 }
             } elseif (isset($data[$field]) && is_numeric($data[$field])) {
-                // Se já for numérico, converte para float
                 $data[$field] = (float) $data[$field];
             }
         }
