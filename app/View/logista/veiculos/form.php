@@ -26,38 +26,45 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
 <script>
     const CONFIG = {
+        // Listas indexadas (mantêm json_encode normal)
         motorizacoes: <?= json_encode(motorizacoes_list()) ?>,
+        assentos: <?= json_encode(assentos_list()) ?>,
+        marchas: <?= json_encode(marchas_list()) ?>,
+        gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
+        gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
+
+        // Listas associativas que NÃO são usadas em setupMotorOutro (mantêm json_encode normal)
         regrasHibrido: <?= json_encode(regras_hibrido()) ?>,
         cores: <?= json_encode(cores_list()) ?>,
         portas: <?= json_encode(portas_list()) ?>,
-        assentos: <?= json_encode(assentos_list()) ?>,
         combustiveis: <?= json_encode(combustiveis_list()) ?>,
         aspiracao: <?= json_encode(aspiracao_list()) ?>,
         tracao: <?= json_encode(tracao_list()) ?>,
         transmissoes: <?= json_encode(transmissoes_list()) ?>,
-        marchas: <?= json_encode(marchas_list()) ?>,
         gnv_sistemas: <?= json_encode(gnv_sistemas_list()) ?>,
         gnv_geracoes: <?= json_encode(gnv_geracoes_list()) ?>,
-        gnv_materiais: <?= json_encode(gnv_materiais_list()) ?>,
-        gnv_localizacoes: <?= json_encode(gnv_localizacoes_list()) ?>,
-        gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
-        gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
-        conectores_eletricos_dc: <?= json_encode(conectores_eletricos_dc_list()) ?>,
-        conectores_eletricos_ac: <?= json_encode(conectores_eletricos_ac_list()) ?>,
-        conectores_hibridos_dc: <?= json_encode(conectores_hibridos_dc_list()) ?>,
-        conectores_hibridos_ac: <?= json_encode(conectores_hibridos_ac_list()) ?>,
         tipos_hibrido: <?= json_encode(tipos_hibrido_list()) ?>,
-        baterias_tipos_hibrido: <?= json_encode(baterias_tipos_hibrido_list()) ?>,
-        baterias_tipos_bev: <?= json_encode(baterias_tipos_bev_list()) ?>,
         status_estoque: <?= json_encode(status_estoque_list()) ?>,
         status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
-        carrocerias: <?= json_encode(carrocerias_list()) ?>,
         tipos_direcao: <?= json_encode(tipos_direcao_list()) ?>,
         tipos_roda: <?= json_encode(tipos_roda_list()) ?>,
         tipos_freio: <?= json_encode(tipos_freio_list()) ?>,
-        aros_pneu: <?= json_encode(aros_pneu_list()) ?>,
-        tensoes_hibridos: <?= json_encode(sistema_eletrico_tensoes_list()) ?>,
-        tensoes_eletricos: <?= json_encode(sistema_eletrico_tensoes_bev_list()) ?>
+
+        // Listas associativas usadas em setupMotorOutro (devem ser convertidas para chaves)
+        gnv_materiais: <?= json_encode(array_keys(gnv_materiais_list())) ?>,
+        gnv_localizacoes: <?= json_encode(array_keys(gnv_localizacoes_list())) ?>,
+        conectores_eletricos_dc: <?= json_encode(array_keys(conectores_eletricos_dc_list())) ?>,
+        conectores_eletricos_ac: <?= json_encode(array_keys(conectores_eletricos_ac_list())) ?>,
+        conectores_hibridos_dc: <?= json_encode(array_keys(conectores_hibridos_dc_list())) ?>,
+        conectores_hibridos_ac: <?= json_encode(array_keys(conectores_hibridos_ac_list())) ?>,
+        baterias_tipos_hibrido: <?= json_encode(array_keys(baterias_tipos_hibrido_list())) ?>,
+        baterias_tipos_bev: <?= json_encode(array_keys(baterias_tipos_bev_list())) ?>,
+        carrocerias: <?= json_encode(array_keys(carrocerias_list())) ?>,
+        tensoes_hibridos: <?= json_encode(array_keys(sistema_eletrico_tensoes_list())) ?>,
+        tensoes_eletricos: <?= json_encode(array_keys(sistema_eletrico_tensoes_bev_list())) ?>,
+
+        // aros_pneu: chaves numéricas convertidas para string
+        aros_pneu: <?= json_encode(array_map('strval', array_keys(aros_pneu_list()))) ?>,
     };
 </script>
 
@@ -345,7 +352,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="7" name="quilometragem" id="quilometragem" class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>" 
                                    placeholder="Ex: 90.000" required>
                             <span class="input-group-text">km</span>
@@ -741,9 +748,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         </option>
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>                                <?php if (isset($errors['material_cilindro'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['material_cilindro']) ?></div>
-                                <?php endif; ?>
+                                </select>                                
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="material_cilindro_outro" id="material_cilindro_outro" class="form-control mt-2 <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
@@ -988,7 +993,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="5" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
                             <span class="input-group-text">mm</span>
 
@@ -1011,7 +1016,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" placeholder="Ex: 1800">
                             <span class="input-group-text">mm</span>
 
@@ -1034,7 +1039,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
                             <span class="input-group-text">mm</span>
 
@@ -1057,7 +1062,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="altura_solo_mm" id="altura_solo_mm" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="3" name="altura_solo_mm" id="altura_solo_mm" 
                                    class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>" 
                                    placeholder="Ex: 180">
@@ -1082,7 +1087,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                                    value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" placeholder="Ex: 2600">
                             <span class="input-group-text">mm</span>
 
@@ -1308,9 +1313,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O combustível é obrigatório.
                             </div>
-                            <?php if (isset($errors['combustivel'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['combustivel']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Aspiração -->
@@ -1336,9 +1338,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 Selecione um tipo de aspiração válido.
                             </div>
-                            <?php if (isset($errors['aspiracao'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aspiracao']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Motorização (cilindrada) -->
@@ -1362,9 +1361,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-                            <?php if (isset($errors['motor_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_tipo']) ?></div>
-                            <?php endif; ?>
                             
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
@@ -1405,9 +1401,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O tipo de tração é obrigatório.
                             </div>
-                            <?php if (isset($errors['tracao_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['tracao_tipo']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Tipo de Transmissão (Combustão) -->
@@ -1433,9 +1426,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O tipo de transmissão é obrigatório.
                             </div>
-                            <?php if (isset($errors['transmissao_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Número de Marchas -->
@@ -1461,9 +1451,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O número de marchas é obrigatório.
                             </div>
-                            <?php if (isset($errors['numero_marchas'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['numero_marchas']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== MOTOR ===== -->
@@ -1516,9 +1503,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 18.5" min="0">
                                 <span class="input-group-text">kgfm</span>
                             </div>
-                            <?php if (isset($errors['torque_kgfm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_kgfm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Regime Potência (RPM) -->
@@ -1594,9 +1578,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 8.5" min="0">
                                 <span class="input-group-text">s</span>
                             </div>
-                            <?php if (isset($errors['aceleracao_0_100_seg'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Velocidade Máxima -->
@@ -1651,9 +1632,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     O consumo na cidade é obrigatório.
                                 </div>
                             </div>  
-                            <?php if (isset($errors['consumo_cidade_kml'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Consumo Estrada -->
@@ -1678,9 +1656,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     O consumo na estrada é obrigatório.
                                 </div>
                             </div>
-                            <?php if (isset($errors['consumo_estrada_kml'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Consumo Médio -->
@@ -1702,9 +1677,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 13.5" min="0">
                                 <span class="input-group-text">km/l</span>
                             </div>
-                            <?php if (isset($errors['consumo_medio_kml'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_kml']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Capacidade Tanque -->
@@ -1787,9 +1759,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 16.8" min="0">
                                         <span class="input-group-text">kgfm</span>
                                     </div>
-                                    <?php if (isset($errors['torque_etanol_kgfm'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_etanol_kgfm']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Consumo Cidade Etanol -->
@@ -1814,9 +1783,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             O consumo na cidade para etanol é obrigatório.
                                         </div>
                                     </div>
-                                    <?php if (isset($errors['consumo_cidade_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Consumo Estrada Etanol -->
@@ -1841,9 +1807,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             O consumo na estrada para etanol é obrigatório.
                                         </div>
                                     </div>
-                                    <?php if (isset($errors['consumo_estrada_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Consumo Médio Etanol -->
@@ -1865,9 +1828,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 9.5" min="0">
                                         <span class="input-group-text">km/l</span>
                                     </div>
-                                    <?php if (isset($errors['consumo_medio_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                             </div>
@@ -1913,9 +1873,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O tipo de tração é obrigatório.
                             </div>
-                            <?php if (isset($errors['tracao_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Tipo de Transmissão -->
@@ -1941,9 +1898,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 O tipo de transmissão é obrigatório.
                             </div>
-                            <?php if (isset($errors['transmissao_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== MOTOR ===== -->
@@ -2000,9 +1954,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 250" min="0">
                                 <span class="input-group-text">Nm</span>
                             </div>
-                            <?php if (isset($errors['torque_max_nm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_max_nm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Torque Máximo (kgfm) -->
@@ -2024,9 +1975,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 25.5" min="0">
                                 <span class="input-group-text">kgfm</span>
                             </div>
-                            <?php if (isset($errors['torque_max_kgfm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_max_kgfm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== DESEMPENHO ===== -->
@@ -2054,9 +2002,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 6.5" min="0">
                                 <span class="input-group-text">s</span>
                             </div>
-                            <?php if (isset($errors['aceleracao_0_100_seg'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aceleracao_0_100_seg']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Velocidade Máxima -->
@@ -2111,10 +2056,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-    
-                            <?php if (isset($errors['bateria_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
-                            <?php endif; ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
@@ -2149,10 +2090,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <option value="outro" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
 
-                            <?php if (isset($errors['sistema_eletrico_tensao'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['sistema_eletrico_tensao']) ?></div>
-                            <?php endif; ?>
-
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_eletrico" 
                                    class="form-control mt-2 <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>" 
@@ -2186,9 +2123,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     A capacidade líquida é obrigatória.
                                 </div>
                             </div>
-                            <?php if (isset($errors['capacidade_liquida_kwh'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['capacidade_liquida_kwh']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Saúde da Bateria -->
@@ -2210,9 +2144,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 92.5" min="0" max="100">
                                 <span class="input-group-text">%</span>
                             </div>
-                            <?php if (isset($errors['saude_bateria_soh'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['saude_bateria_soh']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Garantia da Bateria -->
@@ -2233,9 +2164,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        value="<?= htmlspecialchars($old['garantia_bateria'] ?? $complemento['garantia_bateria'] ?? '') ?>" 
                                        placeholder="Ex: 8 anos / 160.000 km" maxlength="40">
                             </div>
-                            <?php if (isset($errors['garantia_bateria'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['garantia_bateria']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== AUTONOMIAS ===== -->
@@ -2316,9 +2244,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 14.5" min="0">
                                     <span class="input-group-text">kWh/100km</span>
                                 </div>
-                                <?php if (isset($errors['consumo_energetico_kwh_100km'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_energetico_kwh_100km']) ?></div>
-                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -2351,9 +2276,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         A potência máxima DC é obrigatória.
                                     </div>
                                 </div>
-                                <?php if (isset($errors['potencia_max_dc_kw'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_dc_kw']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Tipo de Conector DC -->
@@ -2377,9 +2299,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
-                                <?php if (isset($errors['tipo_conector_dc'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_dc']) ?></div>
-                                <?php endif; ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="tipo_conector_dc_outro" id="tipo_conector_dc_outro" 
@@ -2439,9 +2358,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         A potência máxima AC deve ser um número válido.
                                     </div>
                                 </div>
-                                <?php if (isset($errors['potencia_max_ac_kw'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['potencia_max_ac_kw']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Tipo de Conector AC -->
@@ -2465,9 +2381,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <?php endforeach; ?>
                                     <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
-                                <?php if (isset($errors['tipo_conector_ac'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tipo_conector_ac']) ?></div>
-                                <?php endif; ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="tipo_conector_ac_outro" id="tipo_conector_ac_outro" 
@@ -2499,9 +2412,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         O tempo de carga AC deve ser um número válido.
                                     </div>
                                 </div>
-                                <?php if (isset($errors['tempo_carga_ac_horas'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['tempo_carga_ac_horas']) ?></div>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -2536,9 +2446,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <?php if (isset($errors['tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['tipo']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O tipo de híbrido é obrigatório.
                             </div>
@@ -2561,9 +2469,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <option value="1" <?= selected($old['modo_eletrico_puro'] ?? $complemento['modo_eletrico_puro'] ?? '', 1) ?>>Sim</option>
                                 <option value="0" <?= selected($old['modo_eletrico_puro'] ?? $complemento['modo_eletrico_puro'] ?? '', 0) ?>>Não</option>
                             </select>
-                            <?php if (isset($errors['modo_eletrico_puro'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['modo_eletrico_puro']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O modo elétrico puro é obrigatório.
                             </div>
@@ -2595,9 +2501,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <?php if (isset($errors['combustivel'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['combustivel']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O tipo de combustível é obrigatório.
                             </div>
@@ -2626,9 +2530,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="invalid-feedback">
                                 Selecione um tipo de aspiração válido.
                             </div>
-                            <?php if (isset($errors['aspiracao'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['aspiracao']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Motorização -->
@@ -2652,9 +2553,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-                            <?php if (isset($errors['motor_combustao_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['motor_combustao_tipo']) ?></div>
-                            <?php endif; ?>
                             
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="motor_combustao_tipo_outro" id="motor_combustao_tipo_outro" class="form-control mt-2 <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
@@ -2714,9 +2612,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 18.5" min="0">
                                 <span class="input-group-text">kgfm</span>
                             </div>
-                            <?php if (isset($errors['motor_combustao_torque_kgfm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_combustao_torque_kgfm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== MOTOR ELÉTRICO ===== -->
@@ -2772,9 +2667,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 15.0" min="0">
                                 <span class="input-group-text">kgfm</span>
                             </div>
-                            <?php if (isset($errors['motor_eletrico_torque_kgfm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['motor_eletrico_torque_kgfm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== POTÊNCIA COMBINADA ===== -->
@@ -2830,9 +2722,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        placeholder="Ex: 25.0" min="0">
                                 <span class="input-group-text">kgfm</span>
                             </div>
-                            <?php if (isset($errors['torque_combinado_kgfm'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['torque_combinado_kgfm']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== TRAÇÃO E TRANSMISSÃO ===== -->
@@ -2860,9 +2749,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <option value="integral" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', 'integral') ?>>Integral</option>
                                 <option value="4x4" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', '4x4') ?>>4x4</option>
                             </select>
-                            <?php if (isset($errors['tracao_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['tracao_tipo']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O tipo de tração é obrigatório.
                             </div>
@@ -2888,9 +2775,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <?php if (isset($errors['transmissao_tipo'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['transmissao_tipo']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O tipo de transmissão é obrigatório.
                             </div>
@@ -2916,9 +2801,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <?php if (isset($errors['numero_marchas'])): ?>
-                                <div class="invalid-feedback"><?= implode(', ', $errors['numero_marchas']) ?></div>
-                            <?php endif; ?>
+
                             <div class="invalid-feedback">
                                 O número de marchas é obrigatório.
                             </div>
@@ -2952,9 +2835,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     A capacidade líquida é obrigatória.
                                 </div>
                             </div>
-                            <?php if (isset($errors['bateria_capacidade_kwh'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_capacidade_kwh']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- Tipo de Bateria -->
@@ -2978,10 +2858,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-                            
-                            <?php if (isset($errors['bateria_tipo'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_tipo']) ?></div>
-                            <?php endif; ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro_hibrido" 
@@ -3015,10 +2891,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <?php endforeach; ?>
                                 <option value="outro" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', 'outro') ?>>Outro (digitar)</option>
                             </select>
-                            
-                            <?php if (isset($errors['sistema_eletrico_tensao'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['sistema_eletrico_tensao']) ?></div>
-                            <?php endif; ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_hibrido" 
@@ -3049,9 +2921,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                        value="<?= htmlspecialchars($old['bateria_garantia'] ?? $complemento['bateria_garantia'] ?? '') ?>" 
                                        placeholder="Ex: 8 anos / 160.000 km" maxlength="40">
                             </div>
-                            <?php if (isset($errors['bateria_garantia'])): ?>
-                                <div class="invalid-feedback d-block"><?= implode(', ', $errors['bateria_garantia']) ?></div>
-                            <?php endif; ?>
                         </div>
 
                         <!-- ===== AUTONOMIAS ===== -->
@@ -3139,9 +3008,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <?php endforeach; ?>
                                         <option value="outro" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                     </select>
-                                    <?php if (isset($errors['carregamento_tipo_conector_ac'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tipo_conector_ac']) ?></div>
-                                    <?php endif; ?>
 
                                     <!-- Campo extra para "Outro" -->
                                     <input type="text" name="carregamento_tipo_conector_ac_outro" id="carregamento_tipo_conector_ac_outro" 
@@ -3170,9 +3036,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 7.4" min="0">
                                         <span class="input-group-text">kW</span>
                                     </div>
-                                    <?php if (isset($errors['carregamento_potencia_ac_kw'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_ac_kw']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Tempo AC (horas) -->
@@ -3194,9 +3057,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 4.5" min="0">
                                         <span class="input-group-text">h</span>
                                     </div>
-                                    <?php if (isset($errors['carregamento_tempo_ac_horas'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tempo_ac_horas']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Tipo de Conector DC -->
@@ -3220,9 +3080,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <?php endforeach; ?>
                                         <option value="outro" <?= selected($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                     </select>
-                                    <?php if (isset($errors['carregamento_tipo_conector_dc'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_tipo_conector_dc']) ?></div>
-                                    <?php endif; ?>
 
                                     <!-- Campo extra para "Outro" -->
                                     <input type="text" name="carregamento_tipo_conector_dc_outro" id="carregamento_tipo_conector_dc_outro" 
@@ -3254,9 +3111,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 50" min="0">
                                         <span class="input-group-text">kW</span>
                                     </div>
-                                    <?php if (isset($errors['carregamento_potencia_dc_kw'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['carregamento_potencia_dc_kw']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Tempo de Carga DC -->
@@ -3320,9 +3174,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         O consumo na cidade é obrigatório.
                                     </div>
                                 </div>
-                                <?php if (isset($errors['consumo_cidade_kml'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_kml']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Consumo Estrada -->
@@ -3347,9 +3198,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         O consumo na estrada é obrigatório.
                                     </div>
                                 </div>
-                                <?php if (isset($errors['consumo_estrada_kml'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_kml']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Consumo Médio -->
@@ -3371,9 +3219,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                            placeholder="Ex: 13.5" min="0">
                                     <span class="input-group-text">km/l</span>
                                 </div>
-                                <?php if (isset($errors['consumo_medio_kml'])): ?>
-                                    <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_kml']) ?></div>
-                                <?php endif; ?>
                             </div>
 
                             <!-- Capacidade Tanque -->
@@ -3433,9 +3278,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             O consumo na cidade para etanol é obrigatório.
                                         </div>
                                     </div>
-                                    <?php if (isset($errors['consumo_cidade_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_cidade_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Consumo Estrada Etanol -->
@@ -3460,9 +3302,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             O consumo na estrada para etanol é obrigatório.
                                         </div>
                                     </div>
-                                    <?php if (isset($errors['consumo_estrada_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_estrada_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Consumo Médio Etanol -->
@@ -3484,9 +3323,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                                placeholder="Ex: 9.5" min="0">
                                         <span class="input-group-text">km/l</span>
                                     </div>
-                                    <?php if (isset($errors['consumo_medio_etanol_kml'])): ?>
-                                        <div class="invalid-feedback d-block"><?= implode(', ', $errors['consumo_medio_etanol_kml']) ?></div>
-                                    <?php endif; ?>
                                 </div>
 
                             </div>
@@ -3641,6 +3477,40 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // =============================================
+        // 3. CONTROLE DE CAMPOS FLEX (etanol)
+        // =============================================
+        const combustivelSelect = document.getElementById('combustivel');
+        const flexFields = document.querySelector('.flex-fields');
+        const flexRequired = document.querySelectorAll('.flex-required');
+
+        function toggleFlexFields() {
+            if (!flexFields) return;
+            const isFlex = combustivelSelect && combustivelSelect.value === 'flex';
+            flexFields.style.display = isFlex ? 'block' : 'none';
+            
+            // Habilita ou desabilita todos os campos dentro da div .flex-fields
+            const inputs = flexFields.querySelectorAll('input, select, textarea');
+            inputs.forEach(el => {
+                el.disabled = !isFlex;
+            });
+
+            flexRequired.forEach(el => {
+                el.style.display = isFlex ? 'inline' : 'none';
+            });
+
+            const tituloGasolina = document.getElementById('titulo-gasolina');
+            if (tituloGasolina) {
+                tituloGasolina.style.display = isFlex ? 'block' : 'none';
+            }
+        }
+
+        if (combustivelSelect) {
+            combustivelSelect.addEventListener('change', toggleFlexFields);
+            toggleFlexFields();
+        }
+        
         // =============================================
         // 0. INICIALIZAÇÃO DOS BADGES E MODAL DE CATEGORIA
         // =============================================
@@ -3891,39 +3761,6 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         }
 
         // =============================================
-        // 3. CONTROLE DE CAMPOS FLEX (etanol)
-        // =============================================
-        const combustivelSelect = document.getElementById('combustivel');
-        const flexFields = document.querySelector('.flex-fields');
-        const flexRequired = document.querySelectorAll('.flex-required');
-
-        function toggleFlexFields() {
-            if (!flexFields) return;
-            const isFlex = combustivelSelect && combustivelSelect.value === 'flex';
-            flexFields.style.display = isFlex ? 'block' : 'none';
-            
-            // Habilita ou desabilita todos os campos dentro da div .flex-fields
-            const inputs = flexFields.querySelectorAll('input, select, textarea');
-            inputs.forEach(el => {
-                el.disabled = !isFlex;
-            });
-
-            flexRequired.forEach(el => {
-                el.style.display = isFlex ? 'inline' : 'none';
-            });
-
-            const tituloGasolina = document.getElementById('titulo-gasolina');
-            if (tituloGasolina) {
-                tituloGasolina.style.display = isFlex ? 'block' : 'none';
-            }
-        }
-
-        if (combustivelSelect) {
-            combustivelSelect.addEventListener('change', toggleFlexFields);
-            toggleFlexFields();
-        }
-
-        // =============================================
         // 4. FUNÇÕES GENÉRICAS PARA "OUTRO" (MOTORIZAÇÃO)
         // =============================================
         /**
@@ -4015,23 +3852,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         // =============================================
         // 5. VALIDAÇÃO DE GNV (exibe campos extras)
         // =============================================
-        const gnvCheckbox = document.getElementById('gnv_instalado');
-        const gnvBloco = document.getElementById('bloco-gnv');
 
-        if (gnvCheckbox && gnvBloco) {
-            function toggleGNV() {
+        // Declaração da função (disponível em todo o escopo)
+        function toggleGNV() {
+            const gnvCheckbox = document.getElementById('gnv_instalado');
+            const gnvBloco = document.getElementById('bloco-gnv');
+            if (gnvCheckbox && gnvBloco) {
                 const isChecked = gnvCheckbox.checked;
-                // Exibe ou oculta o bloco
                 gnvBloco.style.display = isChecked ? 'block' : 'none';
-                
-                // Habilita ou desabilita todos os campos dentro do bloco GNV
                 gnvBloco.querySelectorAll('input, select, textarea').forEach(campo => {
                     campo.disabled = !isChecked;
                 });
             }
+        }
+
+        // Configuração do evento e inicialização
+        const gnvCheckbox = document.getElementById('gnv_instalado');
+        const gnvBloco = document.getElementById('bloco-gnv');
+
+        if (gnvCheckbox && gnvBloco) {
             gnvCheckbox.addEventListener('change', toggleGNV);
-            // Executa na inicialização (para edição)
-            toggleGNV();
+            toggleGNV(); // executa na inicialização
         }
 
         // =============================================
