@@ -97,6 +97,26 @@ class VeiculoService
                 return false;
             }
 
+            // 2.5 Limpa campos de etanol se o veículo for combustão ou híbrido e NÃO for flex
+            if (isset($dados['combustivel']) && $dados['combustivel'] !== 'flex') {
+                if ($tipoVeiculo === self::TIPO_COMBUSTAO) {
+                    unset(
+                        $dados['potencia_etanol_cv'],
+                        $dados['torque_etanol_kgfm'],
+                        $dados['consumo_cidade_etanol_kml'],
+                        $dados['consumo_estrada_etanol_kml'],
+                        $dados['consumo_medio_etanol_kml']
+                    );
+                }
+                if ($tipoVeiculo === self::TIPO_HIBRIDO) {
+                    unset(
+                        $dados['consumo_cidade_etanol_kml'],
+                        $dados['consumo_estrada_etanol_kml'],
+                        $dados['consumo_medio_etanol_kml']
+                    );
+                }
+            }
+
             // 3. Salva GNV se aplicável
             if (!empty($dados['gnv_instalado'])) {
                 $gnvSalvo = $this->salvarGNV($veiculoId, $dados);
@@ -197,6 +217,26 @@ class VeiculoService
                     $this->pdo->rollBack();
                     $this->logger->error('Falha ao deletar complemento antigo', ['veiculo_id' => $veiculoId, 'tipo' => $tipoAtual]);
                     return false;
+                }
+            }
+
+            // 2.5 Limpa campos de etanol se o veículo for combustão ou híbrido e NÃO for flex
+            if (isset($dados['combustivel']) && $dados['combustivel'] !== 'flex') {
+                if ($tipoVeiculo === self::TIPO_COMBUSTAO) {
+                    unset(
+                        $dados['potencia_etanol_cv'],
+                        $dados['torque_etanol_kgfm'],
+                        $dados['consumo_cidade_etanol_kml'],
+                        $dados['consumo_estrada_etanol_kml'],
+                        $dados['consumo_medio_etanol_kml']
+                    );
+                }
+                if ($tipoVeiculo === self::TIPO_HIBRIDO) {
+                    unset(
+                        $dados['consumo_cidade_etanol_kml'],
+                        $dados['consumo_estrada_etanol_kml'],
+                        $dados['consumo_medio_etanol_kml']
+                    );
                 }
             }
 
