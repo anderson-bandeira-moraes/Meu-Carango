@@ -569,7 +569,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="tipo_sistema" id="tipo_sistema" class="form-select <?= isset($errors['tipo_sistema']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_sistemas_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['tipo_sistema'] ?? $complemento['tipo_sistema'] ?? '', $value) ?>>
+                                        <option value="<?= $value ?>" <?= selected($old['tipo_sistema'] ?? $gnv['tipo_sistema'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -594,7 +594,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_geracoes_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $complemento['geracao_kit'] ?? '', $value) ?>>
+                                        <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $gnv['geracao_kit'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -617,7 +617,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </button>
                                 </div>
                                 <input placeholder="Ex: Landirenzo, Lovato, BRC" type="text" name="marca_kit" id="marca_kit" class="form-control <?= isset($errors['marca_kit']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['marca_kit'] ?? $complemento['marca_kit'] ?? '') ?>" maxlength="40">
+                                       value="<?= htmlspecialchars($old['marca_kit'] ?? $gnv['marca_kit'] ?? '') ?>" maxlength="40">
                             </div>
 
                             <!-- Data de Instalação -->
@@ -633,7 +633,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </button>
                                 </div>
                                 <input type="date" name="data_instalacao" id="data_instalacao" class="form-control <?= isset($errors['data_instalacao']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['data_instalacao'] ?? $complemento['data_instalacao'] ?? '') ?>">
+                                       value="<?= htmlspecialchars($old['data_instalacao'] ?? $gnv['data_instalacao'] ?? '') ?>">
                             </div>
 
                             <!-- Data da Última Inspeção -->
@@ -649,7 +649,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </button>
                                 </div>
                                 <input type="date" name="data_inspecao" id="data_inspecao" class="form-control <?= isset($errors['data_inspecao']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['data_inspecao'] ?? $complemento['data_inspecao'] ?? '') ?>">
+                                       value="<?= htmlspecialchars($old['data_inspecao'] ?? $gnv['data_inspecao'] ?? '') ?>">
                             </div>
 
                             <!-- Validade do Cilindro -->
@@ -665,7 +665,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     </button>
                                 </div>
                                 <input type="date" name="data_validade_cilindro" id="data_validade_cilindro" class="form-control <?= isset($errors['data_validade_cilindro']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $complemento['data_validade_cilindro'] ?? '') ?>">
+                                       value="<?= htmlspecialchars($old['data_validade_cilindro'] ?? $gnv['data_validade_cilindro'] ?? '') ?>">
                             </div>
 
                             <!-- Capacidade -->
@@ -683,18 +683,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_capacidades_list() as $valor): ?>
-                                        <option value="<?= $valor ?>" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', $valor) ?>>
+                                        <option value="<?= $valor ?>" <?= selected($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '', $valor) ?>>
                                             <?= number_format($valor, 1, ',', '') ?> m³
                                         </option>
                                     <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="number" step="any" inputmode="decimal" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['capacidade_cilindro_m3_outro'] ?? '') ?>" 
                                        placeholder="Digite a capacidade em m³" 
-                                       style="display: <?= ($old['capacidade_cilindro_m3'] ?? $complemento['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
+                                       style="display: <?= ($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
                                        min="0">
                                 <div class="invalid-feedback">
                                     A capacidade é obrigatória.
@@ -716,7 +716,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_quantidades_list() as $valor): ?>
-                                        <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $complemento['quantidade_cilindros'] ?? '', $valor) ?>>
+                                        <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $gnv['quantidade_cilindros'] ?? '', $valor) ?>>
                                             <?= $valor ?> cilindro<?= $valor > 1 ? 's' : '' ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -741,18 +741,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="material_cilindro" id="material_cilindro" class="form-select <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>">
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_materiais_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', $value) ?>>
+                                        <option value="<?= $value ?>" <?= selected($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
                                     <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    <option value="outro" <?= selected($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>                                
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="material_cilindro_outro" id="material_cilindro_outro" class="form-control mt-2 <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['material_cilindro_outro'] ?? '') ?>" 
                                        placeholder="Digite o material personalizado" 
-                                       style="display: <?= ($old['material_cilindro'] ?? $complemento['material_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= ($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                             </div>
 
                             <!-- Localização Cilindro -->
@@ -770,18 +770,18 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" required>
                                     <option value="">Selecione</option>
                                     <?php foreach (gnv_localizacoes_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', $value) ?>>
+                                        <option value="<?= $value ?>" <?= selected($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '', $value) ?>>
                                             <?= htmlspecialchars($label) ?>
                                         </option>
                                     <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
+                                    <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
                                 </select>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['localizacao_cilindro_outro'] ?? '') ?>" 
                                        placeholder="Digite a localização personalizada" 
-                                       style="display: <?= ($old['localizacao_cilindro'] ?? $complemento['localizacao_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= ($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
                                 <div class="invalid-feedback">
                                     A localização é obrigatória.
                                 </div>  
@@ -801,7 +801,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <div class="input-group">
                                     <input placeholder="12,5" type="number" step="any" inputmode="decimal" name="consumo_cidade_m3km" id="consumo_cidade_m3km" class="form-control <?= isset($errors['consumo_cidade_m3km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $complemento['consumo_cidade_m3km'] ?? '') ?>" min="0">
+                                           value="<?= htmlspecialchars($old['consumo_cidade_m3km'] ?? $gnv['consumo_cidade_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
                             </div>
@@ -820,7 +820,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <div class="input-group">
                                     <input placeholder="16,6" type="number" step="any" inputmode="decimal" name="consumo_estrada_m3km" id="consumo_estrada_m3km" class="form-control <?= isset($errors['consumo_estrada_m3km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $complemento['consumo_estrada_m3km'] ?? '') ?>" min="0">
+                                           value="<?= htmlspecialchars($old['consumo_estrada_m3km'] ?? $gnv['consumo_estrada_m3km'] ?? '') ?>" min="0">
                                     <span class="input-group-text">km/m³</span>
                                 </div>
                             </div>
@@ -839,7 +839,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <div class="input-group has-validation">
                                     <input placeholder="180" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_media_km" id="autonomia_media_km" class="form-control <?= isset($errors['autonomia_media_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $complemento['autonomia_media_km'] ?? '') ?>">
+                                           value="<?= htmlspecialchars($old['autonomia_media_km'] ?? $gnv['autonomia_media_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
 
                                     <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
@@ -862,7 +862,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>
                                 <div class="input-group has-validation">
                                     <input placeholder="150" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_cidade_km" id="autonomia_cidade_km" class="form-control <?= isset($errors['autonomia_cidade_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $complemento['autonomia_cidade_km'] ?? '') ?>">
+                                           value="<?= htmlspecialchars($old['autonomia_cidade_km'] ?? $gnv['autonomia_cidade_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
 
                                     <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
@@ -885,7 +885,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 </div>                                
                                 <div class="input-group has-validation">
                                     <input placeholder="210" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_estrada_km" id="autonomia_estrada_km" class="form-control <?= isset($errors['autonomia_estrada_km']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $complemento['autonomia_estrada_km'] ?? '') ?>">
+                                           value="<?= htmlspecialchars($old['autonomia_estrada_km'] ?? $gnv['autonomia_estrada_km'] ?? '') ?>">
                                     <span class="input-group-text">km</span>
 
                                     <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
@@ -904,7 +904,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="form-check mt-2">
                                             <input type="hidden" name="possui_csv" value="0">
                                             <input type="checkbox" name="possui_csv" id="possui_csv" class="form-check-input" value="1"
-                                                   <?= ($old['possui_csv'] ?? $complemento['possui_csv'] ?? 0) ? 'checked' : '' ?>>
+                                                   <?= ($old['possui_csv'] ?? $gnv['possui_csv'] ?? 0) ? 'checked' : '' ?>>
                                             <label class="form-check-label" for="possui_csv" style="width: 100%;">
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div>
@@ -929,7 +929,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <div class="form-check mt-2">
                                             <input type="hidden" name="possui_selo_gnv" value="0">
                                             <input type="checkbox" name="possui_selo_gnv" id="possui_selo_gnv" class="form-check-input" value="1"
-                                                   <?= ($old['possui_selo_gnv'] ?? $complemento['possui_selo_gnv'] ?? 0) ? 'checked' : '' ?>>
+                                                   <?= ($old['possui_selo_gnv'] ?? $gnv['possui_selo_gnv'] ?? 0) ? 'checked' : '' ?>>
                                             <label class="form-check-label" for="possui_selo_gnv" style="width: 100%;">
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div>
@@ -957,13 +957,13 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <div class="col-md-6">
                                 <label for="instaladora_certificada" class="form-label">Instaladora Certificada</label>
                                 <input placeholder="Nome da oficina credenciada que instalou o kit" type="text" name="instaladora_certificada" id="instaladora_certificada" class="form-control <?= isset($errors['instaladora_certificada']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['instaladora_certificada'] ?? $complemento['instaladora_certificada'] ?? '') ?>" maxlength="50">
+                                       value="<?= htmlspecialchars($old['instaladora_certificada'] ?? $gnv['instaladora_certificada'] ?? '') ?>" maxlength="50">
                             </div>
 
                             <!-- Observações -->
                             <div class="col-md-6">
                                 <label for="observacoes" class="form-label">Observações</label>
-                                <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="3"><?= htmlspecialchars($old['observacoes'] ?? $complemento['observacoes'] ?? '') ?></textarea>
+                                <textarea placeholder="Observações relevantes sobre o sistema GNV (ex: características específicas do kit, histórico de manutenção)" name="observacoes" id="observacoes" class="form-control <?= isset($errors['observacoes']) ? 'is-invalid' : '' ?>" rows="3"><?= htmlspecialchars($old['observacoes'] ?? $gnv['observacoes'] ?? '') ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -1460,7 +1460,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Potência Máxima -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="potencia_cv" class="form-label mb-0">Potência Máxima <span class="text-danger">*</span></label>
+                                <label for="potencia_cv" class="form-label mb-0">
+                                    Potência Máxima 
+                                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1486,7 +1490,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Torque Máximo -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="torque_kgfm" class="form-label mb-0">Torque Máximo</label>
+                                <label for="torque_kgfm" class="form-label mb-0">
+                                    Torque Máximo
+                                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                </label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1611,7 +1618,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Consumo Cidade -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="consumo_cidade_kml" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                <label for="consumo_cidade_kml" class="form-label mb-0">
+                                    Consumo Cidade 
+                                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1635,7 +1646,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Consumo Estrada -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="consumo_estrada_kml" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                <label for="consumo_estrada_kml" class="form-label mb-0">
+                                    Consumo Estrada 
+                                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1659,7 +1674,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Consumo Médio -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="consumo_medio_kml" class="form-label mb-0">Consumo Médio</label>
+                                <label for="consumo_medio_kml" class="form-label mb-0">
+                                Consumo Médio
+                                <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                            </label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1714,7 +1732,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Potência Etanol -->
                                 <div class="col-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="potencia_etanol_cv" class="form-label mb-0">Potência Máxima Etanol <span class="text-danger flex-required">*</span></label>
+                                        <label for="potencia_etanol_cv" class="form-label mb-0">Potência Máxima (Etanol) <span class="text-danger flex-required">*</span></label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -1741,7 +1759,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Torque Etanol -->
                                 <div class="col-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="torque_etanol_kgfm" class="form-label mb-0">Torque Máxima Etanol</label>
+                                        <label for="torque_etanol_kgfm" class="form-label mb-0">Torque Máximo (Etanol)</label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -1762,7 +1780,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Cidade Etanol -->
                                 <div class="col-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade Etanol <span class="text-danger flex-required">*</span></label>
+                                        <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -1786,7 +1804,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Estrada Etanol -->
                                 <div class="col-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada Etanol <span class="text-danger flex-required">*</span></label>
+                                        <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -1810,7 +1828,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Médio Etanol -->
                                 <div class="col-md-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_medio_etanol_kml" class="form-label mb-0">Consumo Médio</label>
+                                        <label for="consumo_medio_etanol_kml" class="form-label mb-0">Consumo Médio (Etanol)</label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -3153,7 +3171,11 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Consumo Cidade -->
                             <div class="col-md-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="consumo_cidade_kml_hibrido" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                    <label for="consumo_cidade_kml_hibrido" class="form-label mb-0">
+                                        Consumo Cidade 
+                                        <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                        <span class="text-danger">*</span>
+                                    </label>
                                     <button type="button" 
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
@@ -3177,7 +3199,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Consumo Estrada -->
                             <div class="col-md-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="consumo_estrada_kml_hibrido" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                    <label for="consumo_estrada_kml_hibrido" class="form-label mb-0">
+                                        Consumo Estrada 
+                                        <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                        <span class="text-danger">*</span></label>
                                     <button type="button" 
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
@@ -3201,7 +3226,10 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                             <!-- Consumo Médio -->
                             <div class="col-md-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="consumo_medio_kml_hibrido" class="form-label mb-0">Consumo Médio</label>
+                                    <label for="consumo_medio_kml_hibrido" class="form-label mb-0">
+                                        Consumo Médio
+                                        <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                                    </label>
                                     <button type="button" 
                                             class="btn btn-link btn-sm p-0 text-secondary" 
                                             data-bs-toggle="tooltip" 
@@ -3257,7 +3285,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Cidade Etanol -->
                                 <div class="col-md-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_cidade_etanol_kml_hibrido" class="form-label mb-0">Consumo Cidade <span class="text-danger">*</span></label>
+                                        <label for="consumo_cidade_etanol_kml_hibrido" class="form-label mb-0">Consumo Cidade (Etanol) <span class="text-danger">*</span></label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -3281,7 +3309,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Estrada Etanol -->
                                 <div class="col-md-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_estrada_etanol_kml_hibrido" class="form-label mb-0">Consumo Estrada <span class="text-danger">*</span></label>
+                                        <label for="consumo_estrada_etanol_kml_hibrido" class="form-label mb-0">Consumo Estrada (Etanol) <span class="text-danger">*</span></label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -3305,7 +3333,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <!-- Consumo Médio Etanol -->
                                 <div class="col-md-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label for="consumo_medio_etanol_kml_hibrido" class="form-label mb-0">Consumo Médio</label>
+                                        <label for="consumo_medio_etanol_kml_hibrido" class="form-label mb-0">Consumo Médio (Etanol)</label>
                                         <button type="button" 
                                                 class="btn btn-link btn-sm p-0 text-secondary" 
                                                 data-bs-toggle="tooltip" 
@@ -3477,36 +3505,49 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
     document.addEventListener('DOMContentLoaded', function() {
 
         // =============================================
-        // 3. CONTROLE DE CAMPOS FLEX (etanol)
+        // 3. CONTROLE DE CAMPOS FLEX (etanol) + SUFIXO GASOLINA
         // =============================================
         const combustivelSelect = document.getElementById('combustivel');
         const flexFields = document.querySelector('.flex-fields');
         const flexRequired = document.querySelectorAll('.flex-required');
 
+        // Seleciona todos os spans que contêm o sufixo " (Gasolina)"
+        const sufixosGasolina = document.querySelectorAll('.sufixo-gasolina');
+
         function toggleFlexFields() {
             if (!flexFields) return;
             const isFlex = combustivelSelect && combustivelSelect.value === 'flex';
+
+            // 1. Exibe/oculta os campos de etanol
             flexFields.style.display = isFlex ? 'block' : 'none';
-            
-            // Habilita ou desabilita todos os campos dentro da div .flex-fields
+
+            // 2. Habilita/desabilita os campos dentro dos campos flex
             const inputs = flexFields.querySelectorAll('input, select, textarea');
             inputs.forEach(el => {
                 el.disabled = !isFlex;
             });
 
+            // 3. Mostra/oculta o asterisco de obrigatoriedade nos campos flex
             flexRequired.forEach(el => {
                 el.style.display = isFlex ? 'inline' : 'none';
             });
 
+            // 4. Mostra/oculta o título "Dados para Gasolina" (opcional)
             const tituloGasolina = document.getElementById('titulo-gasolina');
             if (tituloGasolina) {
                 tituloGasolina.style.display = isFlex ? 'block' : 'none';
             }
+
+            // 5. Mostra/oculta o sufixo " (Gasolina)" nos labels marcados
+            sufixosGasolina.forEach(el => {
+                el.style.display = isFlex ? 'inline' : 'none';
+            });
         }
 
+        // Inicialização: aplica o estado atual ao carregar a página
         if (combustivelSelect) {
             combustivelSelect.addEventListener('change', toggleFlexFields);
-            toggleFlexFields();
+            toggleFlexFields(); // Executa na carga para ajustar conforme valor inicial
         }
         
         // =============================================
@@ -4145,26 +4186,33 @@ if (invalidFields.length === 0) {
         }
 
         // =============================================
-        // CONTROLE DE EXIBIÇÃO DOS CAMPOS DE CONSUMO PARA ETANOL
+        // CONTROLE DE EXIBIÇÃO DOS CAMPOS DE CONSUMO PARA ETANOL + SUFIXO GASOLINA
         // =============================================
         const combustivelHibrido = document.getElementById('combustivel_hibrido');
         const consumoEtanolContainer = document.getElementById('consumo_etanol_container');
 
+        // NÃO DECLARAR NOVAMENTE - usar a variável global já existente
+        // const sufixosGasolina = document.querySelectorAll('.sufixo-gasolina');  ← REMOVA ESTA LINHA
+
         function toggleConsumoEtanol() {
             if (!combustivelHibrido || !consumoEtanolContainer) return;
             const isFlex = combustivelHibrido.value === 'flex';
+
             consumoEtanolContainer.style.display = isFlex ? 'block' : 'none';
-            
-            // Habilita ou desabilita todos os campos dentro do container
+
             const inputs = consumoEtanolContainer.querySelectorAll('input, select, textarea');
             inputs.forEach(el => {
                 el.disabled = !isFlex;
+            });
+
+            // Usar a variável já declarada na seção de combustão
+            sufixosGasolina.forEach(el => {
+                el.style.display = isFlex ? 'inline' : 'none';
             });
         }
 
         if (combustivelHibrido) {
             combustivelHibrido.addEventListener('change', toggleConsumoEtanol);
-            // Executa na inicialização (para edição)
             toggleConsumoEtanol();
         }
 
