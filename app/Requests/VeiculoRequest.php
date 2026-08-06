@@ -65,7 +65,7 @@ class VeiculoRequest extends FormRequest
             'tipo_roda'            => 'nullable|in:liga_leve,calota',
             'freio_dianteiro'      => 'nullable|in:disco,tambor',
             'freio_traseiro'       => 'nullable|in:disco,tambor',
-            'placa' => 'nullable|max:10|regex:/^[a-zA-Z0-9]+$/',
+            'placa'                => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
 
             // Dimensões (opcionais)
             'comprimento_mm'           => 'nullable|integer|min_num:0',
@@ -128,8 +128,8 @@ class VeiculoRequest extends FormRequest
             'numero_portas.between'   => 'O número de portas deve estar entre :min e :max.',
             'numero_assentos.integer' => 'O número de assentos deve ser um número inteiro.',
             'numero_assentos.between' => 'O número de assentos deve estar entre :min e :max.',
-            'placa.max'   => 'A placa deve ter no máximo :max caracteres.',
-            'placa.regex' => 'A placa deve conter apenas letras e números.',
+            'placa.max'               => 'A placa deve ter no máximo :max caracteres.',
+            'placa.regex'             => 'A placa deve conter apenas letras e números.',
 
             // Dimensões
             'comprimento_mm.integer'            => 'O comprimento deve ser um número inteiro.',

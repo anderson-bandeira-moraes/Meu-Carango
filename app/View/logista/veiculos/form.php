@@ -188,7 +188,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                id="placa" 
                                class="form-control <?= isset($errors['placa']) ? 'is-invalid' : '' ?>" 
                                value="<?= htmlspecialchars($old['placa'] ?? $veiculo['placa'] ?? '') ?>" 
-                               maxlength="10">
+                               maxlength="7" data-tipo="placa">
                     </div>
 
                     <!-- Carroceria -->
@@ -360,43 +360,43 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                     </div>
 
                     <!-- Quilometragem -->
-<div class="col-md-4">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-        <label for="quilometragem_visual" class="form-label mb-0">Quilometragem <span class="text-danger">*</span></label>
-        <button type="button" 
-                class="btn btn-link btn-sm p-0 text-secondary" 
-                data-bs-toggle="tooltip" 
-                data-bs-placement="top" 
-                title="Quilometragem total percorrida pelo veículo, medida em quilômetros (km). É um dos principais fatores que influenciam o valor de mercado e a depreciação do veículo. Quanto menor a quilometragem, maior tende a ser o valor de revenda.">
-            <i class="bi bi-info-circle-fill"></i>
-        </button>
-    </div>
-    <div class="input-group has-validation">
-        <!-- Campo HIDDEN (valor puro) -->
-        <input type="hidden" 
-               name="quilometragem" 
-               id="quilometragem" 
-               value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="quilometragem_visual" class="form-label mb-0">Quilometragem <span class="text-danger">*</span></label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Quilometragem total percorrida pelo veículo, medida em quilômetros (km). É um dos principais fatores que influenciam o valor de mercado e a depreciação do veículo. Quanto menor a quilometragem, maior tende a ser o valor de revenda.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
+                        <div class="input-group has-validation">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="quilometragem" 
+                                   id="quilometragem" 
+                                   value="<?= htmlspecialchars($old['quilometragem'] ?? $veiculo['quilometragem'] ?? '') ?>">
 
-        <!-- Campo VISUAL (formatado) -->
-        <input type="text" 
-               inputmode="numeric" 
-               id="quilometragem_visual" 
-               class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
-               placeholder="Ex: 90.258" 
-               required
-               maxlength="15">
-        <span class="input-group-text">km</span>
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   inputmode="numeric" 
+                                   id="quilometragem_visual" 
+                                   class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 90.258" 
+                                   required
+                                   maxlength="15">
+                            <span class="input-group-text">km</span>
 
-        <!-- Feedback de erro (visível quando hidden estiver vazio) -->
-        <div class="invalid-feedback">
-            A quilometragem é obrigatória.
-        </div>
-        <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-            Este campo não aceita ponto (.) ou vírgula (,)
-        </div>
-    </div>
-</div>
+                            <!-- Feedback de erro (visível quando hidden estiver vazio) -->
+                            <div class="invalid-feedback">
+                                A quilometragem é obrigatória.
+                            </div>
+                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                Este campo não aceita ponto (.) ou vírgula (,)
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Número de Portas -->
                     <div class="col-md-4">
@@ -3538,69 +3538,108 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
     document.addEventListener('DOMContentLoaded', function() {
 
         // =============================================
-// MÁSCARA DE MILHAR (dois inputs)
-// =============================================
+        // VALIDAÇÃO DE PLACA (apenas letras e números)
+        // =============================================
+        const camposPlaca = document.querySelectorAll('[data-tipo="placa"]');
 
-const campoHidden = document.getElementById('quilometragem');
-const campoVisual = document.getElementById('quilometragem_visual');
-
-if (campoHidden && campoVisual) {
-    // Função para formatar com separador de milhar (ponto)
-    function formatarMilhar(valor) {
-        const numeros = String(valor).replace(/\D/g, '');
-        if (numeros === '') return '';
-        return Number(numeros).toLocaleString('pt-BR');
-    }
-
-    // Função para remover formatação (pontos)
-    function removerFormatacao(valor) {
-        return String(valor).replace(/\D/g, '');
-    }
-
-    // 1. Evento de digitação no campo visual
-    campoVisual.addEventListener('input', function() {
-        // Remove tudo que não é número
-        let valorPuro = this.value.replace(/\D/g, '');
-        
-        if (valorPuro === '') {
-            this.value = '';
-            campoHidden.value = '';
-            return;
-        }
-
-        // Formata e exibe no visual
-        this.value = formatarMilhar(valorPuro);
-        
-        // Atualiza o hidden com o valor puro
-        campoHidden.value = valorPuro;
-    });
-
-    // 2. Inicialização (edição): se o hidden tiver valor, formata o visual
-    if (campoHidden.value) {
-        const valorInicial = removerFormatacao(campoHidden.value);
-        if (valorInicial) {
-            campoVisual.value = formatarMilhar(valorInicial);
-            campoHidden.value = valorInicial; // Garante que está limpo
-        }
-    }
-
-    // 3. (Opcional) Validar no submit se o hidden está vazio
-    const form = campoVisual.closest('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            if (!campoHidden.value) {
-                // Marca o visual como inválido
-                campoVisual.classList.add('is-invalid');
-                // Impede o envio
-                e.preventDefault();
-                e.stopPropagation();
-                campoVisual.focus();
-            } else {
-                campoVisual.classList.remove('is-invalid');
+        if (camposPlaca.length > 0) {
+            // Função para verificar se a tecla é permitida
+            function isCaracterePlacaPermitido(tecla) {
+                // Permite teclas de navegação e controle
+                const teclasPermitidas = [
+                    'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight',
+                    'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', 'Escape'
+                ];
+                if (teclasPermitidas.includes(tecla)) {
+                    return true;
+                }
+                // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
+                if (event.ctrlKey || event.metaKey) {
+                    return true;
+                }
+                // Permite apenas letras e números
+                return /^[a-zA-Z0-9]$/.test(tecla);
             }
-        });
-    }
-}
+
+            camposPlaca.forEach(function(campo) {
+                // 1. Listener keydown: bloqueia caracteres inválidos antes de serem inseridos
+                campo.addEventListener('keydown', function(event) {
+                    if (!isCaracterePlacaPermitido(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+
+                // 2. Listener input: limpa caracteres inválidos e converte para maiúsculas
+                campo.addEventListener('input', function() {
+                    // Remove tudo que não for letra ou número e converte para maiúsculas
+                    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                });
+            });
+        }
+
+        // =============================================
+        // MÁSCARA DE MILHAR (dois inputs)
+        // =============================================    
+        const campoHidden = document.getElementById('quilometragem');
+        const campoVisual = document.getElementById('quilometragem_visual');
+
+        if (campoHidden && campoVisual) {
+            // Função para formatar com separador de milhar (ponto)
+            function formatarMilhar(valor) {
+                const numeros = String(valor).replace(/\D/g, '');
+                if (numeros === '') return '';
+                return Number(numeros).toLocaleString('pt-BR');
+            }
+
+            // Função para remover formatação (pontos)
+            function removerFormatacao(valor) {
+                return String(valor).replace(/\D/g, '');
+            }
+
+            // 1. Evento de digitação no campo visual
+            campoVisual.addEventListener('input', function() {
+                // Remove tudo que não é número
+                let valorPuro = this.value.replace(/\D/g, '');
+                
+                if (valorPuro === '') {
+                    this.value = '';
+                    campoHidden.value = '';
+                    return;
+                }
+
+                // Formata e exibe no visual
+                this.value = formatarMilhar(valorPuro);
+                
+                // Atualiza o hidden com o valor puro
+                campoHidden.value = valorPuro;
+            });
+
+            // 2. Inicialização (edição): se o hidden tiver valor, formata o visual
+            if (campoHidden.value) {
+                const valorInicial = removerFormatacao(campoHidden.value);
+                if (valorInicial) {
+                    campoVisual.value = formatarMilhar(valorInicial);
+                    campoHidden.value = valorInicial; // Garante que está limpo
+                }
+            }
+
+            // 3. (Opcional) Validar no submit se o hidden está vazio
+            const form = campoVisual.closest('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (!campoHidden.value) {
+                        // Marca o visual como inválido
+                        campoVisual.classList.add('is-invalid');
+                        // Impede o envio
+                        e.preventDefault();
+                        e.stopPropagation();
+                        campoVisual.focus();
+                    } else {
+                        campoVisual.classList.remove('is-invalid');
+                    }
+                });
+            }
+        }
 
         // =============================================
         // 3. CONTROLE DE CAMPOS FLEX (etanol) + SUFIXO GASOLINA
