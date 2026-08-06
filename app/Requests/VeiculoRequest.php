@@ -195,10 +195,12 @@ class VeiculoRequest extends FormRequest
     }
 
     /**
-     * Sobrescreve a sanitização para aplicar regras específicas.
+     * {@inheritDoc}
      *
-     * @param array $data
-     * @return array
+     * Complementa a validação base com regras de negócio contextuais
+     * e gera dados derivados para o veículo.
+     *
+     * @return bool
      */
     protected function sanitize(array $data): array
     {
@@ -342,20 +344,7 @@ class VeiculoRequest extends FormRequest
         // 6. Gera o slug
         $slug = SlugGenerator::generate($marca['nome'], $modelo['nome'], $anoModelo);
 
-        // 7. Verifica unicidade do slug
-        $exists = $this->veiculoRepo->findBySlug($slug);
-        if ($exists) {
-            // Se for edição, ignora se o slug pertence ao próprio veículo
-            if ($this->routeId !== null && (int)$exists['id'] === $this->routeId) {
-                // Pertence ao mesmo veículo, ok
-            } else {
-                // Conflito: adiciona erro
-                $this->addError('slug', 'Já existe um veículo com esse slug. Por favor, altere o ano ou modelo.');
-                return false;
-            }
-        }
-
-        // 8. Armazena o slug nos dados validados para uso posterior
+        // 7. Armazena o slug nos dados validados para uso posterior
         $this->validated['slug'] = $slug;
 
         return true;
