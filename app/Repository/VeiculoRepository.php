@@ -37,7 +37,7 @@ class VeiculoRepository
                 carroceria, tipo_direcao, altura_solo_mm,
                 pneu_aro, tipo_roda, freio_dianteiro, freio_traseiro,
                 hash_id, slug, gnv_instalado,
-                status_estoque, status_vitrine
+                status_estoque, status_vitrine, placa
             ) VALUES (
                 :lojista_id, :marca_id, :modelo_id, :versao,
                 :ano_fabricacao, :ano_modelo, :cor, :quilometragem,
@@ -47,7 +47,7 @@ class VeiculoRepository
                 :carroceria, :tipo_direcao, :altura_solo_mm,
                 :pneu_aro, :tipo_roda, :freio_dianteiro, :freio_traseiro,
                 :hash_id, :slug, :gnv_instalado,
-                :status_estoque, :status_vitrine
+                :status_estoque, :status_vitrine, :placa
             )';
 
             $stmt = $this->pdo->prepare($sql);
@@ -113,6 +113,7 @@ class VeiculoRepository
             ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,
             ':status_estoque'           => $dados['status_estoque'] ?? 'disponivel',
             ':status_vitrine'           => $dados['status_vitrine'] ?? 'inativo',
+            ':placa' => $dados['placa'] ?? null,
         ];
     }
 
@@ -606,6 +607,32 @@ class VeiculoRepository
                 'error' => $e->getMessage(),
             ]);
             return null;
+        }
+    }
+
+    /**
+     * Verifica se uma placa já existe no banco de dados.
+     *
+     * @param string $placa
+     * @param int|null $ignorarId ID do veículo a ser ignorado (edição)
+     * @return bool
+     */
+    public function placaExists(string $placa, ?int $ignorarId = null): bool
+    {
+        try {
+            $sql = 'SELECT 1 FROM veiculos WHERE placa = ?';
+            $params = [$placa];
+            if ($ignorarId !== null) {
+                $sql .= ' AND id != ?';
+                $params[] = $ignorarId;
+            }
+            $sql .= ' LIMIT 1';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->logger->error('Erro ao verificar existência de placa', ['placa' => $placa, 'error' => $e->getMessage()]);
+            throw new \RuntimeException('Erro ao verificar unicidade da placa.');
         }
     }
 

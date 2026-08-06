@@ -319,10 +319,18 @@ class VeiculoController
 
         // 7. Chama o Service
         $result = $this->veiculoService->salvar($dados, $opcionaisIds, $tipoVeiculo);
+
+        // 8. Trata erro de negócio (ex: placa duplicada)
+        if (is_array($result) && isset($result['sucesso']) && $result['sucesso'] === false) {
+            $this->redirectWithError($result['erro'], $allData);
+        }
+
+        // 9. Trata erro de infraestrutura
         if ($result === false) {
             $this->redirectWithError('Falha ao criar veículo. Tente novamente.', $allData);
         }
 
+        // 10. Sucesso
         $this->session->set('flash_veiculo_success', 'Veículo criado com sucesso!');
         header('Location: /logista/veiculos');
         exit;
@@ -432,10 +440,18 @@ class VeiculoController
 
         // 6. Chama o Service
         $result = $this->veiculoService->atualizar($id, $dados, $opcionaisIds, $tipoVeiculo);
-        if (!$result) {
-            $this->redirectWithError('Falha ao atualizar veículo. Tente novamente.');
+
+        // 7. Trata erro de negócio (ex: placa duplicada)
+        if (is_array($result) && isset($result['sucesso']) && $result['sucesso'] === false) {
+            $this->redirectWithError($result['erro'], $allData);
         }
 
+        // 8. Trata erro de infraestrutura
+        if ($result === false) {
+            $this->redirectWithError('Falha ao atualizar veículo. Tente novamente.', $allData);
+        }
+
+        // 9. Sucesso
         $this->session->set('flash_veiculo_success', 'Veículo atualizado com sucesso!');
         header('Location: /logista/veiculos');
         exit;

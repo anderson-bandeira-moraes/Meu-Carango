@@ -24,7 +24,6 @@ class VeiculoRequest extends FormRequest
     private MarcaRepository $marcaRepo;
     private ModeloRepository $modeloRepo;
     private VeiculoRepository $veiculoRepo;
-    private ?int $routeId = null;
 
     public function __construct(
         \App\Core\Request $request,
@@ -36,17 +35,6 @@ class VeiculoRequest extends FormRequest
         $this->marcaRepo = $marcaRepo;
         $this->modeloRepo = $modeloRepo;
         $this->veiculoRepo = $veiculoRepo;
-    }
-
-    /**
-     * Define o ID da rota (usado na edição para ignorar o próprio registro).
-     *
-     * @param int $id
-     * @return void
-     */
-    public function setRouteId(int $id): void
-    {
-        $this->routeId = $id;
     }
 
     /**
@@ -70,6 +58,14 @@ class VeiculoRequest extends FormRequest
             'versao'         => 'nullable|max:50',
             'numero_portas'  => 'required|integer|between:2,6',
             'numero_assentos'=> 'required|integer|between:2,15',
+            'carroceria'           => 'nullable|string|max:30',
+            'tipo_direcao'         => 'nullable|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
+            'altura_solo_mm'       => 'nullable|integer|min:0',
+            'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
+            'tipo_roda'            => 'nullable|in:liga_leve,calota',
+            'freio_dianteiro'      => 'nullable|in:disco,tambor',
+            'freio_traseiro'       => 'nullable|in:disco,tambor',
+            'placa' => 'nullable|max:10|regex:/^[a-zA-Z0-9]+$/',
 
             // Dimensões (opcionais)
             'comprimento_mm'           => 'nullable|integer|min_num:0',
@@ -86,15 +82,6 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'   => 'nullable|boolean',
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
-
-            // Novos campos opcionais
-            'carroceria'           => 'nullable|string|max:30',
-            'tipo_direcao'         => 'nullable|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
-            'altura_solo_mm'       => 'nullable|integer|min:0',
-            'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
-            'tipo_roda'            => 'nullable|in:liga_leve,calota',
-            'freio_dianteiro'      => 'nullable|in:disco,tambor',
-            'freio_traseiro'       => 'nullable|in:disco,tambor',
         ];
     }
 
@@ -141,6 +128,8 @@ class VeiculoRequest extends FormRequest
             'numero_portas.between'   => 'O número de portas deve estar entre :min e :max.',
             'numero_assentos.integer' => 'O número de assentos deve ser um número inteiro.',
             'numero_assentos.between' => 'O número de assentos deve estar entre :min e :max.',
+            'placa.max'   => 'A placa deve ter no máximo :max caracteres.',
+            'placa.regex' => 'A placa deve conter apenas letras e números.',
 
             // Dimensões
             'comprimento_mm.integer'            => 'O comprimento deve ser um número inteiro.',
@@ -296,14 +285,21 @@ class VeiculoRequest extends FormRequest
             $data['status_vitrine'] = 'inativo';
         }
 
+        // 8. Sanitização da placa do veículo
+        if (isset($data['placa']) && is_string($data['placa'])) {
+            $data['placa'] = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $data['placa']));
+        }
+
         return $data;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * Adiciona validação de unicidade do slug e geração automática,
-     * além de validação condicional para GNV (apenas veículos a combustão).
+     * Complementa a validação base com regras de negócio contextuais
+     * e gera dados derivados para o veículo.
+     *
+     * @return bool
      */
     public function validate(): bool
     {
@@ -438,14 +434,12 @@ class VeiculoRequest extends FormRequest
  *    - Adiciona regras de negócio que não são cobertas pelas regras simples:
  *        - Validação condicional (ex: GNV só em veículos a combustão)
  *        - Geração automática de slug com base em marca, modelo e ano
- *        - Verificação de unicidade do slug (com tratamento para edição)
  *    - Pode adicionar erros customizados via `addError()`
  * 
  * 5. MÉTODOS AUXILIARES
  *    - `getDadosPrincipais()` → retorna apenas os dados validados
  *    - `getTipoVeiculo()` → retorna o tipo selecionado
  *    - `hasGNV()` → verifica se o veículo possui GNV
- *    - `setRouteId()` → define o ID da rota para ignorar próprio registro na edição
  * 
  * ========================================================================
  * COMO ADAPTAR PARA OUTROS FORM REQUESTS:

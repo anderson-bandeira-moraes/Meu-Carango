@@ -78,6 +78,14 @@ class VeiculoService
         $dados['status_estoque'] = $dados['status_estoque'] ?? 'disponivel';
         $dados['status_vitrine'] = $dados['status_vitrine'] ?? 'inativo';
 
+        // Verificação de unicidade placa
+        if (!empty($dados['placa'])) {
+            $validacao = $this->validarPlacaUnica($dados['placa']);
+            if ($validacao !== true) {
+                return $validacao;
+            }
+        }
+
         $this->pdo->beginTransaction();
 
         try {
@@ -89,15 +97,8 @@ class VeiculoService
                 return false;
             }
 
-            // 2. Salva complemento específico
-            $complementoSalvo = $this->salvarComplemento($veiculoId, $tipoVeiculo, $dados);
-            if (!$complementoSalvo) {
-                $this->pdo->rollBack();
-                $this->logger->error('Falha ao salvar complemento do veículo', ['veiculo_id' => $veiculoId]);
-                return false;
-            }
-
-            // 2.5 Limpa campos de etanol se o veículo for combustão ou híbrido e NÃO for flex
+            // 1.5 Limpa campos de etanol se o veículo for combustão ou híbrido e NÃO for flex
+            // (movido para ANTES de salvar o complemento)
             if (isset($dados['combustivel']) && $dados['combustivel'] !== 'flex') {
                 if ($tipoVeiculo === self::TIPO_COMBUSTAO) {
                     unset(
@@ -115,6 +116,14 @@ class VeiculoService
                         $dados['consumo_medio_etanol_kml']
                     );
                 }
+            }
+
+            // 2. Salva complemento específico (agora com os campos limpos)
+            $complementoSalvo = $this->salvarComplemento($veiculoId, $tipoVeiculo, $dados);
+            if (!$complementoSalvo) {
+                $this->pdo->rollBack();
+                $this->logger->error('Falha ao salvar complemento do veículo', ['veiculo_id' => $veiculoId]);
+                return false;
             }
 
             // 3. Salva GNV se aplicável
@@ -197,6 +206,14 @@ class VeiculoService
         // Se o tipo mudou, precisamos deletar o complemento antigo
         $tipoAtual = $this->detectarTipoAtual($veiculoId);
         $deveDeletarComplementoAntigo = ($tipoAtual !== null && $tipoAtual !== $tipoVeiculo);
+
+        // Verificação de unicidade placa (IGNORANDO o próprio veículo)
+        if (!empty($dados['placa'])) {
+            $validacao = $this->validarPlacaUnica($dados['placa'], $veiculoId); // <-- CORRIGIDO
+            if ($validacao !== true) {
+                return $validacao;
+            }
+        }
 
         $this->pdo->beginTransaction();
 
@@ -693,7 +710,8 @@ class VeiculoService
             'carga_util_kg', 'capacidade_reboque_kg', 'gnv_instalado',
             'status_estoque', 'status_vitrine','slug',
             'carroceria', 'tipo_direcao', 'altura_solo_mm',
-            'pneu_aro', 'tipo_roda', 'freio_dianteiro', 'freio_traseiro'
+            'pneu_aro', 'tipo_roda', 'freio_dianteiro', 'freio_traseiro',
+            'placa'
         ];
         return array_intersect_key($dados, array_flip($allowed));
     }
@@ -1078,6 +1096,32 @@ class VeiculoService
             'estoque'   => ['status_estoque' => 'disponivel', 'status_vitrine' => 'inativo'],
             default     => [],
         };
+    }
+
+    /**
+     * Valida se a placa é única no sistema.
+     *
+     * @param string $placa
+     * @param int|null $ignorarId
+     * @return true|array{sucesso: false, erro: string}|false
+     *         - true: placa válida e única
+     *         - array: erro de negócio (placa duplicada)
+     *         - false: erro de infraestrutura (falha na consulta)
+     */
+    private function validarPlacaUnica(string $placa, ?int $ignorarId = null)
+    {
+        if (empty($placa)) {
+            return true;
+        }
+        try {
+            if ($this->veiculoRepo->placaExists($placa, $ignorarId)) {
+                return ['sucesso' => false, 'erro' => 'Já existe um veículo com esta placa.'];
+            }
+            return true;
+        } catch (\RuntimeException $e) {
+            $this->logger->error('Falha ao validar unicidade da placa', ['error' => $e->getMessage()]);
+            return false;
+        }
     }
 
 }

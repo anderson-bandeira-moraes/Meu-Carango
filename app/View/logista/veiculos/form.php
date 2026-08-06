@@ -169,6 +169,28 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         </div>
                     </div>
 
+                    <!-- Placa -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="placa" class="form-label mb-0">Placa</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Placa do veículo (uso interno). Serve como identificador auxiliar para gestão da frota, busca e controle de documentos. Campo opcional e não exibido publicamente.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
+                        <input title="Placa do veículo (opcional)" 
+                               placeholder="Ex: ABC1D23" 
+                               type="text" 
+                               name="placa" 
+                               id="placa" 
+                               class="form-control <?= isset($errors['placa']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($old['placa'] ?? $veiculo['placa'] ?? '') ?>" 
+                               maxlength="10">
+                    </div>
+
                     <!-- Carroceria -->
                     <div class="col-md-4">
                         <div class="d-flex justify-content-between align-items-center mb-1">
