@@ -322,10 +322,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'baterias_tipos_hibrido' => [
+        'Íon-Lítio' => 'Íon-Lítio',
+        '48V'   => 'Bateria 48V (Híbrido Leve)',
+        'LFP'   => 'LFP (Fosfato de Ferro e Lítio)',
         'NiMH'  => 'NiMH (Níquel-Hidreto Metálico)',
         'NMC'   => 'NMC (Níquel-Manganês-Cobalto)',
-        'LFP'   => 'LFP (Fosfato de Ferro e Lítio)',
-        '48V'   => 'Bateria 48V (Híbrido Leve)',
+        
     ],
 
     'baterias_tipos_bev' => [
