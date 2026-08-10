@@ -19,7 +19,7 @@ class VeiculoHibridoRequest extends FormRequest
      */
     private const CAMPOS_COM_OUTRO = [
         'motor_combustao_tipo'          => 'motor_combustao_tipo_outro',
-        'bateria_tipo'                  => 'bateria_tipo_outro_hibrido',
+        'bateria_tipo'                  => 'bateria_tipo_outro',
         'sistema_eletrico_tensao'       => 'sistema_eletrico_tensao_outro',
         'carregamento_tipo_conector_ac' => 'carregamento_tipo_conector_ac_outro',
         'carregamento_tipo_conector_dc' => 'carregamento_tipo_conector_dc_outro',
