@@ -2773,6 +2773,61 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </div>
                         </div>
 
+                        <!-- ===== DESEMPENHO ===== -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-secondary"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
+                        </div>
+
+                        <!-- Aceleração 0-100 -->
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="aceleracao_0_100_seg_hibrido" class="form-label mb-0">Aceleração 0-100</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Tempo necessário para acelerar de 0 a 100 km/h, medido em segundos (s). Em veículos híbridos, a aceleração combina a resposta imediata do motor elétrico com a potência do motor a combustão, resultando em valores comuns entre 7 e 14 segundos, dependendo do sistema.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" step="any" inputmode="decimal" 
+                                       name="aceleracao_0_100_seg" 
+                                       id="aceleracao_0_100_seg_hibrido" 
+                                       class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
+                                       placeholder="Ex: 9.5" min="0">
+                                <span class="input-group-text">s</span>
+                            </div>
+                        </div>
+
+                        <!-- Velocidade Máxima -->
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="velocidade_max_kmh_hibrido" class="form-label mb-0">Velocidade Máxima</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Velocidade máxima do veículo em km/h. Em veículos híbridos, a velocidade máxima é determinada pela potência combinada dos motores, com valores comuns entre 150 e 220 km/h, dependendo da configuração do sistema.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" 
+                                       name="velocidade_max_kmh" 
+                                       id="velocidade_max_kmh_hibrido" 
+                                       class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
+                                       placeholder="Ex: 180">
+                                <span class="input-group-text">km/h</span>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- ===== MOTOR ELÉTRICO ===== -->
                         <div class="col-12">
                             <hr>
@@ -3120,25 +3175,50 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </div>
                         </div>
 
-                        <!-- Autonomia Combinada -->
-                        <div id="autonomia_combinada_container" class="col-md-4">
+                        <!-- Autonomia Combinada Cidade -->
+                        <div id="autonomia_combinada_cidade_container" class="col-md-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="autonomia_combinada_km" class="form-label mb-0">Autonomia Combinada</label>
+                                <label for="autonomia_combinada_cidade_km" class="form-label mb-0">Autonomia Combinada (Cidade)</label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="Autonomia total do veículo híbrido combinando os modos elétrico e a combustão, medida em quilômetros (km). Valores comuns: 300 a 1000 km. É a soma da autonomia elétrica com a autonomia do motor a combustão, considerando o uso misto.">
+                                        title="Autonomia total do veículo híbrido em ciclo urbano, combinando os modos elétrico e a combustão, medida em quilômetros (km). Valores comuns: 300 a 800 km. Reflete a distância percorrida em condições de trânsito com paradas e acelerações.">
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
                             <div class="input-group has-validation">
-                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="autonomia_combinada_km" id="autonomia_combinada_km" 
-                                       class="form-control <?= isset($errors['autonomia_combinada_km']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['autonomia_combinada_km'] ?? $complemento['autonomia_combinada_km'] ?? '') ?>" 
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" 
+                                       name="autonomia_combinada_cidade_km" id="autonomia_combinada_cidade_km" 
+                                       class="form-control <?= isset($errors['autonomia_combinada_cidade_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_combinada_cidade_km'] ?? $complemento['autonomia_combinada_cidade_km'] ?? '') ?>" 
                                        placeholder="Ex: 600">
                                 <span class="input-group-text">km</span>
+                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Autonomia Combinada Estrada -->
+                        <div id="autonomia_combinada_estrada_container" class="col-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="autonomia_combinada_estrada_km" class="form-label mb-0">Autonomia Combinada (Estrada)</label>
+                                <button type="button" 
+                                        class="btn btn-link btn-sm p-0 text-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Autonomia total do veículo híbrido em ciclo rodoviário, combinando os modos elétrico e a combustão, medida em quilômetros (km). Valores comuns: 400 a 1000 km. Reflete a distância percorrida em condições de estrada, com velocidades constantes e maior eficiência.">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </button>
+                            </div>
+                            <div class="input-group has-validation">
+                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" 
+                                       name="autonomia_combinada_estrada_km" id="autonomia_combinada_estrada_km" 
+                                       class="form-control <?= isset($errors['autonomia_combinada_estrada_km']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($old['autonomia_combinada_estrada_km'] ?? $complemento['autonomia_combinada_estrada_km'] ?? '') ?>" 
+                                       placeholder="Ex: 750">
+                                <span class="input-group-text">km</span>
                                 <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
                                     Este campo não aceita ponto (.) ou vírgula (,)
                                 </div>

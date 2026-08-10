@@ -64,8 +64,9 @@ class VeiculoHibridoRequest extends FormRequest
             'modo_eletrico_puro' => 'required|boolean',
 
             // Autonomias
-            'autonomia_eletrica_pbev_km' => 'nullable|integer|min_num:0',
-            'autonomia_combinada_km'     => 'nullable|integer|min_num:0',
+            'autonomia_eletrica_pbev_km'      => 'nullable|integer|min_num:0',
+            'autonomia_combinada_cidade_km'   => 'nullable|integer|min_num:0',
+            'autonomia_combinada_estrada_km'  => 'nullable|integer|min_num:0',
 
             // Garantia da bateria
             'bateria_garantia' => 'nullable|max:40',
@@ -155,10 +156,12 @@ class VeiculoHibridoRequest extends FormRequest
             'modo_eletrico_puro.boolean'  => 'O campo modo elétrico puro deve ser verdadeiro ou falso.',
 
             // Autonomias
-            'autonomia_eletrica_pbev_km.integer' => 'A autonomia elétrica (PBEV) deve ser um número inteiro.',
-            'autonomia_eletrica_pbev_km.min_num' => 'A autonomia elétrica (PBEV) não pode ser negativa.',
-            'autonomia_combinada_km.integer'     => 'A autonomia combinada deve ser um número inteiro.',
-            'autonomia_combinada_km.min_num'     => 'A autonomia combinada não pode ser negativa.',
+            'autonomia_eletrica_pbev_km.integer'      => 'A autonomia elétrica (PBEV) deve ser um número inteiro.',
+            'autonomia_eletrica_pbev_km.min_num'      => 'A autonomia elétrica (PBEV) não pode ser negativa.',
+            'autonomia_combinada_cidade_km.integer'   => 'A autonomia combinada (cidade) deve ser um número inteiro.',
+            'autonomia_combinada_cidade_km.min_num'   => 'A autonomia combinada (cidade) não pode ser negativa.',
+            'autonomia_combinada_estrada_km.integer'  => 'A autonomia combinada (estrada) deve ser um número inteiro.',
+            'autonomia_combinada_estrada_km.min_num'  => 'A autonomia combinada (estrada) não pode ser negativa.',
 
             // Garantia da bateria
             'bateria_garantia.max' => 'A garantia da bateria deve ter no máximo :max caracteres.',
@@ -233,7 +236,8 @@ class VeiculoHibridoRequest extends FormRequest
             'velocidade_max_kmh',
             'carregamento_tempo_dc_min',
             'autonomia_eletrica_pbev_km',
-            'autonomia_combinada_km',
+            'autonomia_combinada_cidade_km',
+            'autonomia_combinada_estrada_km',
             'capacidade_tanque_l'
         ];
 
