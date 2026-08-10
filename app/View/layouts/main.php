@@ -90,6 +90,18 @@
                 font-size: 1rem;
                 padding: 0.6rem 1rem;
             }
+
+            /* Remove setas do Chrome, Safari, Edge, Opera */
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Remove setas do Firefox */
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
         </style>
         <?php if (isset($extraCss)) echo $extraCss; ?>
     </head>

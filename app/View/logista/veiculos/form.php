@@ -5378,6 +5378,15 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                 // Nota: mensagens personalizadas são ignoradas; o navegador exibe a própria
             }
         });
+ 
+        // ============================================================
+        // Impede o scroll de alterar o valor
+        // ============================================================
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('wheel', function(e) {
+                e.preventDefault();
+            });
+        });
     });
 </script>
 
