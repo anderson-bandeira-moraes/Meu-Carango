@@ -1098,7 +1098,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Comprimento -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="comprimento_mm" class="form-label mb-0">Comprimento</label>
+                            <label for="comprimento_mm_visual" class="form-label mb-0">Comprimento</label>
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1108,12 +1108,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="5" name="comprimento_mm" id="comprimento_mm" class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>" min="0" placeholder="Ex: 4200">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="comprimento_mm" 
+                                   id="comprimento_mm" 
+                                   value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="comprimento_mm_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 4.200">
                             <span class="input-group-text">mm</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                O comprimento deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1121,7 +1133,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Largura -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="largura_mm" class="form-label mb-0">Largura</label>
+                            <label for="largura_mm_visual" class="form-label mb-0">Largura</label>
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1131,12 +1143,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="largura_mm" id="largura_mm" class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>" placeholder="Ex: 1800">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="largura_mm" 
+                                   id="largura_mm" 
+                                   value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="largura_mm_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 1.800">
                             <span class="input-group-text">mm</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                A largura deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1144,7 +1168,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Altura -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="altura_mm" class="form-label mb-0">Altura do Veículo</label>
+                            <label for="altura_mm_visual" class="form-label mb-0">Altura do Veículo</label>
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1154,12 +1178,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="altura_mm" id="altura_mm" class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>" min="0" placeholder="Ex: 1500">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="altura_mm" 
+                                   id="altura_mm" 
+                                   value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="altura_mm_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 1.500">
                             <span class="input-group-text">mm</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                A altura deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1167,7 +1203,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Altura Solo -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="altura_solo_mm" class="form-label mb-0">Altura do Solo</label>
+                            <label for="altura_solo_mm_visual" class="form-label mb-0">Altura do Solo</label>
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1177,14 +1213,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="3" name="altura_solo_mm" id="altura_solo_mm" 
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="altura_solo_mm" 
+                                   id="altura_solo_mm" 
+                                   value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="3"
+                                   inputmode="numeric" 
+                                   id="altura_solo_mm_visual" 
+                                   data-mascara-milhar 
                                    class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>" 
                                    placeholder="Ex: 180">
                             <span class="input-group-text">mm</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                A altura do solo deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1192,7 +1238,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Distância entre eixos -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="distancia_entre_eixos_mm" class="form-label mb-0">Distância entre eixos</label>
+                            <label for="distancia_entre_eixos_mm_visual" class="form-label mb-0">Distância entre eixos</label>
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1202,12 +1248,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="distancia_entre_eixos_mm" id="distancia_entre_eixos_mm" class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>" placeholder="Ex: 2600">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="distancia_entre_eixos_mm" 
+                                   id="distancia_entre_eixos_mm" 
+                                   value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="distancia_entre_eixos_mm_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 2.600">
                             <span class="input-group-text">mm</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                A distância entre eixos deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1288,7 +1346,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Volume do porta-malas -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="volume_porta_malas_l" class="form-label mb-0">Volume do porta-malas</label>
+                            <label for="volume_porta_malas_l_visual" class="form-label mb-0">Volume do porta-malas</label> <!-- ← CORRIGIDO -->
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1298,12 +1356,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="volume_porta_malas_l" id="volume_porta_malas_l" class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>" placeholder="Ex: 450">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="volume_porta_malas_l" 
+                                   id="volume_porta_malas_l" 
+                                   value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="volume_porta_malas_l_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 450">
                             <span class="input-group-text">L</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                O volume do porta-malas deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1311,7 +1381,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                     <!-- Volume da caçamba -->
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="volume_cacamba_l" class="form-label mb-0">Volume da caçamba</label>
+                            <label for="volume_cacamba_l_visual" class="form-label mb-0">Volume da caçamba</label> <!-- ← CORRIGIDO -->
                             <button type="button" 
                                     class="btn btn-link btn-sm p-0 text-secondary" 
                                     data-bs-toggle="tooltip" 
@@ -1321,12 +1391,24 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                             </button>
                         </div>
                         <div class="input-group has-validation">
-                            <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="volume_cacamba_l" id="volume_cacamba_l" class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>" placeholder="Ex: 800">
+                            <!-- Campo HIDDEN (valor puro) -->
+                            <input type="hidden" 
+                                   name="volume_cacamba_l" 
+                                   id="volume_cacamba_l" 
+                                   value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>">
+                            
+                            <!-- Campo VISUAL (formatado) -->
+                            <input type="text" 
+                                   maxlength="4"
+                                   inputmode="numeric" 
+                                   id="volume_cacamba_l_visual" 
+                                   data-mascara-milhar 
+                                   class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                                   placeholder="Ex: 800">
                             <span class="input-group-text">L</span>
 
-                            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                Este campo não aceita ponto (.) ou vírgula (,)
+                            <div class="invalid-feedback">
+                                O volume da caçamba deve ser um número válido.
                             </div>
                         </div>
                     </div>
@@ -1635,7 +1717,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                         <!-- Regime Potência (RPM) -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="regime_potencia_rpm" class="form-label mb-0">Regime Potência</label>
+                                <label for="regime_potencia_rpm_visual" class="form-label mb-0">Regime Potência</label> <!-- ← CORRIGIDO -->
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1645,13 +1727,23 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                                 </button>
                             </div>
                             <div class="input-group has-validation">
-                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="regime_potencia_rpm" id="regime_potencia_rpm" 
+                                <!-- Campo HIDDEN (valor puro) -->
+                                <input type="hidden" 
+                                       name="regime_potencia_rpm" 
+                                       id="regime_potencia_rpm" 
+                                       value="<?= htmlspecialchars($old['regime_potencia_rpm'] ?? $complemento['regime_potencia_rpm'] ?? '') ?>">
+                                
+                                <!-- Campo VISUAL (formatado) -->
+                                <input type="text" 
+                                       maxlength="4"
+                                       inputmode="numeric" 
+                                       id="regime_potencia_rpm_visual" 
+                                       data-mascara-milhar 
                                        class="form-control <?= isset($errors['regime_potencia_rpm']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['regime_potencia_rpm'] ?? $complemento['regime_potencia_rpm'] ?? '') ?>" 
-                                       placeholder="Ex: 6250">
+                                       placeholder="Ex: 6.250">
                                 <span class="input-group-text">RPM</span>
-                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                <div class="invalid-feedback">
+                                    O regime de potência deve ser um número válido.
                                 </div>
                             </div>
                         </div>
@@ -1659,7 +1751,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                         <!-- Regime Torque (RPM) -->
                         <div class="col-md-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="regime_torque_rpm" class="form-label mb-0">Regime Torque</label>
+                                <label for="regime_torque_rpm_visual" class="form-label mb-0">Regime Torque</label> <!-- ← CORRIGIDO -->
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -1669,13 +1761,23 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                                 </button>
                             </div>
                             <div class="input-group has-validation">
-                                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="regime_torque_rpm" id="regime_torque_rpm" 
+                                <!-- Campo HIDDEN (valor puro) -->
+                                <input type="hidden" 
+                                       name="regime_torque_rpm" 
+                                       id="regime_torque_rpm" 
+                                       value="<?= htmlspecialchars($old['regime_torque_rpm'] ?? $complemento['regime_torque_rpm'] ?? '') ?>">
+                                
+                                <!-- Campo VISUAL (formatado) -->
+                                <input type="text" 
+                                       maxlength="4"
+                                       inputmode="numeric" 
+                                       id="regime_torque_rpm_visual" 
+                                       data-mascara-milhar 
                                        class="form-control <?= isset($errors['regime_torque_rpm']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['regime_torque_rpm'] ?? $complemento['regime_torque_rpm'] ?? '') ?>" 
-                                       placeholder="Ex: 3000">
+                                       placeholder="Ex: 3.000">
                                 <span class="input-group-text">RPM</span>
-                                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
-                                    Este campo não aceita ponto (.) ou vírgula (,)
+                                <div class="invalid-feedback">
+                                    O regime de torque deve ser um número válido.
                                 </div>
                             </div>
                         </div>
@@ -3740,6 +3842,38 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // =============================================
+        // MÁSCARA DE MILHAR
+        // =============================================
+
+        document.querySelectorAll('[data-mascara-milhar]').forEach(function(visual) {
+            // Evita aplicar múltiplas vezes (caso o script seja executado mais de uma vez)
+            if (visual.dataset.mascaraAplicada) return;
+
+            const hiddenId = visual.id.replace(/_visual$/, '');
+            const hidden = document.getElementById(hiddenId);
+            if (!hidden) return;
+
+            function formatar(valor) {
+                const numeros = String(valor).replace(/\D/g, '');
+                if (numeros === '') return '';
+                return Number(numeros).toLocaleString('pt-BR');
+            }
+
+            visual.addEventListener('input', function() {
+                const puro = this.value.replace(/\D/g, '');
+                this.value = puro ? formatar(puro) : '';
+                hidden.value = puro;
+            });
+
+            if (hidden.value) {
+                visual.value = formatar(hidden.value);
+                hidden.value = hidden.value.replace(/\D/g, '');
+            }
+
+            visual.dataset.mascaraAplicada = 'true';
+        });
 
         // =============================================
         // VALIDAÇÃO DE PLACA (apenas letras e números)
