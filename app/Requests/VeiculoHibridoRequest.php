@@ -15,6 +15,17 @@ use App\Core\FormRequest;
 class VeiculoHibridoRequest extends FormRequest
 {
     /**
+     * Mapeamento de campos que possuem opção "Outro" (select + input extra).
+     */
+    private const CAMPOS_COM_OUTRO = [
+        'motor_combustao_tipo'          => 'motor_combustao_tipo_outro',
+        'bateria_tipo'                  => 'bateria_tipo_outro_hibrido',
+        'sistema_eletrico_tensao'       => 'sistema_eletrico_tensao_outro',
+        'carregamento_tipo_conector_ac' => 'carregamento_tipo_conector_ac_outro',
+        'carregamento_tipo_conector_dc' => 'carregamento_tipo_conector_dc_outro',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function rules(): array
@@ -45,7 +56,7 @@ class VeiculoHibridoRequest extends FormRequest
             'numero_marchas'     => 'nullable|integer|min_num:0',
 
             // Bateria
-            'bateria_capacidade_kwh'  => 'required|numeric|min_num:0',
+            'bateria_capacidade_kwh'  => 'nullable|numeric|min_num:0',
             'bateria_tipo'            => 'required|max:30',
             'sistema_eletrico_tensao' => 'nullable|max:10',
 
@@ -134,7 +145,6 @@ class VeiculoHibridoRequest extends FormRequest
             'numero_marchas.min_num'    => 'O número de marchas não pode ser negativo.',
 
             // Bateria
-            'bateria_capacidade_kwh.required' => 'A capacidade da bateria é obrigatória.',
             'bateria_capacidade_kwh.numeric'  => 'A capacidade da bateria deve ser um número válido.',
             'bateria_capacidade_kwh.min_num'  => 'A capacidade da bateria não pode ser negativa.',
             'bateria_tipo.max'                => 'O tipo da bateria deve ter no máximo :max caracteres.',
@@ -306,6 +316,16 @@ class VeiculoHibridoRequest extends FormRequest
             if (isset($data[$field])) {
                 $data[$field] = (int) (bool) $data[$field];
             }
+        }
+
+        // 7. Promove campos "outro" para o campo principal
+        foreach (self::CAMPOS_COM_OUTRO as $campoPrincipal => $campoOutro) {
+            // Se o campo extra foi enviado e não está vazio, promove para o campo principal
+            if (isset($data[$campoOutro]) && $data[$campoOutro] !== '' && $data[$campoOutro] !== null) {
+                $data[$campoPrincipal] = $data[$campoOutro];
+            }
+            // Remove o campo extra para não poluir os dados
+            unset($data[$campoOutro]);
         }
 
         return $data;

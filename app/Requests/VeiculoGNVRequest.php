@@ -14,6 +14,16 @@ use App\Core\FormRequest;
  */
 class VeiculoGNVRequest extends FormRequest
 {
+
+    /**
+     * Mapeamento de campos que possuem opção "Outro" (select + input extra).
+     */
+    private const CAMPOS_COM_OUTRO = [
+        'capacidade_cilindro_m3' => 'capacidade_cilindro_m3_outro',
+        'material_cilindro'      => 'material_cilindro_outro',
+        'localizacao_cilindro'   => 'localizacao_cilindro_outro',
+    ];
+
     /**
      * {@inheritDoc}
      */
@@ -213,6 +223,16 @@ class VeiculoGNVRequest extends FormRequest
                 }
             }
         }
+
+        // 8. Promove campos "outro" para o campo principal
+        foreach (self::CAMPOS_COM_OUTRO as $campoPrincipal => $campoOutro) {
+            // Se o campo extra foi enviado e não está vazio, promove para o campo principal
+            if (isset($data[$campoOutro]) && $data[$campoOutro] !== '' && $data[$campoOutro] !== null) {
+                $data[$campoPrincipal] = $data[$campoOutro];
+            }
+            // Remove o campo extra para não poluir os dados
+            unset($data[$campoOutro]);
+        } 
 
         return $data;
     }

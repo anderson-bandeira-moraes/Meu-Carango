@@ -38,6 +38,15 @@ class VeiculoRequest extends FormRequest
     }
 
     /**
+     * Mapeamento de campos que possuem opção "Outro" (select + input extra).
+     */
+    private const CAMPOS_COM_OUTRO = [
+        'carroceria' => 'carroceria_outro',
+        'pneu_aro'   => 'pneu_aro_outro',
+        'cor'        => 'cor_outro',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function rules(): array
@@ -289,6 +298,16 @@ class VeiculoRequest extends FormRequest
         if (isset($data['placa']) && is_string($data['placa'])) {
             $data['placa'] = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $data['placa']));
         }
+
+        // 9. Promove campos "outro" para o campo principal
+        foreach (self::CAMPOS_COM_OUTRO as $campoPrincipal => $campoOutro) {
+            // Se o campo extra foi enviado e não está vazio, promove para o campo principal
+            if (isset($data[$campoOutro]) && $data[$campoOutro] !== '' && $data[$campoOutro] !== null) {
+                $data[$campoPrincipal] = $data[$campoOutro];
+            }
+            // Remove o campo extra para não poluir os dados
+            unset($data[$campoOutro]);
+        }   
 
         return $data;
     }

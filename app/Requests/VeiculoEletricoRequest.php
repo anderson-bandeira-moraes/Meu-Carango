@@ -15,6 +15,16 @@ use App\Core\FormRequest;
 class VeiculoEletricoRequest extends FormRequest
 {
     /**
+     * Mapeamento de campos que possuem opção "Outro" (select + input extra).
+     */
+    private const CAMPOS_COM_OUTRO = [
+        'tipo_conector_dc'        => 'tipo_conector_dc_outro',
+        'tipo_conector_ac'        => 'tipo_conector_ac_outro',
+        'bateria_tipo'            => 'bateria_tipo_outro',
+        'sistema_eletrico_tensao' => 'sistema_eletrico_tensao_outro',
+    ];
+
+    /**
      * {@inheritDoc}
      */
     public function rules(): array
@@ -223,6 +233,16 @@ class VeiculoEletricoRequest extends FormRequest
                 }
             }
         }
+
+        // 6. Promove campos "outro" para o campo principal
+        foreach (self::CAMPOS_COM_OUTRO as $campoPrincipal => $campoOutro) {
+            // Se o campo extra foi enviado e não está vazio, promove para o campo principal
+            if (isset($data[$campoOutro]) && $data[$campoOutro] !== '' && $data[$campoOutro] !== null) {
+                $data[$campoPrincipal] = $data[$campoOutro];
+            }
+            // Remove o campo extra para não poluir os dados
+            unset($data[$campoOutro]);
+        } 
 
         return $data;
     }

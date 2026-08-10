@@ -22,6 +22,61 @@ $tipoAtual = $tipo ?? ($old['tipo_veiculo'] ?? null);
 
 // Para criação, define um tipo padrão (será sobrescrito pelo modal)
 $tipoSelecionado = $isEdit ? $tipoAtual : null;
+
+/**
+ * Gera o HTML do <select> com opção "Outro" e retorna informações sobre o estado.
+ *
+ * @param string $nome       Nome do campo (atributo name)
+ * @param array  $lista      Lista de valores válidos (associativa ou indexada)
+ * @param string $valorSalvo Valor atual (do banco ou $old)
+ * @param string $classes    Classes adicionais para o select (opcional)
+ * @param string $id         ID do select (opcional; se não fornecido, usa o nome)
+ * @return array{
+ *     select_html: string,
+ *     is_outro: bool,
+ *     valor_outro: string
+ * }
+ */
+function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string $classes = '', string $id = ''): array
+{
+    $id = $id ?: $nome; // Se ID não for fornecido, usa o nome
+
+    $isAssoc = array_keys($lista) !== range(0, count($lista) - 1);
+
+    $isOutro = false;
+    $valorOutro = '';
+    if (!empty($valorSalvo)) {
+        if ($isAssoc) {
+            $isOutro = !array_key_exists($valorSalvo, $lista);
+        } else {
+            $isOutro = !in_array($valorSalvo, $lista, true);
+        }
+        if ($isOutro) {
+            $valorOutro = $valorSalvo;
+        }
+    }
+
+    $classAttribute = 'form-select' . ($classes ? ' ' . htmlspecialchars($classes) : '');
+    $html = '<select name="' . htmlspecialchars($nome) . '" id="' . htmlspecialchars($id) . '" class="' . $classAttribute . '">';
+    $html .= '<option value="">Selecione</option>';
+
+    foreach ($lista as $key => $label) {
+        $value = $isAssoc ? $key : $label;
+        $selected = ($valorSalvo === $value && !$isOutro) ? ' selected' : '';
+        $html .= '<option value="' . htmlspecialchars($value) . '"' . $selected . '>' . htmlspecialchars($label) . '</option>';
+    }
+
+    $selectedOutro = $isOutro ? ' selected' : '';
+    $html .= '<option value="outro"' . $selectedOutro . '>Outro (digitar)</option>';
+    $html .= '</select>';
+
+    return [
+        'select_html' => $html,
+        'is_outro'    => $isOutro,
+        'valor_outro' => $valorOutro,
+    ];
+}
+
 ?>
 
 <script>
@@ -203,21 +258,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <select name="carroceria" id="carroceria" class="form-select <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione</option>
-                            <?php foreach (carrocerias_list() as $value => $label): ?>
-                                <option value="<?= $value ?>" <?= selected($old['carroceria'] ?? $veiculo['carroceria'] ?? '', $value) ?>>
-                                    <?= htmlspecialchars($label) ?>
-                                </option>
-                            <?php endforeach; ?>
-                            <option value="outro" <?= selected($old['carroceria'] ?? $veiculo['carroceria'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                        </select>
+
+                        <?php
+                            $carroceria = gerarSelectOutro(
+                                nome: 'carroceria',
+                                lista: carrocerias_list(),
+                                valorSalvo: $old['carroceria'] ?? $veiculo['carroceria'] ?? '',
+                                classes: isset($errors['carroceria']) ? 'is-invalid' : ''
+                            );
+                        ?>
+
+                        <!-- Select gerado pela função -->
+                        <?= $carroceria['select_html'] ?>
 
                         <!-- Campo extra para "Outro" -->
-                        <input type="text" name="carroceria_outro" id="carroceria_outro" class="form-control mt-2 <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['carroceria_outro'] ?? '') ?>" 
+                        <input type="text" name="carroceria_outro" id="carroceria_outro" 
+                               class="form-control mt-2 <?= isset($errors['carroceria']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($carroceria['valor_outro']) ?>" 
                                placeholder="Digite a carroceria personalizada" 
-                               style="display: <?= ($old['carroceria'] ?? $veiculo['carroceria'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                               style="display: <?= $carroceria['is_outro'] ? 'block' : 'none' ?>;">
+
                         <div class="invalid-feedback">
                             A carroceria personalizada é obrigatória.
                         </div>
@@ -526,21 +586,30 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <i class="bi bi-info-circle-fill"></i>
                             </button>
                         </div>
-                        <select name="pneu_aro" id="pneu_aro" class="form-select <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>">
-                            <option value="">Selecione</option>
-                            <?php foreach (aros_pneu_list() as $value => $label): ?>
-                                <option value="<?= $value ?>" <?= selected($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '', $value) ?>>
-                                    <?= htmlspecialchars($label) ?>
-                                </option>
-                            <?php endforeach; ?>
-                            <option value="outro" <?= selected($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                        </select>
+
+                        <?php
+                        $pneuAro = gerarSelectOutro(
+                            nome: 'pneu_aro',
+                            lista: aros_pneu_list(),
+                            valorSalvo: $old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '',
+                            classes: isset($errors['pneu_aro']) ? 'is-invalid' : ''
+                        );
+                        ?>
+
+                        <!-- Select gerado pela função -->
+                        <?= $pneuAro['select_html'] ?>
 
                         <!-- Campo extra para "Outro" -->
-                        <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="pneu_aro_outro" id="pneu_aro_outro" class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['pneu_aro_outro'] ?? '') ?>" 
+                        <input type="text" 
+                               inputmode="numeric" 
+                               pattern="\d*" 
+                               data-tipo="inteiro" 
+                               name="pneu_aro_outro" 
+                               id="pneu_aro_outro" 
+                               class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($pneuAro['valor_outro']) ?>" 
                                placeholder="Digite o aro personalizado" 
-                               style="display: <?= ($old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                               style="display: <?= $pneuAro['is_outro'] ? 'block' : 'none' ?>;">
 
                         <div class="invalid-feedback">
                             O aro personalizado é obrigatório.
@@ -713,22 +782,28 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <select name="capacidade_cilindro_m3" id="capacidade_cilindro_m3" class="form-select <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" required>
-                                    <option value="">Selecione</option>
-                                    <?php foreach (gnv_capacidades_list() as $valor): ?>
-                                        <option value="<?= $valor ?>" <?= selected($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '', $valor) ?>>
-                                            <?= number_format($valor, 1, ',', '') ?> m³
-                                        </option>
-                                    <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>
+
+                                <?php
+                                $capacidade = gerarSelectOutro(
+                                    nome: 'capacidade_cilindro_m3',
+                                    lista: gnv_capacidades_list(),
+                                    valorSalvo: $old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '',
+                                    classes: isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : ''
+                                );
+                                ?>
+
+                                <!-- Select gerado pela função -->
+                                <?= $capacidade['select_html'] ?>
 
                                 <!-- Campo extra para "Outro" -->
-                                <input type="number" step="any" inputmode="decimal" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['capacidade_cilindro_m3_outro'] ?? '') ?>" 
+                                <input type="number" step="any" inputmode="decimal" 
+                                       name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" 
+                                       class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($capacidade['valor_outro']) ?>" 
                                        placeholder="Digite a capacidade em m³" 
-                                       style="display: <?= ($old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '') === 'outro' ? 'block' : 'none' ?>;" 
+                                       style="display: <?= $capacidade['is_outro'] ? 'block' : 'none' ?>;" 
                                        min="0">
+
                                 <div class="invalid-feedback">
                                     A capacidade é obrigatória.
                                 </div>  
@@ -771,21 +846,25 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <select name="material_cilindro" id="material_cilindro" class="form-select <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>">
-                                    <option value="">Selecione</option>
-                                    <?php foreach (gnv_materiais_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '', $value) ?>>
-                                            <?= htmlspecialchars($label) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>                                
+
+                                <?php
+                                $material = gerarSelectOutro(
+                                    nome: 'material_cilindro',
+                                    lista: gnv_materiais_list(),
+                                    valorSalvo: $old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '',
+                                    classes: isset($errors['material_cilindro']) ? 'is-invalid' : ''
+                                );
+                                ?>
+
+                                <!-- Select gerado pela função -->
+                                <?= $material['select_html'] ?>
 
                                 <!-- Campo extra para "Outro" -->
-                                <input type="text" name="material_cilindro_outro" id="material_cilindro_outro" class="form-control mt-2 <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['material_cilindro_outro'] ?? '') ?>" 
+                                <input type="text" name="material_cilindro_outro" id="material_cilindro_outro" 
+                                       class="form-control mt-2 <?= isset($errors['material_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($material['valor_outro']) ?>" 
                                        placeholder="Digite o material personalizado" 
-                                       style="display: <?= ($old['material_cilindro'] ?? $gnv['material_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= $material['is_outro'] ? 'block' : 'none' ?>;">
                             </div>
 
                             <!-- Localização Cilindro -->
@@ -800,21 +879,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <select name="localizacao_cilindro" id="localizacao_cilindro" class="form-select <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" required>
-                                    <option value="">Selecione</option>
-                                    <?php foreach (gnv_localizacoes_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '', $value) ?>>
-                                            <?= htmlspecialchars($label) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>
+
+                                <?php
+                                $localizacao = gerarSelectOutro(
+                                    nome: 'localizacao_cilindro',
+                                    lista: gnv_localizacoes_list(),
+                                    valorSalvo: $old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '',
+                                    classes: isset($errors['localizacao_cilindro']) ? 'is-invalid' : ''
+                                );
+                                ?>
+
+                                <!-- Select gerado pela função -->
+                                <?= $localizacao['select_html'] ?>
 
                                 <!-- Campo extra para "Outro" -->
-                                <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['localizacao_cilindro_outro'] ?? '') ?>" 
+                                <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" 
+                                       class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
+                                       value="<?= htmlspecialchars($localizacao['valor_outro']) ?>" 
                                        placeholder="Digite a localização personalizada" 
-                                       style="display: <?= ($old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= $localizacao['is_outro'] ? 'block' : 'none' ?>;">
+
                                 <div class="invalid-feedback">
                                     A localização é obrigatória.
                                 </div>  
@@ -1383,21 +1467,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="motor_tipo" id="motor_tipo" class="form-select <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" required>
-                                <option value="">Selecione</option>
-                                <?php foreach (motorizacoes_list() as $valor): ?>
-                                    <option value="<?= htmlspecialchars($valor) ?>" <?= selected($old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '', $valor) ?>>
-                                        <?= htmlspecialchars($valor) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
-                            
+
+                            <?php
+                                $motorTipo = gerarSelectOutro(
+                                    nome: 'motor_tipo',
+                                    lista: motorizacoes_list(),
+                                    valorSalvo: $old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '',
+                                    classes: isset($errors['motor_tipo']) ? 'is-invalid' : ''
+                                );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $motorTipo['select_html'] ?>
+
                             <!-- Campo extra para "Outro" -->
-                            <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['motor_tipo_outro'] ?? '') ?>" 
+                            <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" 
+                                   class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($motorTipo['valor_outro']) ?>" 
                                    placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
-                                   style="display: none;">
+                                   style="display: <?= $motorTipo['is_outro'] ? 'block' : 'none' ?>;">
+
                             <div class="invalid-feedback">
                                 A motorização é obrigatória.
                             </div>
@@ -2096,22 +2185,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="bateria_tipo" id="bateria_tipo" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
-                                <option value="">Selecione</option>
-                                <?php foreach (baterias_tipos_bev_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
+
+                            <?php
+                            $bateriaTipo = gerarSelectOutro(
+                                nome: 'bateria_tipo',
+                                lista: baterias_tipos_bev_list(),
+                                valorSalvo: $old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '',
+                                classes: isset($errors['bateria_tipo']) ? 'is-invalid' : ''
+                            );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $bateriaTipo['select_html'] ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro" 
                                    class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
+                                   value="<?= htmlspecialchars($bateriaTipo['valor_outro']) ?>" 
                                    placeholder="Digite o tipo personalizado" 
-                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                   style="display: <?= $bateriaTipo['is_outro'] ? 'block' : 'none' ?>;">
+
                             <div class="invalid-feedback">
                                 O tipo de bateria é obrigatório.
                             </div>
@@ -2129,22 +2222,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_eletrico" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
-                                <option value="">Selecione</option>
-                                <?php foreach (sistema_eletrico_tensoes_bev_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
+
+                            <?php
+                            $tensaoEletrico = gerarSelectOutro(
+                                nome: 'sistema_eletrico_tensao',
+                                lista: sistema_eletrico_tensoes_bev_list(),
+                                valorSalvo: $old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '',
+                                classes: isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '',
+                                id: 'sistema_eletrico_tensao_eletrico'
+                            );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $tensaoEletrico['select_html'] ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_eletrico" 
                                    class="form-control mt-2 <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['sistema_eletrico_tensao_outro'] ?? '') ?>" 
+                                   value="<?= htmlspecialchars($tensaoEletrico['valor_outro']) ?>" 
                                    placeholder="Digite a tensão personalizada (ex: 520V)" 
-                                   style="display: <?= ($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                   style="display: <?= $tensaoEletrico['is_outro'] ? 'block' : 'none' ?>;">
+
                             <div class="invalid-feedback">
                                 A tensão personalizada é obrigatória.
                             </div>
@@ -2339,22 +2437,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <select name="tipo_conector_dc" id="tipo_conector_dc" class="form-select <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" required>
-                                    <option value="">Selecione</option>
-                                    <?php foreach (conectores_eletricos_dc_list()as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', $value) ?>>
-                                            <?= htmlspecialchars($label) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>
+
+                                <?php
+                                $conectorDc = gerarSelectOutro(
+                                    nome: 'tipo_conector_dc',
+                                    lista: conectores_eletricos_dc_list(),
+                                    valorSalvo: $old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '',
+                                    classes: isset($errors['tipo_conector_dc']) ? 'is-invalid' : ''
+                                );
+                                ?>
+
+                                <!-- Select gerado pela função -->
+                                <?= $conectorDc['select_html'] ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="tipo_conector_dc_outro" id="tipo_conector_dc_outro" 
                                        class="form-control mt-2 <?= isset($errors['tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['tipo_conector_dc_outro'] ?? '') ?>" 
+                                       value="<?= htmlspecialchars($conectorDc['valor_outro']) ?>" 
                                        placeholder="Digite o conector personalizado" 
-                                       style="display: <?= ($old['tipo_conector_dc'] ?? $complemento['tipo_conector_dc'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= $conectorDc['is_outro'] ? 'block' : 'none' ?>;">
+
                                 <div class="invalid-feedback">
                                     O tipo de conector DC é obrigatório.
                                 </div>
@@ -2421,22 +2523,25 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                         <i class="bi bi-info-circle-fill"></i>
                                     </button>
                                 </div>
-                                <select name="tipo_conector_ac" id="tipo_conector_ac" class="form-select <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>">
-                                    <option value="">Selecione</option>
-                                    <?php foreach (conectores_eletricos_ac_list() as $value => $label): ?>
-                                        <option value="<?= $value ?>" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', $value) ?>>
-                                            <?= htmlspecialchars($label) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                    <option value="outro" <?= selected($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                </select>
+
+                                <?php
+                                $conectorAc = gerarSelectOutro(
+                                    nome: 'tipo_conector_ac',
+                                    lista: conectores_eletricos_ac_list(),
+                                    valorSalvo: $old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '',
+                                    classes: isset($errors['tipo_conector_ac']) ? 'is-invalid' : ''
+                                );
+                                ?>
+
+                                <!-- Select gerado pela função -->
+                                <?= $conectorAc['select_html'] ?>
 
                                 <!-- Campo extra para "Outro" -->
                                 <input type="text" name="tipo_conector_ac_outro" id="tipo_conector_ac_outro" 
                                        class="form-control mt-2 <?= isset($errors['tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars($old['tipo_conector_ac_outro'] ?? '') ?>" 
+                                       value="<?= htmlspecialchars($conectorAc['valor_outro']) ?>" 
                                        placeholder="Digite o conector personalizado" 
-                                       style="display: <?= ($old['tipo_conector_ac'] ?? $complemento['tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                       style="display: <?= $conectorAc['is_outro'] ? 'block' : 'none' ?>;">
                             </div>
 
                             <!-- Tempo de Carga AC -->
@@ -2593,21 +2698,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="motor_combustao_tipo" id="motor_combustao_tipo" class="form-select <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" required>
-                                <option value="">Selecione</option>
-                                <?php foreach (motorizacoes_list() as $valor): ?>
-                                    <option value="<?= htmlspecialchars($valor) ?>" <?= selected($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '', $valor) ?>>
-                                        <?= htmlspecialchars($valor) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
-                            
+
+                            <?php
+                            $motorCombustaoTipo = gerarSelectOutro(
+                                nome: 'motor_combustao_tipo',
+                                lista: motorizacoes_list(),
+                                valorSalvo: $old['motor_combustao_tipo'] ?? $complemento['motor_combustao_tipo'] ?? '',
+                                classes: isset($errors['motor_combustao_tipo']) ? 'is-invalid' : ''
+                            );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $motorCombustaoTipo['select_html'] ?>
+
                             <!-- Campo extra para "Outro" -->
-                            <input type="text" name="motor_combustao_tipo_outro" id="motor_combustao_tipo_outro" class="form-control mt-2 <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['motor_combustao_tipo_outro'] ?? '') ?>" 
+                            <input type="text" name="motor_combustao_tipo_outro" id="motor_combustao_tipo_outro" 
+                                   class="form-control mt-2 <?= isset($errors['motor_combustao_tipo']) ? 'is-invalid' : '' ?>" 
+                                   value="<?= htmlspecialchars($motorCombustaoTipo['valor_outro']) ?>" 
                                    placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
-                                   style="display: none;">
+                                   style="display: <?= $motorCombustaoTipo['is_outro'] ? 'block' : 'none' ?>;">
+
                             <small class="text-muted">Ex: 1.0, 1.6, 2.0, etc.</small>
 
                             <div class="invalid-feedback">
@@ -2865,7 +2975,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                         <!-- Capacidade Líquida -->
                         <div class="col-md-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="bateria_capacidade_kwh" class="form-label mb-0">Capacidade Líquida <span class="text-danger">*</span></label>
+                                <label for="bateria_capacidade_kwh" class="form-label mb-0">Capacidade Líquida</label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -2878,18 +2988,15 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                 <input type="number" step="any" inputmode="decimal" name="bateria_capacidade_kwh" id="bateria_capacidade_kwh" 
                                        class="form-control <?= isset($errors['bateria_capacidade_kwh']) ? 'is-invalid' : '' ?>" 
                                        value="<?= htmlspecialchars($old['bateria_capacidade_kwh'] ?? $complemento['bateria_capacidade_kwh'] ?? '') ?>" 
-                                       placeholder="Ex: 45.5" min="0" required>
+                                       placeholder="Ex: 45.5" min="0">
                                 <span class="input-group-text">kWh</span>
-                                <div class="invalid-feedback">
-                                    A capacidade líquida é obrigatória.
-                                </div>
                             </div>
                         </div>
 
                         <!-- Tipo de Bateria -->
                         <div class="col-md-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="bateria_tipo" class="form-label mb-0">Tipo de Bateria <span class="text-danger">*</span></label>
+                                <label for="bateria_tipo_hibrido" class="form-label mb-0">Tipo de Bateria <span class="text-danger">*</span></label>
                                 <button type="button" 
                                         class="btn btn-link btn-sm p-0 text-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -2898,22 +3005,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="bateria_tipo" id="bateria_tipo_hibrido" class="form-select <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" required>
-                                <option value="">Selecione</option>
-                                <?php foreach (baterias_tipos_hibrido_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
+
+                            <?php
+                            $bateriaTipoHibrido = gerarSelectOutro(
+                                nome: 'bateria_tipo',
+                                lista: baterias_tipos_hibrido_list(),
+                                valorSalvo: $old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '',
+                                classes: isset($errors['bateria_tipo']) ? 'is-invalid' : '',
+                                id: 'bateria_tipo_hibrido'
+                            );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $bateriaTipoHibrido['select_html'] ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="bateria_tipo_outro" id="bateria_tipo_outro_hibrido" 
                                    class="form-control mt-2 <?= isset($errors['bateria_tipo']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['bateria_tipo_outro'] ?? '') ?>" 
+                                   value="<?= htmlspecialchars($bateriaTipoHibrido['valor_outro']) ?>" 
                                    placeholder="Digite o tipo personalizado" 
-                                   style="display: <?= ($old['bateria_tipo'] ?? $complemento['bateria_tipo'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                   style="display: <?= $bateriaTipoHibrido['is_outro'] ? 'block' : 'none' ?>;">
+
                             <div class="invalid-feedback">
                                 O tipo de bateria é obrigatório.
                             </div>
@@ -2931,22 +3043,27 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                     <i class="bi bi-info-circle-fill"></i>
                                 </button>
                             </div>
-                            <select name="sistema_eletrico_tensao" id="sistema_eletrico_tensao_hibrido" class="form-select <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>">
-                                <option value="">Selecione</option>
-                                <?php foreach (sistema_eletrico_tensoes_list() as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', $value) ?>>
-                                        <?= htmlspecialchars($label) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="outro" <?= selected($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                            </select>
+
+                            <?php
+                            $tensaoHibrido = gerarSelectOutro(
+                                nome: 'sistema_eletrico_tensao',
+                                lista: sistema_eletrico_tensoes_list(),
+                                valorSalvo: $old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '',
+                                classes: isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '',
+                                id: 'sistema_eletrico_tensao_hibrido'
+                            );
+                            ?>
+
+                            <!-- Select gerado pela função -->
+                            <?= $tensaoHibrido['select_html'] ?>
 
                             <!-- Campo extra para "Outro" -->
                             <input type="text" name="sistema_eletrico_tensao_outro" id="sistema_eletrico_tensao_outro_hibrido" 
                                    class="form-control mt-2 <?= isset($errors['sistema_eletrico_tensao']) ? 'is-invalid' : '' ?>" 
-                                   value="<?= htmlspecialchars($old['sistema_eletrico_tensao_outro'] ?? '') ?>" 
+                                   value="<?= htmlspecialchars($tensaoHibrido['valor_outro']) ?>" 
                                    placeholder="Digite a tensão personalizada (ex: 520V)" 
-                                   style="display: <?= ($old['sistema_eletrico_tensao'] ?? $complemento['sistema_eletrico_tensao'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                   style="display: <?= $tensaoHibrido['is_outro'] ? 'block' : 'none' ?>;">
+
                             <div class="invalid-feedback">
                                 A tensão personalizada é obrigatória.
                             </div>
@@ -3048,22 +3165,25 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             <i class="bi bi-info-circle-fill"></i>
                                         </button>
                                     </div>
-                                    <select name="carregamento_tipo_conector_ac" id="carregamento_tipo_conector_ac" class="form-select <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>">
-                                        <option value="">Selecione</option>
-                                        <?php foreach (conectores_hibridos_ac_list() as $value => $label): ?>
-                                            <option value="<?= $value ?>" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', $value) ?>>
-                                                <?= htmlspecialchars($label) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                        <option value="outro" <?= selected($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                    </select>
+
+                                    <?php
+                                    $conectorAcPhev = gerarSelectOutro(
+                                        nome: 'carregamento_tipo_conector_ac',
+                                        lista: conectores_hibridos_ac_list(),
+                                        valorSalvo: $old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '',
+                                        classes: isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : ''
+                                    );
+                                    ?>
+
+                                    <!-- Select gerado pela função -->
+                                    <?= $conectorAcPhev['select_html'] ?>
 
                                     <!-- Campo extra para "Outro" -->
                                     <input type="text" name="carregamento_tipo_conector_ac_outro" id="carregamento_tipo_conector_ac_outro" 
                                            class="form-control mt-2 <?= isset($errors['carregamento_tipo_conector_ac']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_ac_outro'] ?? '') ?>" 
+                                           value="<?= htmlspecialchars($conectorAcPhev['valor_outro']) ?>" 
                                            placeholder="Digite o conector personalizado" 
-                                           style="display: <?= ($old['carregamento_tipo_conector_ac'] ?? $complemento['carregamento_tipo_conector_ac'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                           style="display: <?= $conectorAcPhev['is_outro'] ? 'block' : 'none' ?>;">
                                 </div>
 
                                 <!-- Potência AC (kW) -->
@@ -3120,22 +3240,26 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
                                             <i class="bi bi-info-circle-fill"></i>
                                         </button>
                                     </div>
-                                    <select name="carregamento_tipo_conector_dc" id="carregamento_tipo_conector_dc" class="form-select <?= isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : '' ?>">
-                                        <option value="">Selecione</option>
-                                        <?php foreach (conectores_hibridos_dc_list() as $value => $label): ?>
-                                            <option value="<?= $value ?>" <?= selected($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '', $value) ?>>
-                                                <?= htmlspecialchars($label) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                        <option value="outro" <?= selected($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '', 'outro') ?>>Outro (digitar)</option>
-                                    </select>
+
+                                    <?php
+                                    $conectorDcPhev = gerarSelectOutro(
+                                        nome: 'carregamento_tipo_conector_dc',
+                                        lista: conectores_hibridos_dc_list(),
+                                        valorSalvo: $old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '',
+                                        classes: isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : ''
+                                    );
+                                    ?>
+
+                                    <!-- Select gerado pela função -->
+                                    <?= $conectorDcPhev['select_html'] ?>
 
                                     <!-- Campo extra para "Outro" -->
                                     <input type="text" name="carregamento_tipo_conector_dc_outro" id="carregamento_tipo_conector_dc_outro" 
                                            class="form-control mt-2 <?= isset($errors['carregamento_tipo_conector_dc']) ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars($old['carregamento_tipo_conector_dc_outro'] ?? '') ?>" 
+                                           value="<?= htmlspecialchars($conectorDcPhev['valor_outro']) ?>" 
                                            placeholder="Digite o conector personalizado" 
-                                           style="display: <?= ($old['carregamento_tipo_conector_dc'] ?? $complemento['carregamento_tipo_conector_dc'] ?? '') === 'outro' ? 'block' : 'none' ?>;">
+                                           style="display: <?= $conectorDcPhev['is_outro'] ? 'block' : 'none' ?>;">
+
                                     <div class="invalid-feedback">
                                         O tipo de conector personalizado é obrigatório.
                                     </div>
@@ -4000,6 +4124,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
 
             // Lógica para edição: se o valor atual não estiver na lista, seleciona "outro" e preenche o campo extra
             const valorAtual = select.value;
+
             if (valorAtual && valorAtual !== 'outro' && motorizacoesList) {
                 if (!motorizacoesList.includes(valorAtual)) {
                     select.value = 'outro';
@@ -4082,40 +4207,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                const form = document.getElementById('veiculoForm');
-const invalidFields = [];
 
-// Itera sobre todos os campos com validação
-form.querySelectorAll('input, select, textarea').forEach(campo => {
-    if (campo.validity && !campo.validity.valid) {
-        const errors = [];
-        const validity = campo.validity;
-        if (validity.valueMissing) errors.push('valueMissing (vazio)');
-        if (validity.typeMismatch) errors.push('typeMismatch (tipo inválido)');
-        if (validity.patternMismatch) errors.push('patternMismatch (padrão inválido)');
-        if (validity.tooLong) errors.push('tooLong (muito longo)');
-        if (validity.tooShort) errors.push('tooShort (muito curto)');
-        if (validity.rangeUnderflow) errors.push('rangeUnderflow (abaixo do mínimo)');
-        if (validity.rangeOverflow) errors.push('rangeOverflow (acima do máximo)');
-        if (validity.stepMismatch) errors.push('stepMismatch (step inválido)');
-        if (validity.badInput) errors.push('badInput (entrada inválida)');
-        if (validity.customError) errors.push('customError (erro personalizado)');
-        
-        invalidFields.push({
-            nome: campo.name || campo.id || 'sem-nome',
-            tipo: campo.type || campo.tagName,
-            valor: campo.value,
-            erros: errors.join(', ')
-        });
-    }
-});
-
-console.log('Campos inválidos:', invalidFields);
-if (invalidFields.length === 0) {
-    console.log('Nenhum campo inválido encontrado!');
-} else {
-    console.log('Total de campos inválidos:', invalidFields.length);
-}
                 // 1. Processa campos "Outro" (copia valores para submissão)
                 prepareSubmit('motor_tipo', 'motor_tipo_outro');
                 prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro');
@@ -4213,6 +4305,7 @@ if (invalidFields.length === 0) {
                             primeiroInvalido.focus();
                         }
                     }
+
                     return;
                 }
 
