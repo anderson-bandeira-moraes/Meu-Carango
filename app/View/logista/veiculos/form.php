@@ -81,14 +81,14 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
 
 <script>
     const CONFIG = {
-        // Listas indexadas (mantêm json_encode normal)
+        // Listas indexadas
         motorizacoes:    <?= json_encode(motorizacoes_list()) ?>,
         assentos:        <?= json_encode(assentos_list()) ?>,
         marchas:         <?= json_encode(marchas_list()) ?>,
         gnv_capacidades: <?= json_encode(gnv_capacidades_list()) ?>,
         gnv_quantidades: <?= json_encode(gnv_quantidades_list()) ?>,
 
-        // Listas associativas que NÃO são usadas em setupMotorOutro (mantêm json_encode normal)
+        // Listas associativas 
         regrasHibrido:  <?= json_encode(regras_hibrido()) ?>,
         cores:          <?= json_encode(cores_list()) ?>,
         portas:         <?= json_encode(portas_list()) ?>,
@@ -105,7 +105,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         tipos_roda:     <?= json_encode(tipos_roda_list()) ?>,
         tipos_freio:    <?= json_encode(tipos_freio_list()) ?>,
 
-        // Listas associativas usadas em setupMotorOutro (devem ser convertidas para chaves)
+        // Listas associativas 
         gnv_materiais:           <?= json_encode(array_keys(gnv_materiais_list())) ?>,
         gnv_localizacoes:        <?= json_encode(array_keys(gnv_localizacoes_list())) ?>,
         conectores_eletricos_dc: <?= json_encode(array_keys(conectores_eletricos_dc_list())) ?>,
@@ -4186,66 +4186,13 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
             if (!isOutro) outroInput.value = '';
         }
 
-        /**
-         * Configura o comportamento do "Outro" para um par select + campo extra.
-         * @param {string} selectId - ID do <select>
-         * @param {string} outroInputId - ID do campo de texto extra
-         * @param {string[]} motorizacoesList - Array com os valores da lista de motorizações
-         */
-        function setupMotorOutro(selectId, outroInputId, motorizacoesList) {
+        function adicionarListenerOutro(selectId, extraId) {
             const select = document.getElementById(selectId);
-            const outroInput = document.getElementById(outroInputId);
-            if (!select || !outroInput) return;
-
-            // Event listener para mudança no select
+            if (!select) return;
             select.addEventListener('change', function() {
-                toggleMotorOutro(selectId, outroInputId);
+                toggleMotorOutro(selectId, extraId);
             });
-
-            // Lógica para edição: se o valor atual não estiver na lista, seleciona "outro" e preenche o campo extra
-            const valorAtual = select.value;
-
-            if (valorAtual && valorAtual !== 'outro' && motorizacoesList) {
-                if (!motorizacoesList.includes(valorAtual)) {
-                    select.value = 'outro';
-                    outroInput.value = valorAtual;
-                    toggleMotorOutro(selectId, outroInputId);
-                }
-            }
-
-            // Execução inicial
-            toggleMotorOutro(selectId, outroInputId);
         }
-
-        /**
-         * Prepara o campo para submissão: se "outro" estiver selecionado,
-         * copia o valor do campo extra para o select, mas somente se o campo extra
-         * não estiver vazio. Caso contrário, mantém "outro" no select.
-         * @param {string} selectId
-         * @param {string} outroInputId
-         */
-        function prepareSubmit(selectId, outroInputId) {
-            const select = document.getElementById(selectId);
-            const outroInput = document.getElementById(outroInputId);
-            if (!select || !outroInput) return;
-            if (select.value === 'outro') {
-                const valor = outroInput.value.trim();
-                if (valor !== '') {
-                    select.value = valor;
-                }
-                // Se estiver vazio, mantém "outro" no select, não substitui
-            }
-        }
-
-        // =============================================
-        // CONFIGURAR "OUTRO" PARA COMBUSTÃO
-        // =============================================
-        setupMotorOutro('motor_tipo', 'motor_tipo_outro', CONFIG.motorizacoes);
-
-        // =============================================
-        // CONFIGURAR "OUTRO" PARA HÍBRIDO
-        // =============================================
-        setupMotorOutro('motor_combustao_tipo', 'motor_combustao_tipo_outro', CONFIG.motorizacoes);
 
         // =============================================
         // 5. VALIDAÇÃO DE GNV (exibe campos extras)
@@ -4287,21 +4234,6 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         const form = document.getElementById('veiculoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-
-                // 1. Processa campos "Outro" (copia valores para submissão)
-                prepareSubmit('motor_tipo', 'motor_tipo_outro');
-                prepareSubmit('motor_combustao_tipo', 'motor_combustao_tipo_outro');
-                prepareSubmit('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro');
-                prepareSubmit('material_cilindro', 'material_cilindro_outro');
-                prepareSubmit('localizacao_cilindro', 'localizacao_cilindro_outro');
-                prepareSubmit('tipo_conector_dc', 'tipo_conector_dc_outro');
-                prepareSubmit('tipo_conector_ac', 'tipo_conector_ac_outro');
-                prepareSubmit('bateria_tipo', 'bateria_tipo_outro');
-                prepareSubmit('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro');
-                prepareSubmit('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido');
-                prepareSubmit('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico');
-                prepareSubmit('carroceria', 'carroceria_outro');
-                prepareSubmit('pneu_aro', 'pneu_aro_outro');
 
                 // 2. Acumulador de erros (apenas para controle, não mais usado para prioridade)
                 const erros = [];
@@ -5152,40 +5084,9 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         // =============================================
         // CONFIGURAR "OUTRO" PARA COR (simples, sem lista)
         // =============================================
-        function setupCorOutro() {
-            const select = document.getElementById('cor');
-            const outroInput = document.getElementById('cor_outro');
-            if (!select || !outroInput) return;
-
-            // Event listener para mudança no select
-            select.addEventListener('change', function() {
-                const isOutro = select.value === 'outro';
-                outroInput.style.display = isOutro ? 'block' : 'none';
-                if (!isOutro) outroInput.value = '';
-            });
-
-            // Na edição, se o valor salvo não estiver na lista, seleciona "outro" e preenche
-            const valorAtual = select.value;
-            if (valorAtual && valorAtual !== 'outro') {
-                // Verifica se o valor existe na lista de opções (excluindo "outro")
-                const options = Array.from(select.options).map(o => o.value);
-                if (!options.includes(valorAtual)) {
-                    select.value = 'outro';
-                    outroInput.value = valorAtual;
-                    outroInput.style.display = 'block';
-                }
-            }
-
-            // Execução inicial
-            if (select.value === 'outro') {
-                outroInput.style.display = 'block';
-            } else {
-                outroInput.style.display = 'none';
-            }
-        }
-
-        // Chamar a função no DOMContentLoaded
-        setupCorOutro();
+        document.getElementById('corInput').addEventListener('change', function() {
+            toggleMotorOutro('cor', 'cor_outro');
+        });
 
         // ============================================================
         // DROPDOWN DE CORES (abrir ao clicar no input ou botão)
@@ -5304,67 +5205,77 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         // =============================================
         // CONFIGURAR "OUTRO" PARA MATERIAL DO CILINDRO
         // =============================================
-        setupMotorOutro('material_cilindro', 'material_cilindro_outro', CONFIG.gnv_materiais); 
+        adicionarListenerOutro('material_cilindro', 'material_cilindro_outro'); 
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA CAPACIDADE DO CILINDRO
         // =============================================
-        setupMotorOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro', CONFIG.gnv_capacidades);
+        adicionarListenerOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA LOCALIZAÇÃO DO CILINDRO
         // =============================================
-        setupMotorOutro('localizacao_cilindro', 'localizacao_cilindro_outro', CONFIG.gnv_localizacoes);
+        adicionarListenerOutro('localizacao_cilindro', 'localizacao_cilindro_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC ELETRICO
         // =============================================
-        setupMotorOutro('tipo_conector_dc', 'tipo_conector_dc_outro', CONFIG.conectores_eletricos_dc);
+        adicionarListenerOutro('tipo_conector_dc', 'tipo_conector_dc_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC ELETRICO
         // =============================================
-        setupMotorOutro('tipo_conector_ac', 'tipo_conector_ac_outro', CONFIG.conectores_eletricos_ac);
+        adicionarListenerOutro('tipo_conector_ac', 'tipo_conector_ac_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA ELETRICO
         // =============================================
-        setupMotorOutro('bateria_tipo', 'bateria_tipo_outro', CONFIG.baterias_tipos_bev);
+        adicionarListenerOutro('bateria_tipo', 'bateria_tipo_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE BATERIA HIBRIDO
         // =============================================
-        setupMotorOutro('bateria_tipo_hibrido', 'bateria_tipo_outro_hibrido', CONFIG.baterias_tipos_hibrido)
+        adicionarListenerOutro('bateria_tipo_hibrido', 'bateria_tipo_outro_hibrido')
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR AC (PHEV)
         // =============================================
-        setupMotorOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro', CONFIG.conectores_hibridos_ac);
+        adicionarListenerOutro('carregamento_tipo_conector_ac', 'carregamento_tipo_conector_ac_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TIPO DE CONECTOR DC (PHEV)
         // =============================================
-        setupMotorOutro('carregamento_tipo_conector_dc', 'carregamento_tipo_conector_dc_outro', CONFIG.conectores_hibridos_dc);
+        adicionarListenerOutro('carregamento_tipo_conector_dc', 'carregamento_tipo_conector_dc_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA HIBRIDO
         // =============================================
-        setupMotorOutro('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido', CONFIG.tensoes_hibridos);
+        adicionarListenerOutro('sistema_eletrico_tensao_hibrido', 'sistema_eletrico_tensao_outro_hibrido');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA TENSÃO DA BATERIA ELETRICO
         // =============================================
-        setupMotorOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico', CONFIG.tensoes_eletricos);
+        adicionarListenerOutro('sistema_eletrico_tensao_eletrico', 'sistema_eletrico_tensao_outro_eletrico');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA CARROCERIA
         // =============================================
-        setupMotorOutro('carroceria', 'carroceria_outro', CONFIG.carrocerias);
+        adicionarListenerOutro('carroceria', 'carroceria_outro');
 
         // =============================================
         // CONFIGURAR "OUTRO" PARA ARO DO PNEU
         // =============================================
-        setupMotorOutro('pneu_aro', 'pneu_aro_outro', CONFIG.aros_pneu);
+        adicionarListenerOutro('pneu_aro', 'pneu_aro_outro');
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA COMBUSTÃO
+        // =============================================
+        adicionarListenerOutro('motor_tipo', 'motor_tipo_outro');
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA HÍBRIDO
+        // =============================================
+        adicionarListenerOutro('motor_combustao_tipo', 'motor_combustao_tipo_outro');
 
 
         // ============================================================
