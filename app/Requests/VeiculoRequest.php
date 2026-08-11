@@ -41,9 +41,11 @@ class VeiculoRequest extends FormRequest
      * Mapeamento de campos que possuem opção "Outro" (select + input extra).
      */
     private const CAMPOS_COM_OUTRO = [
-        'carroceria' => 'carroceria_outro',
-        'pneu_aro'   => 'pneu_aro_outro',
-        'cor'        => 'cor_outro',
+        'carroceria'          => 'carroceria_outro',
+        'pneu_aro'            => 'pneu_aro_outro',
+        'cor'                 => 'cor_outro',
+        'suspensao_dianteira' => 'suspensao_dianteira_outro',
+        'suspensao_traseira'  => 'suspensao_traseira_outro',
     ];
 
     /**
@@ -91,6 +93,10 @@ class VeiculoRequest extends FormRequest
             'gnv_instalado'   => 'nullable|boolean',
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
+
+            // Tipo de suspensão
+            'suspensao_dianteira' => 'nullable|string|max:40',
+            'suspensao_traseira'  => 'nullable|string|max:40',
         ];
     }
 
@@ -189,6 +195,12 @@ class VeiculoRequest extends FormRequest
             // Freios
             'freio_dianteiro.in' => 'O tipo de freio dianteiro deve ser disco ou tambor.',
             'freio_traseiro.in'  => 'O tipo de freio traseiro deve ser disco ou tambor.',
+
+            // Suspensão
+            'suspensao_dianteira.max' => 'A suspensão dianteira deve ter no máximo :max caracteres.',
+            'suspensao_traseira.max'  => 'A suspensão traseira deve ter no máximo :max caracteres.',
+            'suspensao_dianteira.string' => 'A suspensão dianteira deve ser um texto válido.',
+            'suspensao_traseira.string'  => 'A suspensão traseira deve ser um texto válido.',
         ];
     }
 
@@ -237,7 +249,9 @@ class VeiculoRequest extends FormRequest
             'tipo_direcao',
             'freio_dianteiro', 'freio_traseiro',
             'tipo_roda',
-            'status_estoque', 'status_vitrine'
+            'status_estoque', 'status_vitrine',
+            'suspensao_dianteira', 'suspensao_dianteira_outro',
+            'suspensao_traseira', 'suspensao_traseira_outro'
         ];
 
         $booleanFields = [

@@ -641,3 +641,41 @@ if (!function_exists('aspiracao_list')) {
         return $list;
     }
 }
+
+if (!function_exists('suspensao_dianteira_list')) {
+    /**
+     * Retorna a lista de tipos de suspensão dianteira.
+     *
+     * @return array Array associativo com value => label (ex: 'macpherson' => 'MacPherson')
+     */
+    function suspensao_dianteira_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['suspensao_dianteira'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('suspensao_traseira_list')) {
+    /**
+     * Retorna a lista de tipos de suspensão traseira.
+     *
+     * @return array Array associativo com value => label (ex: 'multilink' => 'Multilink')
+     */
+    function suspensao_traseira_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['suspensao_traseira'] ?? [];
+        }
+
+        return $list;
+    }
+}

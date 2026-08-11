@@ -711,7 +711,7 @@ class VeiculoService
             'status_estoque', 'status_vitrine','slug',
             'carroceria', 'tipo_direcao', 'altura_solo_mm',
             'pneu_aro', 'tipo_roda', 'freio_dianteiro', 'freio_traseiro',
-            'placa'
+            'placa', 'suspensao_dianteira', 'suspensao_traseira'
         ];
         return array_intersect_key($dados, array_flip($allowed));
     }

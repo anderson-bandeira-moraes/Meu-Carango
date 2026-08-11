@@ -37,7 +37,7 @@ class VeiculoRepository
                 carroceria, tipo_direcao, altura_solo_mm,
                 pneu_aro, tipo_roda, freio_dianteiro, freio_traseiro,
                 hash_id, slug, gnv_instalado,
-                status_estoque, status_vitrine, placa
+                status_estoque, status_vitrine, placa, suspensao_dianteira, suspensao_traseira
             ) VALUES (
                 :lojista_id, :marca_id, :modelo_id, :versao,
                 :ano_fabricacao, :ano_modelo, :cor, :quilometragem,
@@ -47,7 +47,8 @@ class VeiculoRepository
                 :carroceria, :tipo_direcao, :altura_solo_mm,
                 :pneu_aro, :tipo_roda, :freio_dianteiro, :freio_traseiro,
                 :hash_id, :slug, :gnv_instalado,
-                :status_estoque, :status_vitrine, :placa
+                :status_estoque, :status_vitrine, :placa,
+                :suspensao_dianteira, :suspensao_traseira
             )';
 
             $stmt = $this->pdo->prepare($sql);
@@ -113,7 +114,9 @@ class VeiculoRepository
             ':gnv_instalado'            => $dados['gnv_instalado'] ?? 0,
             ':status_estoque'           => $dados['status_estoque'] ?? 'disponivel',
             ':status_vitrine'           => $dados['status_vitrine'] ?? 'inativo',
-            ':placa' => $dados['placa'] ?? null,
+            ':placa'                    => $dados['placa'] ?? null,
+            ':suspensao_dianteira'      => $dados['suspensao_dianteira'] ?? null,
+            ':suspensao_traseira'       => $dados['suspensao_traseira'] ?? null,
         ];
     }
 

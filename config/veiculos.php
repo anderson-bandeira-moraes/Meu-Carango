@@ -454,4 +454,37 @@ return [
         21 => '21"',
         22 => '22"',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de Suspensão Dianteira
+    |--------------------------------------------------------------------------
+    */
+    'suspensao_dianteira' => [
+        'macpherson'          => 'MacPherson',
+        'duplo_a'             => 'Duplo A (Double Wishbone)',
+        'bracos_triangulares' => 'Braços Triangulares',
+        'multilink'           => 'Multilink',
+        'barra_torcao'        => 'Barra de Torção',
+        'eixo_rigido'         => 'Eixo Rígido',
+        'pneumatica'          => 'Suspensão Pneumática',
+        'hidropneumatica'     => 'Suspensão Hidropneumática',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de Suspensão Traseira
+    |--------------------------------------------------------------------------
+    */
+    'suspensao_traseira' => [
+        'multilink' => 'Multilink',
+        'duplo_a'   => 'Duplo A (Double Wishbone)',
+        'eixo_torcao' => 'Eixo de Torção (Semi-independente)',
+        'braco_longitudinal' => 'Braço Longitudinal',
+        'braco_longitudinal_duplo_transversal' => 'Braço Longitudinal e Duplo Braço Transversal',
+        'eixo_rigido_molas' => 'Eixo Rígido com Molas Helicoidais',
+        'eixo_rigido_feixe' => 'Eixo Rígido com Feixe de Molas',
+        'pneumatica' => 'Suspensão Pneumática',
+        'hidropneumatica' => 'Suspensão Hidropneumática',
+    ],
 ];

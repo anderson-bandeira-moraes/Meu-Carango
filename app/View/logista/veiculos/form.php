@@ -574,6 +574,80 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                         </select>
                     </div>
 
+                    <!-- Suspensão Dianteira -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="suspensao_dianteira" class="form-label mb-0">Suspensão Dianteira</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de suspensão utilizada no eixo dianteiro. Define o comportamento dinâmico, o conforto e a estabilidade do veículo. A opção 'Outro' permite valores personalizados.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
+
+                        <?php
+                        $suspensaoDianteira = gerarSelectOutro(
+                            nome: 'suspensao_dianteira',
+                            lista: suspensao_dianteira_list(),
+                            valorSalvo: $old['suspensao_dianteira'] ?? $veiculo['suspensao_dianteira'] ?? '',
+                            classes: isset($errors['suspensao_dianteira']) ? 'is-invalid' : ''
+                        );
+                        ?>
+
+                        <!-- Select gerado pela função -->
+                        <?= $suspensaoDianteira['select_html'] ?>
+
+                        <!-- Campo extra para "Outro" -->
+                        <input type="text" name="suspensao_dianteira_outro" id="suspensao_dianteira_outro" 
+                               class="form-control mt-2 <?= isset($errors['suspensao_dianteira']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($suspensaoDianteira['valor_outro']) ?>" 
+                               placeholder="Digite a suspensão personalizada" 
+                               style="display: <?= $suspensaoDianteira['is_outro'] ? 'block' : 'none' ?>;">
+
+                        <div class="invalid-feedback">
+                            A suspensão dianteira personalizada é obrigatória.
+                        </div>
+                    </div>
+
+                    <!-- Suspensão Traseira -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="suspensao_traseira" class="form-label mb-0">Suspensão Traseira</label>
+                            <button type="button" 
+                                    class="btn btn-link btn-sm p-0 text-secondary" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Tipo de suspensão utilizada no eixo traseiro. Influencia o conforto, a capacidade de carga e a estabilidade do veículo. A opção 'Outro' permite valores personalizados.">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </button>
+                        </div>
+
+                        <?php
+                        $suspensaoTraseira = gerarSelectOutro(
+                            nome: 'suspensao_traseira',
+                            lista: suspensao_traseira_list(),
+                            valorSalvo: $old['suspensao_traseira'] ?? $veiculo['suspensao_traseira'] ?? '',
+                            classes: isset($errors['suspensao_traseira']) ? 'is-invalid' : ''
+                        );
+                        ?>
+
+                        <!-- Select gerado pela função -->
+                        <?= $suspensaoTraseira['select_html'] ?>
+
+                        <!-- Campo extra para "Outro" -->
+                        <input type="text" name="suspensao_traseira_outro" id="suspensao_traseira_outro" 
+                               class="form-control mt-2 <?= isset($errors['suspensao_traseira']) ? 'is-invalid' : '' ?>" 
+                               value="<?= htmlspecialchars($suspensaoTraseira['valor_outro']) ?>" 
+                               placeholder="Digite a suspensão personalizada" 
+                               style="display: <?= $suspensaoTraseira['is_outro'] ? 'block' : 'none' ?>;">
+
+                        <div class="invalid-feedback">
+                            A suspensão traseira personalizada é obrigatória.
+                        </div>
+                    </div>
+
                     <!-- Aro do Pneu -->
                     <div class="col-md-4">
                         <div class="d-flex justify-content-between align-items-center mb-1">
@@ -5410,6 +5484,12 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         // CONFIGURAR "OUTRO" PARA HÍBRIDO
         // =============================================
         adicionarListenerOutro('motor_combustao_tipo', 'motor_combustao_tipo_outro');
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA SUSPENSÃO
+        // =============================================
+        adicionarListenerOutro('suspensao_dianteira', 'suspensao_dianteira_outro');
+        adicionarListenerOutro('suspensao_traseira', 'suspensao_traseira_outro');
 
 
         // ============================================================
