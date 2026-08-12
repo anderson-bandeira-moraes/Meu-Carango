@@ -75,7 +75,7 @@ class VeiculoRequest extends FormRequest
             'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
             'tipo_roda'            => 'nullable|in:liga_leve,calota',
             'freio_dianteiro' => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
-            'freio_traseiro'  => 'nullable|in:disco_solido,disco_ventilado,tambor',
+            'freio_traseiro'  => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
             'placa'                => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
 
             // Dimensões (opcionais)
