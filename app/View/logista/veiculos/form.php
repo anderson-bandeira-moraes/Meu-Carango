@@ -103,7 +103,8 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         status_vitrine: <?= json_encode(status_vitrine_list()) ?>,
         tipos_direcao:  <?= json_encode(tipos_direcao_list()) ?>,
         tipos_roda:     <?= json_encode(tipos_roda_list()) ?>,
-        tipos_freio:    <?= json_encode(tipos_freio_list()) ?>,
+        freio_dianteiro: <?= json_encode(freio_dianteiro_list()) ?>,
+        freio_traseiro:  <?= json_encode(freio_traseiro_list()) ?>,
 
         // Listas associativas 
         gnv_materiais:           <?= json_encode(array_keys(gnv_materiais_list())) ?>,
@@ -544,7 +545,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                         </div>
                         <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
-                            <?php foreach (tipos_freio_list() as $value => $label): ?>
+                            <?php foreach (freio_dianteiro_list() as $value => $label): ?>
                                 <option value="<?= $value ?>" <?= selected($old['freio_dianteiro'] ?? $veiculo['freio_dianteiro'] ?? '', $value) ?>>
                                     <?= htmlspecialchars($label) ?>
                                 </option>
@@ -566,7 +567,7 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
                         </div>
                         <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
                             <option value="">Selecione</option>
-                            <?php foreach (tipos_freio_list() as $value => $label): ?>
+                            <?php foreach (freio_traseiro_list() as $value => $label): ?>
                                 <option value="<?= $value ?>" <?= selected($old['freio_traseiro'] ?? $veiculo['freio_traseiro'] ?? '', $value) ?>>
                                     <?= htmlspecialchars($label) ?>
                                 </option>

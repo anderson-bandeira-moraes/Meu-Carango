@@ -585,19 +585,38 @@ if (!function_exists('tipos_roda_list')) {
     }
 }
 
-if (!function_exists('tipos_freio_list')) {
+if (!function_exists('freio_dianteiro_list')) {
     /**
-     * Retorna a lista de tipos de freio disponíveis.
+     * Retorna a lista de tipos de freio dianteiro disponíveis.
      *
-     * @return array Array de strings com os tipos (ex: 'disco', 'tambor')
+     * @return array Array associativo com value => label
      */
-    function tipos_freio_list(): array
+    function freio_dianteiro_list(): array
     {
         static $list = null;
 
         if ($list === null) {
             $config = require CONFIG_DIR . '/veiculos.php';
-            $list = $config['tipos_freio'] ?? [];
+            $list = $config['freio_dianteiro'] ?? [];
+        }
+
+        return $list;
+    }
+}
+
+if (!function_exists('freio_traseiro_list')) {
+    /**
+     * Retorna a lista de tipos de freio traseiro disponíveis.
+     *
+     * @return array Array associativo com value => label
+     */
+    function freio_traseiro_list(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $config = require CONFIG_DIR . '/veiculos.php';
+            $list = $config['freio_traseiro'] ?? [];
         }
 
         return $list;

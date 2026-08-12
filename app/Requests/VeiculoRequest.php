@@ -74,8 +74,8 @@ class VeiculoRequest extends FormRequest
             'altura_solo_mm'       => 'nullable|integer|min:0',
             'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
             'tipo_roda'            => 'nullable|in:liga_leve,calota',
-            'freio_dianteiro'      => 'nullable|in:disco,tambor',
-            'freio_traseiro'       => 'nullable|in:disco,tambor',
+            'freio_dianteiro' => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
+            'freio_traseiro'  => 'nullable|in:disco_solido,disco_ventilado,tambor',
             'placa'                => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
 
             // Dimensões (opcionais)
@@ -193,8 +193,8 @@ class VeiculoRequest extends FormRequest
             'tipo_roda.in'     => 'O tipo de roda deve ser liga leve ou calota.',
 
             // Freios
-            'freio_dianteiro.in' => 'O tipo de freio dianteiro deve ser disco ou tambor.',
-            'freio_traseiro.in'  => 'O tipo de freio traseiro deve ser disco ou tambor.',
+            'freio_dianteiro.in' => 'O tipo de freio dianteiro selecionado é inválido.',
+            'freio_traseiro.in'  => 'O tipo de freio traseiro selecionado é inválido.',
 
             // Suspensão
             'suspensao_dianteira.max' => 'A suspensão dianteira deve ter no máximo :max caracteres.',

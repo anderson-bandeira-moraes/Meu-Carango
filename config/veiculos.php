@@ -429,12 +429,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Tipos de freio (value => label)
+    | Tipos de freio dianteiro (value => label)
     |--------------------------------------------------------------------------
     */
-    'tipos_freio' => [
-        'disco'  => 'Disco',
-        'tambor' => 'Tambor',
+    'freio_dianteiro' => [
+        'disco_solido'               => 'Disco Sólido',
+        'disco_ventilado'            => 'Disco Ventilado',
+        'disco_perfurado'            => 'Disco Perfurado',
+        'disco_ranhurado'            => 'Disco Ranhurado',
+        'disco_ventilado_perfurado'  => 'Disco Ventilado e Perfurado',
+        'tambor'                     => 'Tambor',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tipos de freio traseiro (value => label)
+    |--------------------------------------------------------------------------
+    */
+    'freio_traseiro' => [
+        'disco_solido'               => 'Disco Sólido',
+        'disco_ventilado'            => 'Disco Ventilado',
+        'disco_perfurado'            => 'Disco Perfurado',
+        'disco_ranhurado'            => 'Disco Ranhurado',
+        'disco_ventilado_perfurado'  => 'Disco Ventilado e Perfurado',
+        'tambor'                     => 'Tambor',
     ],
 
     /*
