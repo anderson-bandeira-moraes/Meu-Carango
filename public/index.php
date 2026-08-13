@@ -591,12 +591,16 @@ $router->group('/logista', function(Router $router) use ($container) {
 
     // Formulário de criação
     $router->get('/veiculos/criar', 'VeiculoController@create');
+    // NEW: Formulário de criação wizard
+    $router->get('/veiculos/criar-wizard', 'VeiculoController@createWizard');
 
     // Salvar novo veículo
     $router->post('/veiculos/salvar', 'VeiculoController@store');
 
     // Formulário de edição
     $router->get('/veiculos/editar/{id}', 'VeiculoController@edit');
+    // NEW: Formulário de edição wizard
+    $router->get('/veiculos/editar-wizard/{id}', 'VeiculoController@editWizard');
 
     // Atualizar veículo
     $router->post('/veiculos/atualizar/{id}', 'VeiculoController@update');

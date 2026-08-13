@@ -224,6 +224,122 @@ class VeiculoController
     }
 
     /**
+     * Exibe o formulário de criação de veículo (versão wizard).
+     *
+     * @param Request $request
+     * @return string
+     */
+    public function createWizard(Request $request): string
+    {
+        // Busca todos os opcionais agrupados para o formulário
+        $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
+
+        // Busca marcas com a URL da logo (via service)
+        $marcas = $this->marcaModeloService->listarMarcas();
+
+        // Recupera old input e flash
+        $old = $this->session->get('old_veiculo_input', []);
+        $this->session->delete('old_veiculo_input');
+
+        $error = $this->getFlash('flash_veiculo_error');
+
+        $tipoSelecionado = $old['tipo_veiculo'] ?? null;
+        $opcionaisSelecionados = $old['opcionaisIds'] ?? [];
+
+        // Carrega modelos apenas se houver uma marca selecionada e for numericamente válida
+        $marcaId = isset($old['marca_id']) && is_numeric($old['marca_id']) ? (int) $old['marca_id'] : null;
+        $modelos = $marcaId ? $this->modeloRepo->findByMarcaId($marcaId) : [];
+
+        // Cria array de modelos no formato id => nome para uso no JavaScript
+        $modelosData = [];
+        foreach ($modelos as $modelo) {
+            $modelosData[$modelo['id']] = $modelo['nome'];
+        }
+
+        return $this->view->renderWithLayout(
+            'logista/veiculos/form-wizard',  // <-- ÚNICA MUDANÇA: nome da view
+            [
+                'veiculo'          => null,
+                'tipo'             => null,
+                'complemento'      => null,
+                'gnv'              => null,
+                'opcionais_selecionados' => $opcionaisSelecionados,
+                'todos_opcionais'  => $opcionais,
+                'marcas'           => $marcas,
+                'modelos'          => $modelosData,
+                'old'              => $old,
+                'error'            => $error,
+                'isEdit'           => false,
+            ],
+            'layouts/main',
+            ['title' => 'Cadastrar Veículo (Wizard)']
+        );
+    }
+
+    /**
+     * Exibe o formulário de edição de veículo (versão wizard).
+     *
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function editWizard(Request $request, int $id): string
+    {
+        $dadosEdicao = $this->veiculoService->buscarParaEdicao($id);
+        if (!$dadosEdicao) {
+            $this->redirectWithError('Veículo não encontrado.');
+        }
+
+        // Verifica se o veículo pertence ao lojista logado
+        if ($dadosEdicao['veiculo']['lojista_id'] != $this->getLojistaId()) {
+            $this->redirectWithError('Acesso negado.');
+        }
+
+        // Busca marcas com a URL da logo (via service)
+        $marcas = $this->marcaModeloService->listarMarcas();
+
+        // Recupera old input e flash
+        $old = $this->session->get('old_veiculo_input', []);
+        $this->session->delete('old_veiculo_input');
+
+        $error = $this->getFlash('flash_veiculo_error');
+
+        // Mescla old input com dados existentes (se houver)
+        if (!empty($old)) {
+            $dadosEdicao['veiculo'] = array_merge($dadosEdicao['veiculo'], $old);
+        }
+
+        // Carrega modelos apenas se houver uma marca selecionada e for numericamente válida
+        $marcaId = isset($dadosEdicao['veiculo']['marca_id']) && is_numeric($dadosEdicao['veiculo']['marca_id']) ? (int) $dadosEdicao['veiculo']['marca_id'] : null;
+        $modelos = $marcaId ? $this->modeloRepo->findByMarcaId($marcaId) : [];
+
+        // Cria array de modelos no formato id => nome para uso no JavaScript
+        $modelosData = [];
+        foreach ($modelos as $modelo) {
+            $modelosData[$modelo['id']] = $modelo['nome'];
+        }
+
+        return $this->view->renderWithLayout(
+            'logista/veiculos/form-wizard',  // <-- ÚNICA MUDANÇA: nome da view
+            [
+                'veiculo'          => $dadosEdicao['veiculo'],
+                'tipo'             => $dadosEdicao['tipo'],
+                'complemento'      => $dadosEdicao['complemento'],
+                'gnv'              => $dadosEdicao['gnv'],
+                'opcionais_selecionados' => $dadosEdicao['opcionais_selecionados'],
+                'todos_opcionais'  => $dadosEdicao['todos_opcionais'],
+                'marcas'           => $marcas,
+                'modelos'          => $modelosData,
+                'old'              => [],
+                'error'            => $error,
+                'isEdit'           => true,
+            ],
+            'layouts/main',
+            ['title' => 'Editar Veículo (Wizard)']
+        );
+    }
+
+    /**
      * Processa o cadastro de um novo veículo.
      *
      * @param Request $request
