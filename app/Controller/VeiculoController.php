@@ -224,55 +224,65 @@ class VeiculoController
     }
 
     /**
-     * Exibe o formulário de criação de veículo (versão wizard).
+     * Exibe o formulário de criação de veículo (versão wizard) – com tipo na URL.
      *
      * @param Request $request
+     * @param string $tipo
      * @return string
      */
-    public function createWizard(Request $request): string
+    public function createWizard(Request $request, string $tipo): string
     {
-        // Busca todos os opcionais agrupados para o formulário
-        $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
+        // 1. Valida o tipo
+        if (!in_array($tipo, ['combustao', 'eletrico', 'hibrido'])) {
+            $this->redirectWithError('Tipo de veículo inválido.');
+        }
 
-        // Busca marcas com a URL da logo (via service)
+        // 2. Busca dados comuns
+        $opcionais = $this->veiculoService->buscarOpcionaisAgrupados();
         $marcas = $this->marcaModeloService->listarMarcas();
 
-        // Recupera old input e flash
+        // 3. Recupera old input e flash (se houver, para repopular após erro)
         $old = $this->session->get('old_veiculo_input', []);
         $this->session->delete('old_veiculo_input');
-
         $error = $this->getFlash('flash_veiculo_error');
 
-        $tipoSelecionado = $old['tipo_veiculo'] ?? null;
-        $opcionaisSelecionados = $old['opcionaisIds'] ?? [];
-
-        // Carrega modelos apenas se houver uma marca selecionada e for numericamente válida
+        // 4. Carrega modelos apenas se houver uma marca selecionada no old input
         $marcaId = isset($old['marca_id']) && is_numeric($old['marca_id']) ? (int) $old['marca_id'] : null;
         $modelos = $marcaId ? $this->modeloRepo->findByMarcaId($marcaId) : [];
-
-        // Cria array de modelos no formato id => nome para uso no JavaScript
         $modelosData = [];
         foreach ($modelos as $modelo) {
             $modelosData[$modelo['id']] = $modelo['nome'];
         }
 
+        // 5. Renderiza a view específica para o tipo
         return $this->view->renderWithLayout(
-            'logista/veiculos/form-wizard',  // <-- ÚNICA MUDANÇA: nome da view
+            'logista/veiculos/etapas/combustao',
             [
-                'veiculo'          => null,
-                'tipo'             => null,
-                'complemento'      => null,
-                'gnv'              => null,
-                'opcionais_selecionados' => $opcionaisSelecionados,
-                'todos_opcionais'  => $opcionais,
-                'marcas'           => $marcas,
-                'modelos'          => $modelosData,
-                'old'              => $old,
-                'error'            => $error,
-                'isEdit'           => false,
+                'veiculo' => null,
+                'complemento' => null,
+                'gnv' => null,
+                'opcionais_selecionados' => [],
+                'todos_opcionais' => $opcionais,
+                'marcas' => $marcas,
+                'modelos' => $modelosData,
+                'old' => $old,
+                'isEdit' => false,
+                'tipo' => $tipo,
+                // Dados para o layout
+                'titulo' => 'Cadastrar Veículo - ' . ucfirst($tipo),
+                'action' => '/logista/veiculos/salvar',
+                'error' => $error,
             ],
-            'layouts/main',
-            ['title' => 'Cadastrar Veículo (Wizard)']
+            'layouts/etapas', 
+            [
+                'title' => 'Cadastrar Veículo - ' . ucfirst($tipo),
+                'marcas' => $marcas,
+                'modelos' => $modelosData,
+                'isEdit' => false,        
+                'tipo' => $tipo,          
+                'action' => '/logista/veiculos/salvar',
+                'error' => $error,
+            ]
         );
     }
 

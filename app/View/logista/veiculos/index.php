@@ -23,9 +23,9 @@ if (!empty($filtro)) {
             <h1 class="h3 mb-0"><?= htmlspecialchars($titulo) ?></h1>
             <p class="text-muted small"><?= $total ?> veículo(s) encontrado(s)</p>
         </div>
-        <a href="/logista/veiculos/criar" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoriaModal">
             <i class="bi bi-plus-lg"></i> Novo Veículo
-        </a>
+        </button>
     </div>
 
     <!-- Flash messages -->
@@ -197,4 +197,42 @@ if (!empty($filtro)) {
             </nav>
         <?php endif; ?>
     <?php endif; ?>
+
+    <!-- ========== MODAL DE SELEÇÃO DE CATEGORIA ========== -->
+    <div class="modal fade" id="categoriaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-car-front me-2"></i>Selecione a categoria do veículo</h5>
+                    <button type="button" class="btn-close btn-close-white" disabled></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p class="mb-4">Escolha o tipo de veículo que deseja cadastrar. Esta ação é obrigatória.</p>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <a href="/logista/veiculos/criar/combustao" class="btn btn-outline-dark w-100 py-3">
+                                <i class="bi bi-fuel-pump fs-1 d-block mb-2"></i>
+                                <strong>Combustão</strong>
+                                <small class="d-block text-muted">Flex, Diesel, Gasolina</small>
+                            </a>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <a href="/logista/veiculos/criar/eletrico" class="btn btn-outline-dark w-100 py-3">
+                                <i class="bi bi-battery-charging fs-1 d-block mb-2"></i>
+                                <strong>Elétrico</strong>
+                                <small class="d-block text-muted">100% BEV</small>
+                            </a>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <a href="/logista/veiculos/criar/hibrido" class="btn btn-outline-dark w-100 py-3">
+                                <i class="bi bi-ev-front fs-1 d-block mb-2"></i>
+                                <strong>Híbrido</strong>
+                                <small class="d-block text-muted">HEV, MHEV, PHEV</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

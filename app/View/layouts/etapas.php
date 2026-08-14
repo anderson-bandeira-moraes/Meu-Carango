@@ -1,0 +1,999 @@
+<?php
+/**
+ * Layout específico para o wizard de cadastro/edição de veículos.
+ * 
+ * Variáveis esperadas:
+ *   - $content     : string  HTML do conteúdo das etapas (gerado pela view específica)
+ *   - $titulo      : string  Título da página
+ *   - $action      : string  URL de submissão do formulário
+ *   - $tipo        : string  Tipo do veículo (combustao, eletrico, hibrido)
+ *   - $isEdit      : bool    Indica se é edição
+ *   - $veiculoId   : int     ID do veículo (na edição)
+ *   - $error       : string  Mensagem de erro (opcional)
+ */
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?> - Meu Carango</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+        <style>
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            footer {
+                margin-top: auto;
+            }
+
+            /* Efeito de zoom nos cards do dashboard */
+            .card-zoom {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .card-zoom:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
+            }
+
+            /* Estilos para a lista de itens */
+            .lista-items .item-lista {
+                padding: 10px 15px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .lista-items .item-lista:hover {
+                background-color: #dfe0e1;
+            }
+            .lista-items .item-lista.selecionado {
+                background-color: #cfdae5;
+                border-left: 4px solid #0d6efd;
+            }
+            .lista-items .item-lista img {
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+                border-radius: 4px;
+                background: #f8f9fa;
+            }
+            .lista-items .item-lista .nome {
+                font-weight: 500;
+            }
+
+            /* Overlay de edição nos cards de resumo */
+            .resumo-card {
+                position: relative;
+                transition: transform 0.2s;
+            }
+            .resumo-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+            }
+            .resumo-card .editar-overlay {
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+            .resumo-card:hover .editar-overlay {
+                opacity: 1;
+            }
+            .resumo-card .editar-overlay i {
+                font-size: 1.2rem;
+                background: white;
+                padding: 4px 6px;
+                border-radius: 50%;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            /* Badge de exibição no formulário */
+            .brand-model-display .badge {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+            }
+
+            /* Remove setas do Chrome, Safari, Edge, Opera */
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Remove setas do Firefox */
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+        </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Cabeçalho do wizard -->
+        <div class="wizard-header mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
+                <span class="badge bg-secondary" id="step-indicator">Etapa 1 de 0</span>
+            </div>
+            
+            <!-- Barra de progresso -->
+            <div class="progress mt-2" style="height: 8px;">
+                <div id="progress-bar" class="progress-bar progress-bar-striped" 
+                     role="progressbar" style="width: 0%;" 
+                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+            
+            <!-- Lista de etapas (opcional) -->
+            <div class="step-labels d-flex justify-content-between mt-2 small text-muted" id="step-labels">
+                <!-- Preenchido via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Mensagem de erro (flash) -->
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i> <?= nl2br(htmlspecialchars($error)) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- Formulário -->
+        <form id="veiculoForm" action="<?= $action ?>" method="POST" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+            <input type="hidden" name="tipo_veiculo" value="<?= htmlspecialchars($tipo) ?>">
+            <?php if ($isEdit): ?>
+                <input type="hidden" name="_method" value="PUT">
+            <?php endif; ?>
+
+            <!-- Container das etapas (o conteúdo vem da view específica) -->
+            <div id="wizard-container">
+                <?= $content ?? '' ?>
+            </div>
+
+            <!-- Rodapé com botões de navegação -->
+            <div class="wizard-footer d-flex justify-content-between mt-4 pt-3 border-top">
+                <button type="button" class="btn btn-outline-secondary" id="btnAnterior" disabled>
+                    <i class="bi bi-arrow-left"></i> Anterior
+                </button>
+                
+                <button type="button" class="btn btn-primary" id="btnProximo">
+                    Próximo <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts do wizard (JS de navegação, toggles, etc.) -->
+    <script>
+        // ============================================================
+        // MODAL DE SELEÇÃO DE MARCA E MODELO
+        // ============================================================
+
+        // =============================================
+        // 0. INICIALIZAÇÃO DOS BADGES E MODAL DE CATEGORIA
+        // =============================================
+
+        // Dados das marcas e modelos (carregados via PHP)
+        const marcasData = <?= json_encode($marcas) ?>;
+        const modelosData = <?= json_encode($modelos) ?>;
+
+        // Obtém referências para os campos ocultos e badges
+        const marcaIdInput = document.getElementById('marca_id');
+        const modeloIdInput = document.getElementById('modelo_id');
+        const marcaDisplay = document.getElementById('marcaDisplay');
+        const modeloDisplay = document.getElementById('modeloDisplay');
+
+        // Referências DOM
+        const modalMarcaModelo = document.getElementById('marcaModeloModal');
+        const etapaMarca = document.getElementById('etapa-marca');
+        const etapaModelo = document.getElementById('etapa-modelo');
+        const etapaResumo = document.getElementById('etapa-resumo');
+        const listaMarcas = document.getElementById('lista-marcas');
+        const listaModelos = document.getElementById('lista-modelos');
+        const buscaMarca = document.getElementById('buscaMarca');
+        const buscaModelo = document.getElementById('buscaModelo');
+        const voltarMarcaBtn = document.getElementById('voltarMarcaBtn');
+        const confirmarBtn = document.getElementById('confirmarSelecaoBtn');
+        const resumoMarcaNome = document.getElementById('resumo-marca-nome');
+        const resumoModeloNome = document.getElementById('resumo-modelo-nome');
+        const resumoMarcaLogo = document.getElementById('resumo-marca-logo');
+        const resumoMarcaCard = document.getElementById('resumo-marca');
+        const resumoModeloCard = document.getElementById('resumo-modelo');
+        // NOVO: referência ao botão "Próximo"
+        const btnProximoMarca = document.getElementById('btnProximoMarca');
+
+        // Dados da seleção
+        let selectedMarcaId = null;
+        let selectedMarcaNome = '';
+        let selectedMarcaLogo = '';
+        let selectedModeloId = null;
+        let selectedModeloNome = '';
+
+        // Função para renderizar lista de marcas
+        function renderMarcas(filtro = '') {
+            const filtroLower = filtro.toLowerCase().trim();
+            const filtered = marcasData.filter(m => 
+                m.nome.toLowerCase().includes(filtroLower)
+            );
+            listaMarcas.innerHTML = '';
+            if (filtered.length === 0) {
+                listaMarcas.innerHTML = '<div class="text-center text-muted py-3">Nenhuma marca encontrada.</div>';
+                return;
+            }
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'item-lista';
+                if (selectedMarcaId === m.id) div.classList.add('selecionado');
+                div.innerHTML = `
+                    <img src="${m.logo_url || '/assets/images/default-brand.png'}" alt="${m.nome}">
+                    <span class="nome">${m.nome}</span>
+                `;
+                div.addEventListener('click', function() {
+                    listaMarcas.querySelectorAll('.item-lista').forEach(el => el.classList.remove('selecionado'));
+                    this.classList.add('selecionado');
+                    selectedMarcaId = m.id;
+                    selectedMarcaNome = m.nome;
+                    selectedMarcaLogo = m.logo_url || '/assets/images/default-brand.png';
+                    // Habilita o botão "Próximo"
+                    if (btnProximoMarca) {
+                        btnProximoMarca.disabled = false;
+                    }
+                });
+                listaMarcas.appendChild(div);
+            });
+        }
+
+        // Função para carregar modelos via AJAX
+        function carregarModelos(marcaId) {
+            listaModelos.innerHTML = '<div class="text-center text-muted py-3">Carregando modelos...</div>';
+            fetch(`/api/modelos?marca_id=${marcaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.sucesso || !data.dados || data.dados.length === 0) {
+                        listaModelos.innerHTML = '<div class="text-center text-muted py-3">Nenhum modelo encontrado para esta marca.</div>';
+                        return;
+                    }
+                    const modelos = data.dados;
+                    window._modelosData = modelos; // Armazena para filtro
+                    renderModelos(modelos);
+                })
+                .catch(err => {
+                    listaModelos.innerHTML = '<div class="text-center text-danger py-3">Erro ao carregar modelos.</div>';
+                    console.error(err);
+                });
+        }
+
+        function renderModelos(modelos, filtro = '') {
+            const filtroLower = filtro.toLowerCase().trim();
+            const filtered = modelos.filter(m => 
+                m.nome.toLowerCase().includes(filtroLower)
+            );
+            listaModelos.innerHTML = '';
+            if (filtered.length === 0) {
+                listaModelos.innerHTML = '<div class="text-center text-muted py-3">Nenhum modelo encontrado.</div>';
+                return;
+            }
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'item-lista';
+                if (selectedModeloId === m.id) div.classList.add('selecionado');
+                div.innerHTML = `<span class="nome">${m.nome}</span>`;
+                div.addEventListener('click', function() {
+                    listaModelos.querySelectorAll('.item-lista').forEach(el => el.classList.remove('selecionado'));
+                    this.classList.add('selecionado');
+                    selectedModeloId = m.id;
+                    selectedModeloNome = m.nome;
+                    atualizarResumo();
+                    irParaEtapa('resumo');
+                });
+                listaModelos.appendChild(div);
+            });
+        }
+
+        // Atualizar resumo
+        function atualizarResumo() {
+            resumoMarcaNome.textContent = selectedMarcaNome || 'Nenhuma';
+            resumoModeloNome.textContent = selectedModeloNome || 'Nenhum';
+            const logoImg = resumoMarcaLogo.querySelector('img');
+            if (logoImg) {
+                logoImg.src = selectedMarcaLogo || '/assets/images/default-brand.png';
+            }
+        }
+
+        // Navegação entre etapas
+        function irParaEtapa(etapa) {
+            etapaMarca.style.display = 'none';
+            etapaModelo.style.display = 'none';
+            etapaResumo.style.display = 'none';
+            if (etapa === 'marca') {
+                etapaMarca.style.display = 'block';
+                buscaMarca.value = '';
+                renderMarcas();
+                // Atualiza estado do botão Próximo
+                if (btnProximoMarca) {
+                    btnProximoMarca.disabled = (selectedMarcaId === null);
+                }
+                setTimeout(() => buscaMarca.focus(), 100);
+            } else if (etapa === 'modelo') {
+                etapaModelo.style.display = 'block';
+                buscaModelo.value = '';
+                if (window._modelosData) {
+                    renderModelos(window._modelosData);
+                }
+                setTimeout(() => buscaModelo.focus(), 100);
+            } else if (etapa === 'resumo') {
+                etapaResumo.style.display = 'block';
+                atualizarResumo();
+            }
+        }
+
+        // Event listeners
+        if (buscaMarca) {
+            buscaMarca.addEventListener('input', function() {
+                renderMarcas(this.value);
+            });
+        }
+
+        if (buscaModelo) {
+            buscaModelo.addEventListener('input', function() {
+                const modelosAtuais = window._modelosData || [];
+                renderModelos(modelosAtuais, this.value);
+            });
+        }
+
+        if (voltarMarcaBtn) {
+            voltarMarcaBtn.addEventListener('click', function() {
+                irParaEtapa('marca');
+            });
+        }
+
+        if (resumoMarcaCard) {
+            resumoMarcaCard.addEventListener('click', function() {
+                irParaEtapa('marca');
+            });
+        }
+        if (resumoModeloCard) {
+            resumoModeloCard.addEventListener('click', function() {
+                irParaEtapa('modelo');
+            });
+        }
+
+        // NOVO: Evento do botão "Próximo"
+        if (btnProximoMarca) {
+            btnProximoMarca.addEventListener('click', function() {
+                if (!selectedMarcaId) {
+                    alert('Por favor, selecione uma marca primeiro.');
+                    return;
+                }
+                // Carrega os modelos da marca selecionada
+                carregarModelos(selectedMarcaId);
+                // Vai para a etapa de modelo
+                irParaEtapa('modelo');
+            });
+        }
+
+        // Confirmar seleção
+        if (confirmarBtn) {
+            confirmarBtn.addEventListener('click', function() {
+                if (!selectedMarcaId || !selectedModeloId) {
+                    alert('Por favor, selecione uma marca e um modelo.');
+                    return;
+                }
+                marcaIdInput.value = selectedMarcaId;
+                modeloIdInput.value = selectedModeloId;
+                marcaDisplay.textContent = selectedMarcaNome;
+                marcaDisplay.className = 'badge bg-primary p-2';
+                modeloDisplay.textContent = selectedModeloNome;
+                modeloDisplay.className = 'badge bg-primary p-2';
+                const modalInstance = bootstrap.Modal.getInstance(modalMarcaModelo);
+                if (modalInstance) modalInstance.hide();
+
+                // Limpa feedback ao abrir o modal
+                const feedbackEl = document.getElementById('marcaModeloFeedback');
+                feedbackEl.style.display = 'none';
+                feedbackEl.classList.remove('d-block');
+                marcaDisplay.classList.remove('badge-danger', 'border', 'border-danger');
+                modeloDisplay.classList.remove('badge-danger', 'border', 'border-danger');
+            });
+        }
+
+        // Abrir modal
+        const btnSelecionar = document.getElementById('selecionarMarcaModeloBtn');
+        if (btnSelecionar) {
+            btnSelecionar.addEventListener('click', function() {
+                const currentMarcaId = parseInt(marcaIdInput.value);
+                const currentModeloId = parseInt(modeloIdInput.value);
+                // Resetar seleção (mas manter a atual se houver)
+                selectedMarcaId = null;
+                selectedMarcaNome = '';
+                selectedMarcaLogo = '';
+                selectedModeloId = null;
+                selectedModeloNome = '';
+
+                if (currentMarcaId) {
+                    const marca = marcasData.find(m => m.id === currentMarcaId);
+                    if (marca) {
+                        selectedMarcaId = currentMarcaId;
+                        selectedMarcaNome = marca.nome;
+                        selectedMarcaLogo = marca.logo_url || '/assets/images/default-brand.png';
+                    }
+                }
+                if (currentModeloId) {
+                    // Se houver um modelo selecionado, poderíamos carregar a lista, mas não temos os dados ainda
+                    // O usuário poderá selecionar novamente na etapa modelo
+                }
+
+                // Desabilita o botão Próximo (será habilitado quando clicar em uma marca)
+                if (btnProximoMarca) {
+                    btnProximoMarca.disabled = (selectedMarcaId === null);
+                }
+
+                renderMarcas();
+                irParaEtapa('marca');
+                const modalInstance = new bootstrap.Modal(modalMarcaModelo);
+                modalInstance.show();
+            });
+        }
+
+        modalMarcaModelo.addEventListener('hidden.bs.modal', function() {
+            // Limpar estado se necessário
+        });
+
+        // ============================================================
+        // CONTROLE DOS FORMULÁRIOS DE ADIÇÃO (Marca e Modelo)
+        // ============================================================
+
+        // ----- Marca -----
+        const adicionarMarcaBtn = document.getElementById('adicionarMarcaBtn');
+        const cancelarNovaMarcaBtn = document.getElementById('cancelarNovaMarcaBtn');
+        const conteudoMarcaLista = document.getElementById('conteudo-marca-lista');
+        const conteudoMarcaForm = document.getElementById('conteudo-marca-form');
+
+        if (adicionarMarcaBtn) {
+            adicionarMarcaBtn.addEventListener('click', function() {
+                conteudoMarcaLista.style.display = 'none';
+                conteudoMarcaForm.style.display = 'block';
+                // Limpar campos ao abrir
+                document.getElementById('novaMarcaNome').value = '';
+                document.getElementById('novaMarcaLogo').value = '';
+                document.getElementById('previewMarcaLogo').style.display = 'none';
+            });
+        }
+
+        if (cancelarNovaMarcaBtn) {
+            cancelarNovaMarcaBtn.addEventListener('click', function() {
+                conteudoMarcaLista.style.display = 'block';
+                conteudoMarcaForm.style.display = 'none';
+                // Limpar campos ao cancelar
+                document.getElementById('novaMarcaNome').value = '';
+                document.getElementById('novaMarcaLogo').value = '';
+                document.getElementById('previewMarcaLogo').style.display = 'none';
+            });
+        }
+
+        // ----- Modelo -----
+        const adicionarModeloBtn = document.getElementById('adicionarModeloBtn');
+        const cancelarNovoModeloBtn = document.getElementById('cancelarNovoModeloBtn');
+        const conteudoModeloLista = document.getElementById('conteudo-modelo-lista');
+        const conteudoModeloForm = document.getElementById('conteudo-modelo-form');
+
+        if (adicionarModeloBtn) {
+            adicionarModeloBtn.addEventListener('click', function() {
+                conteudoModeloLista.style.display = 'none';
+                conteudoModeloForm.style.display = 'block';
+                document.getElementById('novoModeloNome').value = '';
+            });
+        }
+
+        if (cancelarNovoModeloBtn) {
+            cancelarNovoModeloBtn.addEventListener('click', function() {
+                conteudoModeloLista.style.display = 'block';
+                conteudoModeloForm.style.display = 'none';
+                document.getElementById('novoModeloNome').value = '';
+            });
+        }
+
+        // ============================================================
+        // CONVERSÃO DE IMAGEM PARA WEBP 64x64 (Marca)
+        // ============================================================
+        const inputLogo = document.getElementById('novaMarcaLogo');
+        const previewContainer = document.getElementById('previewMarcaLogo');
+        const previewImg = document.getElementById('previewMarcaImg');
+        let imagemConvertidaBlob = null;
+
+        if (inputLogo) {
+            inputLogo.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (!file) return;
+
+                // Valida se é uma imagem
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor, selecione um arquivo de imagem válido.');
+                    this.value = '';
+                    return;
+                }
+
+                // Limpa preview anterior
+                previewContainer.style.display = 'none';
+                previewImg.src = '#';
+                imagemConvertidaBlob = null;
+
+                // Lê o arquivo como DataURL
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const dataUrl = event.target.result;
+
+                    // Cria uma imagem para obter dimensões
+                    const img = new Image();
+                    img.onload = function() {
+                        try {
+                            // 1. Configura canvas 64x64
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 64;
+                            canvas.height = 64;
+                            const ctx = canvas.getContext('2d');
+
+                            // 2. Calcula crop centralizado 1:1
+                            const size = Math.min(img.width, img.height);
+                            const sx = (img.width - size) / 2;
+                            const sy = (img.height - size) / 2;
+
+                            // 3. Desenha a imagem recortada e redimensionada
+                            ctx.drawImage(img, sx, sy, size, size, 0, 0, 64, 64);
+
+                            // 4. Converte para WebP (qualidade 0.9)
+                            canvas.toBlob(function(blob) {
+                                if (!blob) {
+                                    alert('Erro ao converter imagem para WebP. Tente novamente.');
+                                    return;
+                                }
+
+                                // 5. Armazena o Blob para envio posterior
+                                imagemConvertidaBlob = blob;
+
+                                // 6. Exibe preview da imagem convertida
+                                const previewUrl = URL.createObjectURL(blob);
+                                previewImg.src = previewUrl;
+                                previewContainer.style.display = 'block';
+
+                                console.log('Imagem convertida com sucesso:', {
+                                    tamanho: (blob.size / 1024).toFixed(2) + ' KB',
+                                    tipo: blob.type
+                                });
+
+                            }, 'image/webp', 0.9);
+
+                        } catch (err) {
+                            alert('Erro ao processar a imagem: ' + err.message);
+                            inputLogo.value = '';
+                        }
+                    };
+
+                    img.onerror = function() {
+                        alert('Erro ao carregar a imagem. Tente novamente.');
+                        inputLogo.value = '';
+                    };
+
+                    img.src = dataUrl;
+                };
+
+                reader.onerror = function() {
+                    alert('Erro ao ler o arquivo. Tente novamente.');
+                    inputLogo.value = '';
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ============================================================
+        // CONTROLE DE SPINNER E ESTADO DOS BOTÕES
+        // ============================================================
+        function showSpinner(btnId, spinnerId, textId, loadingText = 'Carregando...') {
+            const btn = document.getElementById(btnId);
+            const spinner = document.getElementById(spinnerId);
+            const text = document.getElementById(textId);
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.style.display = 'inline-block';
+            if (text) text.textContent = loadingText;
+        }
+
+        function hideSpinner(btnId, spinnerId, textId, originalText = 'Cadastrar') {
+            const btn = document.getElementById(btnId);
+            const spinner = document.getElementById(spinnerId);
+            const text = document.getElementById(textId);
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.style.display = 'none';
+            if (text) text.textContent = originalText;
+        }
+
+        // ============================================================
+        // 5. ENVIO VIA AJAX – CRIAÇÃO DE MARCA
+        // ============================================================
+        const formMarca = document.getElementById('formNovaMarca');
+        if (formMarca) {
+            formMarca.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // 1. Validação do campo nome
+                const nomeInput = document.getElementById('novaMarcaNome');
+                const nome = nomeInput.value.trim();
+                if (nome === '') {
+                    alert('O nome da marca é obrigatório.');
+                    nomeInput.focus();
+                    return;
+                }
+
+                // 2. Verifica se a imagem foi convertida (se o usuário selecionou um arquivo)
+                // Se o usuário selecionou um arquivo, mas a conversão falhou, o blob pode ser null
+                // Se não selecionou arquivo, o blob será null e está tudo bem (logo opcional)
+                // Se selecionou e o blob é null, significa que a conversão falhou
+                const fileInput = document.getElementById('novaMarcaLogo');
+                if (fileInput.files.length > 0 && !imagemConvertidaBlob) {
+                    alert('A imagem ainda está sendo processada. Aguarde um momento ou selecione novamente.');
+                    return;
+                }
+
+                // 3. Monta FormData
+                const formData = new FormData();
+                formData.append('nome', nome);
+
+                // Se houver imagem convertida, adiciona ao FormData
+                if (imagemConvertidaBlob) {
+                    // Cria um File a partir do Blob com nome e tipo adequados
+                    const file = new File([imagemConvertidaBlob], 'logo.webp', { type: 'image/webp' });
+                    formData.append('logo', file);
+                }
+
+                // 4. Exibe spinner
+                showSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrando...');
+
+                // 5. Envia via fetch
+                fetch('/api/marcas', {
+                    method: 'POST',
+                    body: formData,
+                    // Não define Content-Type – o browser define com boundary automaticamente
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Esconde spinner
+                    hideSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrar');
+
+                    if (data.sucesso) {
+                        // 6. Sucesso: mensagem positiva
+                        alert('✅ Marca criada com sucesso!');
+
+                        // 7. Atualiza a lista local de marcas
+                        const novaMarca = data.dados;
+                        marcasData.push(novaMarca);
+                        // Ordena por nome
+                        marcasData.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                        // 8. Pré-seleciona a nova marca
+                        selectedMarcaId = novaMarca.id;
+                        selectedMarcaNome = novaMarca.nome;
+                        selectedMarcaLogo = novaMarca.logo_url || '/assets/images/default-brand.png';
+
+                        // 9. Re-renderiza a lista
+                        renderMarcas();
+
+                        // 10. Limpa formulário e volta para a lista
+                        document.getElementById('novaMarcaNome').value = '';
+                        document.getElementById('novaMarcaLogo').value = '';
+                        document.getElementById('previewMarcaLogo').style.display = 'none';
+                        imagemConvertidaBlob = null;
+                        conteudoMarcaForm.style.display = 'none';
+                        conteudoMarcaLista.style.display = 'block';
+
+                        // 11. Marca o item como selecionado na lista
+                        const itens = listaMarcas.querySelectorAll('.item-lista');
+                        itens.forEach(item => {
+                            const nomeItem = item.querySelector('.nome')?.textContent;
+                            if (nomeItem === selectedMarcaNome) {
+                                item.classList.add('selecionado');
+                            }
+                        });
+
+                    } else {
+                        // 12. Erro: exibe mensagem
+                        const erro = data.erro || 'Erro ao criar marca.';
+                        alert('❌ ' + erro);
+                    }
+                })
+                .catch(error => {
+                    // 13. Erro de rede
+                    hideSpinner('salvarNovaMarcaBtn', 'spinnerMarca', 'textoMarcaBtn', 'Cadastrar');
+                    alert('❌ Erro de conexão. Tente novamente.');
+                    console.error('Erro ao criar marca:', error);
+                });
+            });
+        }
+
+
+        // ============================================================
+        // 6. ENVIO VIA AJAX – CRIAÇÃO DE MODELO
+        // ============================================================
+        const formModelo = document.getElementById('formNovoModelo');
+        if (formModelo) {
+            formModelo.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // 1. Validação do campo nome
+                const nomeInput = document.getElementById('novoModeloNome');
+                const nome = nomeInput.value.trim();
+                if (nome === '') {
+                    alert('O nome do modelo é obrigatório.');
+                    nomeInput.focus();
+                    return;
+                }
+
+                // 2. Verifica se há uma marca selecionada
+                if (!selectedMarcaId) {
+                    alert('Selecione uma marca antes de adicionar um modelo.');
+                    return;
+                }
+
+                // 3. Monta FormData
+                const formData = new FormData();
+                formData.append('marca_id', selectedMarcaId);
+                formData.append('nome', nome);
+
+                // 4. Exibe spinner
+                showSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrando...');
+
+                // 5. Envia via fetch
+                fetch('/api/modelos', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Esconde spinner
+                    hideSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrar');
+
+                    if (data.sucesso) {
+                        // 6. Sucesso: mensagem positiva
+                        alert('✅ Modelo criado com sucesso!');
+
+                        // 7. Atualiza a lista local de modelos
+                        const novoModelo = data.dados;
+                        if (!window._modelosData) {
+                            window._modelosData = [];
+                        }
+                        window._modelosData.push(novoModelo);
+                        window._modelosData.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                        // 8. Pré-seleciona o novo modelo
+                        selectedModeloId = novoModelo.id;
+                        selectedModeloNome = novoModelo.nome;
+
+                        // 9. Re-renderiza a lista de modelos
+                        renderModelos(window._modelosData);
+
+                        // 10. Limpa formulário e volta para a lista
+                        document.getElementById('novoModeloNome').value = '';
+                        conteudoModeloForm.style.display = 'none';
+                        conteudoModeloLista.style.display = 'block';
+
+                        // 11. Marca o item como selecionado na lista
+                        const itens = listaModelos.querySelectorAll('.item-lista');
+                        itens.forEach(item => {
+                            const nomeItem = item.querySelector('.nome')?.textContent;
+                            if (nomeItem === selectedModeloNome) {
+                                item.classList.add('selecionado');
+                            }
+                        });
+
+                        // Atualiza resumo (caso o usuário confirme depois)
+                        atualizarResumo();
+
+                    } else {
+                        // 12. Erro: exibe mensagem
+                        const erro = data.erro || 'Erro ao criar modelo.';
+                        alert('❌ ' + erro);
+                    }
+                })
+                .catch(error => {
+                    // 13. Erro de rede
+                    hideSpinner('salvarNovoModeloBtn', 'spinnerModelo', 'textoModeloBtn', 'Cadastrar');
+                    alert('❌ Erro de conexão. Tente novamente.');
+                    console.error('Erro ao criar modelo:', error);
+                });
+            });
+        }
+
+        // ================================================
+        // INICIALIZAÇÃO TOOLTIPS
+        // ================================================
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // =============================================
+        // FUNÇÕES GENÉRICAS PARA "OUTRO" (MOTORIZAÇÃO)
+        // =============================================
+        /**
+         * Mostra/oculta o campo extra para "Outro" e limpa seu valor se não for "outro".
+         * @param {string} selectId - ID do elemento <select>
+         * @param {string} outroInputId - ID do campo de texto extra
+         */
+        function toggleMotorOutro(selectId, outroInputId) {
+            const select = document.getElementById(selectId);
+            const outroInput = document.getElementById(outroInputId);
+            if (!select || !outroInput) return;
+            const isOutro = select.value === 'outro';
+            outroInput.style.display = isOutro ? 'block' : 'none';
+
+            // Controla required
+            if (isOutro) {
+                outroInput.setAttribute('required', 'required');
+                // Adiciona classe para validação
+                outroInput.classList.add('requires-validation');
+            } else {
+                outroInput.removeAttribute('required');
+                outroInput.classList.remove('requires-validation');
+                outroInput.value = ''; // limpa o valor
+            }
+
+            if (!isOutro) outroInput.value = '';
+        }
+
+        function adicionarListenerOutro(selectId, extraId) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.addEventListener('change', function() {
+                toggleMotorOutro(selectId, extraId);
+            });
+        }
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA CARROCERIA
+        // =============================================
+        adicionarListenerOutro('carroceria', 'carroceria_outro');
+    </script>
+
+    <script>
+        // ============================================================
+        // 1. VARIÁVEIS GLOBAIS
+        // ============================================================
+        let steps = [];           // Lista de elementos .wizard-step
+        let currentStep = 0;      // Índice da etapa atual
+
+        // ============================================================
+        // 2. FUNÇÕES DO WIZARD
+        // ============================================================
+
+        function iniciarWizard() {
+            steps = document.querySelectorAll('.wizard-step');
+            if (steps.length === 0) return;
+            currentStep = 0;
+            steps.forEach((el, i) => {
+                el.style.display = (i === 0) ? 'block' : 'none';
+            });
+            atualizarProgresso();
+            atualizarBotoes();
+        }
+
+        function mostrarEtapa(index) {
+            if (index < 0 || index >= steps.length) return;
+            steps.forEach((el, i) => {
+                el.style.display = (i === index) ? 'block' : 'none';
+            });
+            currentStep = index;
+            atualizarProgresso();
+            atualizarBotoes();
+        }
+
+        function proximaEtapa() {
+            if (!validarEtapa()) return;
+            if (currentStep < steps.length - 1) {
+                mostrarEtapa(currentStep + 1);
+            } else {
+                // Última etapa: submeter formulário
+                document.getElementById('veiculoForm').submit();
+            }
+        }
+
+        function etapaAnterior() {
+            if (currentStep > 0) {
+                mostrarEtapa(currentStep - 1);
+            }
+        }
+
+        function validarEtapa() {
+            // Pega os campos visíveis da etapa atual (inputs, selects, textareas)
+            const etapaAtual = steps[currentStep];
+            const campos = etapaAtual.querySelectorAll('input, select, textarea');
+            let valido = true;
+
+            // Verifica required, pattern, etc. via HTML5
+            campos.forEach(campo => {
+                if (!campo.checkValidity()) {
+                    campo.classList.add('is-invalid');
+                    valido = false;
+                } else {
+                    campo.classList.remove('is-invalid');
+                }
+            });
+
+            // Validações customizadas (ex: campos "Outro", Flex, etc.)
+            // ... (adicionar aqui)
+
+            if (!valido) {
+                // Rola até o primeiro campo inválido
+                const primeiroInvalido = etapaAtual.querySelector('.is-invalid');
+                if (primeiroInvalido) {
+                    primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    primeiroInvalido.focus();
+                }
+            }
+            return valido;
+        }
+
+        function atualizarProgresso() {
+            const total = steps.length;
+            const atual = currentStep + 1;
+            const percentual = (atual / total) * 100;
+
+            // Atualiza barra de progresso
+            const barra = document.getElementById('progress-bar');
+            if (barra) {
+                barra.style.width = percentual + '%';
+                barra.setAttribute('aria-valuenow', percentual);
+            }
+
+            // Atualiza indicador "Etapa X de Y"
+            const indicador = document.getElementById('step-indicator');
+            if (indicador) {
+                indicador.textContent = `Etapa ${atual} de ${total}`;
+            }
+
+            // (Opcional) Atualiza labels das etapas
+            // ...
+        }
+
+        function atualizarBotoes() {
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnProximo = document.getElementById('btnProximo');
+            if (btnAnterior) {
+                btnAnterior.disabled = (currentStep === 0);
+            }
+            if (btnProximo) {
+                const isUltima = (currentStep === steps.length - 1);
+                btnProximo.innerHTML = isUltima ? 'Salvar <i class="bi bi-check-lg"></i>' : 'Próximo <i class="bi bi-arrow-right"></i>';
+            }
+        }
+
+        // ============================================================
+        // 3. INICIALIZAÇÃO
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializa o wizard
+            iniciarWizard();
+
+            // Event listeners dos botões
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnProximo = document.getElementById('btnProximo');
+            if (btnAnterior) btnAnterior.addEventListener('click', etapaAnterior);
+            if (btnProximo) btnProximo.addEventListener('click', proximaEtapa);
+
+            // (Opcional) Reaplicar máscaras e toggles (sem AJAX, só na carga)
+            // inicializarCampos();
+        });
+    </script>
+</body>
+</html>
