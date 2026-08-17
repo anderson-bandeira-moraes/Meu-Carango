@@ -449,7 +449,10 @@
         }
 
         modalMarcaModelo.addEventListener('hidden.bs.modal', function() {
-            // Limpar estado se necessário
+            // Remove is-invalid dos campos do modal
+            document.querySelectorAll('#marcaModeloModal .is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
         });
 
         // ============================================================
@@ -864,6 +867,197 @@
         // CONFIGURAR "OUTRO" PARA CARROCERIA
         // =============================================
         adicionarListenerOutro('carroceria', 'carroceria_outro');
+
+        // =============================================
+        // MÁSCARA DE MILHAR
+        // =============================================
+
+        document.querySelectorAll('[data-mascara-milhar]').forEach(function(visual) {
+            // Evita aplicar múltiplas vezes (caso o script seja executado mais de uma vez)
+            if (visual.dataset.mascaraAplicada) return;
+
+            const hiddenId = visual.id.replace(/_visual$/, '');
+            const hidden = document.getElementById(hiddenId);
+            if (!hidden) return;
+
+            function formatar(valor) {
+                const numeros = String(valor).replace(/\D/g, '');
+                if (numeros === '') return '';
+                return Number(numeros).toLocaleString('pt-BR');
+            }
+
+            visual.addEventListener('input', function() {
+                const puro = this.value.replace(/\D/g, '');
+                this.value = puro ? formatar(puro) : '';
+                hidden.value = puro;
+            });
+
+            if (hidden.value) {
+                visual.value = formatar(hidden.value);
+                hidden.value = hidden.value.replace(/\D/g, '');
+            }
+
+            visual.dataset.mascaraAplicada = 'true';
+        });
+
+        // ============================================================
+        // DROPDOWN DE CORES (abrir ao clicar no input ou botão)
+        // ============================================================
+        const corInput = document.getElementById('corInput');
+        const btnAbrir = document.getElementById('btnAbrirCores');
+        const dropdown = document.getElementById('dropdownCores');
+        const corHidden = document.getElementById('corSelecionada');
+        const corOutro = document.getElementById('cor_outro');
+        const corItems = document.querySelectorAll('.cor-item');
+        const corSwatch = document.getElementById('corSwatch');
+        const corSwatchInner = document.getElementById('corSwatchInner');
+
+        // Função para atualizar o swatch de cor
+        function atualizarSwatch(cor, hex) {
+            if (cor && hex && cor !== 'outro') {
+                corSwatchInner.style.backgroundColor = hex;
+                corSwatch.style.display = 'inline-flex';
+                corSwatch.style.alignItems = 'center';
+                corSwatch.style.justifyContent = 'center';
+            } else {
+                corSwatch.style.display = 'none';
+            }
+        }
+
+        // Função para abrir/fechar dropdown
+        function toggleDropdown() {
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // Abrir ao clicar no input ou no botão
+        if (corInput) {
+            corInput.addEventListener('click', toggleDropdown);
+        }
+        if (btnAbrir) {
+            btnAbrir.addEventListener('click', toggleDropdown);
+        }
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+            if (!target.closest('#corInput') && !target.closest('#btnAbrirCores') && !target.closest('#dropdownCores')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Selecionar cor ao clicar em um item da lista
+        if (corItems.length) {
+            corItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const cor = this.dataset.cor;
+                    const hex = this.dataset.hex;
+
+                    // Atualiza o campo de exibição
+                    corInput.value = cor === 'outro' ? 'Outro (digitar)' : cor;
+
+                    // Atualiza o campo oculto
+                    corHidden.value = cor;
+
+                    // Atualiza o swatch
+                    atualizarSwatch(cor, hex);
+
+                    // Remove destaque de todos
+                    corItems.forEach(el => el.style.backgroundColor = '');
+                    this.style.backgroundColor = '#e9ecef';
+
+                    // Controla campo "Outro"
+                    if (cor === 'outro') {
+                        corOutro.style.display = 'block';
+                        corOutro.setAttribute('required', 'required');
+                        corOutro.classList.add('requires-validation');
+                        corOutro.focus();
+                    } else {
+                        corOutro.style.display = 'none';
+                        corOutro.removeAttribute('required');
+                        corOutro.classList.remove('requires-validation');
+                        corOutro.value = '';
+                    }
+
+                    // Fecha o dropdown
+                    dropdown.style.display = 'none';
+
+                    // ✅ APENAS REMOVE A CLASSE DE ERRO
+                    // O Bootstrap controla a visibilidade do feedback automaticamente
+                    corInput.classList.remove('is-invalid');
+                });
+            });
+        }
+
+        // Se houver valor salvo, destaca o item correspondente e atualiza o input
+        if (corHidden.value) {
+            const valorSalvo = corHidden.value;
+            if (valorSalvo === 'outro') {
+                corInput.value = 'Outro (digitar)';
+                corOutro.style.display = 'block';
+                atualizarSwatch(null, null); // oculta swatch para "outro"
+            } else {
+                corInput.value = valorSalvo;
+                // Busca o hex da cor salva
+                const item = document.querySelector(`.cor-item[data-cor="${valorSalvo}"]`);
+                if (item) {
+                    const hex = item.dataset.hex;
+                    atualizarSwatch(valorSalvo, hex);
+                }
+            }
+            corItems.forEach(item => {
+                if (item.dataset.cor === valorSalvo) {
+                    item.style.backgroundColor = '#e9ecef';
+                }
+            });
+        }
+
+        // =============================================
+        // CONFIGURAR "OUTRO" PARA COR (simples, sem lista)
+        // =============================================
+        document.getElementById('corInput').addEventListener('change', function() {
+            toggleMotorOutro('cor', 'cor_outro');
+        });
+
+        // =============================================
+        // VALIDAÇÃO DE PLACA (apenas letras e números)
+        // =============================================
+        const camposPlaca = document.querySelectorAll('[data-tipo="placa"]');
+
+        if (camposPlaca.length > 0) {
+            // Função para verificar se a tecla é permitida
+            function isCaracterePlacaPermitido(tecla) {
+                // Permite teclas de navegação e controle
+                const teclasPermitidas = [
+                    'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight',
+                    'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', 'Escape'
+                ];
+                if (teclasPermitidas.includes(tecla)) {
+                    return true;
+                }
+                // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
+                if (event.ctrlKey || event.metaKey) {
+                    return true;
+                }
+                // Permite apenas letras e números
+                return /^[a-zA-Z0-9]$/.test(tecla);
+            }
+
+            camposPlaca.forEach(function(campo) {
+                // 1. Listener keydown: bloqueia caracteres inválidos antes de serem inseridos
+                campo.addEventListener('keydown', function(event) {
+                    if (!isCaracterePlacaPermitido(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+
+                // 2. Listener input: limpa caracteres inválidos e converte para maiúsculas
+                campo.addEventListener('input', function() {
+                    // Remove tudo que não for letra ou número e converte para maiúsculas
+                    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                });
+            });
+        }
     </script>
 
     <script>
@@ -920,7 +1114,7 @@
             const campos = etapaAtual.querySelectorAll('input, select, textarea');
             let valido = true;
 
-            // Verifica required, pattern, etc. via HTML5
+            // ===== VALIDAÇÃO HTML5 NATIVA =====
             campos.forEach(campo => {
                 if (!campo.checkValidity()) {
                     campo.classList.add('is-invalid');
@@ -930,19 +1124,92 @@
                 }
             });
 
-            // Validações customizadas (ex: campos "Outro", Flex, etc.)
-            // ... (adicionar aqui)
+            // ===== VALIDAÇÃO CUSTOMIZADA: COR =====
+            const corSelecionada = document.getElementById('corSelecionada');
+            const corInput = document.getElementById('corInput');
+            const corOutro = document.getElementById('cor_outro');
 
+            if (corSelecionada && corInput) {
+                const valorCor = corSelecionada.value;
+                let corValida = false;
+
+                if (valorCor === 'outro') {
+                    // Modo "Outro": valida o campo personalizado
+                    if (corOutro) {
+                        const outroValor = corOutro.value.trim();
+                        if (outroValor !== '') {
+                            corValida = true;
+                            corOutro.classList.remove('is-invalid');
+                            // Remove erro do campo principal (se houver)
+                            corInput.classList.remove('is-invalid');
+                        } else {
+                            corValida = false;
+                            corOutro.classList.add('is-invalid');
+                            // Remove erro do campo principal (para não mostrar mensagem duplicada)
+                            corInput.classList.remove('is-invalid');
+                        }
+                    }
+                } else {
+                    // Modo normal (cor selecionada da lista)
+                    corValida = valorCor !== '' && valorCor !== null;
+                    if (corValida) {
+                        corInput.classList.remove('is-invalid');
+                        // Se houver erro no campo "Outro", remove (caso tenha sido deixado)
+                        if (corOutro) corOutro.classList.remove('is-invalid');
+                    } else {
+                        corInput.classList.add('is-invalid');
+                        if (corOutro) corOutro.classList.remove('is-invalid');
+                    }
+                }
+
+                if (!corValida) {
+                    valido = false;
+                }
+            }
+
+            // ===== VALIDAÇÃO CUSTOMIZADA: MARCA E MODELO =====
+            const marcaId = document.getElementById('marca_id').value;
+            const modeloId = document.getElementById('modelo_id').value;
+            const feedbackEl = document.getElementById('marcaModeloFeedback');
+            const marcaBadge = document.getElementById('marcaDisplay');
+            const modeloBadge = document.getElementById('modeloDisplay');
+
+            let marcaModeloValido = true;
+
+            if (!marcaId) {
+                marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
+                marcaModeloValido = false;
+            } else {
+                marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
+            }
+
+            if (!modeloId) {
+                modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
+                marcaModeloValido = false;
+            } else {
+                modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
+            }
+
+            if (!marcaModeloValido) {
+                feedbackEl.style.display = 'block';
+                feedbackEl.classList.add('d-block');
+                valido = false;
+            } else {
+                feedbackEl.style.display = 'none';
+                feedbackEl.classList.remove('d-block');
+            }
+
+            // ===== SE HOUVER ERRO, ROLA ATÉ O PRIMEIRO CAMPO INVÁLIDO =====
             if (!valido) {
-                // Rola até o primeiro campo inválido
                 const primeiroInvalido = etapaAtual.querySelector('.is-invalid');
                 if (primeiroInvalido) {
                     primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     primeiroInvalido.focus();
                 }
             }
+
             return valido;
-        }
+        } 
 
         function atualizarProgresso() {
             const total = steps.length;
@@ -994,6 +1261,73 @@
             // (Opcional) Reaplicar máscaras e toggles (sem AJAX, só na carga)
             // inicializarCampos();
         });
+
+        // ============================================================
+// SCRIPT DE DEPURAÇÃO – CAPTURA ERROS AO CLICAR EM "PRÓXIMO"
+// ============================================================
+// Cole no Console e clique em "Próximo". Veja os logs.
+// ============================================================
+
+(function() {
+    // Salva a função original
+    const originalProxima = window.proximaEtapa || function() {
+        console.warn('⚠️ Função proximaEtapa não encontrada. Nada a fazer.');
+    };
+
+    // Substitui por uma versão com captura de erros
+    window.proximaEtapa = function() {
+        console.log('🔍 === INÍCIO DA DEPURAÇÃO ===');
+        console.log('📌 Botão "Próximo" clicado');
+
+        try {
+            // 1. Verifica campos inválidos na etapa atual
+            const etapaAtual = document.querySelector('.wizard-step:not([style*="display: none"])') || 
+                               document.querySelector('.wizard-step');
+            if (etapaAtual) {
+                const invalidos = etapaAtual.querySelectorAll('.is-invalid');
+                if (invalidos.length > 0) {
+                    console.warn(`⚠️ ${invalidos.length} campo(s) com classe 'is-invalid' (antes de validar):`);
+                    invalidos.forEach(el => {
+                        console.log(`   - ${el.id || el.name || el.tagName}`);
+                    });
+                } else {
+                    console.log('✅ Nenhum campo com is-invalid encontrado antes da validação.');
+                }
+            }
+
+            // 2. Chama a função original (que executa a validação)
+            console.log('🔄 Chamando função original proximaEtapa...');
+            const result = originalProxima.call(window);
+
+            // 3. Verifica se houve retorno (se a função retornou algo)
+            console.log('✅ Função original executada. Resultado:', result);
+
+        } catch (error) {
+            // 4. Captura e exibe qualquer erro lançado
+            console.error('❌ ERRO CAPTURADO na função proximaEtapa:');
+            console.error('   Mensagem:', error.message);
+            console.error('   Stack:', error.stack);
+            console.error('   Detalhes:', error);
+
+            // Tenta identificar a origem do erro
+            if (error instanceof ReferenceError) {
+                console.error('   🔍 Parece ser um erro de referência (variável não definida).');
+            } else if (error instanceof TypeError) {
+                console.error('   🔍 Parece ser um erro de tipo (ex: tentativa de acessar propriedade de null).');
+            } else if (error instanceof SyntaxError) {
+                console.error('   🔍 Parece ser um erro de sintaxe (código malformado).');
+            } else {
+                console.error('   🔍 Erro de outro tipo.');
+            }
+        }
+
+        console.log('🔍 === FIM DA DEPURAÇÃO ===');
+    };
+
+    console.log('✅ Script de depuração ativado!');
+    console.log('💡 Clique em "Próximo" para ver os logs de erro.');
+    console.log('💡 Para desativar, recarregue a página.');
+})();
     </script>
 </body>
 </html>
