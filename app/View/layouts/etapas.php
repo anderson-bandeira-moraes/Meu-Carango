@@ -864,11 +864,6 @@
         }
 
         // =============================================
-        // CONFIGURAR "OUTRO" PARA CARROCERIA
-        // =============================================
-        adicionarListenerOutro('carroceria', 'carroceria_outro');
-
-        // =============================================
         // MÁSCARA DE MILHAR
         // =============================================
 
@@ -1260,74 +1255,81 @@
 
             // (Opcional) Reaplicar máscaras e toggles (sem AJAX, só na carga)
             // inicializarCampos();
+
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA CARROCERIA
+            // =============================================
+            adicionarListenerOutro('carroceria', 'carroceria_outro');
+
+            adicionarListenerOutro('motor_tipo', 'motor_tipo_outro');
         });
 
         // ============================================================
-// SCRIPT DE DEPURAÇÃO – CAPTURA ERROS AO CLICAR EM "PRÓXIMO"
-// ============================================================
-// Cole no Console e clique em "Próximo". Veja os logs.
-// ============================================================
+        // SCRIPT DE DEPURAÇÃO – CAPTURA ERROS AO CLICAR EM "PRÓXIMO"
+        // ============================================================
+        // Cole no Console e clique em "Próximo". Veja os logs.
+        // ============================================================
 
-(function() {
-    // Salva a função original
-    const originalProxima = window.proximaEtapa || function() {
-        console.warn('⚠️ Função proximaEtapa não encontrada. Nada a fazer.');
-    };
+        (function() {
+            // Salva a função original
+            const originalProxima = window.proximaEtapa || function() {
+                console.warn('⚠️ Função proximaEtapa não encontrada. Nada a fazer.');
+            };
 
-    // Substitui por uma versão com captura de erros
-    window.proximaEtapa = function() {
-        console.log('🔍 === INÍCIO DA DEPURAÇÃO ===');
-        console.log('📌 Botão "Próximo" clicado');
+            // Substitui por uma versão com captura de erros
+            window.proximaEtapa = function() {
+                console.log('🔍 === INÍCIO DA DEPURAÇÃO ===');
+                console.log('📌 Botão "Próximo" clicado');
 
-        try {
-            // 1. Verifica campos inválidos na etapa atual
-            const etapaAtual = document.querySelector('.wizard-step:not([style*="display: none"])') || 
-                               document.querySelector('.wizard-step');
-            if (etapaAtual) {
-                const invalidos = etapaAtual.querySelectorAll('.is-invalid');
-                if (invalidos.length > 0) {
-                    console.warn(`⚠️ ${invalidos.length} campo(s) com classe 'is-invalid' (antes de validar):`);
-                    invalidos.forEach(el => {
-                        console.log(`   - ${el.id || el.name || el.tagName}`);
-                    });
-                } else {
-                    console.log('✅ Nenhum campo com is-invalid encontrado antes da validação.');
+                try {
+                    // 1. Verifica campos inválidos na etapa atual
+                    const etapaAtual = document.querySelector('.wizard-step:not([style*="display: none"])') || 
+                                       document.querySelector('.wizard-step');
+                    if (etapaAtual) {
+                        const invalidos = etapaAtual.querySelectorAll('.is-invalid');
+                        if (invalidos.length > 0) {
+                            console.warn(`⚠️ ${invalidos.length} campo(s) com classe 'is-invalid' (antes de validar):`);
+                            invalidos.forEach(el => {
+                                console.log(`   - ${el.id || el.name || el.tagName}`);
+                            });
+                        } else {
+                            console.log('✅ Nenhum campo com is-invalid encontrado antes da validação.');
+                        }
+                    }
+
+                    // 2. Chama a função original (que executa a validação)
+                    console.log('🔄 Chamando função original proximaEtapa...');
+                    const result = originalProxima.call(window);
+
+                    // 3. Verifica se houve retorno (se a função retornou algo)
+                    console.log('✅ Função original executada. Resultado:', result);
+
+                } catch (error) {
+                    // 4. Captura e exibe qualquer erro lançado
+                    console.error('❌ ERRO CAPTURADO na função proximaEtapa:');
+                    console.error('   Mensagem:', error.message);
+                    console.error('   Stack:', error.stack);
+                    console.error('   Detalhes:', error);
+
+                    // Tenta identificar a origem do erro
+                    if (error instanceof ReferenceError) {
+                        console.error('   🔍 Parece ser um erro de referência (variável não definida).');
+                    } else if (error instanceof TypeError) {
+                        console.error('   🔍 Parece ser um erro de tipo (ex: tentativa de acessar propriedade de null).');
+                    } else if (error instanceof SyntaxError) {
+                        console.error('   🔍 Parece ser um erro de sintaxe (código malformado).');
+                    } else {
+                        console.error('   🔍 Erro de outro tipo.');
+                    }
                 }
-            }
 
-            // 2. Chama a função original (que executa a validação)
-            console.log('🔄 Chamando função original proximaEtapa...');
-            const result = originalProxima.call(window);
+                console.log('🔍 === FIM DA DEPURAÇÃO ===');
+            };
 
-            // 3. Verifica se houve retorno (se a função retornou algo)
-            console.log('✅ Função original executada. Resultado:', result);
-
-        } catch (error) {
-            // 4. Captura e exibe qualquer erro lançado
-            console.error('❌ ERRO CAPTURADO na função proximaEtapa:');
-            console.error('   Mensagem:', error.message);
-            console.error('   Stack:', error.stack);
-            console.error('   Detalhes:', error);
-
-            // Tenta identificar a origem do erro
-            if (error instanceof ReferenceError) {
-                console.error('   🔍 Parece ser um erro de referência (variável não definida).');
-            } else if (error instanceof TypeError) {
-                console.error('   🔍 Parece ser um erro de tipo (ex: tentativa de acessar propriedade de null).');
-            } else if (error instanceof SyntaxError) {
-                console.error('   🔍 Parece ser um erro de sintaxe (código malformado).');
-            } else {
-                console.error('   🔍 Erro de outro tipo.');
-            }
-        }
-
-        console.log('🔍 === FIM DA DEPURAÇÃO ===');
-    };
-
-    console.log('✅ Script de depuração ativado!');
-    console.log('💡 Clique em "Próximo" para ver os logs de erro.');
-    console.log('💡 Para desativar, recarregue a página.');
-})();
+            console.log('✅ Script de depuração ativado!');
+            console.log('💡 Clique em "Próximo" para ver os logs de erro.');
+            console.log('💡 Para desativar, recarregue a página.');
+        })();
     </script>
 </body>
 </html>

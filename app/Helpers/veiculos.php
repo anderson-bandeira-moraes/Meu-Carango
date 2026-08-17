@@ -708,15 +708,22 @@ if (!function_exists('gerarSelectOutro')) {
      * @param string $valorSalvo Valor atual (do banco ou $old)
      * @param string $classes    Classes adicionais para o select (opcional)
      * @param string $id         ID do select (opcional; se não fornecido, usa o nome)
+     * @param string $attrs      Atributos adicionais para a tag <select> (ex: 'required', 'data-xyz="abc"')
      * @return array{
      *     select_html: string,
      *     is_outro: bool,
      *     valor_outro: string
      * }
      */
-    function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string $classes = '', string $id = ''): array
-    {
-        $id = $id ?: $nome; // Se ID não for fornecido, usa o nome
+    function gerarSelectOutro(
+        string $nome,
+        array $lista,
+        string $valorSalvo,
+        string $classes = '',
+        string $id = '',
+        string $attrs = '' 
+    ): array {
+        $id = $id ?: $nome;
 
         $isAssoc = array_keys($lista) !== range(0, count($lista) - 1);
 
@@ -734,7 +741,7 @@ if (!function_exists('gerarSelectOutro')) {
         }
 
         $classAttribute = 'form-select' . ($classes ? ' ' . htmlspecialchars($classes) : '');
-        $html = '<select name="' . htmlspecialchars($nome) . '" id="' . htmlspecialchars($id) . '" class="' . $classAttribute . '">';
+        $html = '<select name="' . htmlspecialchars($nome) . '" id="' . htmlspecialchars($id) . '" class="' . $classAttribute . '" ' . $attrs . '>';
         $html .= '<option value="">Selecione</option>';
 
         foreach ($lista as $key => $label) {
@@ -752,5 +759,12 @@ if (!function_exists('gerarSelectOutro')) {
             'is_outro'    => $isOutro,
             'valor_outro' => $valorOutro,
         ];
+    }
+}
+
+if (!function_exists('selected')) {
+    // Função auxiliar para marcar selected em selects
+    function selected($valorSalvo, $valorAtual): string {
+        return ((string) $valorSalvo === (string) $valorAtual) ? 'selected' : '';
     }
 }
