@@ -746,11 +746,13 @@ if (!function_exists('gerarSelectOutro')) {
 
         foreach ($lista as $key => $label) {
             $value = $isAssoc ? $key : $label;
-            $selected = ($valorSalvo === $value && !$isOutro) ? ' selected' : '';
+            // 🔧 CORREÇÃO: normaliza ambos para string antes de comparar
+            $selected = ((string)$valorSalvo === (string)$value && !$isOutro) ? ' selected' : '';
             $html .= '<option value="' . htmlspecialchars($value) . '"' . $selected . '>' . htmlspecialchars($label) . '</option>';
         }
 
-        $selectedOutro = $isOutro ? ' selected' : '';
+        // A opção "Outro" já estava correta com a normalização (mantida)
+        $selectedOutro = ((string)$valorSalvo === (string)'outro' && $isOutro) ? ' selected' : '';
         $html .= '<option value="outro"' . $selectedOutro . '>Outro (digitar)</option>';
         $html .= '</select>';
 
