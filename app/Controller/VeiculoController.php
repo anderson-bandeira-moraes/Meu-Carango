@@ -245,6 +245,7 @@ class VeiculoController
         $old = $this->session->get('old_veiculo_input', []);
         $this->session->delete('old_veiculo_input');
         $error = $this->getFlash('flash_veiculo_error');
+        $opcionaisSelecionados = $old['opcionaisIds'] ?? [];
 
         // 4. Carrega modelos apenas se houver uma marca selecionada no old input
         $marcaId = isset($old['marca_id']) && is_numeric($old['marca_id']) ? (int) $old['marca_id'] : null;
@@ -254,6 +255,8 @@ class VeiculoController
             $modelosData[$modelo['id']] = $modelo['nome'];
         }
 
+
+
         // 5. Renderiza a view específica para o tipo
         return $this->view->renderWithLayout(
             'logista/veiculos/etapas/combustao',
@@ -261,7 +264,7 @@ class VeiculoController
                 'veiculo' => null,
                 'complemento' => null,
                 'gnv' => null,
-                'opcionais_selecionados' => [],
+                'opcionais_selecionados' => $opcionaisSelecionados,
                 'todos_opcionais' => $opcionais,
                 'marcas' => $marcas,
                 'modelos' => $modelosData,
