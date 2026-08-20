@@ -22,61 +22,6 @@ $tipoAtual = $tipo ?? ($old['tipo_veiculo'] ?? null);
 
 // Para criação, define um tipo padrão (será sobrescrito pelo modal)
 $tipoSelecionado = $isEdit ? $tipoAtual : null;
-
-/**
- * Gera o HTML do <select> com opção "Outro" e retorna informações sobre o estado.
- *
- * @param string $nome       Nome do campo (atributo name)
- * @param array  $lista      Lista de valores válidos (associativa ou indexada)
- * @param string $valorSalvo Valor atual (do banco ou $old)
- * @param string $classes    Classes adicionais para o select (opcional)
- * @param string $id         ID do select (opcional; se não fornecido, usa o nome)
- * @return array{
- *     select_html: string,
- *     is_outro: bool,
- *     valor_outro: string
- * }
- */
-function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string $classes = '', string $id = ''): array
-{
-    $id = $id ?: $nome; // Se ID não for fornecido, usa o nome
-
-    $isAssoc = array_keys($lista) !== range(0, count($lista) - 1);
-
-    $isOutro = false;
-    $valorOutro = '';
-    if (!empty($valorSalvo)) {
-        if ($isAssoc) {
-            $isOutro = !array_key_exists($valorSalvo, $lista);
-        } else {
-            $isOutro = !in_array($valorSalvo, $lista, true);
-        }
-        if ($isOutro) {
-            $valorOutro = $valorSalvo;
-        }
-    }
-
-    $classAttribute = 'form-select' . ($classes ? ' ' . htmlspecialchars($classes) : '');
-    $html = '<select name="' . htmlspecialchars($nome) . '" id="' . htmlspecialchars($id) . '" class="' . $classAttribute . '">';
-    $html .= '<option value="">Selecione</option>';
-
-    foreach ($lista as $key => $label) {
-        $value = $isAssoc ? $key : $label;
-        $selected = ($valorSalvo === $value && !$isOutro) ? ' selected' : '';
-        $html .= '<option value="' . htmlspecialchars($value) . '"' . $selected . '>' . htmlspecialchars($label) . '</option>';
-    }
-
-    $selectedOutro = $isOutro ? ' selected' : '';
-    $html .= '<option value="outro"' . $selectedOutro . '>Outro (digitar)</option>';
-    $html .= '</select>';
-
-    return [
-        'select_html' => $html,
-        'is_outro'    => $isOutro,
-        'valor_outro' => $valorOutro,
-    ];
-}
-
 ?>
 
 <script>
@@ -5595,11 +5540,3 @@ function gerarSelectOutro(string $nome, array $lista, string $valorSalvo, string
         });
     });
 </script>
-
-<!-- ========== HELPER FUNCTION ========== -->
-<?php
-// Função auxiliar para marcar selected em selects
-function selected($valorSalvo, $valorAtual): string {
-    return ((string) $valorSalvo === (string) $valorAtual) ? 'selected' : '';
-}
-?>

@@ -54,49 +54,49 @@ class VeiculoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Campos obrigatórios (IDs de marca e modelo)
+            // ===== BÁSICO =====
             'marca_id'       => 'required|integer|exists:marcas,id',
             'modelo_id'      => 'required|integer|exists:modelos,id',
-            'ano_fabricacao' => 'required|integer|min_num:1900',
+            'ano_fabricacao' => 'nullable|integer|min_num:1900',
             'ano_modelo'     => 'required|integer|min_num:1900',
             'cor'            => 'required|max:30',
             'quilometragem'  => 'required|integer|min_num:0',
 
-            // Tipo de veículo (obrigatório para decidir o complemento)
+            // ===== TIPO DE VEÍCULO =====
             'tipo_veiculo'   => 'required|in:combustao,eletrico,hibrido',
 
-            // Opcionais (comuns)
-            'versao'         => 'nullable|max:50',
+            // ===== OPÇÕES =====
+            'versao'         => 'nullable|max:50',                 // não obrigatório
             'numero_portas'  => 'required|integer|between:2,6',
             'numero_assentos'=> 'required|integer|between:2,15',
-            'carroceria'           => 'nullable|string|max:30',
-            'tipo_direcao'         => 'nullable|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
-            'altura_solo_mm'       => 'nullable|integer|min:0',
-            'pneu_aro'             => 'nullable|integer|min_num:10|max_num:30',
-            'tipo_roda'            => 'nullable|in:liga_leve,calota',
-            'freio_dianteiro' => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
-            'freio_traseiro'  => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
-            'placa'                => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
+            'carroceria'     => 'required|string|max:30',
+            'tipo_direcao'   => 'required|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
+            'altura_solo_mm' => 'nullable|integer|min:0',          // não obrigatório
+            'pneu_aro'       => 'required|integer|min_num:10|max_num:30',
+            'tipo_roda'      => 'required|in:liga_leve,calota',
+            'freio_dianteiro'=> 'required|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
+            'freio_traseiro' => 'required|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
+            'placa'          => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
 
-            // Dimensões (opcionais)
-            'comprimento_mm'           => 'nullable|integer|min_num:0',
-            'largura_mm'               => 'nullable|integer|min_num:0',
-            'altura_mm'                => 'nullable|integer|min_num:0',
-            'distancia_entre_eixos_mm' => 'nullable|integer|min_num:0',
-            'peso_ordem_marcha_kg'     => 'nullable|numeric|min_num:0',
-            'volume_porta_malas_l'     => 'nullable|integer|min_num:0',
-            'volume_cacamba_l'         => 'nullable|integer|min_num:0',
-            'carga_util_kg'            => 'nullable|numeric|min_num:0',
-            'capacidade_reboque_kg'    => 'nullable|numeric|min_num:0',
+            // ===== DIMENSÕES =====
+            'comprimento_mm'           => 'required|integer|min_num:0',
+            'largura_mm'               => 'required|integer|min_num:0',
+            'altura_mm'                => 'required|integer|min_num:0',
+            'distancia_entre_eixos_mm' => 'required|integer|min_num:0',
+            'peso_ordem_marcha_kg'     => 'required|numeric|min_num:0',
+            'volume_porta_malas_l'     => 'required|integer|min_num:0',
+            'volume_cacamba_l'         => 'nullable|integer|min_num:0', // condicional
+            'carga_util_kg'            => 'nullable|numeric|min_num:0', // não obrigatório
+            'capacidade_reboque_kg'    => 'nullable|numeric|min_num:0', // não obrigatório
 
-            // Flags e status
-            'gnv_instalado'   => 'nullable|boolean',
+            // ===== STATUS E FLAGS =====
+            'gnv_instalado'   => 'nullable|boolean',                // condicional
             'status_estoque'  => 'nullable|in:disponivel,vendido,reservado',
             'status_vitrine'  => 'nullable|in:ativo,inativo',
 
-            // Tipo de suspensão
-            'suspensao_dianteira' => 'nullable|string|max:40',
-            'suspensao_traseira'  => 'nullable|string|max:40',
+            // ===== SUSPENSÃO =====
+            'suspensao_dianteira' => 'nullable|string|max:40',      // não obrigatório
+            'suspensao_traseira'  => 'nullable|string|max:40',      // não obrigatório
         ];
     }
 

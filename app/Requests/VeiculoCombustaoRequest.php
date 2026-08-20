@@ -30,46 +30,39 @@ class VeiculoCombustaoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Combustível (ENUM)
+            // ===== MOTORIZAÇÃO =====
             'combustivel' => 'required|in:alcool,diesel,flex,gasolina',
-
-            // Aspiração (ENUM)
-            'aspiracao' => 'nullable|in:aspirado,turbo,supercharger',
-
-            // Motor
+            'aspiracao'   => 'nullable|in:aspirado,turbo,supercharger',
             'motor_tipo'  => 'required|max:40',
 
-            // Potência e torque (principais)
+            // ===== DESEMPENHO =====
             'potencia_cv'   => 'required|integer|min_num:0',
             'torque_kgfm'   => 'nullable|numeric|min_num:0',
-
-            // Tração
-            'tracao_tipo'   => 'required|max:10',
-
-            // Consumo (cidade obrigatório, estrada opcional)
-            'consumo_cidade_kml'   => 'required|numeric|min_num:0',
-            'consumo_estrada_kml'  => 'required|numeric|min_num:0',
-            'consumo_medio_kml'    => 'nullable|numeric|min_num:0',
-
-            // Tanque
-            'capacidade_tanque_l' => 'required|integer|min_num:0',
-
-            // Transmissão
-            'transmissao_tipo' => 'required|max:30',
-            'numero_marchas'   => 'nullable|integer|min_num:0',
-
-            // Campos para Flex (condicionais, mas com regras básicas)
-            'potencia_etanol_cv'          => 'nullable|integer|min_num:0',
-            'torque_etanol_kgfm'          => 'nullable|numeric|min_num:0',
-            'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
-            'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
-            'consumo_medio_etanol_kml'    => 'nullable|numeric|min_num:0', 
-
-            // Campos de desempenho (opcionais)
             'regime_potencia_rpm'  => 'nullable|integer|min_num:0',
             'regime_torque_rpm'    => 'nullable|integer|min_num:0',
             'aceleracao_0_100_seg' => 'nullable|numeric|min_num:0',
             'velocidade_max_kmh'   => 'nullable|integer|min_num:0',
+
+            // ===== TRAÇÃO =====
+            'tracao_tipo'   => 'required|max:10',
+
+            // ===== CONSUMO =====
+            'consumo_cidade_kml'   => 'required|numeric|min_num:0',
+            'consumo_estrada_kml'  => 'required|numeric|min_num:0',
+            'consumo_medio_kml'    => 'nullable|numeric|min_num:0', 
+
+            // ===== TANQUE E TRANSMISSÃO =====
+            'capacidade_tanque_l' => 'required|integer|min_num:0',
+            'transmissao_tipo'    => 'required|max:30',
+            'numero_marchas'      => 'nullable|integer|min_num:0', 
+
+            // ===== CAMPOS PARA ETANOL =====
+            // Obrigatórios quando flex (mas na regra são required, condicional no validate)
+            'potencia_etanol_cv'          => 'nullable|integer|min_num:0', 
+            'torque_etanol_kgfm'          => 'nullable|numeric|min_num:0', 
+            'consumo_cidade_etanol_kml'   => 'nullable|numeric|min_num:0',
+            'consumo_estrada_etanol_kml'  => 'nullable|numeric|min_num:0',
+            'consumo_medio_etanol_kml'    => 'nullable|numeric|min_num:0',
         ];
     }
 
