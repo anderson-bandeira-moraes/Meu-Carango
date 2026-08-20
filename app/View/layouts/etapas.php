@@ -844,13 +844,18 @@
             // Controla required
             if (isOutro) {
                 outroInput.setAttribute('required', 'required');
-                // Adiciona classe para validação
                 outroInput.classList.add('requires-validation');
             } else {
                 outroInput.removeAttribute('required');
                 outroInput.classList.remove('requires-validation');
-                outroInput.value = ''; // limpa o valor
+                outroInput.value = '';
             }
+
+            // REMOVE O ERRO DO SELECT PRINCIPAL
+            select.classList.remove('is-invalid');
+
+            // REMOVE O ERRO DO CAMPO EXTRA (se estiver oculto ou não)
+            outroInput.classList.remove('is-invalid');
 
             if (!isOutro) outroInput.value = '';
         }
@@ -1253,23 +1258,342 @@
             if (btnAnterior) btnAnterior.addEventListener('click', etapaAnterior);
             if (btnProximo) btnProximo.addEventListener('click', proximaEtapa);
 
-            // (Opcional) Reaplicar máscaras e toggles (sem AJAX, só na carga)
-            // inicializarCampos();
+            // ================================================
+            // VALIDAÇÃO DE PONTO/VÍRGULA E BLOQUEIO DE CARACTERES INVÁLIDOS
+            // ================================================
+
+            // Seleciona todos os campos com data-tipo="inteiro"
+            const camposInteiros = document.querySelectorAll('[data-tipo="inteiro"]');
+
+            if (camposInteiros.length === 0) return;
+
+            // Função para validar se o caractere é permitido (número, ponto ou vírgula)
+            function isCaracterePermitido(tecla) {
+                // Permite teclas de navegação e controle
+                if (tecla === 'Backspace' || tecla === 'Delete' || tecla === 'Tab' ||
+                    tecla === 'ArrowLeft' || tecla === 'ArrowRight' || tecla === 'ArrowUp' || tecla === 'ArrowDown' ||
+                    tecla === 'Home' || tecla === 'End' || tecla === 'Enter') {
+                    return true;
+                }
+
+                // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
+                if (event.ctrlKey || event.metaKey) {
+                    return true;
+                }
+
+                // Verifica se a tecla é um número, ponto ou vírgula
+                return /^[0-9.,]$/.test(tecla);
+            }
+
+            // Para cada campo, adiciona os listeners
+            camposInteiros.forEach(function(campo) {
+                // 1. Listener keydown: bloqueia caracteres inválidos antes de serem inseridos
+                campo.addEventListener('keydown', function(event) {
+                    if (!isCaracterePermitido(event.key)) {
+                        event.preventDefault(); // Impede a entrada do caractere
+                    }
+                });
+
+                // 2. Listener input: validação de ponto/vírgula + limpeza de colagem
+                campo.addEventListener('input', function() {
+                    // 2a. Limpeza de caracteres inválidos (fallback para colagem)
+                    this.value = this.value.replace(/[^0-9.,]/g, '');
+
+                    // 2b. Obtém o valor atual (já limpo)
+                    const valor = this.value;
+
+                    // 2c. Verifica se contém ponto ou vírgula
+                    const contemPontoVirgula = /[.,]/.test(valor);
+
+                    // 2d. Encontra os elementos de feedback
+                    const container = this.closest('.input-group, .col-md-4, .mb-3') || this.parentNode;
+                    const feedbackRequired = container.querySelector('.invalid-feedback:not(.feedback-pontovirgula)');
+                    const feedbackPontovirgula = container.querySelector('.feedback-pontovirgula');
+
+                    if (contemPontoVirgula) {
+                        // Caso contenha ponto ou vírgula
+                        this.classList.add('is-invalid');
+
+                        if (feedbackPontovirgula) {
+                            feedbackPontovirgula.style.display = 'block';
+                            feedbackPontovirgula.classList.remove('d-none');
+                        }
+
+                        if (feedbackRequired) {
+                            feedbackRequired.style.display = 'none';
+                            feedbackRequired.classList.add('d-none');
+                        }
+                    } else {
+                        // Caso NÃO contenha ponto ou vírgula
+                        this.classList.remove('is-invalid');
+
+                        if (feedbackPontovirgula) {
+                            feedbackPontovirgula.style.display = 'none';
+                            feedbackPontovirgula.classList.add('d-none');
+                        }
+
+                        if (feedbackRequired) {
+                            feedbackRequired.style.display = '';
+                            feedbackRequired.classList.remove('d-none');
+                        }
+                    }
+                });
+            });
+
+            // =============================================
+            // CONTROLE DE CAMPOS FLEX (etanol) – Combustão e Híbrido
+            // =============================================
+
+            /**
+             * Controla a exibição dos campos de etanol com base no valor do select de combustível.
+             * @param {string} selectId - ID do <select> de combustível
+             * @param {string} containerId - ID do container que será mostrado/ocultado
+             */
+            function toggleFlexFields(selectId, containerId) {
+                const select = document.getElementById(selectId);
+                const container = document.getElementById(containerId);
+                if (!select || !container) return;
+
+                const isFlex = select.value === 'flex';
+                container.style.display = isFlex ? 'block' : 'none';
+
+                const inputs = container.querySelectorAll('input, select, textarea');
+                inputs.forEach(el => {
+                    el.disabled = !isFlex;
+                    if (isFlex) {
+                        // SEMPRE adiciona required quando for flex
+                        el.setAttribute('required', 'required');
+                    } else {
+                        el.removeAttribute('required');
+                    }
+                });
+            }
+
+            // Configurar para o campo de combustível da combustão (se existir)
+            const combustivelSelect = document.getElementById('combustivel');
+            if (combustivelSelect) {
+                combustivelSelect.addEventListener('change', function() {
+                    toggleFlexFields('combustivel', 'flex-fields');
+                });
+                // Estado inicial (edição)
+                toggleFlexFields('combustivel', 'flex-fields');
+            }
+
+            // Configurar para o campo de combustível do híbrido
+            const combustivelHibrido = document.getElementById('combustivel_hibrido');
+            if (combustivelHibrido) {
+                combustivelHibrido.addEventListener('change', function() {
+                    toggleFlexFields('combustivel_hibrido', 'flex-fields-hibrido');
+                });
+                // Estado inicial (edição)
+                toggleFlexFields('combustivel_hibrido', 'flex-fields-hibrido');
+            }
+
+            // ============================================================
+            // CONTROLE DE VISIBILIDADE DO NÚMERO DE MARCHAS
+            // ============================================================
+
+            /**
+             * Configura a lógica de exibição do campo de marchas baseado no tipo de transmissão.
+             * @param {string} transmissaoId - ID do <select> de transmissão
+             * @param {string} marchasId    - ID do <select> de número de marchas
+             * @param {string[]} tiposCvt   - Array de valores que indicam "sem marchas fixas"
+             */
+            function configurarMarchasCvt(transmissaoId, marchasId, tiposCvt) {
+                const transmissao = document.getElementById(transmissaoId);
+                const marchas = document.getElementById(marchasId);
+                if (!transmissao || !marchas) return;
+
+                function toggleMarchas() {
+                    const valor = transmissao.value;
+                    const isCvt = tiposCvt.includes(valor);
+                    const container = marchas.closest('.col-md-4');
+
+                    if (container) {
+                        container.style.display = (valor !== '' && !isCvt) ? 'block' : 'none';
+                    }
+
+                    // Remove ou adiciona o required conforme a visibilidade
+                    if (valor === '' || isCvt) {
+                        marchas.removeAttribute('required');
+                        marchas.value = '';
+                        marchas.selectedIndex = 0;
+                    } else {
+                        marchas.setAttribute('required', 'required');
+                    }
+                }
+
+                transmissao.addEventListener('change', toggleMarchas);
+                // Executa uma vez para inicializar (na edição)
+                toggleMarchas();
+            }
+
+            // Configurar para a seção Combustão
+            configurarMarchasCvt(
+                'transmissao_tipo',          // ID do select de transmissão (combustão)
+                'numero_marchas',            // ID do select de marchas
+                ['Automática CVT', 'CVT']    // Valores que indicam CVT
+            );
+
+            // Configurar para a seção Híbrido
+            configurarMarchasCvt(
+                'transmissao_tipo_hibrido',       // ID do select de transmissão híbrido
+                'numero_marchas_hibrido',         // ID do select de marchas híbrido
+                ['CVT', 'e-CVT', 'Automática CVT'] // Valores comuns para híbridos
+            );
+
+            // ============================================================
+            // CONTROLE DE EXIBIÇÃO DO VOLUME DA CAÇAMBA (baseado na carroceria)
+            // ============================================================
+
+            // Lista de carrocerias que possuem caçamba
+            const TIPOS_COM_CACAMBA = ['picape', 'utilitario', 'suv', 'crossover'];
+
+            /**
+             * Controla a visibilidade e o required do campo "Volume da caçamba".
+             */
+            function toggleCacamba() {
+                const carroceriaSelect = document.getElementById('carroceria');
+                const cacambaContainer = document.getElementById('cacamba-container');
+                const cacambaHidden = document.getElementById('volume_cacamba_l');
+                const cacambaVisual = document.getElementById('volume_cacamba_l_visual');
+
+                if (!carroceriaSelect || !cacambaContainer) return;
+
+                const valorSelecionado = carroceriaSelect.value;
+                const exibir = TIPOS_COM_CACAMBA.includes(valorSelecionado);
+
+                // Exibe ou oculta o container
+                cacambaContainer.style.display = exibir ? 'block' : 'none';
+
+                // Controla o atributo required (apenas no campo visual, pois o hidden não é validado)
+                if (cacambaVisual) {
+                    if (exibir) {
+                        cacambaVisual.setAttribute('required', 'required');
+                    } else {
+                        cacambaVisual.removeAttribute('required');
+                        // Limpa os valores para não enviar dados indesejados
+                        if (cacambaHidden) cacambaHidden.value = '';
+                        cacambaVisual.value = '';
+                    }
+                }
+            }
+
+            // Adiciona o listener ao select de carroceria (que está na etapa Básico)
+            const carroceriaSelect = document.getElementById('carroceria');
+            if (carroceriaSelect) {
+                carroceriaSelect.addEventListener('change', toggleCacamba);
+                // Executa uma vez para aplicar o estado inicial (edição)
+                toggleCacamba();
+            }
+
+            // ============================================================
+// CONTROLE DE EXIBIÇÃO DOS CAMPOS GNV (baseado no select Sim/Não)
+// ============================================================
+function toggleGNV() {
+    const gnvSelect = document.getElementById('gnv_instalado');
+    const gnvBloco = document.getElementById('gnv-fields');
+    if (!gnvSelect || !gnvBloco) return;
+
+    const isSim = gnvSelect.value === '1';
+    gnvBloco.style.display = isSim ? 'block' : 'none';
+
+    const campos = gnvBloco.querySelectorAll('input, select, textarea');
+    campos.forEach(campo => {
+        campo.disabled = !isSim;
+        if (isSim) {
+            // SEMPRE adiciona required quando "Sim" estiver selecionado
+            campo.setAttribute('required', 'required');
+        } else {
+            campo.removeAttribute('required');
+            // Limpa valores se não for GNV
+            if (campo.tagName === 'SELECT') {
+                campo.selectedIndex = 0;
+            } else {
+                campo.value = '';
+            }
+            // Remove qualquer estado de erro residual
+            campo.classList.remove('is-invalid');
+        }
+    });
+}
+
+            // Adiciona o listener e inicializa
+            const gnvSelect = document.getElementById('gnv_instalado');
+            if (gnvSelect) {
+                gnvSelect.addEventListener('change', toggleGNV);
+                toggleGNV(); // Estado inicial (edição)
+            }
+
+            // ============================================================
+            // REMOVER IS-INVALID EM TEMPO REAL AO CORRIGIR CAMPOS OBRIGATÓRIOS
+            // ============================================================
+            const veiculoForm = document.getElementById('veiculoForm');
+
+            if (veiculoForm) {
+                // Para inputs e textareas (detecta digitação)
+                veiculoForm.addEventListener('input', function(e) {
+                    const campo = e.target;
+                    // Filtra apenas campos de formulário
+                    if (!campo.matches('input, textarea')) return;
+                    // Verifica se é obrigatório e está visível
+                    if (!campo.hasAttribute('required')) return;
+                    if (campo.offsetParent === null) return; // oculto
+
+                    // Remove erro se o campo tiver valor
+                    if (campo.value.trim() !== '') {
+                        campo.classList.remove('is-invalid');
+                    }
+                });
+
+                // Para selects (detecta mudança de opção)
+                veiculoForm.addEventListener('change', function(e) {
+                    const campo = e.target;
+                    if (!campo.matches('select')) return;
+                    if (!campo.hasAttribute('required')) return;
+                    if (campo.offsetParent === null) return;
+
+                    if (campo.value !== '' && campo.value !== null) {
+                        campo.classList.remove('is-invalid');
+                    }
+                });
+            }
 
             // =============================================
             // CONFIGURAR "OUTRO" PARA CARROCERIA
             // =============================================
             adicionarListenerOutro('carroceria', 'carroceria_outro');
 
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA CILINDRADA
+            // =============================================
             adicionarListenerOutro('motor_tipo', 'motor_tipo_outro');
+
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA SUSPENSÃO
+            // =============================================
+            adicionarListenerOutro('suspensao_dianteira', 'suspensao_dianteira_outro');
+            adicionarListenerOutro('suspensao_traseira', 'suspensao_traseira_outro');
+
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA ARO DO PNEU
+            // =============================================
+            adicionarListenerOutro('pneu_aro', 'pneu_aro_outro');
+
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA CAPACIDADE DO CILINDRO
+            // =============================================
+            adicionarListenerOutro('capacidade_cilindro_m3', 'capacidade_cilindro_m3_outro');
+
+            // =============================================
+            // CONFIGURAR "OUTRO" PARA LOCALIZAÇÃO DO CILINDRO
+            // =============================================
+            adicionarListenerOutro('localizacao_cilindro', 'localizacao_cilindro_outro');
         });
 
         // ============================================================
         // SCRIPT DE DEPURAÇÃO – CAPTURA ERROS AO CLICAR EM "PRÓXIMO"
         // ============================================================
-        // Cole no Console e clique em "Próximo". Veja os logs.
-        // ============================================================
-
         (function() {
             // Salva a função original
             const originalProxima = window.proximaEtapa || function() {
