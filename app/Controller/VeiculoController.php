@@ -255,8 +255,6 @@ class VeiculoController
             $modelosData[$modelo['id']] = $modelo['nome'];
         }
 
-
-
         // 5. Renderiza a view específica para o tipo
         return $this->view->renderWithLayout(
             'logista/veiculos/etapas/combustao',

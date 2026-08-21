@@ -215,6 +215,33 @@
         // NOVO: referência ao botão "Próximo"
         const btnProximoMarca = document.getElementById('btnProximoMarca');
 
+        // Função para atualizar os badges com base nos IDs atuais
+        function atualizarBadges() {
+            const marcaId = marcaIdInput.value;
+            const modeloId = modeloIdInput.value;
+
+            // Atualiza badge da marca
+            if (marcaId) {
+                const marca = marcasData.find(m => m.id == marcaId);
+                if (marca) {
+                    marcaDisplay.textContent = marca.nome;
+                    marcaDisplay.className = 'badge bg-primary p-2';
+                }
+            } else {
+                marcaDisplay.textContent = 'Nenhuma marca selecionada';
+                marcaDisplay.className = 'badge bg-secondary p-2';
+            }
+
+            // Atualiza badge do modelo
+            if (modeloId && modelosData[modeloId]) {
+                modeloDisplay.textContent = modelosData[modeloId];
+                modeloDisplay.className = 'badge bg-primary p-2';
+            } else {
+                modeloDisplay.textContent = 'Nenhum modelo selecionado';
+                modeloDisplay.className = 'badge bg-secondary p-2';
+            }
+        }
+
         // Dados da seleção
         let selectedMarcaId = null;
         let selectedMarcaNome = '';
@@ -1208,6 +1235,9 @@
                 }
             }
 
+            // ATUALIZA OS BADGES COM OS VALORES ATUAIS (independente de erro)
+            atualizarBadges();
+
             return valido;
         } 
 
@@ -1251,6 +1281,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializa o wizard
             iniciarWizard();
+
+            // ATUALIZA OS BADGES AO CARREGAR A PÁGINA (com os valores de $old)
+            atualizarBadges();
 
             // Event listeners dos botões
             const btnAnterior = document.getElementById('btnAnterior');
@@ -1488,35 +1521,35 @@
             }
 
             // ============================================================
-// CONTROLE DE EXIBIÇÃO DOS CAMPOS GNV (baseado no select Sim/Não)
-// ============================================================
-function toggleGNV() {
-    const gnvSelect = document.getElementById('gnv_instalado');
-    const gnvBloco = document.getElementById('gnv-fields');
-    if (!gnvSelect || !gnvBloco) return;
+            // CONTROLE DE EXIBIÇÃO DOS CAMPOS GNV (baseado no select Sim/Não)
+            // ============================================================
+            function toggleGNV() {
+                const gnvSelect = document.getElementById('gnv_instalado');
+                const gnvBloco = document.getElementById('gnv-fields');
+                if (!gnvSelect || !gnvBloco) return;
 
-    const isSim = gnvSelect.value === '1';
-    gnvBloco.style.display = isSim ? 'block' : 'none';
+                const isSim = gnvSelect.value === '1';
+                gnvBloco.style.display = isSim ? 'block' : 'none';
 
-    const campos = gnvBloco.querySelectorAll('input, select, textarea');
-    campos.forEach(campo => {
-        campo.disabled = !isSim;
-        if (isSim) {
-            // SEMPRE adiciona required quando "Sim" estiver selecionado
-            campo.setAttribute('required', 'required');
-        } else {
-            campo.removeAttribute('required');
-            // Limpa valores se não for GNV
-            if (campo.tagName === 'SELECT') {
-                campo.selectedIndex = 0;
-            } else {
-                campo.value = '';
+                const campos = gnvBloco.querySelectorAll('input, select, textarea');
+                campos.forEach(campo => {
+                    campo.disabled = !isSim;
+                    if (isSim) {
+                        // SEMPRE adiciona required quando "Sim" estiver selecionado
+                        campo.setAttribute('required', 'required');
+                    } else {
+                        campo.removeAttribute('required');
+                        // Limpa valores se não for GNV
+                        if (campo.tagName === 'SELECT') {
+                            campo.selectedIndex = 0;
+                        } else {
+                            campo.value = '';
+                        }
+                        // Remove qualquer estado de erro residual
+                        campo.classList.remove('is-invalid');
+                    }
+                });
             }
-            // Remove qualquer estado de erro residual
-            campo.classList.remove('is-invalid');
-        }
-    });
-}
 
             // Adiciona o listener e inicializa
             const gnvSelect = document.getElementById('gnv_instalado');
