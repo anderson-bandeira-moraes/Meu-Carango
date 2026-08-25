@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+date_default_timezone_set('America/Sao_Paulo');
 
 // ============== CONSTANTES DE CAMINHO ==============
 define('ROOT_DIR', dirname(__DIR__));
