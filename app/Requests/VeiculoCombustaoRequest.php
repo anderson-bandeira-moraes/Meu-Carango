@@ -164,7 +164,6 @@ class VeiculoCombustaoRequest extends FormRequest
 
         if ($combustivel === 'flex') {
             $camposFlex = [
-                'potencia_etanol_cv'         => 'potência com etanol',
                 'consumo_cidade_etanol_kml'  => 'consumo na cidade com etanol',
                 'consumo_estrada_etanol_kml'   => 'consumo na estrada com etanol',
             ];
