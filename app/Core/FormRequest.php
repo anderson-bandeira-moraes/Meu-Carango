@@ -37,7 +37,11 @@ abstract class FormRequest extends Request
     public function __construct(Request $request)
     {
         parent::__construct(
-            
+            $request->getQuery(),
+            $request->getPost(),
+            $request->getFile(),
+            $request->getServer(),
+            $request->getCookies()
         );
     }
 

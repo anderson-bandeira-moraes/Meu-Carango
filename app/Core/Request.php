@@ -307,4 +307,24 @@ class Request
         $uri = $this->server['REQUEST_URI'] ?? '/';
         return $protocol . '://' . $host . $uri;
     }
+
+    /**
+     * Retorna todo o array $_SERVER (ou os dados injetados).
+     *
+     * @return array
+     */
+    public function getServer(): array
+    {
+        return $this->server;
+    }
+
+    /**
+     * Retorna todo o array $_COOKIE (ou os dados injetados).
+     *
+     * @return array
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
+    }
 }
