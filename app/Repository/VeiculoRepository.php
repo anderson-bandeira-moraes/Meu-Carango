@@ -14,6 +14,44 @@ use Psr\Log\LoggerInterface;
  */
 class VeiculoRepository
 {
+    /**
+     * Colunas permitidas para atualização.
+     */
+    private const ALLOWED_COLUMNS = [
+        'marca_id',
+        'modelo_id',
+        'versao',
+        'ano_fabricacao',
+        'ano_modelo',
+        'cor',
+        'quilometragem',
+        'numero_portas',
+        'numero_assentos',
+        'comprimento_mm',
+        'largura_mm',
+        'altura_mm',
+        'distancia_entre_eixos_mm',
+        'peso_ordem_marcha_kg',
+        'volume_porta_malas_l',
+        'volume_cacamba_l',
+        'carga_util_kg',
+        'capacidade_reboque_kg',
+        'carroceria',
+        'tipo_direcao',
+        'altura_solo_mm',
+        'pneu_aro',
+        'tipo_roda',
+        'freio_dianteiro',
+        'freio_traseiro',
+        'slug',
+        'gnv_instalado',
+        'status_estoque',
+        'status_vitrine',
+        'placa',
+        'suspensao_dianteira',
+        'suspensao_traseira',
+    ];
+
     public function __construct(
         private PDO $pdo,
         private LoggerInterface $logger,
@@ -256,8 +294,11 @@ class VeiculoRepository
      */
     public function update(int $id, array $dados): bool
     {
+        // Filtra apenas as colunas permitidas
+        $dados = array_intersect_key($dados, array_flip(self::ALLOWED_COLUMNS));
+
         if (empty($dados)) {
-            $this->logger->warning('Tentativa de atualizar veículo sem dados', ['veiculo_id' => $id]);
+            $this->logger->warning('Tentativa de atualizar veículo sem campos permitidos', ['veiculo_id' => $id]);
             return false;
         }
 

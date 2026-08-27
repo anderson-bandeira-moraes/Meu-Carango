@@ -14,6 +14,11 @@ use Psr\Log\LoggerInterface;
  */
 class MarcaRepository
 {
+    /**
+     * Colunas permitidas para atualização.
+     */
+    private const ALLOWED_COLUMNS = ['nome', 'slug', 'logo'];
+
     public function __construct(
         private PDO $pdo,
         private LoggerInterface $logger,
@@ -192,8 +197,11 @@ class MarcaRepository
      */
     public function update(int $id, array $dados): bool
     {
+        // Filtra apenas as colunas permitidas
+        $dados = array_intersect_key($dados, array_flip(self::ALLOWED_COLUMNS));
+
         if (empty($dados)) {
-            $this->logger->warning('Tentativa de atualizar marca sem dados', ['marca_id' => $id]);
+            $this->logger->warning('Tentativa de atualizar marca sem campos permitidos', ['marca_id' => $id]);
             return false;
         }
 

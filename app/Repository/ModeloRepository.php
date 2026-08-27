@@ -14,6 +14,11 @@ use Psr\Log\LoggerInterface;
  */
 class ModeloRepository
 {
+    /**
+     * Colunas permitidas para atualização.
+     */
+    private const ALLOWED_COLUMNS = ['marca_id', 'nome', 'slug'];
+
     public function __construct(
         private PDO $pdo,
         private LoggerInterface $logger,
@@ -284,8 +289,11 @@ class ModeloRepository
      */
     public function update(int $id, array $dados): bool
     {
+        // Filtra apenas as colunas permitidas
+        $dados = array_intersect_key($dados, array_flip(self::ALLOWED_COLUMNS));
+
         if (empty($dados)) {
-            $this->logger->warning('Tentativa de atualizar modelo sem dados', ['modelo_id' => $id]);
+            $this->logger->warning('Tentativa de atualizar modelo sem campos permitidos', ['modelo_id' => $id]);
             return false;
         }
 

@@ -14,6 +14,11 @@ use Psr\Log\LoggerInterface;
  */
 class UsuarioRepository
 {
+    /**
+     * Colunas permitidas para atualização.
+     */
+    private const ALLOWED_COLUMNS = ['nome', 'email', 'senha_hash', 'nome_loja', 'slug', 'telefone', 'plano', 'status'];
+
     public function __construct(
         private PDO $pdo,
         private LoggerInterface $logger,
@@ -182,8 +187,11 @@ class UsuarioRepository
      */
     public function update(int $userId, array $data): bool
     {
+        // Filtra apenas as colunas permitidas
+        $data = array_intersect_key($data, array_flip(self::ALLOWED_COLUMNS));
+
         if (empty($data)) {
-            $this->logger->warning('Tentativa de atualizar usuário sem dados', ['user_id' => $userId]);
+            $this->logger->warning('Tentativa de atualizar usuário sem campos permitidos', ['user_id' => $userId]);
             return false;
         }
 
@@ -195,25 +203,29 @@ class UsuarioRepository
                 $fields[] = "$coluna = ?";
                 $values[] = $valor;
             }
+
+            // Adiciona a atualização automática do updated_at
+            $fields[] = 'atualizado_em = NOW()';
             $values[] = $userId;
 
-            $sql = 'UPDATE usuarios SET ' . implode(', ', $fields) . ', atualizado_em = NOW() WHERE id = ?';
+            $sql = 'UPDATE usuarios SET ' . implode(', ', $fields) . ' WHERE id = ?';
             $stmt = $this->pdo->prepare($sql);
             $success = $stmt->execute($values);
 
             if ($success) {
                 $this->logger->info('Usuário atualizado com sucesso', [
                     'user_id' => $userId,
-                    'fields' => array_keys($data),
+                    'fields'  => array_keys($data),
                 ]);
             } else {
                 $this->logger->warning('Falha ao atualizar usuário', ['user_id' => $userId]);
             }
+
             return $success;
         } catch (PDOException $e) {
             $this->logger->error('Erro ao atualizar usuário', [
                 'user_id' => $userId,
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ]);
             return false;
         }
