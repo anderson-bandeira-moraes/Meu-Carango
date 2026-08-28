@@ -157,7 +157,10 @@ $container->set(App\Repository\UsuarioRepository::class, function($c) {
 });
 
 $container->set(App\Repository\AdministradorRepository::class, function($c) {
-    return new App\Repository\AdministradorRepository($c->get(PDO::class));
+    return new App\Repository\AdministradorRepository(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class)
+    );
 });
 
 $container->set(App\Repository\LoginAttemptRepository::class, function($c) {
