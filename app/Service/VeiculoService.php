@@ -1103,25 +1103,21 @@ class VeiculoService
      *
      * @param string $placa
      * @param int|null $ignorarId
-     * @return true|array{sucesso: false, erro: string}|false
+     * @return true|array{sucesso: false, erro: string}
      *         - true: placa válida e única
      *         - array: erro de negócio (placa duplicada)
-     *         - false: erro de infraestrutura (falha na consulta)
      */
     private function validarPlacaUnica(string $placa, ?int $ignorarId = null)
     {
         if (empty($placa)) {
             return true;
         }
-        try {
-            if ($this->veiculoRepo->placaExists($placa, $ignorarId)) {
-                return ['sucesso' => false, 'erro' => 'Já existe um veículo com esta placa.'];
-            }
-            return true;
-        } catch (\RuntimeException $e) {
-            $this->logger->error('Falha ao validar unicidade da placa', ['error' => $e->getMessage()]);
-            return false;
+
+        if ($this->veiculoRepo->placaExists($placa, $ignorarId)) {
+            return ['sucesso' => false, 'erro' => 'Já existe um veículo com esta placa.'];
         }
+
+        return true;
     }
 
 }

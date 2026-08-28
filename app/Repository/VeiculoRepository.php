@@ -675,8 +675,11 @@ class VeiculoRepository
             $stmt->execute($params);
             return (bool) $stmt->fetchColumn();
         } catch (PDOException $e) {
-            $this->logger->error('Erro ao verificar existência de placa', ['placa' => $placa, 'error' => $e->getMessage()]);
-            throw new \RuntimeException('Erro ao verificar unicidade da placa.');
+            $this->logger->error('Erro ao verificar existência de placa', [
+                'placa' => $placa,
+                'error' => $e->getMessage(),
+            ]);
+            return false; 
         }
     }
 
