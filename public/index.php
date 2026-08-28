@@ -339,7 +339,10 @@ $container->set(MarcaModeloService::class, function($c) {
 
 // ============== MIDDLEWARES ==============
 $container->set(App\Middleware\AdminMiddleware::class, function($c) {
-    return new App\Middleware\AdminMiddleware($c->get(SessionInterface::class));
+    return new App\Middleware\AdminMiddleware(
+        $c->get(SessionInterface::class),
+        $c->get(LoggerInterface::class)
+    );
 });
 
 $container->set(App\Middleware\AuthMiddleware::class, function($c) {
