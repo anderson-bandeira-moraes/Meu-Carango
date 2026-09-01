@@ -298,7 +298,6 @@
             const marcaId = marcaIdInput.value;
             const modeloId = modeloIdInput.value;
 
-            // Atualiza badge da marca
             if (marcaId) {
                 const marca = marcasData.find(m => m.id == marcaId);
                 if (marca) {
@@ -310,10 +309,20 @@
                 marcaDisplay.className = 'badge bg-secondary p-2';
             }
 
-            // Atualiza badge do modelo
-            if (modeloId && modelosData[modeloId]) {
-                modeloDisplay.textContent = modelosData[modeloId];
-                modeloDisplay.className = 'badge bg-primary p-2';
+            if (modeloId) {
+                // Tenta encontrar o nome no modelosData
+                let modeloNome = modelosData[modeloId];
+                // Se não encontrar, usa o nome armazenado na última seleção
+                if (!modeloNome && selectedModeloId == modeloId) {
+                    modeloNome = selectedModeloNome;
+                }
+                if (modeloNome) {
+                    modeloDisplay.textContent = modeloNome;
+                    modeloDisplay.className = 'badge bg-primary p-2';
+                } else {
+                    modeloDisplay.textContent = 'Nenhum modelo selecionado';
+                    modeloDisplay.className = 'badge bg-secondary p-2';
+                }
             } else {
                 modeloDisplay.textContent = 'Nenhum modelo selecionado';
                 modeloDisplay.className = 'badge bg-secondary p-2';
@@ -963,6 +972,8 @@
             outroInput.classList.remove('is-invalid');
 
             if (!isOutro) outroInput.value = '';
+
+            atualizarStepper();
         }
 
         function adicionarListenerOutro(selectId, extraId) {
@@ -1199,10 +1210,15 @@
         }
 
         function proximaEtapa() {
-            if (!validarEtapa()) return;
+            if (!validarEtapa()) {
+                // Se a validação falhou, atualiza o stepper para refletir os erros
+                atualizarStepper();
+                return;
+            }
             if (currentStep < steps.length - 1) {
                 mostrarEtapa(currentStep + 1);
             }
+
             // Se for a última etapa, apenas não faz nada (ou exibe mensagem)
             // O envio será feito exclusivamente pelo botão "Salvar"
         }
