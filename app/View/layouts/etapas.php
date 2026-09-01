@@ -1487,8 +1487,12 @@
             });
 
             if (btnSalvar) {
+                // Verifica se há algum erro
                 const hasError = document.querySelector('.stepper-circle.error') !== null;
-                btnSalvar.disabled = hasError;
+                // Verifica se há alguma etapa neutra (sem complete, sem error, sem active)
+                const hasDefault = document.querySelector('.stepper-circle:not(.complete):not(.error):not(.active)') !== null;
+                // Desabilita se houver erro ou alguma etapa neutra
+                btnSalvar.disabled = hasError || hasDefault;
             }
         }
 
