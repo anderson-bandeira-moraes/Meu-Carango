@@ -1069,41 +1069,33 @@
                     const cor = this.dataset.cor;
                     const hex = this.dataset.hex;
 
-                    // Atualiza o campo de exibição
                     corInput.value = cor === 'outro' ? 'Outro (digitar)' : cor;
-
-                    // Atualiza o campo oculto
                     corHidden.value = cor;
-
-                    // Atualiza o swatch
                     atualizarSwatch(cor, hex);
 
-                    // Remove destaque de todos
                     corItems.forEach(el => el.style.backgroundColor = '');
                     this.style.backgroundColor = '#e9ecef';
 
-                    // Controla campo "Outro"
                     if (cor === 'outro') {
                         corOutro.style.display = 'block';
                         corOutro.setAttribute('required', 'required');
                         corOutro.classList.add('requires-validation');
                         corOutro.focus();
                     } else {
-                        corOutro.style.display = 'none';
-                        corOutro.removeAttribute('required');
-                        corOutro.classList.remove('requires-validation');
-                        corOutro.value = '';
+                        // ✅ CORREÇÃO: usa 'corInput' em vez de 'cor'
+                        toggleMotorOutro('corInput', 'cor_outro');
+                        atualizarStepper();
                     }
 
-                    // Fecha o dropdown
                     dropdown.style.display = 'none';
-
-                    // ✅ APENAS REMOVE A CLASSE DE ERRO
-                    // O Bootstrap controla a visibilidade do feedback automaticamente
                     corInput.classList.remove('is-invalid');
+                    // A atualização do stepper já foi feita no else, mas se for "outro", também precisamos?
+                    // Para "outro", o stepper deve ser atualizado após o foco, mas não é necessário aqui.
+                    // Por segurança, podemos chamar sempre:
+                    atualizarStepper();
                 });
             });
-        }
+}
 
         // Se houver valor salvo, destaca o item correspondente e atualiza o input
         if (corHidden.value) {
@@ -1132,7 +1124,7 @@
         // CONFIGURAR "OUTRO" PARA COR (simples, sem lista)
         // =============================================
         document.getElementById('corInput').addEventListener('change', function() {
-            toggleMotorOutro('cor', 'cor_outro');
+            toggleMotorOutro('corInput', 'cor_outro');
         });
 
         // =============================================
