@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- STEPPER: Navegação direta entre etapas (Combustão)           -->
+<!-- STEPPER: Navegação direta entre etapas (Combustão - 6 etapas) -->
 <!-- ============================================================ -->
 <div id="stepperContainer" class="stepper-wrapper d-flex align-items-center justify-content-between mb-4">
     <!-- 1. Informações Básicas -->
@@ -8,69 +8,33 @@
     </div>
     <div class="stepper-connector"></div>
 
-    <!-- 2. Motorização -->
+    <!-- 2. Motor -->
     <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="1" data-bs-toggle="tooltip" title="Motorização">2</div>
+        <div class="stepper-circle" data-index="1" data-bs-toggle="tooltip" title="Motorização, Desempenho e Consumo">2</div>
     </div>
     <div class="stepper-connector"></div>
 
-    <!-- 3. Desempenho -->
+    <!-- 3. Chassi -->
     <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="2" data-bs-toggle="tooltip" title="Desempenho">3</div>
+        <div class="stepper-circle" data-index="2" data-bs-toggle="tooltip" title="Tração, Suspensão e Rodas">3</div>
     </div>
     <div class="stepper-connector"></div>
 
-    <!-- 4. Consumo -->
+    <!-- 4. Dimensões -->
     <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="3" data-bs-toggle="tooltip" title="Consumo">4</div>
+        <div class="stepper-circle" data-index="3" data-bs-toggle="tooltip" title="Dimensões, Peso e Portas">4</div>
     </div>
     <div class="stepper-connector"></div>
 
-    <!-- 5. Tração/Transmissão/Direção -->
+    <!-- 5. Opcionais -->
     <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="4" data-bs-toggle="tooltip" title="Tração / Transmissão / Direção">5</div>
+        <div class="stepper-circle" data-index="4" data-bs-toggle="tooltip" title="Opcionais">5</div>
     </div>
     <div class="stepper-connector"></div>
 
-    <!-- 6. Suspensão/Freio -->
+    <!-- 6. GNV -->
     <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="5" data-bs-toggle="tooltip" title="Suspensão e Freio">6</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 7. Rodas -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="6" data-bs-toggle="tooltip" title="Rodas">7</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 8. Dimensões -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="7" data-bs-toggle="tooltip" title="Dimensões">8</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 9. Peso/Volume -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="8" data-bs-toggle="tooltip" title="Peso e Volume">9</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 10. Portas/Assentos -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="9" data-bs-toggle="tooltip" title="Portas e Assentos">10</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 11. Opcionais -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="10" data-bs-toggle="tooltip" title="Opcionais">11</div>
-    </div>
-    <div class="stepper-connector"></div>
-
-    <!-- 12. GNV -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="11" data-bs-toggle="tooltip" title="GNV">12</div>
+        <div class="stepper-circle" data-index="5" data-bs-toggle="tooltip" title="GNV">6</div>
     </div>
 </div>
 <!-- FIM STEPPER -->
@@ -82,8 +46,13 @@
 <!-- Etapa 1: Básico (comum) -->
 <?php include __DIR__ . '/_basico.php'; ?>
 
-<!-- Etapa 2: Motorização -->
-<div class="wizard-step" data-step="motorizacao" data-label="Motorização" style="display: none;">
+<!-- ============================================================ -->
+<!-- ETAPA: MOTOR (Combustível, Desempenho e Consumo)             -->
+<!-- ============================================================ -->
+<div class="wizard-step" data-step="motor" data-label="Motor">
+    
+    <!-- ===== SEÇÃO 1: MOTORIZAÇÃO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-gear me-2"></i>Motorização</h6>
     <div class="row g-3">
         <!-- Combustível -->
         <div class="col-md-4">
@@ -134,10 +103,8 @@
                 );
             ?>
 
-            <!-- Select gerado pela função -->
             <?= $motorTipo['select_html'] ?>
 
-            <!-- Campo extra para "Outro" -->
             <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" 
                    class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
                    value="<?= htmlspecialchars($motorTipo['valor_outro']) ?>" 
@@ -174,11 +141,11 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Etapa 3: Desempenho -->
-<div class="wizard-step" data-step="desempenho" data-label="Desempenho" style="display: none;">
-    <!-- @todo: Adicionar campos de desempenho (aceleração, velocidade, potência, torque) -->
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 2: DESEMPENHO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
     <div class="row g-3">
         <!-- Aceleração 0-100 -->
         <div class="col-md-3">
@@ -242,7 +209,8 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_cv" id="potencia_cv" class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_cv" id="potencia_cv" 
+                       class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
                        placeholder="Ex: 120" required>
                 <span class="input-group-text">cv</span>
@@ -271,17 +239,19 @@
                 </button>
             </div>
             <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
+                <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" 
+                       class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
                        placeholder="Ex: 18.5" min="0">
                 <span class="input-group-text">kgfm</span>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Etapa 4: Consumo -->
-<div class="wizard-step" data-step="consumo" data-label="Consumo" style="display: none;">
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 3: CONSUMO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-fuel-pump me-2"></i>Consumo</h6>
     <div class="row g-3">
         <!-- Consumo Cidade -->
         <div class="col-md-4">
@@ -338,57 +308,57 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Bloco de campos para Etanol (Combustão) -->
-        <div id="flex-fields" class="flex-fields" style="display: none;">
-            <hr>
-            <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Dados para Etanol (obrigatórios para Flex)</h6>
-            <div class="row g-3">
-                <!-- Consumo Cidade Etanol -->
-                <div class="col-md-4">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
-                        <button type="button" 
-                                class="btn btn-link btn-sm p-0 text-secondary" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="Consumo de etanol em ciclo urbano, medido em km/l. Valores comuns: 5 a 12 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina, impactando diretamente o custo de abastecimento para o comprador.">
-                            <i class="bi bi-info-circle-fill"></i>
-                        </button>
-                    </div>
-                    <div class="input-group">
-                        <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
-                               class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
-                               placeholder="Ex: 8.5" min="0" required>
-                        <span class="input-group-text">km/l</span>
-                        <div class="invalid-feedback">
-                            O consumo na cidade para etanol é obrigatório.
-                        </div>
+    <!-- Bloco de campos para Etanol (Combustão) -->
+    <div id="flex-fields" class="flex-fields mt-3" style="display: none;">
+        <hr>
+        <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Dados para Etanol (obrigatórios para Flex)</h6>
+        <div class="row g-3">
+            <!-- Consumo Cidade Etanol -->
+            <div class="col-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Consumo de etanol em ciclo urbano, medido em km/l. Valores comuns: 5 a 12 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina, impactando diretamente o custo de abastecimento para o comprador.">
+                        <i class="bi bi-info-circle-fill"></i>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
+                           class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
+                           placeholder="Ex: 8.5" min="0" required>
+                    <span class="input-group-text">km/l</span>
+                    <div class="invalid-feedback">
+                        O consumo na cidade para etanol é obrigatório.
                     </div>
                 </div>
+            </div>
 
-                <!-- Consumo Estrada Etanol -->
-                <div class="col-md-4">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
-                        <button type="button" 
-                                class="btn btn-link btn-sm p-0 text-secondary" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="Consumo de etanol em ciclo rodoviário, medido em km/l. Valores comuns: 7 a 14 km/l. Obrigatório para veículos flex, pois o consumo com etanol em estrada é geralmente 20-30% maior que com gasolina, impactando o custo em viagens longas.">
-                            <i class="bi bi-info-circle-fill"></i>
-                        </button>
-                    </div>
-                    <div class="input-group">
-                        <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
-                               class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
-                               value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
-                               placeholder="Ex: 10.2" min="0" required>
-                        <span class="input-group-text">km/l</span>
-                        <div class="invalid-feedback">
-                            O consumo na estrada para etanol é obrigatório.
-                        </div>
+            <!-- Consumo Estrada Etanol -->
+            <div class="col-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Consumo de etanol em ciclo rodoviário, medido em km/l. Valores comuns: 7 a 14 km/l. Obrigatório para veículos flex, pois o consumo com etanol em estrada é geralmente 20-30% maior que com gasolina, impactando o custo em viagens longas.">
+                        <i class="bi bi-info-circle-fill"></i>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
+                           class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
+                           placeholder="Ex: 10.2" min="0" required>
+                    <span class="input-group-text">km/l</span>
+                    <div class="invalid-feedback">
+                        O consumo na estrada para etanol é obrigatório.
                     </div>
                 </div>
             </div>
@@ -396,15 +366,14 @@
     </div>
 </div>
 
-<!-- Etapa 5: Tração, Transmissão e Direção -->
-<div class="wizard-step" data-step="tracao_transmissao" data-label="Tração, Transmissão e Direção" style="display: none;">
+<!-- ============================================================ -->
+<!-- ETAPA: CHASSI (Direção, Tração, Suspensão, Freios e Rodas)    -->
+<!-- ============================================================ -->
+<div class="wizard-step" data-step="chassi" data-label="Chassi">
+
+    <!-- ===== SEÇÃO 1: DIREÇÃO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-steering-wheel me-2"></i>Direção</h6>
     <div class="row g-3">
-
-        <!-- ===== DIREÇÃO ===== -->
-        <div class="col-12">
-            <h6 class="text-secondary"></i>Direção</h6>
-        </div>
-
         <!-- Tipo de Direção -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -429,13 +398,13 @@
                 Selecione um tipo de direção válido.
             </div>
         </div>
+    </div>
 
-        <!-- ===== TRAÇÃO E TRANSMISSÃO ===== -->
-        <div class="col-12">
-            <hr>
-            <h6 class="text-secondary"><i class="bi bi-gear me-2"></i>Tração e Transmissão</h6>
-        </div>
+    <hr class="my-4">
 
+    <!-- ===== SEÇÃO 2: TRAÇÃO E TRANSMISSÃO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-gear me-2"></i>Tração e Transmissão</h6>
+    <div class="row g-3">
         <!-- Tipo de Tração -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -510,12 +479,12 @@
                 O número de marchas é obrigatório.
             </div>
         </div>
-
     </div>
-</div>
 
-<!-- Etapa 6: Suspensão e Freio -->
-<div class="wizard-step" data-step="suspensao_freio" data-label="Suspensão e Freio" style="display: none;">
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 3: SUSPENSÃO E FREIO ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-car-front me-2"></i>Suspensão e Freios</h6>
     <div class="row g-3">
         <!-- Suspensão Dianteira -->
         <div class="col-md-4">
@@ -539,10 +508,8 @@
             );
             ?>
 
-            <!-- Select gerado pela função -->
             <?= $suspensaoDianteira['select_html'] ?>
 
-            <!-- Campo extra para "Outro" -->
             <input type="text" name="suspensao_dianteira_outro" id="suspensao_dianteira_outro" 
                    class="form-control mt-2 <?= isset($errors['suspensao_dianteira']) ? 'is-invalid' : '' ?>" 
                    value="<?= htmlspecialchars($suspensaoDianteira['valor_outro']) ?>" 
@@ -576,10 +543,8 @@
             );
             ?>
 
-            <!-- Select gerado pela função -->
             <?= $suspensaoTraseira['select_html'] ?>
 
-            <!-- Campo extra para "Outro" -->
             <input type="text" name="suspensao_traseira_outro" id="suspensao_traseira_outro" 
                    class="form-control mt-2 <?= isset($errors['suspensao_traseira']) ? 'is-invalid' : '' ?>" 
                    value="<?= htmlspecialchars($suspensaoTraseira['valor_outro']) ?>" 
@@ -635,10 +600,11 @@
             </select>
         </div>
     </div>
-</div>
 
-<!-- Etapa 7: Rodas -->
-<div class="wizard-step" data-step="rodas" data-label="Rodas" style="display: none;">
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 4: RODAS ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-circle me-2"></i>Rodas</h6>
     <div class="row g-3">
         <!-- Aro do Pneu -->
         <div class="col-md-4">
@@ -662,10 +628,8 @@
             );
             ?>
 
-            <!-- Select gerado pela função -->
             <?= $pneuAro['select_html'] ?>
 
-            <!-- Campo extra para "Outro" -->
             <input type="text" 
                    inputmode="numeric" 
                    pattern="\d*" 
@@ -710,13 +674,14 @@
     </div>
 </div>
 
-<!-- Etapa 8: Dimensões -->
-<div class="wizard-step" data-step="dimensoes" data-label="Dimensões" style="display: none;">
+<!-- ============================================================ -->
+<!-- ETAPA: DIMENSÕES, PESO, VOLUME, PORTAS E ASSENTOS            -->
+<!-- ============================================================ -->
+<div class="wizard-step" data-step="dimensoes" data-label="Dimensões">
+
+    <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-rulers me-2"></i>Dimensões Externas</h6>
     <div class="row g-3">
-        <div class="col-12">
-            <h6 class="text-secondary"><i class="bi bi-rulers me-2"></i>Dimensões Externas</h6>
-        </div>
-        
         <!-- Comprimento -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -730,13 +695,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="comprimento_mm" 
                        id="comprimento_mm" 
                        value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -745,7 +707,6 @@
                        class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 4.200">
                 <span class="input-group-text">mm</span>
-
                 <div class="invalid-feedback">
                     O comprimento deve ser um número válido.
                 </div>
@@ -765,13 +726,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="largura_mm" 
                        id="largura_mm" 
                        value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -780,7 +738,6 @@
                        class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 1.800">
                 <span class="input-group-text">mm</span>
-
                 <div class="invalid-feedback">
                     A largura deve ser um número válido.
                 </div>
@@ -800,13 +757,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="altura_mm" 
                        id="altura_mm" 
                        value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -815,7 +769,6 @@
                        class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 1.500">
                 <span class="input-group-text">mm</span>
-
                 <div class="invalid-feedback">
                     A altura deve ser um número válido.
                 </div>
@@ -835,13 +788,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="altura_solo_mm" 
                        id="altura_solo_mm" 
                        value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="3"
                        inputmode="numeric" 
@@ -850,7 +800,6 @@
                        class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 180">
                 <span class="input-group-text">mm</span>
-
                 <div class="invalid-feedback">
                     A altura do solo deve ser um número válido.
                 </div>
@@ -870,13 +819,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="distancia_entre_eixos_mm" 
                        id="distancia_entre_eixos_mm" 
                        value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -885,24 +831,18 @@
                        class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 2.600">
                 <span class="input-group-text">mm</span>
-
                 <div class="invalid-feedback">
                     A distância entre eixos deve ser um número válido.
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Etapa 9: Peso e Volume -->
-<div class="wizard-step" data-step="peso_volume" data-label="Peso e Volume" style="display: none;">
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 2: PESO E VOLUMES ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-box-seam me-2"></i>Peso e Volumes</h6>
     <div class="row g-3">
-        <!-- ===== PESO ===== -->
-        <div class="col-12">
-            <hr>
-            <h6 class="text-secondary"><i class="bi bi-truck"></i> Peso</h6>
-        </div>  
-
         <!-- Peso -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -916,16 +856,12 @@
                 </button>
             </div>
             <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" min="0" placeholder="Ex: 1200">
+                <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" 
+                       class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" 
+                       min="0" placeholder="Ex: 1200">
                 <span class="input-group-text">kg</span>
             </div>
-        </div>
-
-        <!-- ===== VOLUMES ===== -->
-        <div class="col-12">
-            <hr>
-            <h6 class="text-secondary"><i class="bi bi-box-seam me-2"></i>Volumes</h6>
         </div>
 
         <!-- Capacidade Tanque -->
@@ -949,7 +885,6 @@
                 <div class="invalid-feedback">
                     O volume do tanque é obrigatório.
                 </div>
-
                 <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
                     Este campo não aceita ponto (.) ou vírgula (,)
                 </div>
@@ -969,13 +904,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="volume_porta_malas_l" 
                        id="volume_porta_malas_l" 
                        value="<?= htmlspecialchars($old['volume_porta_malas_l'] ?? $veiculo['volume_porta_malas_l'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -984,14 +916,13 @@
                        class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 450">
                 <span class="input-group-text">L</span>
-
                 <div class="invalid-feedback">
                     O volume do porta-malas deve ser um número válido.
                 </div>
             </div>
         </div>
 
-        <!-- Volume da caçamba -->
+        <!-- Volume da caçamba (condicional) -->
         <div id="cacamba-container" class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="volume_cacamba_l_visual" class="form-label mb-0">Volume da caçamba</label>
@@ -1004,13 +935,10 @@
                 </button>
             </div>
             <div class="input-group has-validation">
-                <!-- Campo HIDDEN (valor puro) -->
                 <input type="hidden" 
                        name="volume_cacamba_l" 
                        id="volume_cacamba_l" 
                        value="<?= htmlspecialchars($old['volume_cacamba_l'] ?? $veiculo['volume_cacamba_l'] ?? '') ?>">
-                
-                <!-- Campo VISUAL (formatado) -->
                 <input type="text" 
                        maxlength="4"
                        inputmode="numeric" 
@@ -1019,17 +947,17 @@
                        class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 800">
                 <span class="input-group-text">L</span>
-
                 <div class="invalid-feedback">
                     O volume da caçamba deve ser um número válido.
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Etapa 10: Portas e Assentos -->
-<div class="wizard-step" data-step="portas_assentos" data-label="Portas e Assentos" style="display: none;">
+    <hr class="my-4">
+
+    <!-- ===== SEÇÃO 3: PORTAS E ASSENTOS ===== -->
+    <h6 class="text-secondary mb-3"><i class="bi bi-car-front me-2"></i>Portas e Assentos</h6>
     <div class="row g-3">
         <!-- Número de Portas -->
         <div class="col-md-4">
