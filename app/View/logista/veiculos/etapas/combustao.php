@@ -1,5 +1,82 @@
 <!-- ============================================================ -->
-<!-- ETAPAS PARA COMBUSTÃO                                         -->
+<!-- STEPPER: Navegação direta entre etapas (Combustão)           -->
+<!-- ============================================================ -->
+<div id="stepperContainer" class="stepper-wrapper d-flex align-items-center justify-content-between mb-4">
+    <!-- 1. Informações Básicas -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="0" data-bs-toggle="tooltip" title="Informações Básicas">1</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 2. Motorização -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="1" data-bs-toggle="tooltip" title="Motorização">2</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 3. Desempenho -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="2" data-bs-toggle="tooltip" title="Desempenho">3</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 4. Consumo -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="3" data-bs-toggle="tooltip" title="Consumo">4</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 5. Tração/Transmissão/Direção -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="4" data-bs-toggle="tooltip" title="Tração / Transmissão / Direção">5</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 6. Suspensão/Freio -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="5" data-bs-toggle="tooltip" title="Suspensão e Freio">6</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 7. Rodas -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="6" data-bs-toggle="tooltip" title="Rodas">7</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 8. Dimensões -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="7" data-bs-toggle="tooltip" title="Dimensões">8</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 9. Peso/Volume -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="8" data-bs-toggle="tooltip" title="Peso e Volume">9</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 10. Portas/Assentos -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="9" data-bs-toggle="tooltip" title="Portas e Assentos">10</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 11. Opcionais -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="10" data-bs-toggle="tooltip" title="Opcionais">11</div>
+    </div>
+    <div class="stepper-connector"></div>
+
+    <!-- 12. GNV -->
+    <div class="stepper-item d-flex flex-column align-items-center">
+        <div class="stepper-circle" data-index="11" data-bs-toggle="tooltip" title="GNV">12</div>
+    </div>
+</div>
+<!-- FIM STEPPER -->
+
+<!-- ============================================================ -->
+<!-- ETAPAS PARA COMBUSTÃO                                        -->
 <!-- ============================================================ -->
 
 <!-- Etapa 1: Básico (comum) -->

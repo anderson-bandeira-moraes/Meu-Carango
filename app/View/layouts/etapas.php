@@ -114,6 +114,80 @@
             input[type="number"] {
                 -moz-appearance: textfield;
             }
+
+            /* ============================================================ */
+            /* STEPPER - Navegação direta entre etapas                      */
+            /* ============================================================ */
+
+            .stepper-wrapper {
+                gap: 0; /* espaçamento gerenciado pelos conectores */
+                padding: 0 10px; /* pequeno respiro nas bordas */
+            }
+
+            /* Cada item (círculo + possível label) */
+            .stepper-item {
+                flex-shrink: 0; /* impede encolhimento */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Círculo base (neutro) */
+            .stepper-circle {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: #e9ecef; /* cinza claro (neutro) */
+                color: #6c757d; /* cinza escuro */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease, border 0.2s ease;
+                border: 3px solid transparent; /* reserva espaço para a borda ativa */
+                user-select: none;
+            }
+
+            /* Hover (melhora a experiência) */
+            .stepper-circle:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+            }
+
+            /* ---------- Estados ---------- */
+
+            /* Completo (verde) */
+            .stepper-circle.complete {
+                background-color: var(--bs-success, #28a745);
+                color: white;
+            }
+
+            /* Erro (vermelho) */
+            .stepper-circle.error {
+                background-color: var(--bs-danger, #dc3545);
+                color: white;
+            }
+
+            /* Ativo (etapa atual) – borda azul + leve escala */
+            .stepper-circle.active {
+                border-color: var(--bs-primary, #0d6efd);
+                transform: scale(1.1);
+            }
+
+            /* ---------- Conectores (linhas entre círculos) ---------- */
+            .stepper-connector {
+                flex: 1;
+                height: 2px;
+                background-color: #d1d5db; /* cinza claro */
+                margin: 0 8px;
+                transition: background-color 0.3s ease;
+                min-width: 10px; /* evita sumir em telas muito pequenas */
+            }
+
+            /* (Opcional) Conector pode mudar de cor se a etapa anterior estiver completa */
+            /* Por enquanto, mantemos cinza fixo, conforme alinhado */
         </style>
 </head>
 <body>
@@ -168,6 +242,10 @@
                 
                 <button type="button" class="btn btn-primary" id="btnProximo">
                     Próximo <i class="bi bi-arrow-right"></i>
+                </button>
+
+                <button type="button" class="btn btn-success" id="btnSalvar" disabled>
+                    <i class="bi bi-check-lg me-1"></i> Salvar
                 </button>
             </div>
         </form>
@@ -1110,6 +1188,7 @@
         }
 
         function mostrarEtapa(index) {
+            marcarComoVisitada(index); 
             if (index < 0 || index >= steps.length) return;
             steps.forEach((el, i) => {
                 el.style.display = (i === index) ? 'block' : 'none';
@@ -1123,10 +1202,9 @@
             if (!validarEtapa()) return;
             if (currentStep < steps.length - 1) {
                 mostrarEtapa(currentStep + 1);
-            } else {
-                // Última etapa: submeter formulário
-                document.getElementById('veiculoForm').submit();
             }
+            // Se for a última etapa, apenas não faz nada (ou exibe mensagem)
+            // O envio será feito exclusivamente pelo botão "Salvar"
         }
 
         function etapaAnterior() {
@@ -1136,20 +1214,49 @@
         }
 
         function validarEtapa() {
-            // Pega os campos visíveis da etapa atual (inputs, selects, textareas)
             const etapaAtual = steps[currentStep];
-            const campos = etapaAtual.querySelectorAll('input, select, textarea');
+            if (!etapaAtual) return false;
+
             let valido = true;
 
-            // ===== VALIDAÇÃO HTML5 NATIVA =====
-            campos.forEach(campo => {
-                if (!campo.checkValidity()) {
-                    campo.classList.add('is-invalid');
-                    valido = false;
-                } else {
-                    campo.classList.remove('is-invalid');
-                }
-            });
+            // ===== VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS (usando verificarCamposDaEtapa) =====
+            const resultado = verificarCamposDaEtapa(currentStep);
+            if (resultado.temErro) {
+                valido = false;
+                // Adiciona is-invalid nos campos problemáticos (se já não tiverem)
+                const campos = etapaAtual.querySelectorAll('input:not([type="hidden"]):not([type="file"]), select, textarea');
+                campos.forEach(campo => {
+                    // Ignora campos ocultos ou desabilitados
+                    if (campo.offsetParent === null || campo.disabled) return;
+                    if (!campo.hasAttribute('required')) return;
+
+                    // Verifica se está vazio ou com erro
+                    let temErro = false;
+                    if (campo.tagName === 'SELECT') {
+                        temErro = campo.value === '' || campo.value === null;
+                    } else if (campo.type === 'checkbox' || campo.type === 'radio') {
+                        temErro = !campo.checked;
+                    } else {
+                        temErro = campo.value.trim() === '';
+                    }
+
+                    // Se o campo já tem is-invalid ou está vazio, adiciona a classe
+                    if (temErro || campo.classList.contains('is-invalid')) {
+                        campo.classList.add('is-invalid');
+                    } else {
+                        campo.classList.remove('is-invalid');
+                    }
+                });
+            } else {
+                // Se não houver erro, remove is-invalid de todos os campos da etapa
+                const campos = etapaAtual.querySelectorAll('input:not([type="hidden"]):not([type="file"]), select, textarea');
+                campos.forEach(campo => {
+                    if (campo.offsetParent === null || campo.disabled) return;
+                    if (campo.hasAttribute('required')) {
+                        campo.classList.remove('is-invalid');
+                    }
+                });
+            }
 
             // ===== VALIDAÇÃO CUSTOMIZADA: COR =====
             const corSelecionada = document.getElementById('corSelecionada');
@@ -1161,27 +1268,22 @@
                 let corValida = false;
 
                 if (valorCor === 'outro') {
-                    // Modo "Outro": valida o campo personalizado
                     if (corOutro) {
                         const outroValor = corOutro.value.trim();
                         if (outroValor !== '') {
                             corValida = true;
                             corOutro.classList.remove('is-invalid');
-                            // Remove erro do campo principal (se houver)
                             corInput.classList.remove('is-invalid');
                         } else {
                             corValida = false;
                             corOutro.classList.add('is-invalid');
-                            // Remove erro do campo principal (para não mostrar mensagem duplicada)
                             corInput.classList.remove('is-invalid');
                         }
                     }
                 } else {
-                    // Modo normal (cor selecionada da lista)
                     corValida = valorCor !== '' && valorCor !== null;
                     if (corValida) {
                         corInput.classList.remove('is-invalid');
-                        // Se houver erro no campo "Outro", remove (caso tenha sido deixado)
                         if (corOutro) corOutro.classList.remove('is-invalid');
                     } else {
                         corInput.classList.add('is-invalid');
@@ -1239,7 +1341,148 @@
             atualizarBadges();
 
             return valido;
-        } 
+        }
+
+        // ============================================================
+        // MARCAR ETAPA COMO VISITADA
+        // ============================================================
+        /**
+         * Marca a etapa como visitada para ativar a avaliação de seus campos.
+         * Etapas não visitadas permanecem neutras (cinza).
+         *
+         * @param {number} index - Índice da etapa (0-based)
+         */
+        function marcarComoVisitada(index) {
+            if (steps[index] && !steps[index].dataset.visited) {
+                steps[index].dataset.visited = 'true';
+            }
+        }
+
+        // ============================================================
+        // FUNÇÃO AUXILIAR DE AVALIAÇÃO DE ETAPA
+        // ============================================================
+
+        /**
+         * Avalia os campos visíveis com `required` de uma etapa e retorna
+         * se há erro ou se todos estão preenchidos e válidos.
+         * Não modifica o DOM.
+         *
+         * @param {number} index - Índice da etapa (0-based)
+         * @returns {Object} { temErro: boolean, todosPreenchidos: boolean }
+         */
+        function verificarCamposDaEtapa(index) {
+            const etapa = steps[index];
+            if (!etapa) {
+                return { temErro: false, todosPreenchidos: false };
+            }
+
+            // Seleciona apenas inputs, selects e textareas visíveis
+            const campos = etapa.querySelectorAll('input:not([type="hidden"]):not([type="file"]), select, textarea');
+            let temErro = false;
+            let todosPreenchidos = true;
+
+            campos.forEach(campo => {
+                // Ignora apenas campos desabilitados (disabled)
+                if (campo.disabled) {
+                    return;
+                }
+
+                const temRequired = campo.hasAttribute('required');
+                const temErroClasse = campo.classList.contains('is-invalid') || campo.classList.contains('error-pontovirgula');
+
+                // Se não tem required e não tem erro customizado, ignora (campo opcional sem erro)
+                if (!temRequired && !temErroClasse) {
+                    return;
+                }
+
+                // Se o campo tem a classe de erro customizada, considera erro (mesmo se preenchido)
+                if (temErroClasse) {
+                    temErro = true;
+                    // Não altera todosPreenchidos, pois o campo pode estar preenchido mas inválido
+                }
+
+                // Se tem required, verifica se está vazio
+                if (temRequired) {
+                    let valor = campo.value;
+                    if (campo.tagName === 'SELECT') {
+                        valor = campo.value;
+                    } else if (campo.type === 'checkbox' || campo.type === 'radio') {
+                        if (!campo.checked) {
+                            temErro = true;
+                            todosPreenchidos = false;
+                        }
+                        return; // já tratou, sai da iteração
+                    } else {
+                        valor = valor.trim();
+                    }
+
+                    if (valor === '' || valor === null || valor === undefined) {
+                        temErro = true;
+                        todosPreenchidos = false;
+                    }
+                }
+            });
+
+            return { temErro, todosPreenchidos };
+        }
+
+        // ============================================================
+        // FUNÇÃO AVALIAR ETAPA
+        // ============================================================
+
+        /**
+         * Avalia o estado de uma etapa com base nos campos obrigatórios visíveis.
+         * 
+         * @param {number} index - Índice da etapa (0-based)
+         * @returns {string} 'complete' | 'error' | 'default'
+         */
+        function avaliarEtapa(index) {
+            if (!steps[index] || steps[index].dataset.visited !== 'true') {
+                return 'default';
+            }
+            const resultado = verificarCamposDaEtapa(index);
+            if (resultado.temErro) return 'error';
+            if (resultado.todosPreenchidos) return 'complete';
+            return 'default';
+        }
+
+        // ============================================================
+        // ATUALIZAR STEPPER (cores dos círculos)
+        // ============================================================
+
+        /**
+         * Atualiza o estado visual de todos os círculos do stepper
+         * com base na avaliação de cada etapa.
+         */
+        function atualizarStepper() {
+            const circles = document.querySelectorAll('.stepper-circle');
+            const btnSalvar = document.getElementById('btnSalvar');
+
+            circles.forEach(circle => {
+                const index = parseInt(circle.dataset.index, 10);
+                const status = avaliarEtapa(index);
+                
+                // Remove classes de estado anteriores
+                circle.classList.remove('complete', 'error', 'active');
+                
+                if (status === 'complete') {
+                    circle.classList.add('complete');
+                } else if (status === 'error') {
+                    circle.classList.add('error');
+                }
+                // 'default' não adiciona classe extra (mantém neutro)
+                
+                // Marca a etapa atual como ativa
+                if (index === currentStep) {
+                    circle.classList.add('active');
+                }
+            });
+
+            if (btnSalvar) {
+                const hasError = document.querySelector('.stepper-circle.error') !== null;
+                btnSalvar.disabled = hasError;
+            }
+        }
 
         function atualizarProgresso() {
             const total = steps.length;
@@ -1270,8 +1513,7 @@
                 btnAnterior.disabled = (currentStep === 0);
             }
             if (btnProximo) {
-                const isUltima = (currentStep === steps.length - 1);
-                btnProximo.innerHTML = isUltima ? 'Salvar <i class="bi bi-check-lg"></i>' : 'Próximo <i class="bi bi-arrow-right"></i>';
+                btnProximo.innerHTML = 'Próximo <i class="bi bi-arrow-right"></i>';
             }
         }
 
@@ -1285,11 +1527,51 @@
             // ATUALIZA OS BADGES AO CARREGAR A PÁGINA (com os valores de $old)
             atualizarBadges();
 
+            // ===== INJEÇÃO DA VARIÁVEL DE EDIÇÃO =====
+            const isEditMode = <?= json_encode($isEdit ?? false) ?>;
+
+            // ===== INICIALIZAÇÃO DO STEPPER =====
+            // Se for edição, marca todos os círculos como completos inicialmente
+            if (isEditMode) {
+                document.querySelectorAll('.stepper-circle').forEach(circle => {
+                    circle.classList.add('complete');
+                });
+            }
+
+            // Marcar a etapa inicial como visitada
+            marcarComoVisitada(0);
+
+            // Atualiza o stepper para refletir o estado inicial (e aplica o 'active')
+            atualizarStepper();
+
             // Event listeners dos botões
             const btnAnterior = document.getElementById('btnAnterior');
             const btnProximo = document.getElementById('btnProximo');
             if (btnAnterior) btnAnterior.addEventListener('click', etapaAnterior);
             if (btnProximo) btnProximo.addEventListener('click', proximaEtapa);
+
+            // ============================================================
+            // NAVEGAÇÃO LIVRE – CLIQUE NOS CÍRCULOS
+            // ============================================================
+            document.querySelectorAll('.stepper-circle').forEach(circle => {
+                circle.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index, 10);
+                    if (index >= 0 && index < steps.length) {
+                        mostrarEtapa(index);
+                        atualizarStepper(); // Atualiza os círculos após a mudança
+                    }
+                });
+            });
+
+            const btnSalvar = document.getElementById('btnSalvar');
+            if (btnSalvar) {
+                btnSalvar.addEventListener('click', function() {
+                    // (Opcional) Validar todas as etapas antes de submeter
+                    // Se quiser validar todas, você pode percorrer steps e chamar validarEtapa() para cada uma.
+                    // No entanto, se o stepper já está colorido corretamente, pode submeter diretamente.
+                    document.getElementById('veiculoForm').submit();
+                });
+            }
 
             // ================================================
             // VALIDAÇÃO DE PONTO/VÍRGULA E BLOQUEIO DE CARACTERES INVÁLIDOS
@@ -1329,42 +1611,33 @@
 
                 // 2. Listener input: validação de ponto/vírgula + limpeza de colagem
                 campo.addEventListener('input', function() {
-                    // 2a. Limpeza de caracteres inválidos (fallback para colagem)
                     this.value = this.value.replace(/[^0-9.,]/g, '');
-
-                    // 2b. Obtém o valor atual (já limpo)
                     const valor = this.value;
-
-                    // 2c. Verifica se contém ponto ou vírgula
                     const contemPontoVirgula = /[.,]/.test(valor);
-
-                    // 2d. Encontra os elementos de feedback
                     const container = this.closest('.input-group, .col-md-4, .mb-3') || this.parentNode;
                     const feedbackRequired = container.querySelector('.invalid-feedback:not(.feedback-pontovirgula)');
                     const feedbackPontovirgula = container.querySelector('.feedback-pontovirgula');
 
                     if (contemPontoVirgula) {
-                        // Caso contenha ponto ou vírgula
                         this.classList.add('is-invalid');
+                        this.classList.add('error-pontovirgula'); // ✅ NOVO
 
                         if (feedbackPontovirgula) {
                             feedbackPontovirgula.style.display = 'block';
                             feedbackPontovirgula.classList.remove('d-none');
                         }
-
                         if (feedbackRequired) {
                             feedbackRequired.style.display = 'none';
                             feedbackRequired.classList.add('d-none');
                         }
                     } else {
-                        // Caso NÃO contenha ponto ou vírgula
                         this.classList.remove('is-invalid');
+                        this.classList.remove('error-pontovirgula'); // ✅ NOVO
 
                         if (feedbackPontovirgula) {
                             feedbackPontovirgula.style.display = 'none';
                             feedbackPontovirgula.classList.add('d-none');
                         }
-
                         if (feedbackRequired) {
                             feedbackRequired.style.display = '';
                             feedbackRequired.classList.remove('d-none');
@@ -1400,6 +1673,8 @@
                         el.removeAttribute('required');
                     }
                 });
+
+                atualizarStepper();
             }
 
             // Configurar para o campo de combustível da combustão (se existir)
@@ -1454,6 +1729,8 @@
                     } else {
                         marchas.setAttribute('required', 'required');
                     }
+
+                    atualizarStepper();
                 }
 
                 transmissao.addEventListener('change', toggleMarchas);
@@ -1510,6 +1787,8 @@
                         cacambaVisual.value = '';
                     }
                 }
+
+                atualizarStepper();
             }
 
             // Adiciona o listener ao select de carroceria (que está na etapa Básico)
@@ -1549,6 +1828,8 @@
                         campo.classList.remove('is-invalid');
                     }
                 });
+
+                atualizarStepper();
             }
 
             // Adiciona o listener e inicializa
@@ -1559,36 +1840,59 @@
             }
 
             // ============================================================
-            // REMOVER IS-INVALID EM TEMPO REAL AO CORRIGIR CAMPOS OBRIGATÓRIOS
+            // VALIDAÇÃO EM TEMPO REAL – ATUALIZA STEPPER
             // ============================================================
             const veiculoForm = document.getElementById('veiculoForm');
 
             if (veiculoForm) {
-                // Para inputs e textareas (detecta digitação)
+                // Para inputs e textareas (digitação)
                 veiculoForm.addEventListener('input', function(e) {
                     const campo = e.target;
-                    // Filtra apenas campos de formulário
                     if (!campo.matches('input, textarea')) return;
-                    // Verifica se é obrigatório e está visível
-                    if (!campo.hasAttribute('required')) return;
-                    if (campo.offsetParent === null) return; // oculto
-
-                    // Remove erro se o campo tiver valor
-                    if (campo.value.trim() !== '') {
-                        campo.classList.remove('is-invalid');
-                    }
-                });
-
-                // Para selects (detecta mudança de opção)
-                veiculoForm.addEventListener('change', function(e) {
-                    const campo = e.target;
-                    if (!campo.matches('select')) return;
                     if (!campo.hasAttribute('required')) return;
                     if (campo.offsetParent === null) return;
 
-                    if (campo.value !== '' && campo.value !== null) {
+                    if (campo.value.trim() !== '') {
                         campo.classList.remove('is-invalid');
+                    } else {
+                        campo.classList.add('is-invalid');
                     }
+
+                    if (steps[currentStep] && steps[currentStep].dataset.visited !== 'true') {
+                        marcarComoVisitada(currentStep);
+                    }
+
+                    atualizarStepper();
+                });
+
+                // Para selects, checkboxes, radios (mudança de valor)
+                veiculoForm.addEventListener('change', function(e) {
+                    const campo = e.target;
+                    if (!campo.matches('select, input[type="checkbox"], input[type="radio"]')) return;
+                    if (!campo.hasAttribute('required')) return;
+                    if (campo.offsetParent === null) return;
+
+                    // Para checkbox/radio, verifica se está marcado
+                    if (campo.type === 'checkbox' || campo.type === 'radio') {
+                        if (campo.checked) {
+                            campo.classList.remove('is-invalid');
+                        } else {
+                            campo.classList.add('is-invalid');
+                        }
+                    } else {
+                        // select
+                        if (campo.value !== '' && campo.value !== null) {
+                            campo.classList.remove('is-invalid');
+                        } else {
+                            campo.classList.add('is-invalid');
+                        }
+                    }
+
+                    if (steps[currentStep] && steps[currentStep].dataset.visited !== 'true') {
+                        marcarComoVisitada(currentStep);
+                    }
+
+                    atualizarStepper();
                 });
             }
 
