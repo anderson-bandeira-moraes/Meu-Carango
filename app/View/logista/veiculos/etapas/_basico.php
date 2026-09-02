@@ -13,14 +13,14 @@
             <!-- Área de exibição (badges + botão "Selecionar") -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-tags me-2"></i>Marca e Modelo</h5>
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-tags me-2"></i>Marca e Modelo</h5>
                 </div>
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-8">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="brand-model-display">
-                                    <span id="marcaDisplay" class="badge bg-secondary p-2">Nenhuma marca selecionada</span>
+                                    <span id="marcaDisplay" class="badge bg-secondary p-2" style="margin-bottom: 0.5rem;">Nenhuma marca selecionada</span>
                                     <span id="modeloDisplay" class="badge bg-secondary p-2">Nenhum modelo selecionado</span>
                                     <!-- Feedback de erro -->
                                     <div id="marcaModeloFeedback" class="invalid-feedback" style="display: none;">
@@ -137,8 +137,8 @@
                             <!-- Etapa 3: Resumo e Edição -->
                             <div id="etapa-resumo" class="etapa" style="display: none;">
                                 <h6 class="mb-3">3. Confirme a seleção</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
+                                <div class="row g-3" style="padding-left: 8rem; padding-right: 8rem;">
+                                    <div class="col-12">
                                         <div class="card resumo-card" id="resumo-marca" style="cursor: pointer;">
                                             <div class="card-body text-center position-relative">
                                                 <div class="editar-overlay">
@@ -152,7 +152,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-12">
                                         <div class="card resumo-card" id="resumo-modelo" style="cursor: pointer;">
                                             <div class="card-body text-center position-relative">
                                                 <div class="editar-overlay">
@@ -181,7 +181,7 @@
         <!-- Versão -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="versao" class="form-label mb-0">Versão do Modelo</label>
+                <label for="versao" class="form-label mb-0 fw-bold">Versão do Modelo</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -197,7 +197,7 @@
         <!-- Carroceria -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="carroceria" class="form-label mb-0">Carroceria</label>
+                <label for="carroceria" class="form-label mb-0 fw-bold">Carroceria</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -234,7 +234,7 @@
         <!-- Ano Modelo -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="ano_modelo" class="form-label mb-0">Ano do Modelo <span class="text-danger">*</span></label>
+                <label for="ano_modelo" class="form-label mb-0 fw-bold">Ano do Modelo <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -258,7 +258,7 @@
         <!-- Quilometragem -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="quilometragem_visual" class="form-label mb-0">Quilometragem <span class="text-danger">*</span></label>
+                <label for="quilometragem_visual" class="form-label mb-0 fw-bold">Quilometragem <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -299,7 +299,7 @@
         <!-- Cor -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="corInput" class="form-label mb-0">Cor <span class="text-danger">*</span></label>
+                <label for="corInput" class="form-label mb-0 fw-bold">Cor <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -318,7 +318,7 @@
                 <span id="corSwatch" class="input-group-text p-1" style="display: none; width: 38px; background: white; border-left: 0;">
                     <span id="corSwatchInner" style="display: block; width: 28px; height: 28px; border-radius: 4px; border: 1px solid #ccc;"></span>
                 </span>
-                <button class="btn btn-outline-secondary" type="button" id="btnAbrirCores">
+                <button class="btn btn-outline-secondary border" style="border-top-right-radius: 0.375rem !important; border-bottom-right-radius: 0.375rem !important;" type="button" id="btnAbrirCores">
                     <i class="bi bi-chevron-down"></i>
                 </button>
 
@@ -370,7 +370,7 @@
         <!-- Placa -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="placa" class="form-label mb-0">Placa</label>
+                <label for="placa" class="form-label mb-0 fw-bold">Placa</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 

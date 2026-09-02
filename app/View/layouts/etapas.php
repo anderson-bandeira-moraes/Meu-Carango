@@ -21,6 +21,8 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf" />
+
     
         <style>
             body {
@@ -186,12 +188,19 @@
                 min-width: 10px; /* evita sumir em telas muito pequenas */
             }
 
-            /* (Opcional) Conector pode mudar de cor se a etapa anterior estiver completa */
-            /* Por enquanto, mantemos cinza fixo, conforme alinhado */
+            .material-symbols-outlined {
+                vertical-align: text-bottom;
+                line-height: 1;
+            }
+
+            .input-group-text {
+                border-top-right-radius: 0.375rem !important; 
+                border-bottom-right-radius: 0.375rem !important;
+            }
         </style>
 </head>
 <body>
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4" style="padding-left: 20rem; padding-right: 20rem;">
         <!-- Cabeçalho do wizard -->
         <div class="wizard-header mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -1095,7 +1104,7 @@
                     atualizarStepper();
                 });
             });
-}
+        }
 
         // Se houver valor salvo, destaca o item correspondente e atualiza o input
         if (corHidden.value) {
@@ -1530,7 +1539,7 @@
         }
 
         // ============================================================
-        // 3. INICIALIZAÇÃO
+        // 3. DOMContentLoaded
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializa o wizard
@@ -1659,53 +1668,67 @@
             });
 
             // =============================================
-            // CONTROLE DE CAMPOS FLEX (etanol) – Combustão e Híbrido
+            // CONTROLE DE CAMPOS FLEX (etanol) + SUFIXO GASOLINA
             // =============================================
 
-            /**
-             * Controla a exibição dos campos de etanol com base no valor do select de combustível.
-             * @param {string} selectId - ID do <select> de combustível
-             * @param {string} containerId - ID do container que será mostrado/ocultado
-             */
             function toggleFlexFields(selectId, containerId) {
                 const select = document.getElementById(selectId);
                 const container = document.getElementById(containerId);
                 if (!select || !container) return;
 
                 const isFlex = select.value === 'flex';
+
+                // 1. Exibe/oculta o container
                 container.style.display = isFlex ? 'block' : 'none';
 
+                // 2. Controla disabled e required dos campos dentro do container
                 const inputs = container.querySelectorAll('input, select, textarea');
                 inputs.forEach(el => {
                     el.disabled = !isFlex;
                     if (isFlex) {
-                        // SEMPRE adiciona required quando for flex
                         el.setAttribute('required', 'required');
                     } else {
                         el.removeAttribute('required');
                     }
                 });
 
+                // 3. Controla asteriscos de obrigatoriedade (.flex-required) DENTRO do container
+                const flexRequired = container.querySelectorAll('.flex-required');
+                flexRequired.forEach(el => {
+                    el.style.display = isFlex ? 'inline' : 'none';
+                });
+
+                // 4. Controla sufixos "(Gasolina)" – GLOBALMENTE (não apenas dentro do container)
+                const sufixos = document.querySelectorAll('.sufixo-gasolina');
+                sufixos.forEach(el => {
+                    el.style.display = isFlex ? 'inline' : 'none';
+                });
+
+                // 5. (Opcional) Título "Dados para Gasolina" – se existir
+                const tituloGasolina = document.getElementById('titulo-gasolina');
+                if (tituloGasolina) {
+                    tituloGasolina.style.display = isFlex ? 'block' : 'none';
+                }
+
+                // Atualiza o stepper
                 atualizarStepper();
             }
 
-            // Configurar para o campo de combustível da combustão (se existir)
+            // Configurar para combustão
             const combustivelSelect = document.getElementById('combustivel');
             if (combustivelSelect) {
                 combustivelSelect.addEventListener('change', function() {
                     toggleFlexFields('combustivel', 'flex-fields');
                 });
-                // Estado inicial (edição)
-                toggleFlexFields('combustivel', 'flex-fields');
+                toggleFlexFields('combustivel', 'flex-fields'); // Estado inicial
             }
 
-            // Configurar para o campo de combustível do híbrido
+            // Configurar para híbrido (se existir)
             const combustivelHibrido = document.getElementById('combustivel_hibrido');
             if (combustivelHibrido) {
                 combustivelHibrido.addEventListener('change', function() {
                     toggleFlexFields('combustivel_hibrido', 'flex-fields-hibrido');
                 });
-                // Estado inicial (edição)
                 toggleFlexFields('combustivel_hibrido', 'flex-fields-hibrido');
             }
 

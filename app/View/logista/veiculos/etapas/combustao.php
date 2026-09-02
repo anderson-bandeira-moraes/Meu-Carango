@@ -52,12 +52,12 @@
 <div class="wizard-step" data-step="motor" data-label="Motor">
     
     <!-- ===== SEÇÃO 1: MOTORIZAÇÃO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-gear me-2"></i>Motorização</h6>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined">car_gear</span> Motorização</h5>
     <div class="row g-3">
         <!-- Combustível -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="combustivel" class="form-label mb-0">Combustível <span class="text-danger">*</span></label>
+                <label for="combustivel" class="form-label mb-0 fw-bold">Combustível <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -82,7 +82,7 @@
         <!-- Motorização (cilindrada) -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="motor_tipo" class="form-label mb-0">Motorização <span class="text-danger">*</span></label>
+                <label for="motor_tipo" class="form-label mb-0 fw-bold">Motorização <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -119,7 +119,7 @@
         <!-- Aspiração -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="aspiracao_combustao" class="form-label mb-0">Tipo de Aspiração</label>
+                <label for="aspiracao_combustao" class="form-label mb-0 fw-bold">Tipo de Aspiração</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -145,12 +145,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: DESEMPENHO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-speedometer2 me-2"></i>Desempenho</h6>
+    <h5 class="fw-bold mb-3"><span class="material-symbols-outlined">readiness_score</span> Desempenho</h5>
     <div class="row g-3">
         <!-- Aceleração 0-100 -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="aceleracao_0_100_seg" class="form-label mb-0">Aceleração 0-100</label>
+                <label for="aceleracao_0_100_seg" class="form-label mb-0 fw-bold">Aceleração 0-100</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -171,7 +171,7 @@
         <!-- Velocidade Máxima -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="velocidade_max_kmh" class="form-label mb-0">Velocidade Máxima</label>
+                <label for="velocidade_max_kmh" class="form-label mb-0 fw-bold">Velocidade Máxima</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -195,11 +195,7 @@
         <!-- Potência Máxima -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="potencia_cv" class="form-label mb-0">
-                    Potência Máxima 
-                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
-                    <span class="text-danger">*</span>
-                </label>
+                <label for="potencia_cv" class="form-label mb-0 fw-bold">Potência Máxima<span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -226,10 +222,7 @@
         <!-- Torque Máximo -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="torque_kgfm" class="form-label mb-0">
-                    Torque Máximo
-                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
-                </label>
+                <label for="torque_kgfm" class="form-label mb-0 fw-bold">Torque Máximo</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -251,12 +244,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: CONSUMO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-fuel-pump me-2"></i>Consumo</h6>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined">local_gas_station</span> Consumo</h5>
     <div class="row g-3">
         <!-- Consumo Cidade -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="consumo_cidade_kml" class="form-label mb-0">
+                <label for="consumo_cidade_kml" class="form-label mb-0 fw-bold">
                     Consumo Cidade 
                     <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
                     <span class="text-danger">*</span>
@@ -284,7 +277,7 @@
         <!-- Consumo Estrada -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="consumo_estrada_kml" class="form-label mb-0">
+                <label for="consumo_estrada_kml" class="form-label mb-0 fw-bold">
                     Consumo Estrada 
                     <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
                     <span class="text-danger">*</span>
@@ -313,12 +306,12 @@
     <!-- Bloco de campos para Etanol (Combustão) -->
     <div id="flex-fields" class="flex-fields mt-3" style="display: none;">
         <hr>
-        <h6 class="text-secondary"><i class="bi bi-arrow-repeat me-2"></i>Dados para Etanol (obrigatórios para Flex)</h6>
+        <h6 class="fw-bold text-muted"><span class="material-symbols-outlined fs-5">nest_eco_leaf</span> Dados para Etanol <span class="fw-normal"> (obrigatórios para Flex)</span></h6>
         <div class="row g-3">
             <!-- Consumo Cidade Etanol -->
             <div class="col-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="consumo_cidade_etanol_kml" class="form-label mb-0">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
+                    <label for="consumo_cidade_etanol_kml" class="form-label mb-0 fw-bold">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
                     <button type="button" 
                             class="btn btn-link btn-sm p-0 text-secondary" 
                             data-bs-toggle="tooltip" 
@@ -342,7 +335,7 @@
             <!-- Consumo Estrada Etanol -->
             <div class="col-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="consumo_estrada_etanol_kml" class="form-label mb-0">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
+                    <label for="consumo_estrada_etanol_kml" class="form-label mb-0 fw-bold">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
                     <button type="button" 
                             class="btn btn-link btn-sm p-0 text-secondary" 
                             data-bs-toggle="tooltip" 
@@ -372,7 +365,7 @@
 <div class="wizard-step" data-step="chassi" data-label="Chassi">
 
     <!-- ===== SEÇÃO 1: DIREÇÃO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-steering-wheel me-2"></i>Direção</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">search_hands_free</span> Direção</h5>
     <div class="row g-3">
         <!-- Tipo de Direção -->
         <div class="col-md-4">
@@ -403,7 +396,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: TRAÇÃO E TRANSMISSÃO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-gear me-2"></i>Tração e Transmissão</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">auto_transmission</span> Tração e Transmissão</h5>
     <div class="row g-3">
         <!-- Tipo de Tração -->
         <div class="col-md-4">
@@ -484,7 +477,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: SUSPENSÃO E FREIO ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-car-front me-2"></i>Suspensão e Freios</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">emoji_transportation</span> Suspensão e Freios</h5>
     <div class="row g-3">
         <!-- Suspensão Dianteira -->
         <div class="col-md-4">
@@ -604,7 +597,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 4: RODAS ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-circle me-2"></i>Rodas</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">tire_repair</span> Rodas</h5>
     <div class="row g-3">
         <!-- Aro do Pneu -->
         <div class="col-md-4">
@@ -680,7 +673,7 @@
 <div class="wizard-step" data-step="dimensoes" data-label="Dimensões">
 
     <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-rulers me-2"></i>Dimensões Externas</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">border_style</span> Dimensões Externas</h5>
     <div class="row g-3">
         <!-- Comprimento -->
         <div class="col-md-3">
@@ -841,7 +834,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: PESO E VOLUMES ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-box-seam me-2"></i>Peso e Volumes</h6>
+    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">square_foot</span> Peso e Volumes</h5>
     <div class="row g-3">
         <!-- Peso -->
         <div class="col-md-3">
@@ -957,7 +950,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: PORTAS E ASSENTOS ===== -->
-    <h6 class="text-secondary mb-3"><i class="bi bi-car-front me-2"></i>Portas e Assentos</h6>
+    <h6 class="text-secondary mb-3"><span class="material-symbols-outlined">airline_seat_recline_extra</span> Portas e Assentos</h6>
     <div class="row g-3">
         <!-- Número de Portas -->
         <div class="col-md-4">
