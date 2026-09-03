@@ -52,7 +52,7 @@
 <div class="wizard-step" data-step="motor" data-label="Motor">
     
     <!-- ===== SEÇÃO 1: MOTORIZAÇÃO ===== -->
-    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined">car_gear</span> Motorização</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">car_gear</span> Motorização</h5>
     <div class="row g-3">
         <!-- Combustível -->
         <div class="col-md-4">
@@ -74,7 +74,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O combustível é obrigatório.
             </div>
         </div>
@@ -111,7 +111,7 @@
                    placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
                    style="display: <?= $motorTipo['is_outro'] ? 'block' : 'none' ?>;">
 
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 A motorização é obrigatória.
             </div>
         </div>
@@ -136,19 +136,16 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
-                Selecione um tipo de aspiração válido.
-            </div>
         </div>
     </div>
 
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: DESEMPENHO ===== -->
-    <h5 class="fw-bold mb-3"><span class="material-symbols-outlined">readiness_score</span> Desempenho</h5>
+    <h5 class="fw-bold mb-3"><span class="material-symbols-outlined text-primary">readiness_score</span> Desempenho</h5>
     <div class="row g-3">
         <!-- Aceleração 0-100 -->
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="aceleracao_0_100_seg" class="form-label mb-0 fw-bold">Aceleração 0-100</label>
                 <button type="button" 
@@ -169,7 +166,7 @@
         </div>
 
         <!-- Velocidade Máxima -->
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="velocidade_max_kmh" class="form-label mb-0 fw-bold">Velocidade Máxima</label>
                 <button type="button" 
@@ -186,14 +183,14 @@
                        value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
                        placeholder="Ex: 220">
                 <span class="input-group-text">km/h</span>
-                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                     Este campo não aceita ponto (.) ou vírgula (,)
                 </div>
             </div>
         </div>
 
         <!-- Potência Máxima -->
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="potencia_cv" class="form-label mb-0 fw-bold">Potência Máxima<span class="text-danger">*</span></label>
                 <button type="button" 
@@ -210,17 +207,17 @@
                        value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
                        placeholder="Ex: 120" required>
                 <span class="input-group-text">cv</span>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback fw-bold">
                     A potência máxima é obrigatória.
                 </div>
-                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                     Este campo não aceita ponto (.) ou vírgula (,)
                 </div>
             </div>
         </div>
 
         <!-- Torque Máximo -->
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="torque_kgfm" class="form-label mb-0 fw-bold">Torque Máximo</label>
                 <button type="button" 
@@ -244,7 +241,7 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: CONSUMO ===== -->
-    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined">local_gas_station</span> Consumo</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">local_gas_station</span> Consumo</h5>
     <div class="row g-3">
         <!-- Consumo Cidade -->
         <div class="col-md-4">
@@ -268,7 +265,7 @@
                        value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
                        placeholder="Ex: 12.5" min="0" required>
                 <span class="input-group-text">km/l</span>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback fw-bold">
                     O consumo na cidade é obrigatório.
                 </div>
             </div>  
@@ -296,7 +293,7 @@
                        value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
                        placeholder="Ex: 15.0" min="0" required>
                 <span class="input-group-text">km/l</span>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback fw-bold">
                     O consumo na estrada é obrigatório.
                 </div>
             </div>
@@ -306,7 +303,7 @@
     <!-- Bloco de campos para Etanol (Combustão) -->
     <div id="flex-fields" class="flex-fields mt-3" style="display: none;">
         <hr>
-        <h6 class="fw-bold text-muted"><span class="material-symbols-outlined fs-5">nest_eco_leaf</span> Dados para Etanol <span class="fw-normal"> (obrigatórios para Flex)</span></h6>
+        <h6 class="fw-bold text-success mb-2"><span class="material-symbols-outlined fs-5">nest_eco_leaf</span> Dados para Etanol <span class="fw-normal"> (obrigatórios para Flex)</span></h6>
         <div class="row g-3">
             <!-- Consumo Cidade Etanol -->
             <div class="col-md-4">
@@ -326,7 +323,7 @@
                            value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
                            placeholder="Ex: 8.5" min="0" required>
                     <span class="input-group-text">km/l</span>
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback fw-bold">
                         O consumo na cidade para etanol é obrigatório.
                     </div>
                 </div>
@@ -350,7 +347,7 @@
                            value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
                            placeholder="Ex: 10.2" min="0" required>
                     <span class="input-group-text">km/l</span>
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback fw-bold">
                         O consumo na estrada para etanol é obrigatório.
                     </div>
                 </div>
@@ -365,12 +362,12 @@
 <div class="wizard-step" data-step="chassi" data-label="Chassi">
 
     <!-- ===== SEÇÃO 1: DIREÇÃO ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">search_hands_free</span> Direção</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">search_hands_free</span> Direção</h5>
     <div class="row g-3">
         <!-- Tipo de Direção -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tipo_direcao" class="form-label mb-0">Tipo de Direção</label>
+                <label for="tipo_direcao" class="form-label mb-0 fw-bold">Tipo de Direção</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -379,7 +376,7 @@
                     <i class="bi bi-info-circle-fill"></i>
                 </button>
             </div>
-            <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>">
+            <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>" required>
                 <option value="">Selecione</option>
                 <?php foreach (tipos_direcao_list() as $value => $label): ?>
                     <option value="<?= $value ?>" <?= selected($old['tipo_direcao'] ?? $veiculo['tipo_direcao'] ?? '', $value) ?>>
@@ -387,8 +384,8 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
-                Selecione um tipo de direção válido.
+            <div class="invalid-feedback fw-bold">
+                O tipo de direção é obrigatório.
             </div>
         </div>
     </div>
@@ -396,12 +393,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: TRAÇÃO E TRANSMISSÃO ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">auto_transmission</span> Tração e Transmissão</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">auto_transmission</span> Tração e Transmissão</h5>
     <div class="row g-3">
         <!-- Tipo de Tração -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tracao_tipo" class="form-label mb-0">Tipo de Tração <span class="text-danger">*</span></label>
+                <label for="tracao_tipo" class="form-label mb-0 fw-bold">Tipo de Tração <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -418,7 +415,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O tipo de tração é obrigatório.
             </div>
         </div>
@@ -426,7 +423,7 @@
         <!-- Tipo de Transmissão -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="transmissao_tipo" class="form-label mb-0">Tipo de Transmissão <span class="text-danger">*</span></label>
+                <label for="transmissao_tipo" class="form-label mb-0 fw-bold">Tipo de Transmissão <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -443,7 +440,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O tipo de transmissão é obrigatório.
             </div>
         </div>
@@ -451,7 +448,7 @@
         <!-- Número de Marchas (condicional) -->
         <div class="col-md-4" id="container-marchas">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_marchas" class="form-label mb-0">Número de Marchas <span class="text-danger">*</span></label>
+                <label for="numero_marchas" class="form-label mb-0 fw-bold">Número de Marchas <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -468,7 +465,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O número de marchas é obrigatório.
             </div>
         </div>
@@ -477,12 +474,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: SUSPENSÃO E FREIO ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">emoji_transportation</span> Suspensão e Freios</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">emoji_transportation</span> Suspensão e Freios</h5>
     <div class="row g-3">
         <!-- Suspensão Dianteira -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="suspensao_dianteira" class="form-label mb-0">Suspensão Dianteira</label>
+                <label for="suspensao_dianteira" class="form-label mb-0 fw-bold">Suspensão Dianteira</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -509,7 +506,7 @@
                    placeholder="Digite a suspensão personalizada" 
                    style="display: <?= $suspensaoDianteira['is_outro'] ? 'block' : 'none' ?>;">
 
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 A suspensão dianteira personalizada é obrigatória.
             </div>
         </div>
@@ -517,7 +514,7 @@
         <!-- Suspensão Traseira -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="suspensao_traseira" class="form-label mb-0">Suspensão Traseira</label>
+                <label for="suspensao_traseira" class="form-label mb-0 fw-bold">Suspensão Traseira</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -544,7 +541,7 @@
                    placeholder="Digite a suspensão personalizada" 
                    style="display: <?= $suspensaoTraseira['is_outro'] ? 'block' : 'none' ?>;">
 
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 A suspensão traseira personalizada é obrigatória.
             </div>
         </div>
@@ -552,7 +549,7 @@
         <!-- Freio Dianteiro -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="freio_dianteiro" class="form-label mb-0">Freio Dianteiro</label>
+                <label for="freio_dianteiro" class="form-label mb-0 fw-bold">Freio Dianteiro</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -574,7 +571,7 @@
         <!-- Freio Traseiro -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="freio_traseiro" class="form-label mb-0">Freio Traseiro</label>
+                <label for="freio_traseiro" class="form-label mb-0 fw-bold">Freio Traseiro</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -597,12 +594,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 4: RODAS ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">tire_repair</span> Rodas</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">tire_repair</span> Rodas</h5>
     <div class="row g-3">
         <!-- Aro do Pneu -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="pneu_aro" class="form-label mb-0">Aro do Pneu</label>
+                <label for="pneu_aro" class="form-label mb-0 fw-bold">Aro do Pneu <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -617,7 +614,8 @@
                 nome: 'pneu_aro',
                 lista: aros_pneu_list(),
                 valorSalvo: $old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '',
-                classes: isset($errors['pneu_aro']) ? 'is-invalid' : ''
+                classes: isset($errors['pneu_aro']) ? 'is-invalid' : '',
+                attrs: 'required'
             );
             ?>
 
@@ -634,11 +632,11 @@
                    placeholder="Digite o aro personalizado" 
                    style="display: <?= $pneuAro['is_outro'] ? 'block' : 'none' ?>;">
 
-            <div class="invalid-feedback">
-                O aro personalizado é obrigatório.
+            <div class="invalid-feedback fw-bold">
+                O aro do pneu é obrigatório.
             </div>
 
-            <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+            <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                 Este campo não aceita ponto (.) ou vírgula (,)
             </div>
         </div>
@@ -646,7 +644,7 @@
         <!-- Tipo de Roda -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tipo_roda" class="form-label mb-0">Tipo de Roda</label>
+                <label for="tipo_roda" class="form-label mb-0 fw-bold">Tipo de Roda</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -673,12 +671,12 @@
 <div class="wizard-step" data-step="dimensoes" data-label="Dimensões">
 
     <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">border_style</span> Dimensões Externas</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">border_style</span> Dimensões Externas</h5>
     <div class="row g-3">
         <!-- Comprimento -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="comprimento_mm_visual" class="form-label mb-0">Comprimento</label>
+                <label for="comprimento_mm_visual" class="form-label mb-0 fw-bold">Comprimento</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -693,23 +691,20 @@
                        id="comprimento_mm" 
                        value="<?= htmlspecialchars($old['comprimento_mm'] ?? $veiculo['comprimento_mm'] ?? '') ?>">
                 <input type="text" 
-                       maxlength="4"
+                       maxlength="6"
                        inputmode="numeric" 
                        id="comprimento_mm_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['comprimento_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 4.200">
                 <span class="input-group-text">mm</span>
-                <div class="invalid-feedback">
-                    O comprimento deve ser um número válido.
-                </div>
             </div>
         </div>
 
         <!-- Largura -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="largura_mm_visual" class="form-label mb-0">Largura</label>
+                <label for="largura_mm_visual" class="form-label mb-0 fw-bold">Largura</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -724,23 +719,20 @@
                        id="largura_mm" 
                        value="<?= htmlspecialchars($old['largura_mm'] ?? $veiculo['largura_mm'] ?? '') ?>">
                 <input type="text" 
-                       maxlength="4"
+                       maxlength="6"
                        inputmode="numeric" 
                        id="largura_mm_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['largura_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 1.800">
                 <span class="input-group-text">mm</span>
-                <div class="invalid-feedback">
-                    A largura deve ser um número válido.
-                </div>
             </div>
         </div>
 
         <!-- Altura -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="altura_mm_visual" class="form-label mb-0">Altura do Veículo</label>
+                <label for="altura_mm_visual" class="form-label mb-0 fw-bold">Altura do Veículo</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -755,23 +747,20 @@
                        id="altura_mm" 
                        value="<?= htmlspecialchars($old['altura_mm'] ?? $veiculo['altura_mm'] ?? '') ?>">
                 <input type="text" 
-                       maxlength="4"
+                       maxlength="6"
                        inputmode="numeric" 
                        id="altura_mm_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['altura_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 1.500">
                 <span class="input-group-text">mm</span>
-                <div class="invalid-feedback">
-                    A altura deve ser um número válido.
-                </div>
             </div>
         </div>
 
         <!-- Altura Solo -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="altura_solo_mm_visual" class="form-label mb-0">Altura do Solo</label>
+                <label for="altura_solo_mm_visual" class="form-label mb-0 fw-bold">Altura do Solo</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -786,23 +775,20 @@
                        id="altura_solo_mm" 
                        value="<?= htmlspecialchars($old['altura_solo_mm'] ?? $veiculo['altura_solo_mm'] ?? '') ?>">
                 <input type="text" 
-                       maxlength="3"
+                       maxlength="4"
                        inputmode="numeric" 
                        id="altura_solo_mm_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['altura_solo_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 180">
                 <span class="input-group-text">mm</span>
-                <div class="invalid-feedback">
-                    A altura do solo deve ser um número válido.
-                </div>
             </div>
         </div>
 
         <!-- Distância entre eixos -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="distancia_entre_eixos_mm_visual" class="form-label mb-0">Distância entre eixos</label>
+                <label for="distancia_entre_eixos_mm_visual" class="form-label mb-0 fw-bold">Distância entre eixos</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -817,16 +803,13 @@
                        id="distancia_entre_eixos_mm" 
                        value="<?= htmlspecialchars($old['distancia_entre_eixos_mm'] ?? $veiculo['distancia_entre_eixos_mm'] ?? '') ?>">
                 <input type="text" 
-                       maxlength="4"
+                       maxlength="6"
                        inputmode="numeric" 
                        id="distancia_entre_eixos_mm_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['distancia_entre_eixos_mm']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 2.600">
                 <span class="input-group-text">mm</span>
-                <div class="invalid-feedback">
-                    A distância entre eixos deve ser um número válido.
-                </div>
             </div>
         </div>
     </div>
@@ -834,12 +817,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 2: PESO E VOLUMES ===== -->
-    <h5 class="text-secondary mb-3"><span class="material-symbols-outlined">square_foot</span> Peso e Volumes</h5>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">square_foot</span> Peso e Volumes</h5>
     <div class="row g-3">
         <!-- Peso -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="peso_ordem_marcha_kg" class="form-label mb-0">Peso do Veículo</label>
+                <label for="peso_ordem_marcha_kg" class="form-label mb-0 fw-bold">Peso do Veículo</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -860,7 +843,7 @@
         <!-- Capacidade Tanque -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="capacidade_tanque_l" class="form-label mb-0">Volume Tanque de Combustível <span class="text-danger">*</span></label>
+                <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold">Volume Tanque de Combustível <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -875,10 +858,10 @@
                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
                        placeholder="Ex: 50" required>
                 <span class="input-group-text">L</span>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback fw-bold">
                     O volume do tanque é obrigatório.
                 </div>
-                <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
+                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                     Este campo não aceita ponto (.) ou vírgula (,)
                 </div>
             </div>
@@ -887,7 +870,7 @@
         <!-- Volume do porta-malas -->
         <div class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="volume_porta_malas_l_visual" class="form-label mb-0">Volume do porta-malas</label>
+                <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold">Volume do porta-malas <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -906,11 +889,12 @@
                        inputmode="numeric" 
                        id="volume_porta_malas_l_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
-                       placeholder="Ex: 450">
+                       class="form-control input-border-correction <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
+                       placeholder="Ex: 450"
+                       required>
                 <span class="input-group-text">L</span>
-                <div class="invalid-feedback">
-                    O volume do porta-malas deve ser um número válido.
+                <div class="invalid-feedback fw-bold">
+                    O volume do porta-malas é obrigatório.
                 </div>
             </div>
         </div>
@@ -918,12 +902,12 @@
         <!-- Volume da caçamba (condicional) -->
         <div id="cacamba-container" class="col-md-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="volume_cacamba_l_visual" class="form-label mb-0">Volume da caçamba</label>
+                <label for="volume_cacamba_l_visual" class="form-label mb-0 fw-bold">Volume da caçamba</label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
-                        title="Capacidade de carga da caçamba, medida em litros (L). Valores comuns: 300 a 1500 L, dependendo do tamanho da picape. Essencial para quem utiliza o veículo para transporte de cargas, mudanças ou atividades profissionais.">
+                        title="Capacidade de carga da caçamba, medida em litros (L). Valores comuns: 300 a 1500 L, dependendo do tamanho do veículo. Essencial para quem utiliza o veículo para transporte de cargas, mudanças ou atividades profissionais.">
                     <i class="bi bi-info-circle-fill"></i>
                 </button>
             </div>
@@ -937,12 +921,9 @@
                        inputmode="numeric" 
                        id="volume_cacamba_l_visual" 
                        data-mascara-milhar 
-                       class="form-control <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['volume_cacamba_l']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 800">
                 <span class="input-group-text">L</span>
-                <div class="invalid-feedback">
-                    O volume da caçamba deve ser um número válido.
-                </div>
             </div>
         </div>
     </div>
@@ -950,12 +931,12 @@
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 3: PORTAS E ASSENTOS ===== -->
-    <h6 class="text-secondary mb-3"><span class="material-symbols-outlined">airline_seat_recline_extra</span> Portas e Assentos</h6>
+    <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">airline_seat_recline_extra</span> Portas e Assentos</h5>
     <div class="row g-3">
         <!-- Número de Portas -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_portas" class="form-label mb-0">Número de Portas <span class="text-danger">*</span></label>
+                <label for="numero_portas" class="form-label mb-0 fw-bold">Número de Portas <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -972,7 +953,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O número de portas é obrigatório.
             </div>
         </div>
@@ -980,7 +961,7 @@
         <!-- Número de Assentos -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_assentos" class="form-label mb-0">Quantidade de Lugares <span class="text-danger">*</span></label>
+                <label for="numero_assentos" class="form-label mb-0 fw-bold">Quantidade de Lugares <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -997,7 +978,7 @@
                     </option>
                 <?php endforeach; ?>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O número de assentos é obrigatório.
             </div>
         </div>
@@ -1008,7 +989,7 @@
 <div class="wizard-step" data-step="opcionais" data-label="Opcionais" style="display: none;">
     <div class="card shadow-sm my-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="bi bi-check2-square me-2"></i>Opcionais</h5>
+            <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">traffic_jam</span> Opcionais</h5>
         </div>
         <div class="card-body">
             <?php if (empty($todos_opcionais)): ?>
@@ -1020,7 +1001,7 @@
                         <?php $id = 'collapse_' . $i; ?>
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading_<?= $i ?>">
-                                <button class="accordion-button collapsed" 
+                                <button class="accordion-button collapsed fw-bold" 
                                         type="button" 
                                         data-bs-toggle="collapse" 
                                         data-bs-target="#<?= $id ?>" 
@@ -1044,7 +1025,7 @@
                                                            class="form-check-input" 
                                                            id="opcional_<?= $opcional['id'] ?>"
                                                            <?= (in_array($opcional['id'], $opcionais_selecionados ?? [])) ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="opcional_<?= $opcional['id'] ?>">
+                                                    <label class="form-check-label fw-bold" for="opcional_<?= $opcional['id'] ?>">
                                                         <?= htmlspecialchars($opcional['nome']) ?>
                                                     </label>
                                                 </div>
@@ -1067,10 +1048,11 @@
     <!-- ========================================================== -->
     <!-- GNV - Possui GNV?                                          -->
     <!-- ========================================================== -->
+    <h4 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">propane</span> GNV</h4>
     <div class="row g-3">
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="gnv_instalado" class="form-label mb-0">Veículo possui GNV? <span class="text-danger">*</span></label>
+                <label for="gnv_instalado" class="form-label mb-0 fw-bold">Veículo possui GNV? <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -1084,7 +1066,7 @@
                 <option value="1" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 1) ?>>Sim</option>
                 <option value="0" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 0) ?>>Não</option>
             </select>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 Indique se o veículo possui GNV.
             </div>
         </div>
@@ -1094,11 +1076,10 @@
     <!-- Bloco de campos GNV (condicional)                          -->
     <!-- ========================================================== -->
     <div id="gnv-fields" class="mt-3 p-3 border rounded bg-light" style="display: none;">
-        <h6 class="mb-3"><i class="bi bi-gas-pump me-2"></i>Dados do Kit GNV</h6>
         <div class="row g-3">
             <!-- Geração do Kit -->
             <div class="col-md-3">
-                <label for="geracao_kit" class="form-label">Geração do Kit <span class="text-danger">*</span></label>
+                <label for="geracao_kit" class="form-label fw-bold">Geração do Kit <span class="text-danger">*</span></label>
                 <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (gnv_geracoes_list() as $value => $label): ?>
@@ -1107,12 +1088,12 @@
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <div class="invalid-feedback">A geração do kit é obrigatória.</div>
+                <div class="invalid-feedback fw-bold">A geração do kit é obrigatória.</div>
             </div>
 
             <!-- Capacidade (m³) -->
             <div class="col-md-3">
-                <label for="capacidade_cilindro_m3" class="form-label">Capacidade (m³) <span class="text-danger">*</span></label>
+                <label for="capacidade_cilindro_m3" class="form-label fw-bold">Capacidade (m³) <span class="text-danger">*</span></label>
                 <?php
                     $capacidade = gerarSelectOutro(
                         nome: 'capacidade_cilindro_m3',
@@ -1128,12 +1109,12 @@
                        value="<?= htmlspecialchars($capacidade['valor_outro']) ?>" 
                        placeholder="Digite a capacidade em m³" 
                        style="display: <?= $capacidade['is_outro'] ? 'block' : 'none' ?>;">
-                <div class="invalid-feedback">A capacidade é obrigatória.</div>
+                <div class="invalid-feedback fw-bold">A capacidade é obrigatória.</div>
             </div>
 
             <!-- Quantidade de Cilindros -->
             <div class="col-md-3">
-                <label for="quantidade_cilindros" class="form-label">Quantidade de Cilindros <span class="text-danger">*</span></label>
+                <label for="quantidade_cilindros" class="form-label fw-bold">Quantidade de Cilindros <span class="text-danger">*</span></label>
                 <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (gnv_quantidades_list() as $valor): ?>
@@ -1142,12 +1123,12 @@
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <div class="invalid-feedback">A quantidade é obrigatória.</div>
+                <div class="invalid-feedback fw-bold">A quantidade é obrigatória.</div>
             </div>
 
             <!-- Localização do Cilindro -->
             <div class="col-md-3">
-                <label for="localizacao_cilindro" class="form-label">Localização <span class="text-danger">*</span></label>
+                <label for="localizacao_cilindro" class="form-label fw-bold">Localização <span class="text-danger">*</span></label>
                 <?php
                     $localizacao = gerarSelectOutro(
                         nome: 'localizacao_cilindro',
@@ -1163,7 +1144,7 @@
                        value="<?= htmlspecialchars($localizacao['valor_outro']) ?>" 
                        placeholder="Digite a localização personalizada" 
                        style="display: <?= $localizacao['is_outro'] ? 'block' : 'none' ?>;">
-                <div class="invalid-feedback">A localização é obrigatória.</div>
+                <div class="invalid-feedback fw-bold">A localização é obrigatória.</div>
             </div>
         </div>
     </div>

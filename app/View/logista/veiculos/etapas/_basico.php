@@ -13,7 +13,7 @@
             <!-- Área de exibição (badges + botão "Selecionar") -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0 fw-bold"><i class="bi bi-tags me-2"></i>Marca e Modelo</h5>
+                    <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">car_tag</span> Marca e Modelo</h5>
                 </div>
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -23,7 +23,7 @@
                                     <span id="marcaDisplay" class="badge bg-secondary p-2" style="margin-bottom: 0.5rem;">Nenhuma marca selecionada</span>
                                     <span id="modeloDisplay" class="badge bg-secondary p-2">Nenhum modelo selecionado</span>
                                     <!-- Feedback de erro -->
-                                    <div id="marcaModeloFeedback" class="invalid-feedback" style="display: none;">
+                                    <div id="marcaModeloFeedback" class="invalid-feedback fw-bold" style="display: none;">
                                         Selecione uma marca e um modelo.
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@
         <!-- Carroceria -->
         <div class="col-md-4">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="carroceria" class="form-label mb-0 fw-bold">Carroceria</label>
+                <label for="carroceria" class="form-label mb-0 fw-bold">Carroceria <span class="text-danger">*</span></label>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -212,7 +212,8 @@
                     nome: 'carroceria',
                     lista: carrocerias_list(),
                     valorSalvo: $old['carroceria'] ?? $veiculo['carroceria'] ?? '',
-                    classes: isset($errors['carroceria']) ? 'is-invalid' : ''
+                    classes: isset($errors['carroceria']) ? 'is-invalid' : '',
+                    attrs: 'required'
                 );
             ?>
 
@@ -226,9 +227,7 @@
                    placeholder="Digite a carroceria personalizada" 
                    style="display: <?= $carroceria['is_outro'] ? 'block' : 'none' ?>;">
 
-            <div class="invalid-feedback">
-                A carroceria personalizada é obrigatória.
-            </div>
+            <div class="invalid-feedback fw-bold">A carroceria é obrigatória.</div>
         </div>
 
         <!-- Ano Modelo -->
@@ -246,7 +245,7 @@
             <input title="Digite o ano com 4 dígitos" placeholder="Ex: 2026" type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" maxlength="4" name="ano_modelo" id="ano_modelo" class="form-control <?= isset($errors['ano_modelo']) ? 'is-invalid' : '' ?>" 
                    value="<?= htmlspecialchars($old['ano_modelo'] ?? $veiculo['ano_modelo'] ?? '') ?>" required>
 
-            <div class="invalid-feedback">
+            <div class="invalid-feedback fw-bold">
                 O ano do modelo é obrigatório.
             </div>
 
@@ -279,14 +278,14 @@
                        inputmode="numeric" 
                        id="quilometragem_visual" 
                        data-mascara-milhar
-                       class="form-control <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['quilometragem']) ? 'is-invalid' : '' ?>" 
                        placeholder="Ex: 90.258" 
                        required
                        maxlength="10">
                 <span class="input-group-text">km</span>
 
                 <!-- Feedback de erro (visível quando hidden estiver vazio) -->
-                <div class="invalid-feedback">
+                <div class="invalid-feedback fw-bold">
                     A quilometragem é obrigatória.
                 </div>
                 <div class="invalid-feedback feedback-pontovirgula" style="display: none;">
@@ -322,7 +321,7 @@
                     <i class="bi bi-chevron-down"></i>
                 </button>
 
-                <div id="corFeedback" class="invalid-feedback">
+                <div id="corFeedback" class="invalid-feedback fw-bold">
                     O nome da cor é obrigatório. 
                 </div>
 

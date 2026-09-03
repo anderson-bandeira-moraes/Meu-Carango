@@ -21,7 +21,7 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf,traffic_jam,car_tag,propane,eco" />
 
     
         <style>
@@ -197,10 +197,17 @@
                 border-top-right-radius: 0.375rem !important; 
                 border-bottom-right-radius: 0.375rem !important;
             }
+
+            .input-border-correction {
+                border-top-left-radius: 0.375rem !important; 
+                border-bottom-left-radius: 0.375rem !important; 
+                border-top-right-radius: 0 !important; 
+                border-bottom-right-radius: 0 !important;
+            }
         </style>
 </head>
 <body>
-    <div class="container-fluid py-4" style="padding-left: 20rem; padding-right: 20rem;">
+    <div class="container-fluid py-4" style="padding-left: 16rem; padding-right: 16rem;">
         <!-- Cabeçalho do wizard -->
         <div class="wizard-header mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -1183,6 +1190,7 @@
         // ============================================================
         let steps = [];           // Lista de elementos .wizard-step
         let currentStep = 0;      // Índice da etapa atual
+        const veiculoForm = document.getElementById('veiculoForm');
 
         // ============================================================
         // 2. FUNÇÕES DO WIZARD
@@ -1584,13 +1592,27 @@
                 });
             });
 
+            // ============================================================
+            // LISTENER DO BOTÃO "SALVAR"
+            // ============================================================
             const btnSalvar = document.getElementById('btnSalvar');
             if (btnSalvar) {
                 btnSalvar.addEventListener('click', function() {
-                    // (Opcional) Validar todas as etapas antes de submeter
-                    // Se quiser validar todas, você pode percorrer steps e chamar validarEtapa() para cada uma.
-                    // No entanto, se o stepper já está colorido corretamente, pode submeter diretamente.
                     document.getElementById('veiculoForm').submit();
+                });
+            }
+
+            // ============================================================
+            // DESABILITAR SUBMISSÃO VIA ENTER (exceto em textarea)
+            // ============================================================
+            if (veiculoForm) {
+                veiculoForm.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        if (e.target.tagName === 'TEXTAREA') {
+                            return;
+                        }
+                        e.preventDefault();
+                    }
                 });
             }
 
@@ -1877,7 +1899,6 @@
             // ============================================================
             // VALIDAÇÃO EM TEMPO REAL – ATUALIZA STEPPER
             // ============================================================
-            const veiculoForm = document.getElementById('veiculoForm');
 
             if (veiculoForm) {
                 // Para inputs e textareas (digitação)
