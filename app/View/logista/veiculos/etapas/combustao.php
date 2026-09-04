@@ -672,20 +672,20 @@
 
     <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">border_style</span> Dimensões Externas</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Comprimento -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="comprimento_mm_visual" class="form-label mb-0 fw-bold">Comprimento</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="comprimento_mm_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Comprimento
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Comprimento total do veículo medido em milímetros (mm). Valores comuns: 3800 a 5200 mm. Afeta a manobrabilidade e o espaço interno disponível.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="hidden" 
                        name="comprimento_mm" 
                        id="comprimento_mm" 
@@ -702,18 +702,18 @@
         </div>
 
         <!-- Largura -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="largura_mm_visual" class="form-label mb-0 fw-bold">Largura</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="largura_mm_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Largura
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Largura total do veículo medida em milímetros (mm), geralmente sem os retrovisores. Valores comuns: 1700 a 2000 mm. Influencia a estabilidade, o espaço interno e a facilidade em vagas estreitas.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="hidden" 
                        name="largura_mm" 
                        id="largura_mm" 
@@ -730,18 +730,18 @@
         </div>
 
         <!-- Altura -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="altura_mm_visual" class="form-label mb-0 fw-bold">Altura do Veículo</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="altura_mm_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 155px;">
+                Altura do Veículo
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Altura total do veículo medida em milímetros (mm). Valores comuns: 1400 a 1900 mm. Influencia o centro de gravidade, a estabilidade e a aerodinâmica do veículo.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 155px;">
                 <input type="hidden" 
                        name="altura_mm" 
                        id="altura_mm" 
@@ -758,18 +758,18 @@
         </div>
 
         <!-- Altura Solo -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="altura_solo_mm_visual" class="form-label mb-0 fw-bold">Altura do Solo</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="altura_solo_mm_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Altura do Solo
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Distância do ponto mais baixo do veículo (geralmente o cárter) ao solo, medida em milímetros. Valores comuns: 120 a 300 mm. Veículos com maior altura do solo têm melhor capacidade para enfrentar ruas irregulares, rampas e off-road.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="hidden" 
                        name="altura_solo_mm" 
                        id="altura_solo_mm" 
@@ -786,18 +786,18 @@
         </div>
 
         <!-- Distância entre eixos -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="distancia_entre_eixos_mm_visual" class="form-label mb-0 fw-bold">Distância entre eixos</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="distancia_entre_eixos_mm_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 180px;">
+                Distância entre eixos
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Distância entre os eixos dianteiro e traseiro do veículo, medida em milímetros (mm). Valores comuns: 2400 a 3000 mm. Quanto maior a distância entre eixos, maior tende a ser o espaço interno e a estabilidade em linha reta, influenciando também o raio de giro.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 180px;">
                 <input type="hidden" 
                        name="distancia_entre_eixos_mm" 
                        id="distancia_entre_eixos_mm" 
@@ -818,22 +818,22 @@
 
     <!-- ===== SEÇÃO 2: PESO E VOLUMES ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">square_foot</span> Peso e Volumes</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Peso -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="peso_ordem_marcha_kg" class="form-label mb-0 fw-bold">Peso do Veículo</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="peso_ordem_marcha_kg" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Peso do Veículo
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Peso do veículo com todos os fluidos (óleo, água, combustível), ferramentas e acessórios de série, sem carga e sem ocupantes. Medido em quilogramas (kg). Valores comuns: 1000 a 2500 kg. Afeta o consumo de combustível e o desempenho.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group">
+            </label>
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" 
-                       class="form-control <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
+                       class="form-control input-border-correction <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" 
                        min="0" placeholder="Ex: 1200">
                 <span class="input-group-text">kg</span>
@@ -841,18 +841,18 @@
         </div>
 
         <!-- Capacidade Tanque -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold">Volume Tanque de Combustível <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 270px;">
+                Volume Tanque de Combustível <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Capacidade total do tanque de combustível, medida em litros (L). Valores comuns: 30 a 80 L. A capacidade do tanque influencia diretamente a autonomia do veículo e a frequência de abastecimento.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 270px;">
                 <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
@@ -868,18 +868,18 @@
         </div>
 
         <!-- Volume do porta-malas -->
-        <div class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold">Volume do porta-malas <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 210px;">
+                Volume do porta-malas <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Capacidade de carga do porta-malas, medida em litros (L). Valores comuns: 200 a 600 L para hatches e sedans; 400 a 800 L para SUVs e peruas. Afeta a praticidade para viagens e transporte de bagagens.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 210px;">
                 <input type="hidden" 
                        name="volume_porta_malas_l" 
                        id="volume_porta_malas_l" 
@@ -900,18 +900,18 @@
         </div>
 
         <!-- Volume da caçamba (condicional) -->
-        <div id="cacamba-container" class="col-md-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="volume_cacamba_l_visual" class="form-label mb-0 fw-bold">Volume da caçamba</label>
+        <div id="cacamba-container" class="d-flex flex-column gap-1 cacamba-hidden">
+            <label for="volume_cacamba_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 175px;">
+                Volume da caçamba
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Capacidade de carga da caçamba, medida em litros (L). Valores comuns: 300 a 1500 L, dependendo do tamanho do veículo. Essencial para quem utiliza o veículo para transporte de cargas, mudanças ou atividades profissionais.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
+            </label>
+            <div class="input-group has-validation" style="width: 175px;">
                 <input type="hidden" 
                        name="volume_cacamba_l" 
                        id="volume_cacamba_l" 

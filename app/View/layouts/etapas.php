@@ -204,6 +204,10 @@
                 border-top-right-radius: 0 !important; 
                 border-bottom-right-radius: 0 !important;
             }
+
+            .cacamba-hidden {
+                display: none !important;
+            }
         </style>
 </head>
 <body>
@@ -1818,6 +1822,8 @@
 
             /**
              * Controla a visibilidade e o required do campo "Volume da caçamba".
+             * Usa a classe CSS .cacamba-hidden para ocultar com !important,
+             * evitando conflitos com o display:flex do Bootstrap.
              */
             function toggleCacamba() {
                 const carroceriaSelect = document.getElementById('carroceria');
@@ -1830,8 +1836,8 @@
                 const valorSelecionado = carroceriaSelect.value;
                 const exibir = TIPOS_COM_CACAMBA.includes(valorSelecionado);
 
-                // Exibe ou oculta o container
-                cacambaContainer.style.display = exibir ? 'block' : 'none';
+                // Exibe ou oculta o container usando a classe CSS com !important
+                cacambaContainer.classList.toggle('cacamba-hidden', !exibir);
 
                 // Controla o atributo required (apenas no campo visual, pois o hidden não é validado)
                 if (cacambaVisual) {
@@ -1845,7 +1851,10 @@
                     }
                 }
 
-                atualizarStepper();
+                // Atualiza o stepper (cores dos círculos)
+                if (typeof atualizarStepper === 'function') {
+                    atualizarStepper();
+                }
             }
 
             // Adiciona o listener ao select de carroceria (que está na etapa Básico)
@@ -1899,7 +1908,6 @@
             // ============================================================
             // VALIDAÇÃO EM TEMPO REAL – ATUALIZA STEPPER
             // ============================================================
-
             if (veiculoForm) {
                 // Para inputs e textareas (digitação)
                 veiculoForm.addEventListener('input', function(e) {
