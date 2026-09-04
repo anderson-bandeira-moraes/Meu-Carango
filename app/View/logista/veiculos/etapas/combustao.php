@@ -363,29 +363,31 @@
 
     <!-- ===== SEÇÃO 1: DIREÇÃO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">search_hands_free</span> Direção</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Tipo de Direção -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tipo_direcao" class="form-label mb-0 fw-bold">Tipo de Direção</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="tipo_direcao" class="form-label mb-0 fw-bold text-nowrap" style="width: 145px;">
+                Tipo de Direção
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de sistema de direção do veículo: Mecânica, Hidráulica, Elétrica ou Eletro-Hidráulica.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (tipos_direcao_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['tipo_direcao'] ?? $veiculo['tipo_direcao'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O tipo de direção é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 145px;">
+                <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (tipos_direcao_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['tipo_direcao'] ?? $veiculo['tipo_direcao'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O tipo de direção é obrigatório.
+                </div>
             </div>
         </div>
     </div>
@@ -394,79 +396,85 @@
 
     <!-- ===== SEÇÃO 2: TRAÇÃO E TRANSMISSÃO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">auto_transmission</span> Tração e Transmissão</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Tipo de Tração -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tracao_tipo" class="form-label mb-0 fw-bold">Tipo de Tração <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="tracao_tipo" class="form-label mb-0 fw-bold text-nowrap" style="width: 145px;">
+                Tipo de Tração <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de tração do veículo: Dianteira, Traseira, Integral ou 4x4.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (tracao_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O tipo de tração é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 145px;">
+                <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (tracao_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['tracao_tipo'] ?? $complemento['tracao_tipo'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O tipo de tração é obrigatório.
+                </div>
             </div>
         </div>
 
         <!-- Tipo de Transmissão -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="transmissao_tipo" class="form-label mb-0 fw-bold">Tipo de Transmissão <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="transmissao_tipo" class="form-label mb-0 fw-bold text-nowrap" style="width: 265px;">
+                Tipo de Transmissão <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de transmissão do veículo: Manual, Automática, CVT, Automatizada ou Dupla Embreagem.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O tipo de transmissão é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 265px;">
+                <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['transmissao_tipo'] ?? $complemento['transmissao_tipo'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O tipo de transmissão é obrigatório.
+                </div>
             </div>
         </div>
 
         <!-- Número de Marchas (condicional) -->
-        <div class="col-md-4" id="container-marchas">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_marchas" class="form-label mb-0 fw-bold">Número de Marchas <span class="text-danger">*</span></label>
+        <div id="container-marchas" class="d-flex flex-column gap-1 marchas-hidden">
+            <label for="numero_marchas" class="form-label mb-0 fw-bold text-nowrap" style="width: 185px;">
+                Número de Marchas <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Quantidade de marchas da transmissão. Para transmissões CVT, este campo não se aplica.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (marchas_list() as $valor): ?>
-                    <option value="<?= $valor ?>" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', $valor) ?>>
-                        <?= $valor ?> marchas
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O número de marchas é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 185px;">
+                <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (marchas_list() as $valor): ?>
+                        <option value="<?= $valor ?>" <?= selected($old['numero_marchas'] ?? $complemento['numero_marchas'] ?? '', $valor) ?>>
+                            <?= $valor ?> marchas
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O número de marchas é obrigatório.
+                </div>
             </div>
         </div>
     </div>
@@ -475,192 +483,202 @@
 
     <!-- ===== SEÇÃO 3: SUSPENSÃO E FREIO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">emoji_transportation</span> Suspensão e Freios</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Suspensão Dianteira -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="suspensao_dianteira" class="form-label mb-0 fw-bold">Suspensão Dianteira</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="suspensao_dianteira" class="form-label mb-0 fw-bold text-nowrap" style="width: 255px;">
+                Suspensão Dianteira
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de suspensão utilizada no eixo dianteiro. Define o comportamento dinâmico, o conforto e a estabilidade do veículo. A opção 'Outro' permite valores personalizados.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
+            </label>
+            <div class="has-validation" style="width: 255px;">
+                <?php
+                $suspensaoDianteira = gerarSelectOutro(
+                    nome: 'suspensao_dianteira',
+                    lista: suspensao_dianteira_list(),
+                    valorSalvo: $old['suspensao_dianteira'] ?? $veiculo['suspensao_dianteira'] ?? '',
+                    classes: isset($errors['suspensao_dianteira']) ? 'is-invalid' : ''
+                );
+                ?>
 
-            <?php
-            $suspensaoDianteira = gerarSelectOutro(
-                nome: 'suspensao_dianteira',
-                lista: suspensao_dianteira_list(),
-                valorSalvo: $old['suspensao_dianteira'] ?? $veiculo['suspensao_dianteira'] ?? '',
-                classes: isset($errors['suspensao_dianteira']) ? 'is-invalid' : ''
-            );
-            ?>
+                <?= $suspensaoDianteira['select_html'] ?>
 
-            <?= $suspensaoDianteira['select_html'] ?>
+                <input type="text" name="suspensao_dianteira_outro" id="suspensao_dianteira_outro" 
+                       class="form-control mt-2 <?= isset($errors['suspensao_dianteira']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($suspensaoDianteira['valor_outro']) ?>" 
+                       placeholder="Digite a suspensão personalizada" 
+                       style="display: <?= $suspensaoDianteira['is_outro'] ? 'block' : 'none' ?>;">
 
-            <input type="text" name="suspensao_dianteira_outro" id="suspensao_dianteira_outro" 
-                   class="form-control mt-2 <?= isset($errors['suspensao_dianteira']) ? 'is-invalid' : '' ?>" 
-                   value="<?= htmlspecialchars($suspensaoDianteira['valor_outro']) ?>" 
-                   placeholder="Digite a suspensão personalizada" 
-                   style="display: <?= $suspensaoDianteira['is_outro'] ? 'block' : 'none' ?>;">
-
-            <div class="invalid-feedback fw-bold">
-                A suspensão dianteira personalizada é obrigatória.
+                <div class="invalid-feedback fw-bold">
+                    A suspensão dianteira personalizada é obrigatória.
+                </div>
             </div>
         </div>
 
         <!-- Suspensão Traseira -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="suspensao_traseira" class="form-label mb-0 fw-bold">Suspensão Traseira</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="suspensao_traseira" class="form-label mb-0 fw-bold text-nowrap" style="width: 375px;">
+                Suspensão Traseira
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de suspensão utilizada no eixo traseiro. Influencia o conforto, a capacidade de carga e a estabilidade do veículo. A opção 'Outro' permite valores personalizados.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
+            </label>
+            <div class="has-validation" style="width: 375px;">
+                <?php
+                $suspensaoTraseira = gerarSelectOutro(
+                    nome: 'suspensao_traseira',
+                    lista: suspensao_traseira_list(),
+                    valorSalvo: $old['suspensao_traseira'] ?? $veiculo['suspensao_traseira'] ?? '',
+                    classes: isset($errors['suspensao_traseira']) ? 'is-invalid' : ''
+                );
+                ?>
 
-            <?php
-            $suspensaoTraseira = gerarSelectOutro(
-                nome: 'suspensao_traseira',
-                lista: suspensao_traseira_list(),
-                valorSalvo: $old['suspensao_traseira'] ?? $veiculo['suspensao_traseira'] ?? '',
-                classes: isset($errors['suspensao_traseira']) ? 'is-invalid' : ''
-            );
-            ?>
+                <?= $suspensaoTraseira['select_html'] ?>
 
-            <?= $suspensaoTraseira['select_html'] ?>
+                <input type="text" name="suspensao_traseira_outro" id="suspensao_traseira_outro" 
+                       class="form-control mt-2 <?= isset($errors['suspensao_traseira']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($suspensaoTraseira['valor_outro']) ?>" 
+                       placeholder="Digite a suspensão personalizada" 
+                       style="display: <?= $suspensaoTraseira['is_outro'] ? 'block' : 'none' ?>;">
 
-            <input type="text" name="suspensao_traseira_outro" id="suspensao_traseira_outro" 
-                   class="form-control mt-2 <?= isset($errors['suspensao_traseira']) ? 'is-invalid' : '' ?>" 
-                   value="<?= htmlspecialchars($suspensaoTraseira['valor_outro']) ?>" 
-                   placeholder="Digite a suspensão personalizada" 
-                   style="display: <?= $suspensaoTraseira['is_outro'] ? 'block' : 'none' ?>;">
-
-            <div class="invalid-feedback fw-bold">
-                A suspensão traseira personalizada é obrigatória.
+                <div class="invalid-feedback fw-bold">
+                    A suspensão traseira personalizada é obrigatória.
+                </div>
             </div>
         </div>
 
         <!-- Freio Dianteiro -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="freio_dianteiro" class="form-label mb-0 fw-bold">Freio Dianteiro</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="freio_dianteiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 250px;">
+                Freio Dianteiro
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de freio nas rodas dianteiras: Disco (melhor dissipação de calor e desempenho em frenagens) ou Tambor (mais simples e econômico). Veículos modernos geralmente utilizam freios a disco nas quatro rodas ou disco na dianteira e tambor na traseira.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
+            </label>
+            <div class="has-validation" style="width: 250px;">
+                <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
+                    <option value="">Selecione</option>
+                    <?php foreach (freio_dianteiro_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['freio_dianteiro'] ?? $veiculo['freio_dianteiro'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
-                <option value="">Selecione</option>
-                <?php foreach (freio_dianteiro_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['freio_dianteiro'] ?? $veiculo['freio_dianteiro'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
         </div>
 
         <!-- Freio Traseiro -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="freio_traseiro" class="form-label mb-0 fw-bold">Freio Traseiro</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="freio_traseiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 250px;">
+                Freio Traseiro
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de freio nas rodas traseiras: Disco (melhor dissipação de calor e desempenho em frenagens) ou Tambor (mais simples e econômico). Muitos veículos utilizam disco na dianteira e tambor na traseira para equilibrar custo e desempenho.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
+            </label>
+            <div class="has-validation" style="width: 250px;">
+                <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
+                    <option value="">Selecione</option>
+                    <?php foreach (freio_traseiro_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['freio_traseiro'] ?? $veiculo['freio_traseiro'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
-                <option value="">Selecione</option>
-                <?php foreach (freio_traseiro_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['freio_traseiro'] ?? $veiculo['freio_traseiro'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
         </div>
+
     </div>
 
     <hr class="my-4">
 
     <!-- ===== SEÇÃO 4: RODAS ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">tire_repair</span> Rodas</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Aro do Pneu -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="pneu_aro" class="form-label mb-0 fw-bold">Aro do Pneu <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="pneu_aro" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Aro do Pneu <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Diâmetro interno do pneu em polegadas (ex: 15, 16, 17). É uma das principais informações para compradores, pois influencia a estética, o conforto de rodagem, a disponibilidade de pneus e o custo de substituição. Aros comuns variam de 12 a 22 polegadas. A opção 'Outro' permite valores personalizados.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
+            </label>
+            <div class="has-validation" style="width: 150px;">
+                <?php
+                $pneuAro = gerarSelectOutro(
+                    nome: 'pneu_aro',
+                    lista: aros_pneu_list(),
+                    valorSalvo: $old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '',
+                    classes: isset($errors['pneu_aro']) ? 'is-invalid' : '',
+                    attrs: 'required'
+                );
+                ?>
 
-            <?php
-            $pneuAro = gerarSelectOutro(
-                nome: 'pneu_aro',
-                lista: aros_pneu_list(),
-                valorSalvo: $old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '',
-                classes: isset($errors['pneu_aro']) ? 'is-invalid' : '',
-                attrs: 'required'
-            );
-            ?>
+                <?= $pneuAro['select_html'] ?>
 
-            <?= $pneuAro['select_html'] ?>
+                <input type="text" 
+                       inputmode="numeric" 
+                       pattern="\d*" 
+                       data-tipo="inteiro" 
+                       name="pneu_aro_outro" 
+                       id="pneu_aro_outro" 
+                       class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($pneuAro['valor_outro']) ?>" 
+                       placeholder="Digite o aro personalizado" 
+                       style="display: <?= $pneuAro['is_outro'] ? 'block' : 'none' ?>;">
 
-            <input type="text" 
-                   inputmode="numeric" 
-                   pattern="\d*" 
-                   data-tipo="inteiro" 
-                   name="pneu_aro_outro" 
-                   id="pneu_aro_outro" 
-                   class="form-control mt-2 <?= isset($errors['pneu_aro']) ? 'is-invalid' : '' ?>" 
-                   value="<?= htmlspecialchars($pneuAro['valor_outro']) ?>" 
-                   placeholder="Digite o aro personalizado" 
-                   style="display: <?= $pneuAro['is_outro'] ? 'block' : 'none' ?>;">
+                <div class="invalid-feedback fw-bold">
+                    O aro do pneu é obrigatório.
+                </div>
 
-            <div class="invalid-feedback fw-bold">
-                O aro do pneu é obrigatório.
-            </div>
-
-            <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                Este campo não aceita ponto (.) ou vírgula (,)
+                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
+                    Este campo não aceita ponto (.) ou vírgula (,)
+                </div>
             </div>
         </div>
 
         <!-- Tipo de Roda -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="tipo_roda" class="form-label mb-0 fw-bold">Tipo de Roda</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="tipo_roda" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Tipo de Roda
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Material da roda: liga leve (alumínio, magnésio) ou aço com calota.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
+            </label>
+            <div class="has-validation" style="width: 150px;">
+                <select name="tipo_roda" id="tipo_roda" class="form-select <?= isset($errors['tipo_roda']) ? 'is-invalid' : '' ?>">
+                    <option value="">Selecione</option>
+                    <?php foreach (tipos_roda_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['tipo_roda'] ?? $veiculo['tipo_roda'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <select name="tipo_roda" id="tipo_roda" class="form-select <?= isset($errors['tipo_roda']) ? 'is-invalid' : '' ?>">
-                <option value="">Selecione</option>
-                <?php foreach (tipos_roda_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['tipo_roda'] ?? $veiculo['tipo_roda'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
         </div>
     </div>
 </div>
@@ -840,33 +858,6 @@
             </div>
         </div>
 
-        <!-- Capacidade Tanque -->
-        <div class="d-flex flex-column gap-1">
-            <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 270px;">
-                Volume Tanque de Combustível <span class="text-danger">*</span>
-                <button type="button" 
-                        class="btn btn-link btn-sm p-0 text-secondary" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        title="Capacidade total do tanque de combustível, medida em litros (L). Valores comuns: 30 a 80 L. A capacidade do tanque influencia diretamente a autonomia do veículo e a frequência de abastecimento.">
-                    <i class="bi bi-info-circle-fill ms-2"></i>
-                </button>
-            </label>
-            <div class="input-group has-validation" style="width: 270px;">
-                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
-                       class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
-                       placeholder="Ex: 50" required>
-                <span class="input-group-text">L</span>
-                <div class="invalid-feedback fw-bold">
-                    O volume do tanque é obrigatório.
-                </div>
-                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                    Este campo não aceita ponto (.) ou vírgula (,)
-                </div>
-            </div>
-        </div>
-
         <!-- Volume do porta-malas -->
         <div class="d-flex flex-column gap-1">
             <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 210px;">
@@ -895,6 +886,33 @@
                 <span class="input-group-text">L</span>
                 <div class="invalid-feedback fw-bold">
                     O volume do porta-malas é obrigatório.
+                </div>
+            </div>
+        </div>
+
+        <!-- Capacidade Tanque -->
+        <div class="d-flex flex-column gap-1">
+            <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 175px;">
+                Volume do Tanque <span class="text-danger">*</span>
+                <button type="button" 
+                        class="btn btn-link btn-sm p-0 text-secondary" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Capacidade total do tanque de combustível, medida em litros (L). Valores comuns: 30 a 80 L. A capacidade do tanque influencia diretamente a autonomia do veículo e a frequência de abastecimento.">
+                    <i class="bi bi-info-circle-fill ms-2"></i>
+                </button>
+            </label>
+            <div class="input-group has-validation" style="width: 175px;">
+                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
+                       class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
+                       placeholder="Ex: 50" required>
+                <span class="input-group-text">L</span>
+                <div class="invalid-feedback fw-bold">
+                    O volume do tanque é obrigatório.
+                </div>
+                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
+                    Este campo não aceita ponto (.) ou vírgula (,)
                 </div>
             </div>
         </div>
@@ -932,54 +950,58 @@
 
     <!-- ===== SEÇÃO 3: PORTAS E ASSENTOS ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">airline_seat_recline_extra</span> Portas e Assentos</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Número de Portas -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_portas" class="form-label mb-0 fw-bold">Número de Portas <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="numero_portas" class="form-label mb-0 fw-bold text-nowrap" style="width: 170px;">
+                Número de Portas <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Quantidade de portas do veículo (ex: 2, 3, 4). Veículos com 2 ou 3 portas geralmente são mais esportivos ou compactos, enquanto 4 portas oferecem maior acessibilidade para passageiros. É um fator importante para famílias e uso diário.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (portas_list() as $valor => $label): ?>
-                    <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O número de portas é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (portas_list() as $valor => $label): ?>
+                        <option value="<?= $valor ?>" <?= selected($old['numero_portas'] ?? $veiculo['numero_portas'] ?? '', $valor) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O número de portas é obrigatório.
+                </div>
             </div>
         </div>
 
         <!-- Número de Assentos -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="numero_assentos" class="form-label mb-0 fw-bold">Quantidade de Lugares <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="numero_assentos" class="form-label mb-0 fw-bold text-nowrap" style="width: 205px;">
+                Quantidade de Lugares <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Quantidade de assentos do veículo. Valores comuns: 2 a 15 assentos. Veículos com 2 ou 3 assentos são geralmente esportivos ou utilitários; 4 a 5 assentos é o padrão para veículos de passeio; 6 a 8 assentos são comuns em SUVs grandes, minivans e picapes; 9 a 15 assentos são típicos de vans e micro-ônibus.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (assentos_list() as $valor): ?>
-                    <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
-                        <?= $valor ?> assentos
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O número de assentos é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 205px;">
+                <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (assentos_list() as $valor): ?>
+                        <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
+                            <?= $valor ?> assentos
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O número de assentos é obrigatório.
+                </div>
             </div>
         </div>
     </div>

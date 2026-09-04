@@ -208,6 +208,10 @@
             .cacamba-hidden {
                 display: none !important;
             }
+
+            .marchas-hidden {
+                display: none !important;
+            }
         </style>
 </head>
 <body>
@@ -1776,10 +1780,11 @@
                 function toggleMarchas() {
                     const valor = transmissao.value;
                     const isCvt = tiposCvt.includes(valor);
-                    const container = marchas.closest('.col-md-4');
+                    const container = document.getElementById('container-marchas');
 
                     if (container) {
-                        container.style.display = (valor !== '' && !isCvt) ? 'block' : 'none';
+                        // Usa classe CSS com !important para ocultar/mostrar
+                        container.classList.toggle('marchas-hidden', valor === '' || isCvt);
                     }
 
                     // Remove ou adiciona o required conforme a visibilidade
