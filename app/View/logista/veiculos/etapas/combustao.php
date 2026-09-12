@@ -53,89 +53,94 @@
     
     <!-- ===== SEÇÃO 1: MOTORIZAÇÃO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">car_gear</span> Motorização</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Combustível -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="combustivel" class="form-label mb-0 fw-bold">Combustível <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="combustivel" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Combustível <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tipo de combustível utilizado pelo veículo. Opções: Álcool, Diesel, Flex (Álcool/Gasolina) ou Gasolina. Essencial para o comprador saber o custo de abastecimento e a disponibilidade do combustível em sua região.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <?php foreach (combustiveis_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                O combustível é obrigatório.
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <select name="combustivel" id="combustivel" class="form-select <?= isset($errors['combustivel']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <?php foreach (combustiveis_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['combustivel'] ?? $complemento['combustivel'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    O combustível é obrigatório.
+                </div>
             </div>
         </div>
 
         <!-- Motorização (cilindrada) -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="motor_tipo" class="form-label mb-0 fw-bold">Motorização <span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="motor_tipo" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Motorização <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Cilindrada do motor, que determina sua capacidade volumétrica. Valores comuns: 1.0, 1.6, 2.0, etc. Quanto maior a cilindrada, maior a potência e o consumo de combustível. A opção 'Outro' permite valores personalizados.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <?php
+                    $motorTipo = gerarSelectOutro(
+                        nome: 'motor_tipo',
+                        lista: motorizacoes_list(),
+                        valorSalvo: $old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '',
+                        classes: isset($errors['motor_tipo']) ? 'is-invalid' : '',
+                        id: '',
+                        attrs: 'required'
+                    );
+                ?>
 
-            <?php
-                $motorTipo = gerarSelectOutro(
-                    nome: 'motor_tipo',
-                    lista: motorizacoes_list(),
-                    valorSalvo: $old['motor_tipo'] ?? $complemento['motor_tipo'] ?? '',
-                    classes: isset($errors['motor_tipo']) ? 'is-invalid' : '',
-                    id: '',
-                    attrs: 'required'
-                );
-            ?>
+                <?= $motorTipo['select_html'] ?>
 
-            <?= $motorTipo['select_html'] ?>
+                <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" 
+                       class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
+                       value="<?= htmlspecialchars($motorTipo['valor_outro']) ?>" 
+                       placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
+                       style="display: <?= $motorTipo['is_outro'] ? 'block' : 'none' ?>;">
 
-            <input type="text" name="motor_tipo_outro" id="motor_tipo_outro" 
-                   class="form-control mt-2 <?= isset($errors['motor_tipo']) ? 'is-invalid' : '' ?>" 
-                   value="<?= htmlspecialchars($motorTipo['valor_outro']) ?>" 
-                   placeholder="Digite a motorização (ex: 1.8, 2.2, 3.0)" 
-                   style="display: <?= $motorTipo['is_outro'] ? 'block' : 'none' ?>;">
-
-            <div class="invalid-feedback fw-bold">
-                A motorização é obrigatória.
+                <div class="invalid-feedback fw-bold">
+                    A motorização é obrigatória.
+                </div>
             </div>
         </div>
 
         <!-- Aspiração -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="aspiracao_combustao" class="form-label mb-0 fw-bold">Tipo de Aspiração</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="aspiracao_combustao" class="form-label mb-0 fw-bold text-nowrap" style="width: 160px;">
+                Tipo de Aspiração
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Como o ar é admitido no motor: Aspirado (sem turbina), Turbo (turbocompressor acionado pelos gases de escape) ou Supercharger (compressor mecânico acionado pelo motor). Afeta a potência, o consumo e a resposta do acelerador.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <select name="aspiracao" id="aspiracao_combustao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
+                    <option value="">Selecione</option>
+                    <?php foreach (aspiracao_list() as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= selected($old['aspiracao'] ?? $complemento['aspiracao'] ?? '', $value) ?>>
+                            <?= htmlspecialchars($label) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <select name="aspiracao" id="aspiracao_combustao" class="form-select <?= isset($errors['aspiracao']) ? 'is-invalid' : '' ?>">
-                <option value="">Selecione</option>
-                <?php foreach (aspiracao_list() as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= selected($old['aspiracao'] ?? $complemento['aspiracao'] ?? '', $value) ?>>
-                        <?= htmlspecialchars($label) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
         </div>
     </div>
 
@@ -143,97 +148,105 @@
 
     <!-- ===== SEÇÃO 2: DESEMPENHO ===== -->
     <h5 class="fw-bold mb-3"><span class="material-symbols-outlined text-primary">readiness_score</span> Desempenho</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Aceleração 0-100 -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="aceleracao_0_100_seg" class="form-label mb-0 fw-bold">Aceleração 0-100</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="aceleracao_0_100_seg" class="form-label mb-0 fw-bold text-nowrap" style="width: 155px;">
+                Aceleração 0-100
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Tempo necessário para o veículo acelerar de 0 a 100 km/h, medido em segundos (s). Valores comuns: 6 a 12 segundos para veículos de passeio. Quanto menor o tempo, melhor o desempenho.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
-                       class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
-                       placeholder="Ex: 8.5" min="0">
-                <span class="input-group-text">s</span>
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <div class="input-group">
+                    <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
+                           class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
+                           placeholder="Ex: 8.5" min="0">
+                    <span class="input-group-text">s</span>
+                </div>
             </div>
         </div>
 
         <!-- Velocidade Máxima -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="velocidade_max_kmh" class="form-label mb-0 fw-bold">Velocidade Máxima</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="velocidade_max_kmh" class="form-label mb-0 fw-bold text-nowrap" style="width: 170px;">
+                Velocidade Máxima
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Velocidade máxima que o veículo pode atingir, medida em km/h. Valores comuns: 150 a 300 km/h. Importante para viagens longas em rodovias.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
-                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="velocidade_max_kmh" id="velocidade_max_kmh" 
-                       class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
-                       placeholder="Ex: 220">
-                <span class="input-group-text">km/h</span>
-                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                    Este campo não aceita ponto (.) ou vírgula (,)
+            </label>
+            <div style="width: 170px;">
+                <div class="input-group has-validation">
+                    <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="velocidade_max_kmh" id="velocidade_max_kmh" 
+                           class="form-control <?= isset($errors['velocidade_max_kmh']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['velocidade_max_kmh'] ?? $complemento['velocidade_max_kmh'] ?? '') ?>" 
+                           placeholder="Ex: 220">
+                    <span class="input-group-text">km/h</span>
+                    <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
+                        Este campo não permite ponto (.) ou vírgula (,)
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Potência Máxima -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="potencia_cv" class="form-label mb-0 fw-bold">Potência Máxima<span class="text-danger">*</span></label>
+        <div class="d-flex flex-column gap-1">
+            <label for="potencia_cv" class="form-label mb-0 fw-bold text-nowrap" style="width: 165px;">
+                Potência Máxima <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Potência máxima do motor em cavalos-vapor (cv). Valores comuns: 60 a 600 cv. Quanto maior a potência, melhor o desempenho em aceleração e retomadas, mas geralmente com maior consumo de combustível.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group has-validation">
-                <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_cv" id="potencia_cv" 
-                       class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
-                       placeholder="Ex: 120" required>
-                <span class="input-group-text">cv</span>
-                <div class="invalid-feedback fw-bold">
-                    A potência máxima é obrigatória.
-                </div>
-                <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                    Este campo não aceita ponto (.) ou vírgula (,)
+            </label>
+            <div class="" style="width: 170px;">
+                <div class="input-group has-validation">
+                    <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="potencia_cv" id="potencia_cv" 
+                           class="form-control <?= isset($errors['potencia_cv']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['potencia_cv'] ?? $complemento['potencia_cv'] ?? '') ?>" 
+                           placeholder="Ex: 120" required>
+                    <span class="input-group-text">cv</span>
+                    <div class="invalid-feedback fw-bold">
+                        A potência máxima é obrigatória.
+                    </div>
+                    <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
+                        Este campo não permite ponto (.) ou vírgula (,)
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Torque Máximo -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="torque_kgfm" class="form-label mb-0 fw-bold">Torque Máximo</label>
+        <div class="d-flex flex-column gap-1">
+            <label for="torque_kgfm" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Torque Máximo
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Torque máximo do motor em quilograma-força-metro (kgfm). Valores comuns: 10 a 80 kgfm. Indica a força de giro do motor, influenciando a capacidade de arrancada, retomada e capacidade de reboque.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" 
-                       class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
-                       placeholder="Ex: 18.5" min="0">
-                <span class="input-group-text">kgfm</span>
+            </label>
+            <div class="has-validation" style="width: 170px;">
+                <div class="input-group">
+                    <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" 
+                           class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
+                           placeholder="Ex: 18.5" min="0">
+                    <span class="input-group-text">kgfm</span>
+                </div>
             </div>
         </div>
     </div>
@@ -242,82 +255,82 @@
 
     <!-- ===== SEÇÃO 3: CONSUMO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">local_gas_station</span> Consumo</h5>
-    <div class="row g-3">
+    <div class="d-flex flex-wrap gap-3">
         <!-- Consumo Cidade -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="consumo_cidade_kml" class="form-label mb-0 fw-bold">
-                    Consumo Cidade 
-                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
-                    <span class="text-danger">*</span>
-                </label>
+        <div class="d-flex flex-column gap-1">
+            <label for="consumo_cidade_kml" class="form-label mb-0 fw-bold text-nowrap" style="width: 165px;">
+                Consumo Cidade
+                <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Consumo de combustível em condições urbanas (com trânsito, semáforos e paradas), medido em quilômetros por litro (km/l). Valores comuns: 8 a 15 km/l. Essencial para o comprador avaliar o custo de uso diário do veículo.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
-                       class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
-                       placeholder="Ex: 12.5" min="0" required>
-                <span class="input-group-text">km/l</span>
-                <div class="invalid-feedback fw-bold">
-                    O consumo na cidade é obrigatório.
+            </label>
+            <div style="width: 170px;">
+                <div class="input-group has-validation">
+                    <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
+                           class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
+                           placeholder="Ex: 12.5" min="0" required>
+                    <span class="input-group-text">km/l</span>
+                    <div class="invalid-feedback fw-bold">
+                        O consumo na cidade é obrigatório.
+                    </div>
                 </div>
-            </div>  
+            </div>
         </div>
 
         <!-- Consumo Estrada -->
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="consumo_estrada_kml" class="form-label mb-0 fw-bold">
-                    Consumo Estrada 
-                    <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
-                    <span class="text-danger">*</span>
-                </label>
+        <div class="d-flex flex-column gap-1">
+            <label for="consumo_estrada_kml" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                Consumo Estrada
+                <span class="sufixo-gasolina" style="display: none;"> (Gasolina)</span>
+                <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Consumo de combustível em condições de estrada/rodovia, medido em quilômetros por litro (km/l). Valores comuns: 12 a 20 km/l. Essencial para avaliar o custo em viagens e percursos de longa distância.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <div class="input-group">
-                <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
-                       class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
-                       placeholder="Ex: 15.0" min="0" required>
-                <span class="input-group-text">km/l</span>
-                <div class="invalid-feedback fw-bold">
-                    O consumo na estrada é obrigatório.
+            </label>
+            <div style="width: 170px;">
+                <div class="input-group has-validation">
+                    <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
+                           class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
+                           placeholder="Ex: 15.0" min="0" required>
+                    <span class="input-group-text">km/l</span>
+                    <div class="invalid-feedback fw-bold">
+                        O consumo na estrada é obrigatório.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Bloco de campos para Etanol (Combustão) -->
-    <div id="flex-fields" class="flex-fields mt-3" style="display: none;">
+    <div id="flex-fields" class="flex-fields mt-4" style="display: none;">
         <hr>
-        <h6 class="fw-bold text-success mb-2"><span class="material-symbols-outlined fs-5">nest_eco_leaf</span> Dados para Etanol <span class="fw-normal"> (obrigatórios para Flex)</span></h6>
-        <div class="row g-3">
+        <h6 class="fw-bold text-success mt-4 mb-2"><span class="material-symbols-outlined fs-5">nest_eco_leaf</span> Dados para Etanol <span class="fw-normal"> (obrigatórios para Flex)</span></h6>
+        <div class="d-flex flex-wrap gap-3">
             <!-- Consumo Cidade Etanol -->
-            <div class="col-md-4">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="consumo_cidade_etanol_kml" class="form-label mb-0 fw-bold">Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span></label>
+            <div class="d-flex flex-column gap-1">
+                <label for="consumo_cidade_etanol_kml" class="form-label mb-0 fw-bold text-nowrap" style="width: 245px;">
+                    Consumo Cidade (Etanol) <span class="text-danger flex-required">*</span>
                     <button type="button" 
                             class="btn btn-link btn-sm p-0 text-secondary" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="top" 
                             title="Consumo de etanol em ciclo urbano, medido em km/l. Valores comuns: 5 a 12 km/l. Obrigatório para veículos flex, pois o consumo com etanol é geralmente 20-30% maior que com gasolina, impactando diretamente o custo de abastecimento para o comprador.">
-                        <i class="bi bi-info-circle-fill"></i>
+                        <i class="bi bi-info-circle-fill ms-2"></i>
                     </button>
-                </div>
-                <div class="input-group">
+                </label>
+                <div class="input-group has-validation" style="width: 170px;">
                     <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
                            class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
@@ -330,18 +343,18 @@
             </div>
 
             <!-- Consumo Estrada Etanol -->
-            <div class="col-md-4">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="consumo_estrada_etanol_kml" class="form-label mb-0 fw-bold">Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span></label>
+            <div class="d-flex flex-column gap-1">
+                <label for="consumo_estrada_etanol_kml" class="form-label mb-0 fw-bold text-nowrap" style="width: 230px;">
+                    Consumo Estrada (Etanol) <span class="text-danger flex-required">*</span>
                     <button type="button" 
                             class="btn btn-link btn-sm p-0 text-secondary" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="top" 
                             title="Consumo de etanol em ciclo rodoviário, medido em km/l. Valores comuns: 7 a 14 km/l. Obrigatório para veículos flex, pois o consumo com etanol em estrada é geralmente 20-30% maior que com gasolina, impactando o custo em viagens longas.">
-                        <i class="bi bi-info-circle-fill"></i>
+                        <i class="bi bi-info-circle-fill ms-2"></i>
                     </button>
-                </div>
-                <div class="input-group">
+                </label>
+                <div class="input-group has-validation" style="width: 170px;">
                     <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
                            class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
@@ -376,7 +389,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 145px;">
+            <div class="has-validation" style="width: 170px;">
                 <select name="tipo_direcao" id="tipo_direcao" class="form-select <?= isset($errors['tipo_direcao']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (tipos_direcao_list() as $value => $label): ?>
@@ -409,7 +422,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 145px;">
+            <div class="has-validation" style="width: 190px;">
                 <select name="tracao_tipo" id="tracao_tipo" class="form-select <?= isset($errors['tracao_tipo']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (tracao_list() as $value => $label): ?>
@@ -426,7 +439,7 @@
 
         <!-- Tipo de Transmissão -->
         <div class="d-flex flex-column gap-1">
-            <label for="transmissao_tipo" class="form-label mb-0 fw-bold text-nowrap" style="width: 265px;">
+            <label for="transmissao_tipo" class="form-label mb-0 fw-bold text-nowrap" style="width: 190px;">
                 Tipo de Transmissão <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -436,7 +449,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 265px;">
+            <div class="has-validation" style="width: 190px;">
                 <select name="transmissao_tipo" id="transmissao_tipo" class="form-select <?= isset($errors['transmissao_tipo']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (transmissoes_list()['combustao'] as $value => $label): ?>
@@ -463,7 +476,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 185px;">
+            <div class="has-validation" style="width: 190px;">
                 <select name="numero_marchas" id="numero_marchas" class="form-select <?= isset($errors['numero_marchas']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (marchas_list() as $valor): ?>
@@ -486,7 +499,7 @@
     <div class="d-flex flex-wrap gap-3">
         <!-- Suspensão Dianteira -->
         <div class="d-flex flex-column gap-1">
-            <label for="suspensao_dianteira" class="form-label mb-0 fw-bold text-nowrap" style="width: 255px;">
+            <label for="suspensao_dianteira" class="form-label mb-0 fw-bold text-nowrap" style="width: 180px;">
                 Suspensão Dianteira
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -496,7 +509,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 255px;">
+            <div class="has-validation" style="width: 180px;">
                 <?php
                 $suspensaoDianteira = gerarSelectOutro(
                     nome: 'suspensao_dianteira',
@@ -522,7 +535,7 @@
 
         <!-- Suspensão Traseira -->
         <div class="d-flex flex-column gap-1">
-            <label for="suspensao_traseira" class="form-label mb-0 fw-bold text-nowrap" style="width: 375px;">
+            <label for="suspensao_traseira" class="form-label mb-0 fw-bold text-nowrap" style="width: 180px;">
                 Suspensão Traseira
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -532,7 +545,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 375px;">
+            <div class="has-validation" style="width: 180px;">
                 <?php
                 $suspensaoTraseira = gerarSelectOutro(
                     nome: 'suspensao_traseira',
@@ -558,7 +571,7 @@
 
         <!-- Freio Dianteiro -->
         <div class="d-flex flex-column gap-1">
-            <label for="freio_dianteiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 250px;">
+            <label for="freio_dianteiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 140px;">
                 Freio Dianteiro
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -568,7 +581,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 250px;">
+            <div class="has-validation" style="width: 180px;">
                 <select name="freio_dianteiro" id="freio_dianteiro" class="form-select <?= isset($errors['freio_dianteiro']) ? 'is-invalid' : '' ?>">
                     <option value="">Selecione</option>
                     <?php foreach (freio_dianteiro_list() as $value => $label): ?>
@@ -582,7 +595,7 @@
 
         <!-- Freio Traseiro -->
         <div class="d-flex flex-column gap-1">
-            <label for="freio_traseiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 250px;">
+            <label for="freio_traseiro" class="form-label mb-0 fw-bold text-nowrap" style="width: 140px;">
                 Freio Traseiro
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -592,7 +605,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 250px;">
+            <div class="has-validation" style="width: 180px;">
                 <select name="freio_traseiro" id="freio_traseiro" class="form-select <?= isset($errors['freio_traseiro']) ? 'is-invalid' : '' ?>">
                     <option value="">Selecione</option>
                     <?php foreach (freio_traseiro_list() as $value => $label): ?>
@@ -613,7 +626,7 @@
     <div class="d-flex flex-wrap gap-3">
         <!-- Aro do Pneu -->
         <div class="d-flex flex-column gap-1">
-            <label for="pneu_aro" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+            <label for="pneu_aro" class="form-label mb-0 fw-bold text-nowrap" style="width: 130px;">
                 Aro do Pneu <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -623,7 +636,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 150px;">
+            <div class="has-validation" style="width: 170px;">
                 <?php
                 $pneuAro = gerarSelectOutro(
                     nome: 'pneu_aro',
@@ -652,14 +665,14 @@
                 </div>
 
                 <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                    Este campo não aceita ponto (.) ou vírgula (,)
+                    Este campo não permite ponto (.) ou vírgula (,)
                 </div>
             </div>
         </div>
 
         <!-- Tipo de Roda -->
         <div class="d-flex flex-column gap-1">
-            <label for="tipo_roda" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+            <label for="tipo_roda" class="form-label mb-0 fw-bold text-nowrap" style="width: 130px;">
                 Tipo de Roda
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -669,7 +682,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 150px;">
+            <div class="has-validation" style="width: 170px;">
                 <select name="tipo_roda" id="tipo_roda" class="form-select <?= isset($errors['tipo_roda']) ? 'is-invalid' : '' ?>">
                     <option value="">Selecione</option>
                     <?php foreach (tipos_roda_list() as $value => $label): ?>
@@ -703,7 +716,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 150px;">
+            <div class="input-group has-validation" style="width: 180px;">
                 <input type="hidden" 
                        name="comprimento_mm" 
                        id="comprimento_mm" 
@@ -731,7 +744,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 150px;">
+            <div class="input-group has-validation" style="width: 180px;">
                 <input type="hidden" 
                        name="largura_mm" 
                        id="largura_mm" 
@@ -759,7 +772,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 155px;">
+            <div class="input-group has-validation" style="width: 180px;">
                 <input type="hidden" 
                        name="altura_mm" 
                        id="altura_mm" 
@@ -787,7 +800,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 150px;">
+            <div class="input-group has-validation" style="width: 180px;">
                 <input type="hidden" 
                        name="altura_solo_mm" 
                        id="altura_solo_mm" 
@@ -839,7 +852,7 @@
     <div class="d-flex flex-wrap gap-3">
         <!-- Peso -->
         <div class="d-flex flex-column gap-1">
-            <label for="peso_ordem_marcha_kg" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+            <label for="peso_ordem_marcha_kg" class="form-label mb-0 fw-bold text-nowrap" style="width: 145px;">
                 Peso do Veículo
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
@@ -860,8 +873,8 @@
 
         <!-- Volume do porta-malas -->
         <div class="d-flex flex-column gap-1">
-            <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 210px;">
-                Volume do porta-malas <span class="text-danger">*</span>
+            <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 130px;">
+                Porta-malas <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -870,7 +883,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 210px;">
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="hidden" 
                        name="volume_porta_malas_l" 
                        id="volume_porta_malas_l" 
@@ -892,8 +905,8 @@
 
         <!-- Capacidade Tanque -->
         <div class="d-flex flex-column gap-1">
-            <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 175px;">
-                Volume do Tanque <span class="text-danger">*</span>
+            <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 95px;">
+                Tanque <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -902,7 +915,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 175px;">
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
@@ -912,15 +925,15 @@
                     O volume do tanque é obrigatório.
                 </div>
                 <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
-                    Este campo não aceita ponto (.) ou vírgula (,)
+                    Este campo não permite ponto (.) ou vírgula (,)
                 </div>
             </div>
         </div>
 
         <!-- Volume da caçamba (condicional) -->
         <div id="cacamba-container" class="d-flex flex-column gap-1 cacamba-hidden">
-            <label for="volume_cacamba_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 175px;">
-                Volume da caçamba
+            <label for="volume_cacamba_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 95px;">
+                Caçamba
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -929,7 +942,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="input-group has-validation" style="width: 175px;">
+            <div class="input-group has-validation" style="width: 150px;">
                 <input type="hidden" 
                        name="volume_cacamba_l" 
                        id="volume_cacamba_l" 
@@ -963,7 +976,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 170px;">
+            <div class="has-validation" style="width: 180px;">
                 <select name="numero_portas" id="numero_portas" class="form-select <?= isset($errors['numero_portas']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (portas_list() as $valor => $label): ?>
@@ -980,8 +993,8 @@
 
         <!-- Número de Assentos -->
         <div class="d-flex flex-column gap-1">
-            <label for="numero_assentos" class="form-label mb-0 fw-bold text-nowrap" style="width: 205px;">
-                Quantidade de Lugares <span class="text-danger">*</span>
+            <label for="numero_assentos" class="form-label mb-0 fw-bold text-nowrap" style="width: 180px;">
+                Número de Lugares <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -990,7 +1003,7 @@
                     <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
             </label>
-            <div class="has-validation" style="width: 205px;">
+            <div class="has-validation" style="width: 180px;">
                 <select name="numero_assentos" id="numero_assentos" class="form-select <?= isset($errors['numero_assentos']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Selecione</option>
                     <?php foreach (assentos_list() as $valor): ?>
@@ -1071,25 +1084,28 @@
     <!-- GNV - Possui GNV?                                          -->
     <!-- ========================================================== -->
     <h4 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">propane</span> GNV</h4>
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <label for="gnv_instalado" class="form-label mb-0 fw-bold">Veículo possui GNV? <span class="text-danger">*</span></label>
+    <div class="d-flex flex-wrap gap-3">
+        <!-- GNV -->
+        <div class="d-flex flex-column gap-1">
+            <label for="gnv_instalado" class="form-label mb-0 fw-bold text-nowrap" style="width: 190px;">
+                Veículo possui GNV? <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="Indique se o veículo possui kit GNV (Gás Natural Veicular) instalado. Se sim, serão solicitados dados adicionais sobre o sistema.">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill ms-2"></i>
                 </button>
-            </div>
-            <select name="gnv_instalado" id="gnv_instalado" class="form-select <?= isset($errors['gnv_instalado']) ? 'is-invalid' : '' ?>" required>
-                <option value="">Selecione</option>
-                <option value="1" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 1) ?>>Sim</option>
-                <option value="0" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 0) ?>>Não</option>
-            </select>
-            <div class="invalid-feedback fw-bold">
-                Indique se o veículo possui GNV.
+            </label>
+            <div class="has-validation" style="width: 190px;">
+                <select name="gnv_instalado" id="gnv_instalado" class="form-select <?= isset($errors['gnv_instalado']) ? 'is-invalid' : '' ?>" required>
+                    <option value="">Selecione</option>
+                    <option value="1" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 1) ?>>Sim</option>
+                    <option value="0" <?= selected($old['gnv_instalado'] ?? $veiculo['gnv_instalado'] ?? '', 0) ?>>Não</option>
+                </select>
+                <div class="invalid-feedback fw-bold">
+                    Indique se o veículo possui GNV.
+                </div>
             </div>
         </div>
     </div>
@@ -1097,76 +1113,120 @@
     <!-- ========================================================== -->
     <!-- Bloco de campos GNV (condicional)                          -->
     <!-- ========================================================== -->
-    <div id="gnv-fields" class="mt-3 p-3 border rounded bg-light" style="display: none;">
-        <div class="row g-3">
+    <div id="gnv-fields" class="mt-3 p-4 border rounded bg-light" style="display: none;">
+        <div class="d-flex flex-wrap gap-3">
             <!-- Geração do Kit -->
-            <div class="col-md-3">
-                <label for="geracao_kit" class="form-label fw-bold">Geração do Kit <span class="text-danger">*</span></label>
-                <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
-                    <option value="">Selecione</option>
-                    <?php foreach (gnv_geracoes_list() as $value => $label): ?>
-                        <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $gnv['geracao_kit'] ?? '', $value) ?>>
-                            <?= htmlspecialchars($label) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <div class="invalid-feedback fw-bold">A geração do kit é obrigatória.</div>
+            <div class="d-flex flex-column gap-1">
+                <label for="geracao_kit" class="form-label mb-0 fw-bold text-nowrap" style="width: 150px;">
+                    Geração do Kit <span class="text-danger">*</span>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Geração do kit de GNV instalado no veículo. A geração define a tecnologia do sistema: 3ª geração (misturador mecânico), 4ª geração (injeção eletrônica com emulador), 5ª geração (injeção direta com controle eletrônico) ou 6ª geração (sistema mais moderno com controle eletrônico avançado). Gerações mais recentes oferecem melhor desempenho, economia e menor perda de potência.">
+                        <i class="bi bi-info-circle-fill ms-2"></i>
+                    </button>
+                </label>
+                <div class="has-validation" style="width: 190px;">
+                    <select name="geracao_kit" id="geracao_kit" class="form-select <?= isset($errors['geracao_kit']) ? 'is-invalid' : '' ?>" required>
+                        <option value="">Selecione</option>
+                        <?php foreach (gnv_geracoes_list() as $value => $label): ?>
+                            <option value="<?= $value ?>" <?= selected($old['geracao_kit'] ?? $gnv['geracao_kit'] ?? '', $value) ?>>
+                                <?= htmlspecialchars($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="invalid-feedback fw-bold">A geração do kit é obrigatória.</div>
+                </div>
             </div>
 
             <!-- Capacidade (m³) -->
-            <div class="col-md-3">
-                <label for="capacidade_cilindro_m3" class="form-label fw-bold">Capacidade (m³) <span class="text-danger">*</span></label>
-                <?php
-                    $capacidade = gerarSelectOutro(
-                        nome: 'capacidade_cilindro_m3',
-                        lista: gnv_capacidades_list(),
-                        valorSalvo: $old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '',
-                        classes: isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '',
-                        attrs: 'required'
-                    );
-                ?>
-                <?= $capacidade['select_html'] ?>
-                <input type="text" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" 
-                       class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($capacidade['valor_outro']) ?>" 
-                       placeholder="Digite a capacidade em m³" 
-                       style="display: <?= $capacidade['is_outro'] ? 'block' : 'none' ?>;">
-                <div class="invalid-feedback fw-bold">A capacidade é obrigatória.</div>
+            <div class="d-flex flex-column gap-1">
+                <label for="capacidade_cilindro_m3" class="form-label mb-0 fw-bold text-nowrap" style="width: 160px;">
+                    Capacidade (m³) <span class="text-danger">*</span>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Capacidade total do cilindro de GNV, medida em metros cúbicos (m³). Valores comuns variam de 7,5 a 25 m³, dependendo do tamanho e da quantidade de cilindros instalados. Quanto maior a capacidade, maior a autonomia do veículo com GNV, mas também maior o peso e o espaço ocupado no porta-malas.">
+                        <i class="bi bi-info-circle-fill ms-2"></i>
+                    </button>
+                </label>
+                <div class="has-validation" style="width: 190px;">
+                    <?php
+                        $capacidade = gerarSelectOutro(
+                            nome: 'capacidade_cilindro_m3',
+                            lista: gnv_capacidades_list(),
+                            valorSalvo: $old['capacidade_cilindro_m3'] ?? $gnv['capacidade_cilindro_m3'] ?? '',
+                            classes: isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '',
+                            attrs: 'required'
+                        );
+                    ?>
+                    <?= $capacidade['select_html'] ?>
+                    <input type="text" name="capacidade_cilindro_m3_outro" id="capacidade_cilindro_m3_outro" 
+                           class="form-control mt-2 <?= isset($errors['capacidade_cilindro_m3']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($capacidade['valor_outro']) ?>" 
+                           placeholder="Digite a capacidade em m³" 
+                           style="display: <?= $capacidade['is_outro'] ? 'block' : 'none' ?>;">
+                    <div class="invalid-feedback fw-bold">A capacidade é obrigatória.</div>
+                </div>
             </div>
 
             <!-- Quantidade de Cilindros -->
-            <div class="col-md-3">
-                <label for="quantidade_cilindros" class="form-label fw-bold">Quantidade de Cilindros <span class="text-danger">*</span></label>
-                <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
-                    <option value="">Selecione</option>
-                    <?php foreach (gnv_quantidades_list() as $valor): ?>
-                        <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $gnv['quantidade_cilindros'] ?? '', $valor) ?>>
-                            <?= $valor ?> cilindro<?= $valor > 1 ? 's' : '' ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <div class="invalid-feedback fw-bold">A quantidade é obrigatória.</div>
+            <div class="d-flex flex-column gap-1">
+                <label for="quantidade_cilindros" class="form-label mb-0 fw-bold text-nowrap" style="width: 190px;">
+                    Número de Cilindros <span class="text-danger">*</span>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Número de cilindros de GNV instalados no veículo. A quantidade pode variar de 1 a 5 cilindros, dependendo do espaço disponível no porta-malas e da autonomia desejada. Mais cilindros significam maior capacidade total de gás e maior autonomia, porém ocupam mais espaço e aumentam o peso do veículo. O mais comum é a instalação de 1 cilindro (para uso urbano) ou 2 cilindros (para maior autonomia).">
+                        <i class="bi bi-info-circle-fill ms-2"></i>
+                    </button>
+                </label>
+                <div class="has-validation" style="width: 190px;">
+                    <select name="quantidade_cilindros" id="quantidade_cilindros" class="form-select <?= isset($errors['quantidade_cilindros']) ? 'is-invalid' : '' ?>" required>
+                        <option value="">Selecione</option>
+                        <?php foreach (gnv_quantidades_list() as $valor): ?>
+                            <option value="<?= $valor ?>" <?= selected($old['quantidade_cilindros'] ?? $gnv['quantidade_cilindros'] ?? '', $valor) ?>>
+                                <?= $valor ?> cilindro<?= $valor > 1 ? 's' : '' ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="invalid-feedback fw-bold">A quantidade é obrigatória.</div>
+                </div>
             </div>
 
             <!-- Localização do Cilindro -->
-            <div class="col-md-3">
-                <label for="localizacao_cilindro" class="form-label fw-bold">Localização <span class="text-danger">*</span></label>
-                <?php
-                    $localizacao = gerarSelectOutro(
-                        nome: 'localizacao_cilindro',
-                        lista: gnv_localizacoes_list(),
-                        valorSalvo: $old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '',
-                        classes: isset($errors['localizacao_cilindro']) ? 'is-invalid' : '',
-                        attrs: 'required'
-                    );
-                ?>
-                <?= $localizacao['select_html'] ?>
-                <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" 
-                       class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
-                       value="<?= htmlspecialchars($localizacao['valor_outro']) ?>" 
-                       placeholder="Digite a localização personalizada" 
-                       style="display: <?= $localizacao['is_outro'] ? 'block' : 'none' ?>;">
-                <div class="invalid-feedback fw-bold">A localização é obrigatória.</div>
+            <div class="d-flex flex-column gap-1">
+                <label for="localizacao_cilindro" class="form-label mb-0 fw-bold text-nowrap" style="width: 125px;">
+                    Localização <span class="text-danger">*</span>
+                    <button type="button" 
+                            class="btn btn-link btn-sm p-0 text-secondary" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Localização do cilindro de GNV no veículo. As opções mais comuns são: Porta-malas (instalação tradicional, ocupa parte do espaço de bagagem), Sob o assoalho (não compromete o porta-malas, mas reduz a altura livre do solo) e Atrás dos bancos (em veículos utilitários ou picapes). A escolha afeta diretamente a praticidade e o espaço útil do veículo. A opção 'Outro' permite valores personalizados.">
+                        <i class="bi bi-info-circle-fill ms-2"></i>
+                    </button>
+                </label>
+                <div class="has-validation" style="width: 190px;">
+                    <?php
+                        $localizacao = gerarSelectOutro(
+                            nome: 'localizacao_cilindro',
+                            lista: gnv_localizacoes_list(),
+                            valorSalvo: $old['localizacao_cilindro'] ?? $gnv['localizacao_cilindro'] ?? '',
+                            classes: isset($errors['localizacao_cilindro']) ? 'is-invalid' : '',
+                            attrs: 'required'
+                        );
+                    ?>
+                    <?= $localizacao['select_html'] ?>
+                    <input type="text" name="localizacao_cilindro_outro" id="localizacao_cilindro_outro" 
+                           class="form-control mt-2 <?= isset($errors['localizacao_cilindro']) ? 'is-invalid' : '' ?>" 
+                           value="<?= htmlspecialchars($localizacao['valor_outro']) ?>" 
+                           placeholder="Digite a localização personalizada" 
+                           style="display: <?= $localizacao['is_outro'] ? 'block' : 'none' ?>;">
+                    <div class="invalid-feedback fw-bold">A localização é obrigatória.</div>
+                </div>
             </div>
         </div>
     </div>

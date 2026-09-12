@@ -21,7 +21,7 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf,traffic_jam,car_tag,propane,eco" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf,traffic_jam,car_tag,propane,eco,pan_tool_alt" />
 
     
         <style>
@@ -67,9 +67,10 @@
                 object-fit: contain;
                 border-radius: 4px;
                 background: #f8f9fa;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
             }
             .lista-items .item-lista .nome {
-                font-weight: 500;
+                font-weight: 600;
             }
 
             /* Overlay de edição nos cards de resumo */
@@ -212,10 +213,15 @@
             .marchas-hidden {
                 display: none !important;
             }
+
+            .icon-hand-right {
+                display: inline-block;
+                transform: rotate(90deg);
+            }
         </style>
 </head>
 <body>
-    <div class="container-fluid py-4" style="padding-left: 16rem; padding-right: 16rem;">
+    <div class="container-fluid py-4" style="padding-left: 10rem; padding-right: 10rem;">
         <!-- Cabeçalho do wizard -->
         <div class="wizard-header mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -1728,10 +1734,19 @@
                     el.style.display = isFlex ? 'inline' : 'none';
                 });
 
-                // 4. Controla sufixos "(Gasolina)" – GLOBALMENTE (não apenas dentro do container)
+                // 4. Controla sufixos "(Gasolina)" e ajusta a largura dos labels
                 const sufixos = document.querySelectorAll('.sufixo-gasolina');
-                sufixos.forEach(el => {
-                    el.style.display = isFlex ? 'inline' : 'none';
+                sufixos.forEach(sufixo => {
+                    const label = sufixo.closest('label');
+                    if (!label) return;
+
+                    if (isFlex) {
+                        label.style.width = '245px';  // largura maior para caber o sufixo
+                        sufixo.style.display = 'inline';
+                    } else {
+                        label.style.width = '165px';  // largura original
+                        sufixo.style.display = 'none';
+                    }
                 });
 
                 // 5. (Opcional) Título "Dados para Gasolina" – se existir
