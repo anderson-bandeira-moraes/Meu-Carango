@@ -637,11 +637,17 @@ $router->get('/', 'HomeController@index');
 $router->get('/loja/{slug}', 'VitrineController@listar');
 $router->get('/loja/{slug}/anuncio/{id}', 'VitrineController@detalhe');
 
-// ---------- Rotas da API ----------
-$router->get('/api/marcas', 'Api\\MarcaController@index');
-$router->post('/api/marcas', 'Api\\MarcaController@store');
-$router->get('/api/modelos', 'Api\\ModeloController@index');
-$router->post('/api/modelos', 'Api\\ModeloController@store');
+// ---------- Rotas da API (internas: exigem auth + CSRF em POST) ----------
+$router->group('/api', function(Router $router) use ($container) {
+    $router->middleware($container->get(CsrfTokenMiddleware::class));
+    $router->middleware($container->get(AuthMiddleware::class));
+    $router->middleware($container->get(CsrfValidationMiddleware::class));
+
+    $router->get('/marcas', 'Api\\MarcaController@index');
+    $router->post('/marcas', 'Api\\MarcaController@store');
+    $router->get('/modelos', 'Api\\ModeloController@index');
+    $router->post('/modelos', 'Api\\ModeloController@store');
+});
 
 // ============== DISPATCH COM TRATAMENTO DE EXCEÇÕES ==============
 try {

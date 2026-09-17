@@ -817,6 +817,9 @@
                 // 5. Envia via fetch
                 fetch('/api/marcas', {
                     method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="csrf_token"]').value
+                    },
                     body: formData,
                     // Não define Content-Type – o browser define com boundary automaticamente
                 })
@@ -910,6 +913,9 @@
                 // 5. Envia via fetch
                 fetch('/api/modelos', {
                     method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="csrf_token"]').value
+                    },
                     body: formData,
                 })
                 .then(response => response.json())

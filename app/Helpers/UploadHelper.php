@@ -7,47 +7,74 @@ namespace App\Helpers;
 /**
  * Helper para upload de arquivos, com geração de nomes únicos e movimentação segura.
  *
- * Esta classe é responsável por gerenciar o envio de arquivos para o sistema,
- * garantindo que sejam armazenados em pastas organizadas e com nomes únicos.
- * Segue o padrão dos demais helpers (SlugGenerator, RandomGenerator) com métodos estáticos.
+ * Valida o MIME real via magic bytes e deriva a extensão final do MIME (nunca do nome original),
+ * impedindo que arquivos executáveis sejam gravados mesmo quando renomeados.
  */
 class UploadHelper
 {
     /**
+     * MIME types aceitos => extensão segura a usar no arquivo final.
+     */
+    private const ALLOWED_MIMES = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp',
+    ];
+
+    /**
+     * Tamanho máximo aceito por arquivo (2 MB).
+     */
+    private const MAX_BYTES = 2 * 1024 * 1024;
+
+    /**
      * Move um arquivo enviado para o diretório de uploads e retorna o caminho relativo.
      *
-     * @param array $file O arquivo do array $_FILES (deve conter name, tmp_name, error, type, size).
+     * @param array  $file   O arquivo do array $_FILES (deve conter name, tmp_name, error, size).
      * @param string $subdir Subdiretório dentro de storage/uploads/ (ex: 'veiculos/hash_id').
-     * @return string|false Caminho relativo (ex: 'veiculos/hash_id/arquivo.jpg') ou false em erro.
+     * @return string|false Caminho relativo (ex: 'veiculos/hash_id/arquivo.webp') ou false em erro.
      */
     public static function upload(array $file, string $subdir): string|false
     {
-        // Valida se o array contém as chaves necessárias
-        if (!isset($file['error'], $file['tmp_name'], $file['name'])) {
+        // 1. Chaves necessárias
+        if (!isset($file['error'], $file['tmp_name'], $file['size'])) {
             return false;
         }
 
-        // Validação básica do upload
+        // 2. Erro de upload do PHP
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return false;
         }
 
-        $basePath = ROOT_DIR . '/storage/uploads/';
+        // 3. Limite de tamanho
+        if ((int) $file['size'] > self::MAX_BYTES) {
+            return false;
+        }
+
+        // 4. MIME real via magic bytes (não confia em extensão nem em $file['type'])
+        $mime = mime_content_type($file['tmp_name']);
+        if ($mime === false || !isset(self::ALLOWED_MIMES[$mime])) {
+            return false;
+        }
+
+        // 5. Extensão derivada do MIME validado
+        $extensao = self::ALLOWED_MIMES[$mime];
+
+        // 6. Prepara destino
+        $basePath   = ROOT_DIR . '/storage/uploads/';
         $destinoDir = $basePath . $subdir . '/';
 
-        // Cria o diretório se não existir
         if (!is_dir($destinoDir)) {
             if (!mkdir($destinoDir, 0755, true)) {
                 return false;
             }
         }
 
-        // Gera nome único
-        $nomeUnico = self::gerarNomeUnico($file['name']);
-        $caminhoRelativo = $subdir . '/' . $nomeUnico;
-        $caminhoAbsoluto = $destinoDir . $nomeUnico;
+        // 7. Nome único
+        $nomeUnico        = self::gerarNomeUnico($extensao);
+        $caminhoRelativo  = $subdir . '/' . $nomeUnico;
+        $caminhoAbsoluto  = $destinoDir . $nomeUnico;
 
-        // Move o arquivo
+        // 8. Move
         if (!move_uploaded_file($file['tmp_name'], $caminhoAbsoluto)) {
             return false;
         }
@@ -56,15 +83,13 @@ class UploadHelper
     }
 
     /**
-     * Gera um nome único para o arquivo baseado no nome original.
-     * Formato: timestamp_hash.extensao
+     * Gera um nome único para o arquivo no formato timestamp_hash.extensao.
      *
-     * @param string $nomeOriginal
+     * @param string $extensao Extensão já validada (sem ponto).
      * @return string
      */
-    private static function gerarNomeUnico(string $nomeOriginal): string
+    private static function gerarNomeUnico(string $extensao): string
     {
-        $extensao = pathinfo($nomeOriginal, PATHINFO_EXTENSION);
         $timestamp = time();
         $hash = bin2hex(random_bytes(8));
         return $timestamp . '_' . $hash . '.' . $extensao;
