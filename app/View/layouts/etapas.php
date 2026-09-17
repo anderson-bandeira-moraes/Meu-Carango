@@ -4,7 +4,7 @@
  * 
  * Variáveis esperadas:
  *   - $content     : string  HTML do conteúdo das etapas (gerado pela view específica)
- *   - $titulo      : string  Título da página
+ *   - $title       : string  Título da página
  *   - $action      : string  URL de submissão do formulário
  *   - $tipo        : string  Tipo do veículo (combustao, eletrico, hibrido)
  *   - $isEdit      : bool    Indica se é edição
@@ -17,7 +17,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?> - Meu Carango</title>
+    <title><?= htmlspecialchars($title ?? 'Cadastrar Veículo') ?> - Meu Carango</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -232,7 +232,7 @@
         <!-- Cabeçalho do wizard -->
         <div class="wizard-header mb-4">
             <div class="d-flex justify-content-between align-items-center">
-                <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
+                <h2><?= htmlspecialchars($title ?? 'Cadastrar Veículo') ?></h2>
                 <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
             </div>
             
@@ -262,9 +262,6 @@
         <form id="veiculoForm" action="<?= $action ?>" method="POST" enctype="multipart/form-data" novalidate>
             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
             <input type="hidden" name="tipo_veiculo" value="<?= htmlspecialchars($tipo) ?>">
-            <?php if ($isEdit): ?>
-                <input type="hidden" name="_method" value="PUT">
-            <?php endif; ?>
 
             <!-- Container das etapas (o conteúdo vem da view específica) -->
             <div id="wizard-container">
