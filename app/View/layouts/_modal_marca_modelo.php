@@ -6,27 +6,27 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title text-center w-100 fw-bold">Selecionar Marca e Modelo</h5>
+                <h4 class="modal-title text-center w-100 fw-bold">Selecionar Marca e Modelo</h4>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
                 <!-- Etapa 1: Selecionar Marca -->
                 <div id="etapa-marca" class="etapa">
                     <div id="conteudo-marca-lista">
-                        <div class="mb-5 mt-2 px-5">
-                            <input type="text" id="buscaMarca" class="form-control shadow" placeholder="Digite aqui para encontrar uma marca">
+                        <div class="mb-5 mt-3 px-4">
+                            <input type="text" id="buscaMarca" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
                         </div>
                         <div>
-                            <p class="fw-bold"><i class="bi bi-car-front-fill me-2 text-primary"></i>Escolha uma marca abaixo</p>
+                            <h5 class="fw-bold text-center text-muted mb-3">Escolha uma marca abaixo:</h5>
                         </div>
                         <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
                             <!-- Itens serão carregados via JS -->
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <button type="button" class="btn btn-success btn-sm" id="adicionarMarcaBtn">
+                        <div class="d-flex justify-content-between align-items-center mt-5">
+                            <button type="button" class="btn btn-primary fw-bold" id="adicionarMarcaBtn">
                                 <i class="bi bi-plus-lg me-1"></i> Adicionar Marca
                             </button>
-                            <button type="button" class="btn btn-primary" id="btnProximoMarca" disabled>
+                            <button type="button" class="btn btn-success fw-bold" id="btnProximoMarca" disabled>
                                 Selecionar <i class="bi bi-check-lg ms-1"></i>
                             </button>
                         </div>
@@ -59,16 +59,18 @@
                 <!-- Etapa 2: Selecionar Modelo -->
                 <div id="etapa-modelo" class="etapa" style="display: none;">
                     <div id="conteudo-modelo-lista">
-                        <h6 class="mb-3">2. Selecione o Modelo</h6>
-                        <div class="mb-3">
-                            <input type="text" id="buscaModelo" class="form-control" placeholder="Pesquisar modelo...">
+                        <div class="mb-5 mt-3 px-4">
+                            <input type="text" id="buscaModelo" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-center text-muted mb-3">Escolha um modelo abaixo:</h5>
                         </div>
                         <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
                             <!-- Itens carregados via AJAX -->
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="adicionarModeloBtn">
-                                <i class="bi bi-plus-lg me-1"></i> Adicionar Novo Modelo
+                        <div class="d-flex justify-content-between align-items-center mt-5">
+                            <button type="button" class="btn btn-primary fw-bold" id="adicionarModeloBtn">
+                                <i class="bi bi-plus-lg me-1"></i> Adicionar Modelo
                             </button>
                             <div>
                                 <button type="button" class="btn btn-outline-secondary" id="voltarMarcaBtn">Voltar</button>

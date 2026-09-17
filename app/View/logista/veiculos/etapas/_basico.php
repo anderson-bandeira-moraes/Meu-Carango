@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 text-end">
-                            <button type="button" class="btn btn-primary" id="selecionarMarcaModeloBtn">
+                            <button type="button" class="btn btn-primary fw-bold" id="selecionarMarcaModeloBtn">
                                 Selecionar<i class="bi bi-hand-index-thumb ms-2"></i> 
                             </button>
                         </div>
