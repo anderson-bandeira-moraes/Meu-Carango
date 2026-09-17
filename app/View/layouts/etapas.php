@@ -189,6 +189,13 @@
                 min-width: 10px; /* evita sumir em telas muito pequenas */
             }
 
+            .wizard-step {
+                display: none;
+            }
+            .wizard-step.is-active {
+                display: block;
+            }
+
             .material-symbols-outlined {
                 vertical-align: text-bottom;
                 line-height: 1;
@@ -226,7 +233,7 @@
         <div class="wizard-header mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
-                <span class="badge bg-secondary" id="step-indicator">Etapa 1 de 0</span>
+                <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
             </div>
             
             <!-- Barra de progresso -->
@@ -1215,7 +1222,7 @@
             if (steps.length === 0) return;
             currentStep = 0;
             steps.forEach((el, i) => {
-                el.style.display = (i === 0) ? 'block' : 'none';
+                el.classList.toggle('is-active', i === 0);
             });
             atualizarProgresso();
             atualizarBotoes();
@@ -1225,7 +1232,7 @@
             marcarComoVisitada(index); 
             if (index < 0 || index >= steps.length) return;
             steps.forEach((el, i) => {
-                el.style.display = (i === index) ? 'block' : 'none';
+                el.classList.toggle('is-active', i === index);
             });
             currentStep = index;
             atualizarProgresso();

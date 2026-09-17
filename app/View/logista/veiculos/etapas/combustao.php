@@ -1021,7 +1021,7 @@
 </div>
 
 <!-- Etapa 10: Opcionais (comum) -->
-<div class="wizard-step" data-step="opcionais" data-label="Opcionais" style="display: none;">
+<div class="wizard-step" data-step="opcionais" data-label="Opcionais">
     <div class="card shadow-sm my-4">
         <div class="card-header bg-light">
             <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">traffic_jam</span> Opcionais</h5>
@@ -1079,7 +1079,7 @@
 </div>
 
 <!-- Etapa 11: GNV (condicional) -->
-<div class="wizard-step" data-step="gnv" data-label="GNV" style="display: none;">
+<div class="wizard-step" data-step="gnv" data-label="GNV">
     <!-- ========================================================== -->
     <!-- GNV - Possui GNV?                                          -->
     <!-- ========================================================== -->

@@ -3,7 +3,7 @@
 <!-- ============================================================ -->
 <!-- ETAPA: BÁSICO                                                -->
 <!-- ============================================================ -->
-<div class="wizard-step" data-step="basico" data-label="Informações Básicas">
+<div class="wizard-step is-active" data-step="basico" data-label="Informações Básicas">
     <div class="d-flex flex-wrap gap-3">
 
         <!-- ========================================================== -->
