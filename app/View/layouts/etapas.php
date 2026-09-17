@@ -283,7 +283,7 @@
                 </button>
             </div>
         </form>
-        
+
         <?php include __DIR__ . '/_modal_marca_modelo.php'; ?>
     </div>
 
@@ -326,8 +326,9 @@
         const resumoMarcaLogo = document.getElementById('resumo-marca-logo');
         const resumoMarcaCard = document.getElementById('resumo-marca');
         const resumoModeloCard = document.getElementById('resumo-modelo');
-        // NOVO: referência ao botão "Próximo"
         const btnProximoMarca = document.getElementById('btnProximoMarca');
+        const btnSelecionarModelo = document.getElementById('btnSelecionarModelo');
+        const voltarModeloBtn      = document.getElementById('voltarModeloBtn');
 
         // Função para atualizar os badges com base nos IDs atuais
         function atualizarBadges() {
@@ -394,10 +395,22 @@
                 div.addEventListener('click', function() {
                     listaMarcas.querySelectorAll('.item-lista').forEach(el => el.classList.remove('selecionado'));
                     this.classList.add('selecionado');
+
+                    // Se a marca mudou, descarta qualquer modelo previamente selecionado
+                    if (selectedMarcaId !== m.id) {
+                        selectedModeloId = null;
+                        selectedModeloNome = '';
+                        window._modelosData = null;
+                        if (btnSelecionarModelo) {
+                            btnSelecionarModelo.disabled = true;
+                        }
+                    }
+
                     selectedMarcaId = m.id;
                     selectedMarcaNome = m.nome;
                     selectedMarcaLogo = m.logo_url || '/assets/images/default-brand.png';
-                    // Habilita o botão "Próximo"
+
+                    // Habilita o botão "Selecionar" da etapa Marca
                     if (btnProximoMarca) {
                         btnProximoMarca.disabled = false;
                     }
@@ -446,8 +459,11 @@
                     this.classList.add('selecionado');
                     selectedModeloId = m.id;
                     selectedModeloNome = m.nome;
-                    atualizarResumo();
-                    irParaEtapa('resumo');
+
+                    // Habilita o botão "Selecionar" da etapa Modelo
+                    if (btnSelecionarModelo) {
+                        btnSelecionarModelo.disabled = false;
+                    }
                 });
                 listaModelos.appendChild(div);
             });
@@ -482,6 +498,10 @@
                 buscaModelo.value = '';
                 if (window._modelosData) {
                     renderModelos(window._modelosData);
+                }
+                // Sincroniza estado do botão Selecionar com o modelo já escolhido
+                if (btnSelecionarModelo) {
+                    btnSelecionarModelo.disabled = (selectedModeloId === null);
                 }
                 setTimeout(() => buscaModelo.focus(), 100);
             } else if (etapa === 'resumo') {
@@ -521,7 +541,12 @@
             });
         }
 
-        // NOVO: Evento do botão "Próximo"
+        if (voltarModeloBtn) {
+            voltarModeloBtn.addEventListener('click', function() {
+                irParaEtapa('modelo');
+            });
+        }
+
         if (btnProximoMarca) {
             btnProximoMarca.addEventListener('click', function() {
                 if (!selectedMarcaId) {
@@ -532,6 +557,17 @@
                 carregarModelos(selectedMarcaId);
                 // Vai para a etapa de modelo
                 irParaEtapa('modelo');
+            });
+        }
+
+        if (btnSelecionarModelo) {
+            btnSelecionarModelo.addEventListener('click', function() {
+                if (!selectedModeloId) {
+                    alert('Por favor, selecione um modelo.');
+                    return;
+                }
+                atualizarResumo();
+                irParaEtapa('resumo');
             });
         }
 
@@ -572,6 +608,10 @@
                 selectedMarcaLogo = '';
                 selectedModeloId = null;
                 selectedModeloNome = '';
+
+                if (btnSelecionarModelo) {
+                    btnSelecionarModelo.disabled = true;
+                }
 
                 if (currentMarcaId) {
                     const marca = marcasData.find(m => m.id === currentMarcaId);
@@ -843,6 +883,11 @@
                         selectedMarcaNome = novaMarca.nome;
                         selectedMarcaLogo = novaMarca.logo_url || '/assets/images/default-brand.png';
 
+                        // Habilita o botão "Selecionar" da etapa Marca
+                        if (btnProximoMarca) {
+                            btnProximoMarca.disabled = false;
+                        }
+
                         // 9. Re-renderiza a lista
                         renderMarcas();
 
@@ -938,6 +983,11 @@
                         // 8. Pré-seleciona o novo modelo
                         selectedModeloId = novoModelo.id;
                         selectedModeloNome = novoModelo.nome;
+
+                        // Habilita o botão "Selecionar" da etapa Modelo
+                        if (btnSelecionarModelo) {
+                            btnSelecionarModelo.disabled = false;
+                        }
 
                         // 9. Re-renderiza a lista de modelos
                         renderModelos(window._modelosData);

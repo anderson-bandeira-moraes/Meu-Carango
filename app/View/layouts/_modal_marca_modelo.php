@@ -16,8 +16,8 @@
                         <div class="mb-5 mt-3 px-4">
                             <input type="text" id="buscaMarca" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
                         </div>
-                        <div>
-                            <h5 class="fw-bold text-center text-muted mb-3">Escolha uma marca abaixo:</h5>
+                        <div class="mb-3">
+                            <h5 class="fw-bold text-center text-muted">Escolha uma marca abaixo:</h5>
                         </div>
                         <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
                             <!-- Itens serão carregados via JS -->
@@ -62,8 +62,8 @@
                         <div class="mb-5 mt-3 px-4">
                             <input type="text" id="buscaModelo" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
                         </div>
-                        <div>
-                            <h5 class="fw-bold text-center text-muted mb-3">Escolha um modelo abaixo:</h5>
+                        <div class="mb-3">
+                            <h5 class="fw-bold text-center text-muted">Escolha um modelo abaixo:</h5>
                         </div>
                         <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
                             <!-- Itens carregados via AJAX -->
@@ -73,8 +73,10 @@
                                 <i class="bi bi-plus-lg me-1"></i> Adicionar Modelo
                             </button>
                             <div>
-                                <button type="button" class="btn btn-outline-secondary" id="voltarMarcaBtn">Voltar</button>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-outline-danger fw-bold" id="voltarMarcaBtn">Voltar</button>
+                                <button type="button" class="btn btn-success fw-bold" id="btnSelecionarModelo" disabled>
+                                    Selecionar <i class="bi bi-check-lg ms-1"></i>
+                                </button>                               
                             </div>
                         </div>
                     </div>
@@ -98,7 +100,9 @@
 
                 <!-- Etapa 3: Resumo e Edição -->
                 <div id="etapa-resumo" class="etapa" style="display: none;">
-                    <h6 class="mb-3">3. Confirme a seleção</h6>
+                    <div class="mb-4 mt-3">
+                        <h5 class="fw-bold text-center text-muted">Confirme a escolha abaixo:</h5>
+                    </div>
                     <div class="row g-3" style="padding-left: 8rem; padding-right: 8rem;">
                         <div class="col-12">
                             <div class="card resumo-card" id="resumo-marca" style="cursor: pointer;">
@@ -126,10 +130,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-end mt-3">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" id="confirmarSelecaoBtn">
-                            <i class="bi bi-check-lg me-1"></i> Confirmar
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <button type="button" class="btn btn-outline-danger fw-bold" id="voltarModeloBtn">Voltar</button>
+                        <button type="button" class="btn btn-success fw-bold" id="confirmarSelecaoBtn">
+                            Confirmar<i class="bi bi-check-lg ms-1"></i>
                         </button>
                     </div>
                 </div>
