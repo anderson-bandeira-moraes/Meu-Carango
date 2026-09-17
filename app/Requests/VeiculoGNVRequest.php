@@ -31,7 +31,7 @@ class VeiculoGNVRequest extends FormRequest
     {
         return [
             // Sistema e geração
-            'tipo_sistema'     => 'required|in:GNC,GLP',
+            'tipo_sistema'     => 'nullable|in:GNC,GLP',
             'geracao_kit'      => 'required|in:3ª,4ª,5ª,6ª',
             'marca_kit'        => 'nullable|max:40',
 
