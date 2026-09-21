@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * Classe base para validação de requisições (FormRequest).
  * 
@@ -30,6 +33,11 @@ abstract class FormRequest extends Request
     private array $parsedRules = [];
 
     /**
+     * Serviço de validação de banco (injetado externamente).
+     */
+    private ?Validator $validator = null;
+
+    /**
      * Construtor – recebe a Request atual e repassa os dados para a classe pai.
      *
      * @param Request $request A requisição HTTP atual
@@ -43,6 +51,32 @@ abstract class FormRequest extends Request
             $request->getServer(),
             $request->getCookies()
         );
+    }
+
+    /**
+     * Injeta o serviço de validação de banco.
+     * Chamado pelo container em index.php.
+     */
+    public function setValidator(Validator $validator): void
+    {
+        $this->validator = $validator;
+    }
+
+    /**
+     * Retorna o Validator injetado ou falha com erro de wiring.
+     *
+     * @throws RuntimeException Se o Validator não foi injetado.
+     */
+    private function validator(): Validator
+    {
+        if ($this->validator === null) {
+            throw new RuntimeException(sprintf(
+                'Validator não injetado em %s. Verifique o registro no container em index.php.',
+                static::class
+            ));
+        }
+
+        return $this->validator;
     }
 
     /**
@@ -257,6 +291,9 @@ abstract class FormRequest extends Request
      * @param string $ruleName
      * @param array $params
      * @return bool
+     * Regras suportadas: required, email, min, max, min_num, max_num,
+     * numeric, integer, regex, url, boolean, array, nullable,
+     * in, between, date, string, exists
      */
     private function applySingleRule(string $field, mixed $value, string $ruleName, array $params): bool
     {
@@ -287,10 +324,109 @@ abstract class FormRequest extends Request
                 return is_array($value);
             case 'nullable':
                 return true; // já tratado, mas se chegar aqui, passa
+            case 'in':
+                return $this->validateIn($value, $params);
+            case 'between':
+                return $this->validateBetween($value, $params);
+            case 'date':
+                return $this->validateDate($value);
+            case 'string':
+                return $this->validateString($value);
+            case 'exists':
+                return $this->validateExists($value, $params);
             default:
-                // Regra desconhecida – consideramos que passou (para não quebrar)
+                $this->handleUnknownRule($ruleName);
                 return true;
         }
+    }
+
+    /**
+     * Trata uma regra desconhecida.
+     * Em desenvolvimento, lança exceção. Em produção, loga e passa.
+     *
+     * @throws RuntimeException Em ambiente de desenvolvimento.
+     */
+    private function handleUnknownRule(string $ruleName): void
+    {
+        $env = $_ENV['APP_ENV'] ?? 'production';
+
+        if ($env === 'development') {
+            throw new RuntimeException("Regra desconhecida no FormRequest: {$ruleName}");
+        }
+
+        error_log("Regra desconhecida no FormRequest: {$ruleName}");
+    }
+
+    /**
+     * Regra in: o valor deve estar na lista de parâmetros.
+     */
+    private function validateIn(mixed $value, array $params): bool
+    {
+        if (empty($params)) {
+            throw new InvalidArgumentException('A regra in requer pelo menos 1 parâmetro.');
+        }
+
+        return in_array($value, $params, true);
+    }
+
+    /**
+     * Regra between: o valor deve estar entre min e max (inclusive).
+     */
+    private function validateBetween(mixed $value, array $params): bool
+    {
+        if (count($params) < 2) {
+            throw new InvalidArgumentException('A regra between requer 2 parâmetros: between:min,max.');
+        }
+
+        if (!is_numeric($value)) {
+            return false;
+        }
+
+        $min = (float) $params[0];
+        $max = (float) $params[1];
+        $val = (float) $value;
+
+        return $val >= $min && $val <= $max;
+    }
+
+    /**
+     * Regra date: aceita datas no formato YYYY-MM-DD e valida com checkdate.
+     */
+    private function validateDate(mixed $value): bool
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) !== 1) {
+            return false;
+        }
+
+        [$y, $m, $d] = explode('-', $value);
+
+        return checkdate((int) $m, (int) $d, (int) $y);
+    }
+
+    /**
+     * Regra string: verifica se o valor é string.
+     */
+    private function validateString(mixed $value): bool
+    {
+        return is_string($value);
+    }
+
+    /**
+     * Regra exists: verifica se o valor existe na tabela/coluna.
+     */
+    private function validateExists(mixed $value, array $params): bool
+    {
+        if (count($params) < 2) {
+            throw new InvalidArgumentException('A regra exists requer 2 parâmetros: exists:tabela,coluna.');
+        }
+
+        [$table, $column] = $params;
+
+        return $this->validator()->exists($table, $column, $value);
     }
 
     /**
@@ -422,6 +558,11 @@ abstract class FormRequest extends Request
             'url'      => "O campo {$field} deve ser uma URL válida.",
             'boolean'  => "O campo {$field} deve ser verdadeiro ou falso.",
             'array'    => "O campo {$field} deve ser um array.",
+            'in'       => "O campo {$field} deve ser um dos valores permitidos: :values.",
+            'between'  => "O campo {$field} deve estar entre :min e :max.",
+            'date'     => "O campo {$field} deve ser uma data válida no formato YYYY-MM-DD.",
+            'string'   => "O campo {$field} deve ser um texto.",
+            'exists'   => "O valor informado em {$field} não existe.",
             default    => "O campo {$field} é inválido.",
         };
     }
@@ -435,9 +576,22 @@ abstract class FormRequest extends Request
      */
     private function replacePlaceholders(string $message, array $params): string
     {
-        if (isset($params[0])) {
-            $message = str_replace([':min', ':max'], $params[0], $message);
+        // :values → lista completa (usado por `in`)
+        if (str_contains($message, ':values')) {
+            $message = str_replace(':values', implode(', ', $params), $message);
         }
+
+        // :min → primeiro parâmetro (usado por min, min_num, between)
+        if (isset($params[0]) && str_contains($message, ':min')) {
+            $message = str_replace(':min', (string) $params[0], $message);
+        }
+
+        // :max → segundo parâmetro se houver (between), senão primeiro (max, max_num)
+        if (str_contains($message, ':max')) {
+            $maxValue = $params[1] ?? $params[0] ?? '';
+            $message = str_replace(':max', (string) $maxValue, $message);
+        }
+
         return $message;
     }
 

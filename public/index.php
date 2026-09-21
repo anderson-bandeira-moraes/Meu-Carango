@@ -66,6 +66,7 @@ use App\Core\Contracts\SessionInterface;
 use App\Core\SessionWrapper;
 use App\Core\Contracts\CsrfTokenGeneratorInterface;
 use App\Core\Security\CsrfTokenGenerator;
+use App\Core\Validator; // NOVO
 use App\Middleware\CsrfTokenMiddleware;
 use App\Middleware\CsrfValidationMiddleware;
 use Monolog\Logger;
@@ -146,6 +147,10 @@ $container->set(PDO::class, function() {
 
 $container->set(App\Core\ViewRenderer::class, function() {
     return new App\Core\ViewRenderer(VIEW_DIR);
+});
+
+$container->set(Validator::class, function($c) {
+    return new Validator($c->get(PDO::class));
 });
 
 // ============== REPOSITÓRIOS ==============
@@ -397,45 +402,63 @@ $container->set(Request::class, function() {
 
 // ============== REGISTRO DAS FORMREQUESTS ==============
 $container->set(LoginRequest::class, function($c) {
-    return new LoginRequest($c->get(Request::class));
+    $req = new LoginRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(TwoFactorRequest::class, function($c) {
-    return new TwoFactorRequest($c->get(Request::class));
+    $req = new TwoFactorRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 // ============== NOVAS FORMREQUESTS DE VEÍCULOS ==============
 $container->set(VeiculoRequest::class, function($c) {
-    return new VeiculoRequest(
+    $req = new VeiculoRequest(
         $c->get(Request::class),
         $c->get(MarcaRepository::class),
         $c->get(ModeloRepository::class),
         $c->get(VeiculoRepository::class)
     );
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoCombustaoRequest::class, function($c) {
-    return new VeiculoCombustaoRequest($c->get(Request::class));
+    $req = new VeiculoCombustaoRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoEletricoRequest::class, function($c) {
-    return new VeiculoEletricoRequest($c->get(Request::class));
+    $req = new VeiculoEletricoRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoHibridoRequest::class, function($c) {
-    return new VeiculoHibridoRequest($c->get(Request::class));
+    $req = new VeiculoHibridoRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoGNVRequest::class, function($c) {
-    return new VeiculoGNVRequest($c->get(Request::class));
+    $req = new VeiculoGNVRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoOpcionalRequest::class, function($c) {
-    return new VeiculoOpcionalRequest($c->get(Request::class));
+    $req = new VeiculoOpcionalRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 $container->set(VeiculoImagemRequest::class, function($c) {
-    return new VeiculoImagemRequest($c->get(Request::class));
+    $req = new VeiculoImagemRequest($c->get(Request::class));
+    $req->setValidator($c->get(Validator::class));
+    return $req;
 });
 
 // ============== CONTROLLERS ==============
