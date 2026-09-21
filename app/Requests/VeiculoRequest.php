@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace App\Requests;
 
 use App\Core\FormRequest;
-use App\Repository\MarcaRepository;
-use App\Repository\ModeloRepository;
-use App\Repository\VeiculoRepository;
-use App\Helpers\SlugGenerator;
 
 /**
  * FormRequest para validação dos campos comuns do veículo (tabela veiculos).
@@ -21,22 +17,6 @@ use App\Helpers\SlugGenerator;
  */
 class VeiculoRequest extends FormRequest
 {
-    private MarcaRepository $marcaRepo;
-    private ModeloRepository $modeloRepo;
-    private VeiculoRepository $veiculoRepo;
-
-    public function __construct(
-        \App\Core\Request $request,
-        MarcaRepository $marcaRepo,
-        ModeloRepository $modeloRepo,
-        VeiculoRepository $veiculoRepo
-    ) {
-        parent::__construct($request);
-        $this->marcaRepo = $marcaRepo;
-        $this->modeloRepo = $modeloRepo;
-        $this->veiculoRepo = $veiculoRepo;
-    }
-
     /**
      * Mapeamento de campos que possuem opção "Outro" (select + input extra).
      */
@@ -71,7 +51,6 @@ class VeiculoRequest extends FormRequest
             'numero_assentos'=> 'required|integer|between:2,15',
             'carroceria'     => 'required|string|max:30',
             'tipo_direcao'   => 'required|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
-            'altura_solo_mm' => 'nullable|integer|min:0',          // não obrigatório
             'pneu_aro'       => 'required|integer|min_num:10|max_num:30',
             'tipo_roda'      => 'required|in:liga_leve,calota',
             'freio_dianteiro'=> 'required|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
@@ -82,6 +61,7 @@ class VeiculoRequest extends FormRequest
             'comprimento_mm'           => 'required|integer|min_num:0',
             'largura_mm'               => 'required|integer|min_num:0',
             'altura_mm'                => 'required|integer|min_num:0',
+            'altura_solo_mm'           => 'nullable|integer|min_num:0', // não obrigatório
             'distancia_entre_eixos_mm' => 'required|integer|min_num:0',
             'peso_ordem_marcha_kg'     => 'required|numeric|min_num:0',
             'volume_porta_malas_l'     => 'required|integer|min_num:0',
@@ -182,7 +162,7 @@ class VeiculoRequest extends FormRequest
 
             // Altura do solo
             'altura_solo_mm.integer' => 'A altura do solo deve ser um número inteiro.',
-            'altura_solo_mm.min'     => 'A altura do solo não pode ser negativa.',
+            'altura_solo_mm.min_num' => 'A altura do solo não pode ser negativa.',
 
             // Aro
             'pneu_aro.integer' => 'O aro do pneu deve ser um número inteiro.',
@@ -329,52 +309,24 @@ class VeiculoRequest extends FormRequest
     /**
      * {@inheritDoc}
      * 
-     * Complementa a validação base com regras de negócio contextuais
-     * e gera dados derivados para o veículo.
+     * Complementa a validação base com regras de negócio condicionais.
+     * O slug é gerado pelo VeiculoService (não mais aqui).
      *
      * @return bool
      */
     public function validate(): bool
     {
-        // 1. Executa a validação base
         if (!parent::validate()) {
             return false;
         }
 
-        // 2. Obtém os dados validados
         $data = $this->validated();
 
-        // 3. Valida condicional: GNV só permitido em veículos a combustão
+        // GNV só permitido em veículos a combustão
         if (!empty($data['gnv_instalado']) && ($data['tipo_veiculo'] ?? '') !== 'combustao') {
             $this->addError('gnv_instalado', 'O kit GNV só pode ser instalado em veículos a combustão.');
             return false;
         }
-
-        // 4. Extrai os IDs e o ano do modelo dos dados validados
-        $marcaId = (int) ($data['marca_id'] ?? 0);
-        $modeloId = (int) ($data['modelo_id'] ?? 0);
-        $anoModelo = (int) ($data['ano_modelo'] ?? 0);
-
-        // Verifica se os IDs são válidos (redundante, pois são obrigatórios, mas seguro)
-        if ($marcaId === 0 || $modeloId === 0 || $anoModelo === 0) {
-            // Isso não deve ocorrer devido à validação required, mas mantemos segurança
-            return true;
-        }
-
-        // 5. Busca os nomes da marca e modelo
-        $marca = $this->marcaRepo->findById($marcaId);
-        $modelo = $this->modeloRepo->findById($modeloId);
-
-        if (!$marca || !$modelo) {
-            // Se não encontrar, não adicionamos erro aqui (já foi validado exists)
-            return true;
-        }
-
-        // 6. Gera o slug
-        $slug = SlugGenerator::generate($marca['nome'], $modelo['nome'], $anoModelo);
-
-        // 7. Armazena o slug nos dados validados para uso posterior
-        $this->validated['slug'] = $slug;
 
         return true;
     }
@@ -466,8 +418,8 @@ class VeiculoRequest extends FormRequest
  *    - Executada APÓS a validação base (parent::validate())
  *    - Adiciona regras de negócio que não são cobertas pelas regras simples:
  *        - Validação condicional (ex: GNV só em veículos a combustão)
- *        - Geração automática de slug com base em marca, modelo e ano
  *    - Pode adicionar erros customizados via `addError()`
+ *    - NOTA: a geração do slug foi movida para o VeiculoService;k
  * 
  * 5. MÉTODOS AUXILIARES
  *    - `getDadosPrincipais()` → retorna apenas os dados validados

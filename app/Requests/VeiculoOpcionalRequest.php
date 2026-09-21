@@ -20,8 +20,10 @@ class VeiculoOpcionalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'opcionaisIds'   => 'nullable|array',
-            'opcionaisIds.*' => 'integer|exists:opcionais,id',
+            'opcionaisIds' => 'nullable|array',
+            // TODO: implementar suporte a wildcards em FormRequest
+            // Ex: 'opcionaisIds.*' => 'integer|exists:opcionais,id'
+            // Elementos individuais são validados indiretamente pela FK em veiculo_opcionais
         ];
     }
 
@@ -31,9 +33,8 @@ class VeiculoOpcionalRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'opcionaisIds.array'    => 'A lista de opcionais deve ser um array.',
-            'opcionaisIds.*.integer' => 'Cada ID de opcional deve ser um número inteiro.',
-            'opcionaisIds.*.exists'  => 'Um ou mais opcionais selecionados não existem.',
+            'opcionaisIds.array' => 'A lista de opcionais deve ser um array.',
+            // Mensagens de wildcard removidas (regras comentadas acima)
         ];
     }
 

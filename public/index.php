@@ -415,12 +415,7 @@ $container->set(TwoFactorRequest::class, function($c) {
 
 // ============== NOVAS FORMREQUESTS DE VEÍCULOS ==============
 $container->set(VeiculoRequest::class, function($c) {
-    $req = new VeiculoRequest(
-        $c->get(Request::class),
-        $c->get(MarcaRepository::class),
-        $c->get(ModeloRepository::class),
-        $c->get(VeiculoRepository::class)
-    );
+    $req = new VeiculoRequest($c->get(Request::class));
     $req->setValidator($c->get(Validator::class));
     return $req;
 });
