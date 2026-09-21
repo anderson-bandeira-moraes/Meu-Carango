@@ -23,6 +23,9 @@ use PDO;
 /**
  * Service para gerenciamento de veículos.
  * Orquestra as operações entre os repositórios e helpers.
+ * 
+ * Responsável também por gerar o slug do veículo (marca-modelo-ano)
+ * a partir dos dados validados, e por validar unicidade de placa.
  */
 class VeiculoService
 {
@@ -52,8 +55,9 @@ class VeiculoService
      * @param array $opcionaisIds Lista de IDs de opcionais selecionados.
      * @param string $tipoVeiculo 'combustao', 'eletrico' ou 'hibrido'.
      * @return int|false ID do veículo criado ou false em caso de erro.
+     * array{sucesso: false, erro: string} em erro de negócio, false em erro de infraestrutura.
      */
-    public function salvar(array $dados, array $opcionaisIds, string $tipoVeiculo): int|false
+    public function salvar(array $dados, array $opcionaisIds, string $tipoVeiculo): int|array|false
     {
         // Valida tipo de veículo
         if (!in_array($tipoVeiculo, [self::TIPO_COMBUSTAO, self::TIPO_ELETRICO, self::TIPO_HIBRIDO])) {
@@ -73,6 +77,12 @@ class VeiculoService
         $hashId = $this->gerarHashUnico();
         $dados['hash_id'] = $hashId;
 
+        // Gera slug (marca-modelo-ano)
+        $slug = $this->gerarSlug($dados);
+        if ($slug !== null) {
+            $dados['slug'] = $slug;
+        }
+
         // Define valores padrão
         $dados['gnv_instalado'] = $dados['gnv_instalado'] ?? 0;
         $dados['status_estoque'] = $dados['status_estoque'] ?? 'disponivel';
@@ -80,9 +90,9 @@ class VeiculoService
 
         // Verificação de unicidade placa
         if (!empty($dados['placa'])) {
-            $validacao = $this->validarPlacaUnica($dados['placa']);
-            if ($validacao !== true) {
-                return $validacao;
+            $erro = $this->validarPlacaUnica($dados['placa']);
+            if ($erro !== null) {
+                return ['sucesso' => false, 'erro' => $erro];
             }
         }
 
@@ -178,9 +188,10 @@ class VeiculoService
      * @param array $dados Dados atualizados.
      * @param array $opcionaisIds Lista de IDs de opcionais selecionados.
      * @param string $tipoVeiculo 'combustao', 'eletrico' ou 'hibrido'.
-     * @return bool
+     * @return bool|array True em sucesso; false em erro de infraestrutura;
+     * array{sucesso: false, erro: string} em erro de negócio.
      */
-    public function atualizar(int $veiculoId, array $dados, array $opcionaisIds, string $tipoVeiculo): bool
+    public function atualizar(int $veiculoId, array $dados, array $opcionaisIds, string $tipoVeiculo): bool|array
     {
         // Valida tipo de veículo
         if (!in_array($tipoVeiculo, [self::TIPO_COMBUSTAO, self::TIPO_ELETRICO, self::TIPO_HIBRIDO])) {
@@ -209,10 +220,16 @@ class VeiculoService
 
         // Verificação de unicidade placa (IGNORANDO o próprio veículo)
         if (!empty($dados['placa'])) {
-            $validacao = $this->validarPlacaUnica($dados['placa'], $veiculoId); // <-- CORRIGIDO
-            if ($validacao !== true) {
-                return $validacao;
+            $erro = $this->validarPlacaUnica($dados['placa'], $veiculoId);
+            if ($erro !== null) {
+                return ['sucesso' => false, 'erro' => $erro];
             }
+        }
+
+        // Gera slug (sempre regenera, mesmo que marca/modelo/ano não tenham mudado)
+        $slug = $this->gerarSlug($dados);
+        if ($slug !== null) {
+            $dados['slug'] = $slug;
         }
 
         $this->pdo->beginTransaction();
@@ -614,6 +631,35 @@ class VeiculoService
         } while ($existe);
 
         return $hash;
+    }
+
+    /**
+     * Gera o slug do veículo no formato marca-modelo-ano.
+     *
+     * Retorna null se marca, modelo ou ano não forem válidos/encontrados.
+     * O slug é decorativo (não é a chave do veículo — isso é o hash_id).
+     *
+     * @param array $dados Deve conter marca_id, modelo_id e ano_modelo.
+     * @return string|null
+     */
+    private function gerarSlug(array $dados): ?string
+    {
+        $marcaId   = (int) ($dados['marca_id']  ?? 0);
+        $modeloId  = (int) ($dados['modelo_id'] ?? 0);
+        $anoModelo = (int) ($dados['ano_modelo'] ?? 0);
+
+        if ($marcaId === 0 || $modeloId === 0 || $anoModelo === 0) {
+            return null;
+        }
+
+        $marca  = $this->marcaRepo->findById($marcaId);
+        $modelo = $this->modeloRepo->findById($modeloId);
+
+        if (!$marca || !$modelo) {
+            return null;
+        }
+
+        return SlugGenerator::generate($marca['nome'], $modelo['nome'], $anoModelo);
     }
 
     /**
@@ -1102,22 +1148,20 @@ class VeiculoService
      * Valida se a placa é única no sistema.
      *
      * @param string $placa
-     * @param int|null $ignorarId
-     * @return true|array{sucesso: false, erro: string}
-     *         - true: placa válida e única
-     *         - array: erro de negócio (placa duplicada)
+     * @param int|null $ignorarId ID a ignorar (em atualização, o próprio veículo).
+     * @return string|null Mensagem de erro se a placa já existe; null se está livre.
      */
-    private function validarPlacaUnica(string $placa, ?int $ignorarId = null)
+    private function validarPlacaUnica(string $placa, ?int $ignorarId = null): ?string
     {
         if (empty($placa)) {
-            return true;
+            return null;
         }
 
         if ($this->veiculoRepo->placaExists($placa, $ignorarId)) {
-            return ['sucesso' => false, 'erro' => 'Já existe um veículo com esta placa.'];
+            return 'Já existe um veículo com esta placa.';
         }
 
-        return true;
+        return null;
     }
 
 }
