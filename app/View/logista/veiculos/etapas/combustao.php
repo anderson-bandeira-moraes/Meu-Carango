@@ -380,7 +380,7 @@
         <!-- Tipo de Direção -->
         <div class="d-flex flex-column gap-1">
             <label for="tipo_direcao" class="form-label mb-0 fw-bold text-nowrap" style="width: 145px;">
-                Tipo de Direção
+                Tipo de Direção <span class="text-danger">*</span>
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 

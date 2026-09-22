@@ -2018,10 +2018,16 @@
 
                 const campos = gnvBloco.querySelectorAll('input, select, textarea');
                 campos.forEach(campo => {
+                    // Campos "_outro" (sufixo _outro no name) são gerenciados por toggleMotorOutro,
+                    // que aplica required somente quando o select correspondente está em "outro".
+                    const isOutroField = campo.name && campo.name.endsWith('_outro');
+
                     campo.disabled = !isSim;
+
                     if (isSim) {
-                        // SEMPRE adiciona required quando "Sim" estiver selecionado
-                        campo.setAttribute('required', 'required');
+                        if (!isOutroField) {
+                            campo.setAttribute('required', 'required');
+                        }
                     } else {
                         campo.removeAttribute('required');
                         // Limpa valores se não for GNV
@@ -2030,7 +2036,6 @@
                         } else {
                             campo.value = '';
                         }
-                        // Remove qualquer estado de erro residual
                         campo.classList.remove('is-invalid');
                     }
                 });
