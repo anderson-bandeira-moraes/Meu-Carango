@@ -727,18 +727,18 @@ if (!function_exists('gerarSelectOutro')) {
 
         $isAssoc = array_keys($lista) !== range(0, count($lista) - 1);
 
-        $isOutro = false;
-        $valorOutro = '';
-        if (!empty($valorSalvo)) {
-            if ($isAssoc) {
-                $isOutro = !array_key_exists($valorSalvo, $lista);
-            } else {
-                $isOutro = !in_array($valorSalvo, $lista, true);
+            $isOutro = false;
+            $valorOutro = '';
+            if (!empty($valorSalvo)) {
+                if ($isAssoc) {
+                    $isOutro = !array_key_exists($valorSalvo, $lista);
+                } else {
+                    $isOutro = !in_array((string) $valorSalvo, array_map('strval', $lista), true);
+                }
+                if ($isOutro) {
+                    $valorOutro = $valorSalvo;
+                }
             }
-            if ($isOutro) {
-                $valorOutro = $valorSalvo;
-            }
-        }
 
         $classAttribute = 'form-select' . ($classes ? ' ' . htmlspecialchars($classes) : '');
         $html = '<select name="' . htmlspecialchars($nome) . '" id="' . htmlspecialchars($id) . '" class="' . $classAttribute . '" ' . $attrs . '>';

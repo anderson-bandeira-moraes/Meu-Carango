@@ -52,7 +52,7 @@ class VeiculoCombustaoRequest extends FormRequest
             'consumo_medio_kml'    => 'nullable|numeric|min_num:0', 
 
             // ===== TANQUE E TRANSMISSÃO =====
-            'capacidade_tanque_l' => 'required|integer|min_num:0',
+            'capacidade_tanque_l' => 'nullable|integer|min_num:0',
             'transmissao_tipo'    => 'required|max:30',
             'numero_marchas'      => 'nullable|integer|min_num:0', 
 

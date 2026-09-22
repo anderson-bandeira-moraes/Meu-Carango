@@ -627,7 +627,7 @@
         <!-- Aro do Pneu -->
         <div class="d-flex flex-column gap-1">
             <label for="pneu_aro" class="form-label mb-0 fw-bold text-nowrap" style="width: 130px;">
-                Aro do Pneu <span class="text-danger">*</span>
+                Aro do Pneu
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -642,8 +642,7 @@
                     nome: 'pneu_aro',
                     lista: aros_pneu_list(),
                     valorSalvo: $old['pneu_aro'] ?? $veiculo['pneu_aro'] ?? '',
-                    classes: isset($errors['pneu_aro']) ? 'is-invalid' : '',
-                    attrs: 'required'
+                    classes: isset($errors['pneu_aro']) ? 'is-invalid' : ''
                 );
                 ?>
 
@@ -659,10 +658,6 @@
                        value="<?= htmlspecialchars($pneuAro['valor_outro']) ?>" 
                        placeholder="Digite o aro personalizado" 
                        style="display: <?= $pneuAro['is_outro'] ? 'block' : 'none' ?>;">
-
-                <div class="invalid-feedback fw-bold">
-                    O aro do pneu é obrigatório.
-                </div>
 
                 <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                     Este campo não permite ponto (.) ou vírgula (,)
@@ -874,7 +869,7 @@
         <!-- Volume do porta-malas -->
         <div class="d-flex flex-column gap-1">
             <label for="volume_porta_malas_l_visual" class="form-label mb-0 fw-bold text-nowrap" style="width: 130px;">
-                Porta-malas <span class="text-danger">*</span>
+                Porta-malas
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -894,19 +889,15 @@
                        id="volume_porta_malas_l_visual" 
                        data-mascara-milhar 
                        class="form-control input-border-correction <?= isset($errors['volume_porta_malas_l']) ? 'is-invalid' : '' ?>" 
-                       placeholder="Ex: 450"
-                       required>
+                       placeholder="Ex: 450">
                 <span class="input-group-text">L</span>
-                <div class="invalid-feedback fw-bold">
-                    O volume do porta-malas é obrigatório.
-                </div>
             </div>
         </div>
 
         <!-- Capacidade Tanque -->
         <div class="d-flex flex-column gap-1">
             <label for="capacidade_tanque_l" class="form-label mb-0 fw-bold text-nowrap" style="width: 95px;">
-                Tanque <span class="text-danger">*</span>
+                Tanque
                 <button type="button" 
                         class="btn btn-link btn-sm p-0 text-secondary" 
                         data-bs-toggle="tooltip" 
@@ -919,11 +910,8 @@
                 <input type="text" inputmode="numeric" pattern="\d*" data-tipo="inteiro" name="capacidade_tanque_l" id="capacidade_tanque_l" 
                        class="form-control <?= isset($errors['capacidade_tanque_l']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['capacidade_tanque_l'] ?? $complemento['capacidade_tanque_l'] ?? '') ?>" 
-                       placeholder="Ex: 50" required>
+                       placeholder="Ex: 50">
                 <span class="input-group-text">L</span>
-                <div class="invalid-feedback fw-bold">
-                    O volume do tanque é obrigatório.
-                </div>
                 <div class="invalid-feedback feedback-pontovirgula fw-bold" style="display: none;">
                     Este campo não permite ponto (.) ou vírgula (,)
                 </div>
