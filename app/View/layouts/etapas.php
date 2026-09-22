@@ -1757,6 +1757,35 @@
             // Seleciona todos os campos com data-tipo="inteiro"
             const camposInteiros = document.querySelectorAll('[data-tipo="inteiro"]');
 
+            // ================================================
+            // BLOQUEIO DE CARACTERES EM CAMPOS DECIMAIS
+            // (data-tipo="decimal" — aceita números, ponto e vírgula)
+            // ================================================
+
+            const camposDecimais = document.querySelectorAll('[data-tipo="decimal"]');
+
+            camposDecimais.forEach(function(campo) {
+                // 1. Bloqueia caracteres inválidos antes de serem digitados
+                campo.addEventListener('keydown', function(event) {
+                    if (!isCaracterePermitido(event.key)) {
+                        event.preventDefault();
+                        return;
+                    }
+
+                    // Bloqueia segundo ponto/vírgula se o campo já tem um separador
+                    if ((event.key === '.' || event.key === ',') && /[.,]/.test(this.value)) {
+                        event.preventDefault();
+                    }
+                });
+
+                // 2. Sanitiza colagens / autocomplete / drag-drop
+                campo.addEventListener('input', function() {
+                    this.value = this.value
+                        .replace(/[^0-9.,]/g, '')      // remove tudo que não é número, ponto ou vírgula
+                        .replace(/(?<=[.,].*)[.,]/g, ''); // mantém apenas o primeiro separador
+                });
+            });
+
             if (camposInteiros.length === 0) return;
 
             // Função para validar se o caractere é permitido (número, ponto ou vírgula)

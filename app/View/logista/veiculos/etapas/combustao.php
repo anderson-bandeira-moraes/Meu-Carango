@@ -163,10 +163,10 @@
             </label>
             <div class="has-validation" style="width: 170px;">
                 <div class="input-group">
-                    <input type="number" step="any" inputmode="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="aceleracao_0_100_seg" id="aceleracao_0_100_seg" 
                            class="form-control <?= isset($errors['aceleracao_0_100_seg']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['aceleracao_0_100_seg'] ?? $complemento['aceleracao_0_100_seg'] ?? '') ?>" 
-                           placeholder="Ex: 8.5" min="0">
+                           placeholder="Ex: 8.5">
                     <span class="input-group-text">s</span>
                 </div>
             </div>
@@ -241,10 +241,10 @@
             </label>
             <div class="has-validation" style="width: 170px;">
                 <div class="input-group">
-                    <input type="number" step="any" inputmode="decimal" name="torque_kgfm" id="torque_kgfm" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="torque_kgfm" id="torque_kgfm" 
                            class="form-control <?= isset($errors['torque_kgfm']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['torque_kgfm'] ?? $complemento['torque_kgfm'] ?? '') ?>" 
-                           placeholder="Ex: 18.5" min="0">
+                           placeholder="Ex: 18.5">
                     <span class="input-group-text">kgfm</span>
                 </div>
             </div>
@@ -272,10 +272,10 @@
             </label>
             <div style="width: 170px;">
                 <div class="input-group has-validation">
-                    <input type="number" step="any" inputmode="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="consumo_cidade_kml" id="consumo_cidade_kml" 
                            class="form-control <?= isset($errors['consumo_cidade_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_cidade_kml'] ?? $complemento['consumo_cidade_kml'] ?? '') ?>" 
-                           placeholder="Ex: 12.5" min="0" required>
+                           placeholder="Ex: 12.5" required>
                     <span class="input-group-text">km/l</span>
                     <div class="invalid-feedback fw-bold">
                         O consumo na cidade é obrigatório.
@@ -300,10 +300,10 @@
             </label>
             <div style="width: 170px;">
                 <div class="input-group has-validation">
-                    <input type="number" step="any" inputmode="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="consumo_estrada_kml" id="consumo_estrada_kml" 
                            class="form-control <?= isset($errors['consumo_estrada_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_estrada_kml'] ?? $complemento['consumo_estrada_kml'] ?? '') ?>" 
-                           placeholder="Ex: 15.0" min="0" required>
+                           placeholder="Ex: 15.0" required>
                     <span class="input-group-text">km/l</span>
                     <div class="invalid-feedback fw-bold">
                         O consumo na estrada é obrigatório.
@@ -331,10 +331,10 @@
                     </button>
                 </label>
                 <div class="input-group has-validation" style="width: 170px;">
-                    <input type="number" step="any" inputmode="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="consumo_cidade_etanol_kml" id="consumo_cidade_etanol_kml" 
                            class="form-control <?= isset($errors['consumo_cidade_etanol_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_cidade_etanol_kml'] ?? $complemento['consumo_cidade_etanol_kml'] ?? '') ?>" 
-                           placeholder="Ex: 8.5" min="0" required>
+                           placeholder="Ex: 8.5" required>
                     <span class="input-group-text">km/l</span>
                     <div class="invalid-feedback fw-bold">
                         O consumo na cidade para etanol é obrigatório.
@@ -355,10 +355,10 @@
                     </button>
                 </label>
                 <div class="input-group has-validation" style="width: 170px;">
-                    <input type="number" step="any" inputmode="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
+                    <input type="text" inputmode="decimal" data-tipo="decimal" name="consumo_estrada_etanol_kml" id="consumo_estrada_etanol_kml" 
                            class="form-control <?= isset($errors['consumo_estrada_etanol_kml']) ? 'is-invalid' : '' ?>" 
                            value="<?= htmlspecialchars($old['consumo_estrada_etanol_kml'] ?? $complemento['consumo_estrada_etanol_kml'] ?? '') ?>" 
-                           placeholder="Ex: 10.2" min="0" required>
+                           placeholder="Ex: 10.2" required>
                     <span class="input-group-text">km/l</span>
                     <div class="invalid-feedback fw-bold">
                         O consumo na estrada para etanol é obrigatório.
@@ -858,10 +858,10 @@
                 </button>
             </label>
             <div class="input-group has-validation" style="width: 150px;">
-                <input type="number" step="any" inputmode="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" 
+                <input type="text" inputmode="decimal" data-tipo="decimal" name="peso_ordem_marcha_kg" id="peso_ordem_marcha_kg" 
                        class="form-control input-border-correction <?= isset($errors['peso_ordem_marcha_kg']) ? 'is-invalid' : '' ?>" 
                        value="<?= htmlspecialchars($old['peso_ordem_marcha_kg'] ?? $veiculo['peso_ordem_marcha_kg'] ?? '') ?>" 
-                       min="0" placeholder="Ex: 1200">
+                       placeholder="Ex: 1200">
                 <span class="input-group-text">kg</span>
             </div>
         </div>
