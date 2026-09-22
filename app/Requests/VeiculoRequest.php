@@ -51,20 +51,20 @@ class VeiculoRequest extends FormRequest
             'numero_assentos'=> 'required|integer|between:2,15',
             'carroceria'     => 'required|string|max:30',
             'tipo_direcao'   => 'required|in:mecanica,hidraulica,eletrica,eletro-hidraulica',
-            'pneu_aro'       => 'required|integer|min_num:10|max_num:30',
-            'tipo_roda'      => 'required|in:liga_leve,calota',
-            'freio_dianteiro'=> 'required|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
-            'freio_traseiro' => 'required|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
+            'pneu_aro'       => 'nullable|integer|min_num:10|max_num:30',
+            'tipo_roda'      => 'nullable|in:liga_leve,calota',
+            'freio_dianteiro'=> 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
+            'freio_traseiro' => 'nullable|in:disco_solido,disco_ventilado,disco_perfurado,disco_ranhurado,disco_ventilado_perfurado,tambor',
             'placa'          => 'nullable|max:7|regex:/^[a-zA-Z0-9]+$/',
 
             // ===== DIMENSÕES =====
-            'comprimento_mm'           => 'required|integer|min_num:0',
-            'largura_mm'               => 'required|integer|min_num:0',
-            'altura_mm'                => 'required|integer|min_num:0',
+            'comprimento_mm'           => 'nullable|integer|min_num:0',
+            'largura_mm'               => 'nullable|integer|min_num:0',
+            'altura_mm'                => 'nullable|integer|min_num:0',
             'altura_solo_mm'           => 'nullable|integer|min_num:0', // não obrigatório
-            'distancia_entre_eixos_mm' => 'required|integer|min_num:0',
-            'peso_ordem_marcha_kg'     => 'required|numeric|min_num:0',
-            'volume_porta_malas_l'     => 'required|integer|min_num:0',
+            'distancia_entre_eixos_mm' => 'nullable|integer|min_num:0',
+            'peso_ordem_marcha_kg'     => 'nullable|numeric|min_num:0',
+            'volume_porta_malas_l'     => 'nullable|integer|min_num:0',
             'volume_cacamba_l'         => 'nullable|integer|min_num:0', // condicional
             'carga_util_kg'            => 'nullable|numeric|min_num:0', // não obrigatório
             'capacidade_reboque_kg'    => 'nullable|numeric|min_num:0', // não obrigatório
