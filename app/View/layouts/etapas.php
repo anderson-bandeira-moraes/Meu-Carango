@@ -1528,6 +1528,46 @@
         }
 
         // ============================================================
+        // FUNÇÃO VERIFICAR DADOS PREENCHIDOS
+        // ============================================================
+
+        /**
+         * Verifica se uma etapa tem dados preenchidos ou erros aplicados pelo servidor.
+         * Usado para auto-marcar etapas como visitadas no carregamento inicial
+         * (ex.: retorno de erro após POST).
+         *
+         * @param {number} index - Índice da etapa (0-based)
+         * @returns {boolean}
+         */
+        function etapaTemDadosPreenchidos(index) {
+            const etapa = steps[index];
+            if (!etapa) return false;
+
+            // 1. Tem algum campo com erro aplicado pelo servidor?
+            //    (o backend envia classes ou o JS aplica em algum ponto)
+            if (etapa.querySelector('.is-invalid, .error-pontovirgula')) {
+                return true;
+            }
+
+            // 2. Tem algum campo com valor preenchido?
+            const campos = etapa.querySelectorAll('input:not([type="hidden"]):not([type="file"]), select, textarea');
+
+            for (const campo of campos) {
+                if (campo.disabled) continue;
+
+                if (campo.tagName === 'SELECT') {
+                    if (campo.value !== '' && campo.value !== null) return true;
+                } else if (campo.type === 'checkbox' || campo.type === 'radio') {
+                    if (campo.checked) return true;
+                } else {
+                    if (campo.value.trim() !== '') return true;
+                }
+            }
+
+            return false;
+        }
+
+        // ============================================================
         // FUNÇÃO AVALIAR ETAPA
         // ============================================================
 
@@ -1538,9 +1578,18 @@
          * @returns {string} 'complete' | 'error' | 'default'
          */
         function avaliarEtapa(index) {
-            if (!steps[index] || steps[index].dataset.visited !== 'true') {
+            if (!steps[index]) return 'default';
+
+            // Erro do servidor tem prioridade máxima
+            if (steps[index].querySelector('.is-invalid, .error-pontovirgula')) {
+                return 'error';
+            }
+
+            // Só avalia etapas visitadas
+            if (steps[index].dataset.visited !== 'true') {
                 return 'default';
             }
+
             const resultado = verificarCamposDaEtapa(index);
             if (resultado.temErro) return 'error';
             if (resultado.todosPreenchidos) return 'complete';
@@ -1643,8 +1692,17 @@
                 });
             }
 
-            // Marcar a etapa inicial como visitada
-            marcarComoVisitada(0);
+            // Verificar se o formulário está no estado de pós-erro do servidor
+            const isReturnFromError = <?= json_encode($isReturnFromError ?? false) ?>;
+
+            // Define quais etapas são consideradas "visitadas" no carregamento:
+            // - Retorno de erro: todas as etapas (o usuário já interagiu com o form antes de submeter)
+            // - Entrada fresca: apenas a etapa 0
+            if (isReturnFromError) {
+                steps.forEach(el => el.dataset.visited = 'true');
+            } else {
+                marcarComoVisitada(0);
+            }
 
             // Atualiza o stepper para refletir o estado inicial (e aplica o 'active')
             atualizarStepper();

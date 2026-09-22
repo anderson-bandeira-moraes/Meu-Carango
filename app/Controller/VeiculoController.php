@@ -283,6 +283,7 @@ class VeiculoController
                 'tipo' => $tipo,          
                 'action' => '/logista/veiculos/salvar',
                 'error' => $error,
+                'isReturnFromError' => !empty($old),
             ]
         );
     }
