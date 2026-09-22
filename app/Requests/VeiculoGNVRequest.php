@@ -260,13 +260,10 @@ class VeiculoGNVRequest extends FormRequest
  * 
  * 1. VALIDAÇÃO DECLARATIVA (rules())
  *    - Define regras por campo (obrigatoriedade, tipo, valores permitidos)
- *    - Campos obrigatórios: tipo_sistema, geracao_kit, capacidade_cilindro_m3,
+ *    - Campos obrigatórios: geracao_kit, capacidade_cilindro_m3,
  *      quantidade_cilindros, localizacao_cilindro
- *    - Campos opcionais (nullable): marca_kit, datas, consumos, autonomias,
- *      documentação, instaladora, observações
- *    - Usa `in` para campos com valores fixos (ex: GNC, GLP)
- *    - Usa `date` para campos de data
- *    - Autonomias são `integer` (km), capacidade e consumo são `numeric`
+ *    - Campos opcionais (nullable): tipo_sistema, marca_kit, datas, consumos,
+ *      autonomias, documentação, instaladora, observações
  * 
  * 2. MENSAGENS PERSONALIZADAS (messages())
  *    - Mensagens para cada regra de cada campo
