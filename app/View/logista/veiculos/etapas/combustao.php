@@ -1,43 +1,54 @@
 <!-- ============================================================ -->
-<!-- STEPPER: Navegação direta entre etapas (Combustão - 6 etapas) -->
+<!-- CABEÇALHO FIXO: Header + Stepper                              -->
 <!-- ============================================================ -->
-<div id="stepperContainer" class="stepper-wrapper d-flex align-items-center justify-content-between mb-4">
-    <!-- 1. Informações Básicas -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="0" data-bs-toggle="tooltip" title="Informações Básicas">1</div>
+<div class="sticky-wizard-top">
+    <!-- Cabeçalho do wizard -->
+    <div class="wizard-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
+            <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
+        </div>
     </div>
-    <div class="stepper-connector"></div>
 
-    <!-- 2. Motor -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="1" data-bs-toggle="tooltip" title="Motorização, Desempenho e Consumo">2</div>
-    </div>
-    <div class="stepper-connector"></div>
+    <!-- Stepper: Navegação direta entre etapas (Combustão - 6 etapas) -->
+    <div id="stepperContainer" class="stepper-wrapper d-flex align-items-center justify-content-between mb-4">
+        <!-- 1. Informações Básicas -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="0" data-bs-toggle="tooltip" title="Informações Básicas">1</div>
+        </div>
+        <div class="stepper-connector"></div>
 
-    <!-- 3. Chassi -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="2" data-bs-toggle="tooltip" title="Tração, Suspensão e Rodas">3</div>
-    </div>
-    <div class="stepper-connector"></div>
+        <!-- 2. Motor -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="1" data-bs-toggle="tooltip" title="Motorização, Desempenho e Consumo">2</div>
+        </div>
+        <div class="stepper-connector"></div>
 
-    <!-- 4. Dimensões -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="3" data-bs-toggle="tooltip" title="Dimensões, Peso e Portas">4</div>
-    </div>
-    <div class="stepper-connector"></div>
+        <!-- 3. Chassi -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="2" data-bs-toggle="tooltip" title="Tração, Suspensão e Rodas">3</div>
+        </div>
+        <div class="stepper-connector"></div>
 
-    <!-- 5. Opcionais -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="4" data-bs-toggle="tooltip" title="Opcionais">5</div>
-    </div>
-    <div class="stepper-connector"></div>
+        <!-- 4. Dimensões -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="3" data-bs-toggle="tooltip" title="Dimensões, Peso e Portas">4</div>
+        </div>
+        <div class="stepper-connector"></div>
 
-    <!-- 6. GNV -->
-    <div class="stepper-item d-flex flex-column align-items-center">
-        <div class="stepper-circle" data-index="5" data-bs-toggle="tooltip" title="GNV">6</div>
+        <!-- 5. Opcionais -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="4" data-bs-toggle="tooltip" title="Opcionais">5</div>
+        </div>
+        <div class="stepper-connector"></div>
+
+        <!-- 6. GNV -->
+        <div class="stepper-item d-flex flex-column align-items-center">
+            <div class="stepper-circle" data-index="5" data-bs-toggle="tooltip" title="GNV">6</div>
+        </div>
     </div>
 </div>
-<!-- FIM STEPPER -->
+<!-- FIM CABEÇALHO FIXO -->
 
 <!-- ============================================================ -->
 <!-- ETAPAS PARA COMBUSTÃO                                        -->
@@ -1181,7 +1192,7 @@
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="invalid-feedback fw-bold">A quantidade é obrigatória.</div>
+                    <div class="invalid-feedback fw-bold">O número é obrigatório.</div>
                 </div>
             </div>
 

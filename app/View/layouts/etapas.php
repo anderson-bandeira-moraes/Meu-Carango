@@ -11,6 +11,8 @@
  *   - $veiculoId   : int     ID do veículo (na edição)
  *   - $error       : string  Mensagem de erro (opcional)
  */
+
+$error = "MENSAGEM DE ERRO GENERICA.";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -24,244 +26,255 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=car_gear,readiness_score,local_gas_station,search_hands_free,auto_transmission,emoji_transportation,tire_repair,border_style,square_foot,airline_seat_recline_extra,nest_eco_leaf,traffic_jam,car_tag,propane,eco,pan_tool_alt" />
 
     
-        <style>
-            body {
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
-            footer {
-                margin-top: auto;
-            }
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-            /* Efeito de zoom nos cards do dashboard */
-            .card-zoom {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
+        /* Efeito de zoom nos cards do dashboard */
+        .card-zoom {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-            .card-zoom:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
-            }
+        .card-zoom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
+        }
 
-            /* Estilos para a lista de itens */
-            .lista-items .item-lista {
-                padding: 10px 15px;
-                border-bottom: 1px solid #eee;
-                cursor: pointer;
-                transition: background 0.2s;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-            .lista-items .item-lista:hover {
-                background-color: #dfe0e1;
-            }
-            .lista-items .item-lista.selecionado {
-                background-color: #cfdae5;
-                border-left: 4px solid #0d6efd;
-            }
-            .lista-items .item-lista img {
-                width: 40px;
-                height: 40px;
-                object-fit: contain;
-                border-radius: 4px;
-                background: #f8f9fa;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-            }
-            .lista-items .item-lista .nome {
-                font-weight: 600;
-            }
+        /* Estilos para a lista de itens */
+        .lista-items .item-lista {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .lista-items .item-lista:hover {
+            background-color: #dfe0e1;
+        }
+        .lista-items .item-lista.selecionado {
+            background-color: #cfdae5;
+            border-left: 4px solid #0d6efd;
+        }
+        .lista-items .item-lista img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 4px;
+            background: #f8f9fa;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+        .lista-items .item-lista .nome {
+            font-weight: 600;
+        }
 
-            /* Overlay de edição nos cards de resumo */
-            .resumo-card {
-                position: relative;
-                transition: transform 0.2s;
-            }
-            .resumo-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
-            }
-            .resumo-card .editar-overlay {
-                position: absolute;
-                top: 8px;
-                right: 12px;
-                opacity: 0;
-                transition: opacity 0.2s;
-            }
-            .resumo-card:hover .editar-overlay {
-                opacity: 1;
-            }
-            .resumo-card .editar-overlay i {
-                font-size: 1.2rem;
-                background: white;
-                padding: 4px 6px;
-                border-radius: 50%;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
+        /* Overlay de edição nos cards de resumo */
+        .resumo-card {
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .resumo-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+        .resumo-card .editar-overlay {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .resumo-card:hover .editar-overlay {
+            opacity: 1;
+        }
+        .resumo-card .editar-overlay i {
+            font-size: 1.2rem;
+            background: white;
+            padding: 4px 6px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-            /* Badge de exibição no formulário */
-            .brand-model-display .badge {
-                font-size: 1rem;
-                padding: 0.6rem 1rem;
-            }
+        /* Badge de exibição no formulário */
+        .brand-model-display .badge {
+            font-size: 1rem;
+            padding: 0.6rem 1rem;
+        }
 
-            /* Remove setas do Chrome, Safari, Edge, Opera */
-            input[type="number"]::-webkit-inner-spin-button,
-            input[type="number"]::-webkit-outer-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
+        /* Remove setas do Chrome, Safari, Edge, Opera */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-            /* Remove setas do Firefox */
-            input[type="number"] {
-                -moz-appearance: textfield;
-            }
+        /* Remove setas do Firefox */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
 
-            /* ============================================================ */
-            /* STEPPER - Navegação direta entre etapas                      */
-            /* ============================================================ */
+        /* ============================================================ */
+        /* STEPPER - Navegação direta entre etapas                      */
+        /* ============================================================ */
 
-            .stepper-wrapper {
-                gap: 0; /* espaçamento gerenciado pelos conectores */
-                padding: 0 10px; /* pequeno respiro nas bordas */
-            }
+        .stepper-wrapper {
+            gap: 0; /* espaçamento gerenciado pelos conectores */
+            padding: 0 10px; /* pequeno respiro nas bordas */
+        }
 
-            /* Cada item (círculo + possível label) */
-            .stepper-item {
-                flex-shrink: 0; /* impede encolhimento */
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
+        /* Cada item (círculo + possível label) */
+        .stepper-item {
+            flex-shrink: 0; /* impede encolhimento */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-            /* Círculo base (neutro) */
-            .stepper-circle {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background-color: #e9ecef; /* cinza claro (neutro) */
-                color: #6c757d; /* cinza escuro */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                font-size: 0.9rem;
-                cursor: pointer;
-                transition: background-color 0.3s ease, transform 0.2s ease, border 0.2s ease;
-                border: 3px solid transparent; /* reserva espaço para a borda ativa */
-                user-select: none;
-            }
+        /* Círculo base (neutro) */
+        .stepper-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef; /* cinza claro (neutro) */
+            color: #6c757d; /* cinza escuro */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, border 0.2s ease;
+            border: 3px solid transparent; /* reserva espaço para a borda ativa */
+            user-select: none;
+        }
 
-            /* Hover (melhora a experiência) */
-            .stepper-circle:hover {
-                transform: scale(1.05);
-                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
-            }
+        /* Hover (melhora a experiência) */
+        .stepper-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        }
 
-            /* ---------- Estados ---------- */
+        /* ---------- Estados ---------- */
 
-            /* Completo (verde) */
-            .stepper-circle.complete {
-                background-color: var(--bs-success, #28a745);
-                color: white;
-            }
+        /* Completo (verde) */
+        .stepper-circle.complete {
+            background-color: var(--bs-success, #28a745);
+            color: white;
+        }
 
-            /* Erro (vermelho) */
-            .stepper-circle.error {
-                background-color: var(--bs-danger, #dc3545);
-                color: white;
-            }
+        /* Erro (vermelho) */
+        .stepper-circle.error {
+            background-color: var(--bs-danger, #dc3545);
+            color: white;
+        }
 
-            /* Ativo (etapa atual) – borda azul + leve escala */
-            .stepper-circle.active {
-                border-color: var(--bs-primary, #0d6efd);
-                transform: scale(1.1);
-            }
+        /* Ativo (etapa atual) – borda azul + leve escala */
+        .stepper-circle.active {
+            border-color: var(--bs-primary, #0d6efd);
+            transform: scale(1.1);
+        }
 
-            /* ---------- Conectores (linhas entre círculos) ---------- */
-            .stepper-connector {
-                flex: 1;
-                height: 2px;
-                background-color: #d1d5db; /* cinza claro */
-                margin: 0 8px;
-                transition: background-color 0.3s ease;
-                min-width: 10px; /* evita sumir em telas muito pequenas */
-            }
+        /* ---------- Conectores (linhas entre círculos) ---------- */
+        .stepper-connector {
+            flex: 1;
+            height: 2px;
+            background-color: #d1d5db; /* cinza claro */
+            margin: 0 8px;
+            transition: background-color 0.3s ease;
+            min-width: 10px; /* evita sumir em telas muito pequenas */
+        }
 
-            .wizard-step {
-                display: none;
-            }
-            .wizard-step.is-active {
-                display: block;
-            }
+        .wizard-step {
+            display: none;
+        }
+        .wizard-step.is-active {
+            display: block;
+        }
 
-            .material-symbols-outlined {
-                vertical-align: text-bottom;
-                line-height: 1;
-            }
+        .material-symbols-outlined {
+            vertical-align: text-bottom;
+            line-height: 1;
+        }
 
-            .input-group-text {
-                border-top-right-radius: 0.375rem !important; 
-                border-bottom-right-radius: 0.375rem !important;
-            }
+        .input-group-text {
+            border-top-right-radius: 0.375rem !important; 
+            border-bottom-right-radius: 0.375rem !important;
+        }
 
-            .input-border-correction {
-                border-top-left-radius: 0.375rem !important; 
-                border-bottom-left-radius: 0.375rem !important; 
-                border-top-right-radius: 0 !important; 
-                border-bottom-right-radius: 0 !important;
-            }
+        .input-border-correction {
+            border-top-left-radius: 0.375rem !important; 
+            border-bottom-left-radius: 0.375rem !important; 
+            border-top-right-radius: 0 !important; 
+            border-bottom-right-radius: 0 !important;
+        }
 
-            .cacamba-hidden {
-                display: none !important;
-            }
+        .cacamba-hidden {
+            display: none !important;
+        }
 
-            .marchas-hidden {
-                display: none !important;
-            }
+        .marchas-hidden {
+            display: none !important;
+        }
 
-            .icon-hand-right {
-                display: inline-block;
-                transform: rotate(90deg);
-            }
-        </style>
+        .icon-hand-right {
+            display: inline-block;
+            transform: rotate(90deg);
+        }
+
+        /* ============================================================ */
+        /* CABEÇALHO FIXO: Header + Stepper                             */
+        /* ============================================================ */
+        .sticky-wizard-top {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            background-color: #fff;
+            box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ============================================================ */
+        /* RODAPÉ FIXO                                                   */
+        /* ============================================================ */
+        .wizard-footer {
+            position: sticky;
+            bottom: 0;
+            z-index: 1020;
+            background-color: #fff;
+            box-shadow: 0 -4px 6px -4px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ============================================================ */
+        /* LAYOUT DO FORM (para o footer grudar no fundo em etapas curtas) */
+        /* ============================================================ */
+        #veiculoForm {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #wizard-container {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid py-4" style="padding-left: 10rem; padding-right: 10rem;">
-        <!-- Cabeçalho do wizard -->
-        <div class="wizard-header mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2><?= htmlspecialchars($title ?? 'Cadastrar Veículo') ?></h2>
-                <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
-            </div>
-            
-            <!-- Barra de progresso -->
-            <div class="progress mt-2" style="height: 8px;">
-                <div id="progress-bar" class="progress-bar progress-bar-striped" 
-                     role="progressbar" style="width: 0%;" 
-                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                </div>
-            </div>
-            
-            <!-- Lista de etapas (opcional) -->
-            <div class="step-labels d-flex justify-content-between mt-2 small text-muted" id="step-labels">
-                <!-- Preenchido via JavaScript -->
-            </div>
-        </div>
-
-        <!-- Mensagem de erro (flash) -->
-        <?php if (!empty($error)): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i> <?= nl2br(htmlspecialchars($error)) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        <?php endif; ?>
-
+    <div class="container-fluid">
         <!-- Formulário -->
         <form id="veiculoForm" action="<?= $action ?>" method="POST" enctype="multipart/form-data" novalidate>
             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
             <input type="hidden" name="tipo_veiculo" value="<?= htmlspecialchars($tipo) ?>">
+
+            <!-- Mensagem de erro (flash) -->
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i> <?= nl2br(htmlspecialchars($error)) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            <?php endif; ?>
 
             <!-- Container das etapas (o conteúdo vem da view específica) -->
             <div id="wizard-container">
@@ -269,7 +282,7 @@
             </div>
 
             <!-- Rodapé com botões de navegação -->
-            <div class="wizard-footer d-flex justify-content-between mt-4 pt-3 border-top">
+            <div class="wizard-footer d-flex justify-content-between pt-3">
                 <button type="button" class="btn btn-outline-secondary" id="btnAnterior" disabled>
                     <i class="bi bi-arrow-left"></i> Anterior
                 </button>
@@ -1292,6 +1305,9 @@
             currentStep = index;
             atualizarProgresso();
             atualizarBotoes();
+
+            // Rola para o topo ao trocar de etapa — o cabeçalho sticky volta a ficar visível
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function proximaEtapa() {
@@ -1641,23 +1657,12 @@
         function atualizarProgresso() {
             const total = steps.length;
             const atual = currentStep + 1;
-            const percentual = (atual / total) * 100;
-
-            // Atualiza barra de progresso
-            const barra = document.getElementById('progress-bar');
-            if (barra) {
-                barra.style.width = percentual + '%';
-                barra.setAttribute('aria-valuenow', percentual);
-            }
 
             // Atualiza indicador "Etapa X de Y"
             const indicador = document.getElementById('step-indicator');
             if (indicador) {
                 indicador.textContent = `Etapa ${atual} de ${total}`;
             }
-
-            // (Opcional) Atualiza labels das etapas
-            // ...
         }
 
         function atualizarBotoes() {
@@ -1803,7 +1808,7 @@
                     this.value = this.value.replace(/[.,]$/, '');
                 });
             });
-            
+
             if (camposInteiros.length === 0) return;
 
             // Função para validar se o caractere é permitido (número, ponto ou vírgula)
