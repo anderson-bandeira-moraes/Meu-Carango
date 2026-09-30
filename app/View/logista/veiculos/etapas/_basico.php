@@ -13,7 +13,7 @@
             <!-- Área de exibição (badges + botão "Selecionar") -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">car_tag</span> Marca e Modelo</h5>
+                    <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">car_tag</span> Marca e Modelo <span class="text-danger">*</span></h5>
                 </div>
                 <div class="card-body">
                     <div class="row align-items-center">

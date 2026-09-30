@@ -1765,27 +1765,45 @@
             const camposDecimais = document.querySelectorAll('[data-tipo="decimal"]');
 
             camposDecimais.forEach(function(campo) {
-                // 1. Bloqueia caracteres inválidos antes de serem digitados
+                // 1. Bloqueia caracteres inválidos e separador como primeiro caractere
                 campo.addEventListener('keydown', function(event) {
                     if (!isCaracterePermitido(event.key)) {
                         event.preventDefault();
                         return;
                     }
 
-                    // Bloqueia segundo ponto/vírgula se o campo já tem um separador
+                    // Bloqueia segundo separador
                     if ((event.key === '.' || event.key === ',') && /[.,]/.test(this.value)) {
+                        event.preventDefault();
+                        return;
+                    }
+
+                    // Bloqueia separador como primeiro caractere (força digitar 0.5)
+                    if ((event.key === '.' || event.key === ',') && this.value === '') {
                         event.preventDefault();
                     }
                 });
 
-                // 2. Sanitiza colagens / autocomplete / drag-drop
+                // 2. Sanitiza + auto-corrige (cobre colagem, autocomplete, drag-drop)
                 campo.addEventListener('input', function() {
-                    this.value = this.value
-                        .replace(/[^0-9.,]/g, '')      // remove tudo que não é número, ponto ou vírgula
-                        .replace(/(?<=[.,].*)[.,]/g, ''); // mantém apenas o primeiro separador
+                    let valor = this.value
+                        .replace(/[^0-9.,]/g, '')          // remove tudo que não é dígito, ponto ou vírgula
+                        .replace(/(?<=[.,].*)[.,]/g, '');  // mantém apenas o primeiro separador
+
+                    // Separador no início → prepende "0" (ex: ".5" → "0.5")
+                    if (/^[.,]/.test(valor)) {
+                        valor = '0' + valor;
+                    }
+
+                    this.value = valor;
+                });
+
+                // 3. Ao sair do campo, remove separador pendurado no fim (ex: "1." → "1")
+                campo.addEventListener('blur', function() {
+                    this.value = this.value.replace(/[.,]$/, '');
                 });
             });
-
+            
             if (camposInteiros.length === 0) return;
 
             // Função para validar se o caractere é permitido (número, ponto ou vírgula)
