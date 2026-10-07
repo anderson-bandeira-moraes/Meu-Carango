@@ -36,7 +36,6 @@
             max-width: min(90rem, 92vw);
             margin-inline: auto;
             padding-inline: clamp(1.5rem, 4vw, 4rem);
-            padding-top: clamp(1.5rem, 3vh, 3rem);
         }
 
         /* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
@@ -245,6 +244,7 @@
             z-index: 1020;
             background-color: #fff;
             box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.12);
+            padding-top: clamp(1.5rem, 3vh, 3rem);
         }
 
         /* ============================================================ */
