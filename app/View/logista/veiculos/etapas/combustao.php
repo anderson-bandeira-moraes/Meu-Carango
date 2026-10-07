@@ -4,7 +4,7 @@
 <div class="sticky-wizard-top">
     <!-- Cabeçalho do wizard -->
     <div class="wizard-header">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mb-2">
             <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
             <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
         </div>

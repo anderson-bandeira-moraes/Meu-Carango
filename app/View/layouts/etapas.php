@@ -256,6 +256,7 @@
             z-index: 1020;
             background-color: #fff;
             box-shadow: 0 -4px 6px -4px rgba(0, 0, 0, 0.12);
+            padding-block: clamp(1.5rem, 3vh, 3rem);
         }
 
         /* ============================================================ */
@@ -293,7 +294,7 @@
             </div>
 
             <!-- Rodapé com botões de navegação -->
-            <div class="wizard-footer d-flex justify-content-between pt-3">
+            <div class="wizard-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-outline-secondary" id="btnAnterior" disabled>
                     <i class="bi bi-arrow-left"></i> Anterior
                 </button>
