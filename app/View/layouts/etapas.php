@@ -11,8 +11,6 @@
  *   - $veiculoId   : int     ID do veículo (na edição)
  *   - $error       : string  Mensagem de erro (opcional)
  */
-
-$error = "MENSAGEM DE ERRO GENERICA.";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -31,6 +29,18 @@ $error = "MENSAGEM DE ERRO GENERICA.";
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        /* COLUNA CENTRALIZADA DO WIZARD */
+        .wizard-page {
+            max-width: min(90rem, 92vw);
+            margin-inline: auto;
+            padding-inline: clamp(1.5rem, 4vw, 4rem);
+        }
+
+        /* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
+        .sticky-wizard-top + .wizard-step {
+            margin-top: 3rem;
         }
 
         /* Efeito de zoom nos cards do dashboard */
@@ -262,7 +272,7 @@ $error = "MENSAGEM DE ERRO GENERICA.";
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid wizard-page">
         <!-- Formulário -->
         <form id="veiculoForm" action="<?= $action ?>" method="POST" enctype="multipart/form-data" novalidate>
             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
