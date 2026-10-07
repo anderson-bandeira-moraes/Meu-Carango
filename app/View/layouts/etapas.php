@@ -36,6 +36,7 @@
             max-width: min(90rem, 92vw);
             margin-inline: auto;
             padding-inline: clamp(1.5rem, 4vw, 4rem);
+            padding-top: clamp(1.5rem, 3vh, 3rem);
         }
 
         /* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
