@@ -255,6 +255,13 @@ class VeiculoController
             $modelosData[$modelo['id']] = $modelo['nome'];
         }
 
+        // Mapeamento de slug técnico para label de exibição
+        $tiposLabel = [
+            'combustao' => 'Veículo a Combustão',
+            'eletrico'  => 'Veículo Elétrico',
+            'hibrido'   => 'Veículo Híbrido',
+        ];
+
         // 5. Renderiza a view específica para o tipo
         return $this->view->renderWithLayout(
             'logista/veiculos/etapas/combustao',
@@ -270,13 +277,13 @@ class VeiculoController
                 'isEdit' => false,
                 'tipo' => $tipo,
                 // Dados para o layout
-                'titulo' => 'Cadastrar Veículo - ' . ucfirst($tipo),
+                'title' => 'Cadastrar ' . ($tiposLabel[$tipo] ?? ucfirst($tipo)),
                 'action' => '/logista/veiculos/salvar',
                 'error' => $error,
             ],
             'layouts/etapas', 
             [
-                'title' => 'Cadastrar Veículo - ' . ucfirst($tipo),
+                'title' => 'Cadastrar ' . ($tiposLabel[$tipo] ?? ucfirst($tipo)),
                 'marcas' => $marcas,
                 'modelos' => $modelosData,
                 'isEdit' => false,        

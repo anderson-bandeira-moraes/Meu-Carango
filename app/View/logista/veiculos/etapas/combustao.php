@@ -1,11 +1,11 @@
 <!-- ============================================================ -->
 <!-- CABEÇALHO FIXO: Header + Stepper                              -->
 <!-- ============================================================ -->
-<div class="sticky-wizard-top">
+<div class="sticky-wizard-top px-1">
     <!-- Cabeçalho do wizard -->
     <div class="wizard-header">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2><?= htmlspecialchars($titulo ?? 'Cadastrar Veículo') ?></h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><?= htmlspecialchars($title ?? 'Cadastrar Veículo') ?></h2>
             <span class="badge bg-secondary" id="step-indicator">Carregando...</span>
         </div>
     </div>
@@ -1059,7 +1059,7 @@
                                                            class="form-check-input" 
                                                            id="opcional_<?= $opcional['id'] ?>"
                                                            <?= (in_array($opcional['id'], $opcionais_selecionados ?? [])) ? 'checked' : '' ?>>
-                                                    <label class="form-check-label fw-bold" for="opcional_<?= $opcional['id'] ?>">
+                                                    <label class="form-check-label" for="opcional_<?= $opcional['id'] ?>">
                                                         <?= htmlspecialchars($opcional['nome']) ?>
                                                     </label>
                                                 </div>
