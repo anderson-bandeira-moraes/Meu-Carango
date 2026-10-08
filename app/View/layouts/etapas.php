@@ -1406,9 +1406,9 @@
             }
 
             // ===== VALIDAÇÃO CUSTOMIZADA: COR =====
-            const corSelecionada = document.getElementById('corSelecionada');
-            const corInput = document.getElementById('corInput');
-            const corOutro = document.getElementById('cor_outro');
+            const corSelecionada = etapaAtual.querySelector('#corSelecionada');
+            const corInput = etapaAtual.querySelector('#corInput');
+            const corOutro = etapaAtual.querySelector('#cor_outro');
 
             if (corSelecionada && corInput) {
                 const valorCor = corSelecionada.value;
@@ -1443,36 +1443,42 @@
                 }
             }
 
-            // ===== VALIDAÇÃO CUSTOMIZADA: MARCA E MODELO =====
-            const marcaId = document.getElementById('marca_id').value;
-            const modeloId = document.getElementById('modelo_id').value;
-            const feedbackEl = document.getElementById('marcaModeloFeedback');
-            const marcaBadge = document.getElementById('marcaDisplay');
-            const modeloBadge = document.getElementById('modeloDisplay');
+            // ===== VALIDAÇÃO CUSTOMIZADA: MARCA E MODELO (apenas se os campos pertencem à etapa atual) =====
+            const marcaIdEl = etapaAtual.querySelector('#marca_id');
+            const modeloIdEl = etapaAtual.querySelector('#modelo_id');
+            const feedbackEl = etapaAtual.querySelector('#marcaModeloFeedback');
+            const marcaBadge = etapaAtual.querySelector('#marcaDisplay');
+            const modeloBadge = etapaAtual.querySelector('#modeloDisplay');
 
-            let marcaModeloValido = true;
+            // Só roda se os campos de marca/modelo pertencem a esta etapa
+            if (marcaIdEl && modeloIdEl && feedbackEl && marcaBadge && modeloBadge) {
+                const marcaId = marcaIdEl.value;
+                const modeloId = modeloIdEl.value;
 
-            if (!marcaId) {
-                marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
-                marcaModeloValido = false;
-            } else {
-                marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
-            }
+                let marcaModeloValido = true;
 
-            if (!modeloId) {
-                modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
-                marcaModeloValido = false;
-            } else {
-                modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
-            }
+                if (!marcaId) {
+                    marcaBadge.classList.add('badge-danger', 'border', 'border-danger');
+                    marcaModeloValido = false;
+                } else {
+                    marcaBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                }
 
-            if (!marcaModeloValido) {
-                feedbackEl.style.display = 'block';
-                feedbackEl.classList.add('d-block');
-                valido = false;
-            } else {
-                feedbackEl.style.display = 'none';
-                feedbackEl.classList.remove('d-block');
+                if (!modeloId) {
+                    modeloBadge.classList.add('badge-danger', 'border', 'border-danger');
+                    marcaModeloValido = false;
+                } else {
+                    modeloBadge.classList.remove('badge-danger', 'border', 'border-danger');
+                }
+
+                if (!marcaModeloValido) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.classList.add('d-block');
+                    valido = false;
+                } else {
+                    feedbackEl.style.display = 'none';
+                    feedbackEl.classList.remove('d-block');
+                }
             }
 
             // ===== SE HOUVER ERRO, ROLA ATÉ O PRIMEIRO CAMPO INVÁLIDO =====
