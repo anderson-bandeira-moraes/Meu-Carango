@@ -263,7 +263,7 @@
             z-index: 1020;
             background-color: #fff;
             border-top: 1px solid #e9ecef;
-            padding-block: clamp(1.5rem, 3vh, 3rem);
+            padding-block: clamp(1rem, 2vh, 1.5rem);
             box-shadow: 0 -5px 7px -4px rgba(0, 0, 0, 0);
             transition: box-shadow 0.7s ease;
         }
@@ -309,16 +309,16 @@
 
             <!-- Rodapé com botões de navegação -->
             <div class="wizard-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-outline-secondary" id="btnAnterior" disabled>
-                    <i class="bi bi-arrow-left"></i> Anterior
+                <button type="button" class="btn btn-warning btn-sm" id="btnAnterior" disabled>
+                    <i class="bi bi-arrow-left me-1"></i>Anterior
                 </button>
                 
-                <button type="button" class="btn btn-primary" id="btnProximo">
-                    Próximo <i class="bi bi-arrow-right"></i>
+                <button type="button" class="btn btn-primary btn-sm" id="btnProximo">
+                    Próximo<i class="bi bi-arrow-right ms-1"></i>
                 </button>
 
-                <button type="button" class="btn btn-success" id="btnSalvar" disabled>
-                    <i class="bi bi-check-lg me-1"></i> Salvar
+                <button type="button" class="btn btn-success btn-sm" id="btnSalvar" disabled>
+                    <i class="bi bi-check-lg me-1"></i>Salvar
                 </button>
             </div>
         </form>
@@ -1331,6 +1331,7 @@
             currentStep = index;
             atualizarProgresso();
             atualizarBotoes();
+            atualizarStepper();
 
             // Rola para o topo ao trocar de etapa — o cabeçalho sticky volta a ficar visível
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1701,7 +1702,7 @@
                 btnAnterior.disabled = (currentStep === 0);
             }
             if (btnProximo) {
-                btnProximo.innerHTML = 'Próximo <i class="bi bi-arrow-right"></i>';
+                btnProximo.innerHTML = 'Próximo <i class="bi bi-arrow-right ms-1"></i>';
             }
         }
 

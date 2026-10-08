@@ -4,6 +4,12 @@
 <!-- ETAPA: BÁSICO                                                -->
 <!-- ============================================================ -->
 <div class="wizard-step is-active" data-step="basico" data-label="Informações Básicas">
+
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-5">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Informações Básicas</span>
+    </div>
+
     <div class="d-flex flex-wrap gap-3">
 
         <!-- ========================================================== -->
@@ -196,7 +202,7 @@
                        value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>" 
                        placeholder="Selecione" readonly>
                 <!-- Swatch de cor -->
-                <span id="corSwatch" class="input-group-text p-1" style="display: none; width: 38px; background: white; border-left: 0;">
+                <span id="corSwatch" class="input-group-text p-1" style="display: none; width: 38px; border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; background: white; border-left: 0;">
                     <span id="corSwatchInner" style="display: block; width: 28px; height: 28px; border-radius: 4px; border: 1px solid #ccc;"></span>
                 </span>
                 <button class="btn btn-outline-secondary border" style="border-top-right-radius: 0.375rem !important; border-bottom-right-radius: 0.375rem !important;" type="button" id="btnAbrirCores">
@@ -211,7 +217,7 @@
             <input type="hidden" name="cor" id="corSelecionada" value="<?= htmlspecialchars($old['cor'] ?? $veiculo['cor'] ?? '') ?>">
 
             <!-- Dropdown com a lista de cores -->
-            <div id="dropdownCores" class="border rounded shadow-sm mt-1" style="display: none; max-height: 200px; overflow-y: auto; position: relative; z-index: 1000; background: white; width: 170px;">
+            <div id="dropdownCores" class="border rounded shadow-sm mt-1" style="display: none; max-height: 200px; overflow-y: auto; position: relative; z-index: 1000; background: white; width: 210px;">
                 <div class="p-1">
                     <?php
                     $cores = cores_list();

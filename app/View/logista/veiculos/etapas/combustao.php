@@ -61,6 +61,11 @@
 <!-- ETAPA: MOTOR (Combustível, Desempenho e Consumo)             -->
 <!-- ============================================================ -->
 <div class="wizard-step" data-step="motor" data-label="Motor">
+
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-4">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Motorização, Desempenho e Consumo</span>
+    </div>
     
     <!-- ===== SEÇÃO 1: MOTORIZAÇÃO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">car_gear</span> Motorização</h5>
@@ -385,6 +390,11 @@
 <!-- ============================================================ -->
 <div class="wizard-step" data-step="chassi" data-label="Chassi">
 
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-4">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Transmissão, Suspensão e Rodas</span>
+    </div>
+
     <!-- ===== SEÇÃO 1: DIREÇÃO ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">search_hands_free</span> Direção</h5>
     <div class="d-flex flex-wrap gap-3">
@@ -707,6 +717,11 @@
 <!-- ============================================================ -->
 <div class="wizard-step" data-step="dimensoes" data-label="Dimensões">
 
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-4">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Dimensões, Portas e Assentos</span>
+    </div>
+
     <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
     <h5 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">border_style</span> Dimensões Externas</h5>
     <div class="d-flex flex-wrap gap-3">
@@ -1019,8 +1034,16 @@
     </div>
 </div>
 
-<!-- Etapa 10: Opcionais (comum) -->
+<!-- ============================================================ -->
+<!-- ETAPA: OPCIONAIS                                             -->
+<!-- ============================================================ -->
 <div class="wizard-step" data-step="opcionais" data-label="Opcionais">
+
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-5">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Opcionais do Veículo</span>
+    </div>
+
     <div class="card shadow-sm my-4">
         <div class="card-header bg-light">
             <h5 class="mb-0 fw-bold"><span class="material-symbols-outlined text-primary">traffic_jam</span> Opcionais</h5>
@@ -1049,7 +1072,7 @@
                                  aria-labelledby="heading_<?= $i ?>" 
                                  data-bs-parent="#accordionOpcionais">
                                 <div class="accordion-body">
-                                    <div class="row g-2">
+                                    <div class="row g-2 py-2">
                                         <?php foreach ($opcionais as $opcional): ?>
                                             <div class="col-md-4 col-lg-3">
                                                 <div class="form-check">
@@ -1082,6 +1105,12 @@
     <!-- ========================================================== -->
     <!-- GNV - Possui GNV?                                          -->
     <!-- ========================================================== -->
+
+    <!-- Título da etapa (canto superior direito) -->
+    <div class="d-flex justify-content-end mb-4">
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Kit GNV</span>
+    </div>
+
     <h4 class="mb-3 fw-bold"><span class="material-symbols-outlined text-primary">propane</span> GNV</h4>
     <div class="d-flex flex-wrap gap-3">
         <!-- GNV -->
