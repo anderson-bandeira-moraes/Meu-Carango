@@ -262,8 +262,14 @@
             bottom: 0;
             z-index: 1020;
             background-color: #fff;
-            border-top: 1px solid #d5d8db;
+            border-top: 1px solid #e9ecef;
             padding-block: clamp(1.5rem, 3vh, 3rem);
+            box-shadow: 0 -4px 6px -4px rgba(0, 0, 0, 0);
+            transition: box-shadow 0.7s ease;
+        }
+
+        .wizard-footer.is-scrolled {
+            box-shadow: 0 -4px 6px -4px rgba(0, 0, 0, 0.26);
         }
 
         /* ============================================================ */
@@ -277,6 +283,7 @@
 
         #wizard-container {
             flex-grow: 1;
+            padding-bottom: 3rem;
         }
     </style>
 </head>
@@ -1327,6 +1334,9 @@
 
             // Rola para o topo ao trocar de etapa — o cabeçalho sticky volta a ficar visível
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Recalcula sombras: a troca de etapa mudou a altura da página
+            updateStickyShadows();
         }
 
         function proximaEtapa() {
@@ -1696,6 +1706,23 @@
         }
 
         // ============================================================
+        // SOMBRAS CONDICIONAIS DOS STICKIES (header + footer)
+        // ============================================================
+        let stickyHeader = null;
+        let stickyFooter = null;
+
+        function updateStickyShadows() {
+            if (stickyHeader) {
+                stickyHeader.classList.toggle('is-scrolled', window.scrollY > 0);
+            }
+            if (stickyFooter) {
+                const isAtBottom =
+                    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1;
+                stickyFooter.classList.toggle('is-scrolled', !isAtBottom);
+            }
+        }
+
+        // ============================================================
         // 3. DOMContentLoaded
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -1705,15 +1732,16 @@
             // ATUALIZA OS BADGES AO CARREGAR A PÁGINA (com os valores de $old)
             atualizarBadges();
 
-            // Sombra condicional no header sticky ao rolar.
-            // O sticky tem top: 0, então 1px de scroll já significa conteúdo passando por baixo.
-            const stickyHeader = document.querySelector('.sticky-wizard-top');
-            if (stickyHeader) {
-                const updateHeaderShadow = () =>
-                    stickyHeader.classList.toggle('is-scrolled', window.scrollY > 0);
+            // ============================================================
+            // SOMBRAS CONDICIONAIS DOS STICKIES (header + footer)
+            // ============================================================
+            stickyHeader = document.querySelector('.sticky-wizard-top');
+            stickyFooter = document.querySelector('.wizard-footer');
 
-                window.addEventListener('scroll', updateHeaderShadow, { passive: true });
-                updateHeaderShadow(); // sincroniza estado inicial (ex.: reload com scroll preservado)
+            if (stickyHeader || stickyFooter) {
+                window.addEventListener('scroll', updateStickyShadows, { passive: true });
+                window.addEventListener('resize', updateStickyShadows, { passive: true });
+                updateStickyShadows();
             }
 
             // ===== INJEÇÃO DA VARIÁVEL DE EDIÇÃO =====
