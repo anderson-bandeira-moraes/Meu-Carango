@@ -38,11 +38,6 @@
             padding-inline: clamp(1.5rem, 4vw, 4rem);
         }
 
-        /* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
-        .sticky-wizard-top + .wizard-step {
-            margin-top: 3rem;
-        }
-
         /* Efeito de zoom nos cards do dashboard */
         .card-zoom {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -243,8 +238,20 @@
             top: 0;
             z-index: 1020;
             background-color: #fff;
-            box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.12);
+            border-bottom: 1px solid #e9ecef;
             padding-top: clamp(1.5rem, 3vh, 3rem);
+            padding-bottom: clamp(0.75rem, 1.5vh, 1.5rem);
+            box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0);
+            transition: box-shadow 0.4s ease;
+        }
+
+        /* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
+        .sticky-wizard-top ~ .wizard-step {
+            margin-top: 3rem;
+        }
+
+        .sticky-wizard-top.is-scrolled {
+            box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.26);
         }
 
         /* ============================================================ */
@@ -255,7 +262,7 @@
             bottom: 0;
             z-index: 1020;
             background-color: #fff;
-            box-shadow: 0 -4px 6px -4px rgba(0, 0, 0, 0.12);
+            border-top: 1px solid #d5d8db;
             padding-block: clamp(1.5rem, 3vh, 3rem);
         }
 
@@ -1697,6 +1704,17 @@
 
             // ATUALIZA OS BADGES AO CARREGAR A PÁGINA (com os valores de $old)
             atualizarBadges();
+
+            // Sombra condicional no header sticky ao rolar.
+            // O sticky tem top: 0, então 1px de scroll já significa conteúdo passando por baixo.
+            const stickyHeader = document.querySelector('.sticky-wizard-top');
+            if (stickyHeader) {
+                const updateHeaderShadow = () =>
+                    stickyHeader.classList.toggle('is-scrolled', window.scrollY > 0);
+
+                window.addEventListener('scroll', updateHeaderShadow, { passive: true });
+                updateHeaderShadow(); // sincroniza estado inicial (ex.: reload com scroll preservado)
+            }
 
             // ===== INJEÇÃO DA VARIÁVEL DE EDIÇÃO =====
             const isEditMode = <?= json_encode($isEdit ?? false) ?>;
