@@ -1834,6 +1834,24 @@
 
             const camposDecimais = document.querySelectorAll('[data-tipo="decimal"]');
 
+            // Função para validar se o caractere é permitido (número, ponto ou vírgula)
+            function isCaracterePermitido(tecla) {
+                // Permite teclas de navegação e controle
+                if (tecla === 'Backspace' || tecla === 'Delete' || tecla === 'Tab' ||
+                    tecla === 'ArrowLeft' || tecla === 'ArrowRight' || tecla === 'ArrowUp' || tecla === 'ArrowDown' ||
+                    tecla === 'Home' || tecla === 'End' || tecla === 'Enter') {
+                    return true;
+                }
+
+                // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
+                if (event.ctrlKey || event.metaKey) {
+                    return true;
+                }
+
+                // Verifica se a tecla é um número, ponto ou vírgula
+                return /^[0-9.,]$/.test(tecla);
+            }
+
             camposDecimais.forEach(function(campo) {
                 // 1. Bloqueia caracteres inválidos e separador como primeiro caractere
                 campo.addEventListener('keydown', function(event) {
@@ -1873,26 +1891,6 @@
                     this.value = this.value.replace(/[.,]$/, '');
                 });
             });
-
-            if (camposInteiros.length === 0) return;
-
-            // Função para validar se o caractere é permitido (número, ponto ou vírgula)
-            function isCaracterePermitido(tecla) {
-                // Permite teclas de navegação e controle
-                if (tecla === 'Backspace' || tecla === 'Delete' || tecla === 'Tab' ||
-                    tecla === 'ArrowLeft' || tecla === 'ArrowRight' || tecla === 'ArrowUp' || tecla === 'ArrowDown' ||
-                    tecla === 'Home' || tecla === 'End' || tecla === 'Enter') {
-                    return true;
-                }
-
-                // Permite combinações com Ctrl (ex: Ctrl+C, Ctrl+V, Ctrl+A)
-                if (event.ctrlKey || event.metaKey) {
-                    return true;
-                }
-
-                // Verifica se a tecla é um número, ponto ou vírgula
-                return /^[0-9.,]$/.test(tecla);
-            }
 
             // Para cada campo, adiciona os listeners
             camposInteiros.forEach(function(campo) {
