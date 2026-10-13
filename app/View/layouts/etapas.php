@@ -64,7 +64,7 @@
 
             <!-- Rodapé com botões de navegação -->
             <div class="wizard-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-warning btn-sm" id="btnAnterior" disabled>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnAnterior" disabled>
                     <i class="bi bi-arrow-left me-1"></i>Anterior
                 </button>
                 
@@ -78,7 +78,7 @@
             </div>
         </form>
 
-        <?php include __DIR__ . '/_modal_marca_modelo.php'; ?>
+        <?php include VIEW_DIR . '/logista/veiculos/etapas/_modal_marca_modelo.php'; ?>
     </div>
 </body>
 </html>
