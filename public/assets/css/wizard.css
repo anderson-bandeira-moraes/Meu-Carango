@@ -1,0 +1,260 @@
+/**
+ * Wizard de Cadastro/Edição de Veículos
+ *
+ * Arquivo consolidado com todo o CSS do wizard.
+ * Carregado via <link> no <head> do layouts/etapas.php, depois do Bootstrap CSS.
+ *
+ * Seções (ordem preservada):
+ *   1. Base
+ *   2. Modal de marca/modelo
+ *   3. Stepper
+ *   4. Controle de exibição de etapas
+ *   5. Utilitários do wizard
+ *   6. Cabeçalho fixo (sticky top)
+ *   7. Rodapé fixo (sticky bottom)
+ *   8. Layout do form
+ */
+
+/* ============================================================
+   1. BASE
+   ============================================================ */
+.wizard-page {
+    max-width: min(90rem, 92vw);
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+}
+
+/* ============================================================
+   2. MODAL DE MARCA E MODELO
+   ============================================================ */
+.lista-items .item-lista {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lista-items .item-lista:hover {
+    background-color: #dfe0e1;
+}
+
+.lista-items .item-lista.selecionado {
+    background-color: #cfdae5;
+    border-left: 4px solid #0d6efd;
+}
+
+.lista-items .item-lista img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #f8f9fa;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.lista-items .item-lista .nome {
+    font-weight: 600;
+}
+
+/* Overlay de edição nos cards de resumo */
+.resumo-card {
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.resumo-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+}
+
+.resumo-card .editar-overlay {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.resumo-card:hover .editar-overlay {
+    opacity: 1;
+}
+
+.resumo-card .editar-overlay i {
+    font-size: 1.2rem;
+    background: white;
+    padding: 4px 6px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Badge de exibição no formulário */
+.brand-model-display .badge {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+}
+
+/* ============================================================
+   3. STEPPER
+   ============================================================ */
+.stepper-wrapper {
+    gap: 0; /* espaçamento gerenciado pelos conectores */
+    padding: 0 10px; /* pequeno respiro nas bordas */
+}
+
+/* Cada item (círculo + possível label) */
+.stepper-item {
+    flex-shrink: 0; /* impede encolhimento */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Círculo base (neutro) */
+.stepper-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef; /* cinza claro (neutro) */
+    color: #6c757d; /* cinza escuro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, border 0.2s ease;
+    border: 3px solid transparent; /* reserva espaço para a borda ativa */
+    user-select: none;
+}
+
+/* Hover (melhora a experiência) */
+.stepper-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* ---------- Estados ---------- */
+
+/* Completo (verde) */
+.stepper-circle.complete {
+    background-color: var(--bs-success, #28a745);
+    color: white;
+}
+
+/* Erro (vermelho) */
+.stepper-circle.error {
+    background-color: var(--bs-danger, #dc3545);
+    color: white;
+}
+
+/* Ativo (etapa atual) – borda azul + leve escala */
+.stepper-circle.active {
+    border-color: var(--bs-primary, #0d6efd);
+    transform: scale(1.1);
+}
+
+/* ---------- Conectores (linhas entre círculos) ---------- */
+.stepper-connector {
+    flex: 1;
+    height: 2px;
+    background-color: #d1d5db; /* cinza claro */
+    margin: 0 8px;
+    transition: background-color 0.3s ease;
+    min-width: 10px; /* evita sumir em telas muito pequenas */
+}
+
+/* ============================================================
+   4. CONTROLE DE EXIBIÇÃO DE ETAPAS
+   ============================================================ */
+.wizard-step {
+    display: none;
+}
+.wizard-step.is-active {
+    display: block;
+}
+
+/* ============================================================
+   5. UTILITÁRIOS DO WIZARD
+   ============================================================ */
+.material-symbols-outlined {
+    vertical-align: text-bottom;
+    line-height: 1;
+}
+
+.input-group-text {
+    border-top-right-radius: 0.375rem !important; 
+    border-bottom-right-radius: 0.375rem !important;
+}
+
+.input-border-correction {
+    border-top-left-radius: 0.375rem !important; 
+    border-bottom-left-radius: 0.375rem !important; 
+    border-top-right-radius: 0 !important; 
+    border-bottom-right-radius: 0 !important;
+}
+
+.cacamba-hidden {
+    display: none !important;
+}
+
+.marchas-hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   6. CABEÇALHO FIXO (STICKY TOP)
+   ============================================================ */
+.sticky-wizard-top {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding-top: clamp(1.5rem, 3vh, 3rem);
+    box-shadow: 0 5px 7px -4px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.4s ease;
+}
+
+/* Espaço entre o cabeçalho sticky e o primeiro campo do formulário */
+.sticky-wizard-top ~ .wizard-step {
+    margin-top: 2rem;
+}
+
+.sticky-wizard-top.is-scrolled {
+    box-shadow: 0 5px 7px -4px rgba(0, 0, 0, 0.26);
+}
+
+/* ============================================================
+   7. RODAPÉ FIXO (STICKY BOTTOM)
+   ============================================================ */
+.wizard-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1020;
+    background-color: #fff;
+    border-top: 1px solid #e9ecef;
+    padding-block: clamp(1rem, 2vh, 1.5rem);
+    box-shadow: 0 -5px 7px -4px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.7s ease;
+}
+
+.wizard-footer.is-scrolled {
+    box-shadow: 0 -5px 7px -4px rgba(0, 0, 0, 0.26);
+}
+
+/* ============================================================
+   8. LAYOUT DO FORM
+   ============================================================ */
+#veiculoForm {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#wizard-container {
+    flex-grow: 1;
+    padding-bottom: 3rem;
+}
