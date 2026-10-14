@@ -3,7 +3,7 @@
 <!-- MODAL MARCA E MODELO (HTML completo)                       -->
 <!-- ========================================================== -->
 <div class="modal fade" id="marcaModeloModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h4 class="modal-title text-center w-100 fw-bold">Selecionar Marca e Modelo</h4>
@@ -19,7 +19,7 @@
                         <div class="mb-3">
                             <h5 class="fw-bold text-center text-muted">Escolha uma marca abaixo:</h5>
                         </div>
-                        <div id="lista-marcas" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                        <div id="lista-marcas" class="lista-items">
                             <!-- Itens serão carregados via JS -->
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-5">

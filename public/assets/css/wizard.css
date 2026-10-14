@@ -96,6 +96,40 @@
     padding: 0.6rem 1rem;
 }
 
+#marcaModeloModal .modal-body {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+#marcaModeloModal .etapa {
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#marcaModeloModal #conteudo-marca-lista,
+#marcaModeloModal #conteudo-modelo-lista {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#marcaModeloModal #conteudo-marca-form,
+#marcaModeloModal #conteudo-modelo-form {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#marcaModeloModal #lista-marcas,
+#marcaModeloModal #lista-modelos {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
 /* ============================================================
    3. STEPPER
    ============================================================ */

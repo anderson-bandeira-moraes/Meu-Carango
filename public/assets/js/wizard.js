@@ -206,7 +206,7 @@ function irParaEtapa(etapa) {
     etapaModelo.style.display = 'none';
     etapaResumo.style.display = 'none';
     if (etapa === 'marca') {
-        etapaMarca.style.display = 'block';
+        etapaMarca.style.display = 'flex';
         buscaMarca.value = '';
         renderMarcas();
         // Atualiza estado do botão Próximo
@@ -215,7 +215,7 @@ function irParaEtapa(etapa) {
         }
         setTimeout(() => buscaMarca.focus(), 100);
     } else if (etapa === 'modelo') {
-        etapaModelo.style.display = 'block';
+        etapaModelo.style.display = 'flex';
         buscaModelo.value = '';
         if (window._modelosData) {
             renderModelos(window._modelosData);
@@ -226,7 +226,7 @@ function irParaEtapa(etapa) {
         }
         setTimeout(() => buscaModelo.focus(), 100);
     } else if (etapa === 'resumo') {
-        etapaResumo.style.display = 'block';
+        etapaResumo.style.display = 'flex';
         atualizarResumo();
     }
 }
