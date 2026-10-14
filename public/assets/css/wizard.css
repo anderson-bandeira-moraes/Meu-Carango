@@ -134,6 +134,25 @@
     height: 100%;
 }
 
+/* Sombras condicionais na área de scroll do modal */
+#marcaModeloModal .scroll-shadow-top {
+    box-shadow: 0 5px 7px -4px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.4s ease;
+}
+
+#marcaModeloModal .scroll-shadow-top.is-scrolled {
+    box-shadow: 0 5px 7px -4px rgba(0, 0, 0, 0.26);
+}
+
+#marcaModeloModal .scroll-shadow-bottom {
+    box-shadow: 0 -5px 7px -4px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.4s ease;
+}
+
+#marcaModeloModal .scroll-shadow-bottom.is-scrolled {
+    box-shadow: 0 -5px 7px -4px rgba(0, 0, 0, 0.26);
+}
+
 /* ============================================================
    3. STEPPER
    ============================================================ */

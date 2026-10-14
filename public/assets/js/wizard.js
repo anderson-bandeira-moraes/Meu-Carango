@@ -94,6 +94,28 @@ let selectedMarcaLogo = '';
 let selectedModeloId = null;
 let selectedModeloNome = '';
 
+/**
+ * Atualiza as sombras condicionais de uma lista com scroll.
+ * Aplica .is-scrolled no bloco de cima quando há conteúdo acima,
+ * e no bloco de baixo quando há conteúdo abaixo.
+ */
+function atualizarSombrasLista(listaId) {
+    const lista = document.getElementById(listaId);
+    if (!lista) return;
+
+    const container = lista.parentElement;
+    if (!container) return;
+
+    const topEl    = container.querySelector('.scroll-shadow-top');
+    const bottomEl = container.querySelector('.scroll-shadow-bottom');
+
+    const temConteudoAcima  = lista.scrollTop > 0;
+    const temConteudoAbaixo = lista.scrollTop + lista.clientHeight < lista.scrollHeight - 1;
+
+    if (topEl)    topEl.classList.toggle('is-scrolled', temConteudoAcima);
+    if (bottomEl) bottomEl.classList.toggle('is-scrolled', temConteudoAbaixo);
+}
+
 // Função para renderizar lista de marcas
 function renderMarcas(filtro = '') {
     const filtroLower = filtro.toLowerCase().trim();
@@ -138,6 +160,8 @@ function renderMarcas(filtro = '') {
         });
         listaMarcas.appendChild(div);
     });
+
+    atualizarSombrasLista('lista-marcas');
 }
 
 // Função para carregar modelos via AJAX
@@ -188,6 +212,8 @@ function renderModelos(modelos, filtro = '') {
         });
         listaModelos.appendChild(div);
     });
+
+    atualizarSombrasLista('lista-modelos');
 }
 
 // Atualizar resumo
@@ -209,6 +235,7 @@ function irParaEtapa(etapa) {
         etapaMarca.style.display = 'flex';
         buscaMarca.value = '';
         renderMarcas();
+        atualizarSombrasLista('lista-marcas');
         // Atualiza estado do botão Próximo
         if (btnProximoMarca) {
             btnProximoMarca.disabled = (selectedMarcaId === null);
@@ -219,6 +246,7 @@ function irParaEtapa(etapa) {
         buscaModelo.value = '';
         if (window._modelosData) {
             renderModelos(window._modelosData);
+            atualizarSombrasLista('lista-modelos');
         }
         // Sincroniza estado do botão Selecionar com o modelo já escolhido
         if (btnSelecionarModelo) {
@@ -317,6 +345,18 @@ if (confirmarBtn) {
     });
 }
 
+modalMarcaModelo?.addEventListener('shown.bs.modal', function() {
+    atualizarSombrasLista('lista-marcas');
+    atualizarSombrasLista('lista-modelos');
+});
+
+['lista-marcas', 'lista-modelos'].forEach(id => {
+    const lista = document.getElementById(id);
+    if (lista) {
+        lista.addEventListener('scroll', () => atualizarSombrasLista(id), { passive: true });
+    }
+});
+
 // Abrir modal
 const btnSelecionar = document.getElementById('selecionarMarcaModeloBtn');
 if (btnSelecionar) {
@@ -395,6 +435,8 @@ if (cancelarNovaMarcaBtn) {
         document.getElementById('novaMarcaNome').value = '';
         document.getElementById('novaMarcaLogo').value = '';
         document.getElementById('previewMarcaLogo').style.display = 'none';
+
+        atualizarSombrasLista('lista-marcas');  // no listener de cancelar marca
     });
 }
 
@@ -417,6 +459,8 @@ if (cancelarNovoModeloBtn) {
         conteudoModeloLista.style.display = 'flex';
         conteudoModeloForm.style.display = 'none';
         document.getElementById('novoModeloNome').value = '';
+
+        atualizarSombrasLista('lista-modelos');
     });
 }
 

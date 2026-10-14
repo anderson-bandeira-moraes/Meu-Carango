@@ -13,23 +13,25 @@
                 <!-- Etapa 1: Selecionar Marca -->
                 <div id="etapa-marca" class="etapa">
                     <div id="conteudo-marca-lista">
-                        <div class="mb-5 mt-3 px-4">
-                            <input type="text" id="buscaMarca" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
-                        </div>
-                        <div class="mb-3">
-                            <h5 class="fw-bold text-center text-muted">Escolha uma marca abaixo:</h5>
+                        <div class="scroll-shadow-top">
+                            <div class="mb-5 mt-3 px-4">
+                                <input type="text" id="buscaMarca" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
+                            </div>
+                            <div class="mb-3">
+                                <h5 class="fw-bold text-center text-muted">Escolha uma marca abaixo:</h5>
+                            </div>
                         </div>
                         <div id="lista-marcas" class="lista-items">
                             <!-- Itens serão carregados via JS -->
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-5">
+                        <div class="d-flex justify-content-between align-items-center pt-4 scroll-shadow-bottom">
                             <button type="button" class="btn btn-primary fw-bold" id="adicionarMarcaBtn">
                                 <i class="bi bi-plus-lg me-1"></i> Adicionar Marca
                             </button>
                             <button type="button" class="btn btn-success fw-bold" id="btnProximoMarca" disabled>
                                 Selecionar <i class="bi bi-check-lg ms-1"></i>
                             </button>
-                        </div>
+                        </div>                       
                     </div>
                     <div id="conteudo-marca-form" style="display: none;">
                         <h6 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Nova Marca</h6>
@@ -59,16 +61,18 @@
                 <!-- Etapa 2: Selecionar Modelo -->
                 <div id="etapa-modelo" class="etapa" style="display: none;">
                     <div id="conteudo-modelo-lista">
-                        <div class="mb-5 mt-3 px-4">
-                            <input type="text" id="buscaModelo" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
+                        <div class="scroll-shadow-top">
+                            <div class="mb-5 mt-3 px-4">
+                                <input type="text" id="buscaModelo" class="form-control form-control-lg shadow-sm" placeholder="Pesquisar...">
+                            </div>
+                            <div class="mb-3">
+                                <h5 class="fw-bold text-center text-muted">Escolha um modelo abaixo:</h5>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <h5 class="fw-bold text-center text-muted">Escolha um modelo abaixo:</h5>
-                        </div>
-                        <div id="lista-modelos" class="lista-items" style="max-height: 300px; overflow-y: auto;">
+                        <div id="lista-modelos" class="lista-items">
                             <!-- Itens carregados via AJAX -->
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-5">
+                        <div class="d-flex justify-content-between align-items-center pt-4 scroll-shadow-bottom">
                             <button type="button" class="btn btn-primary fw-bold" id="adicionarModeloBtn">
                                 <i class="bi bi-plus-lg me-1"></i> Adicionar Modelo
                             </button>
@@ -78,7 +82,7 @@
                                     Selecionar <i class="bi bi-check-lg ms-1"></i>
                                 </button>                               
                             </div>
-                        </div>
+                        </div>                     
                     </div>
                     <div id="conteudo-modelo-form" style="display: none;">
                         <h6 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Novo Modelo</h6>
