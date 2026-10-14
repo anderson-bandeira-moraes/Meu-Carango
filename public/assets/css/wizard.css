@@ -258,3 +258,41 @@
     flex-grow: 1;
     padding-bottom: 3rem;
 }
+
+/* ============================================================
+   9. MODAL DE CHECK-IN
+   ============================================================ */
+.checkin-group-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.checkin-group-title:first-child {
+    margin-top: 0;
+}
+
+.checkin-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px dashed #f1f3f5;
+}
+
+.checkin-item:last-child {
+    border-bottom: none;
+}
+
+.checkin-label {
+    color: #6c757d;
+}
+
+.checkin-value {
+    font-weight: 600;
+    text-align: right;
+}

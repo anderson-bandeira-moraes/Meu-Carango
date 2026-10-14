@@ -1414,6 +1414,78 @@ function updateStickyShadows() {
 }
 
 // ============================================================
+// MODAL DE CHECK-IN
+// ============================================================
+
+/**
+ * Preenche o modal de check-in com os valores atuais do formulário.
+ * Chamado antes de exibir o modal. Não altera os inputs originais.
+ */
+function preencherCheckin() {
+    // Helper: retorna o texto da opção selecionada de um <select>
+    const getSelectLabel = (id) => {
+        const sel = document.getElementById(id);
+        if (!sel) return '';
+        const opt = sel.options[sel.selectedIndex];
+        return opt ? opt.textContent.trim() : '';
+    };
+
+    // Helper: se o select está em "outro", retorna o valor do _outro; senão, o label da opção
+    const getComOutro = (selectId, outroId) => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return '';
+        if (sel.value === 'outro') {
+            const outro = document.getElementById(outroId);
+            return outro ? outro.value.trim() : '';
+        }
+        return getSelectLabel(selectId);
+    };
+
+    // Helper: seta o texto de um elemento pelo ID (ou "—" se vazio)
+    const setTexto = (id, texto) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = (texto && String(texto).trim()) || '—';
+    };
+
+    // ===== Grupo 1: Identificação =====
+    const marcaId = document.getElementById('marca_id')?.value;
+    const marca = marcaId ? marcasData.find(m => m.id == marcaId) : null;
+    setTexto('checkin-marca', marca ? marca.nome : '');
+
+    // Modelo: mesma lógica do atualizarBadges() — reusa selectedModeloNome como fallback
+    const modeloId = document.getElementById('modelo_id')?.value;
+    let modeloNome = modeloId ? modelosData[modeloId] : '';
+    if (!modeloNome && selectedModeloId == modeloId) {
+        modeloNome = selectedModeloNome;
+    }
+    setTexto('checkin-modelo', modeloNome);
+
+    setTexto('checkin-carroceria', getComOutro('carroceria', 'carroceria_outro'));
+    setTexto('checkin-ano-modelo', document.getElementById('ano_modelo')?.value || '');
+
+    // Cor: lê o input visível; se for "Outro (digitar)", lê o _outro
+    const corInput = document.getElementById('corInput');
+    const corFinal = (corInput?.value === 'Outro (digitar)')
+        ? (document.getElementById('cor_outro')?.value.trim() || '')
+        : (corInput?.value || '');
+    setTexto('checkin-cor', corFinal);
+
+    setTexto('checkin-lugares', getSelectLabel('numero_assentos'));
+
+    // ===== Grupo 2: Motorização =====
+    setTexto('checkin-combustivel', getSelectLabel('combustivel'));
+    setTexto('checkin-motorizacao', getComOutro('motor_tipo', 'motor_tipo_outro'));
+
+    // ===== Grupo 3: Transmissão =====
+    setTexto('checkin-tipo-direcao', getSelectLabel('tipo_direcao'));
+    setTexto('checkin-tipo-transmissao', getSelectLabel('transmissao_tipo'));
+
+    // ===== Grupo 4: Extras =====
+    const gnv = document.getElementById('gnv_instalado')?.value;
+    setTexto('checkin-gnv', gnv === '1' ? 'Sim' : gnv === '0' ? 'Não' : '');
+}
+
+// ============================================================
 // 3. DOMContentLoaded
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -1484,8 +1556,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnSalvar = document.getElementById('btnSalvar');
     if (btnSalvar) {
         btnSalvar.addEventListener('click', function() {
-            document.getElementById('veiculoForm').submit();
+            const checkinModal = document.getElementById('checkinModal');
+            if (checkinModal) {
+                // Preenche os valores e abre o modal de check-in
+                preencherCheckin();
+                bootstrap.Modal.getOrCreateInstance(checkinModal).show();
+            } else {
+                // Fallback: tipos sem check-in (partial não incluído) submetem direto
+                document.getElementById('veiculoForm').submit();
+            }
         });
+    }
+
+    // ============================================================
+    // LISTENERS DO MODAL DE CHECK-IN
+    // ============================================================
+    const checkinModalEl = document.getElementById('checkinModal');
+    if (checkinModalEl) {
+        const checkinEditarBtn = document.getElementById('checkinEditarBtn');
+        const checkinConfirmarBtn = document.getElementById('checkinConfirmarBtn');
+
+        if (checkinEditarBtn) {
+            checkinEditarBtn.addEventListener('click', function() {
+                bootstrap.Modal.getInstance(checkinModalEl)?.hide();
+                // Volta para a etapa 1 (Básico)
+                mostrarEtapa(0);
+            });
+        }
+
+        if (checkinConfirmarBtn) {
+            checkinConfirmarBtn.addEventListener('click', function() {
+                bootstrap.Modal.getInstance(checkinModalEl)?.hide();
+                // Submete o formulário de verdade
+                document.getElementById('veiculoForm').submit();
+            });
+        }
     }
 
     // ============================================================
