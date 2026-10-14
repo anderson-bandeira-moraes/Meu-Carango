@@ -389,7 +389,7 @@ if (adicionarMarcaBtn) {
 
 if (cancelarNovaMarcaBtn) {
     cancelarNovaMarcaBtn.addEventListener('click', function() {
-        conteudoMarcaLista.style.display = 'block';
+        conteudoMarcaLista.style.display = 'flex';
         conteudoMarcaForm.style.display = 'none';
         // Limpar campos ao cancelar
         document.getElementById('novaMarcaNome').value = '';
@@ -414,7 +414,7 @@ if (adicionarModeloBtn) {
 
 if (cancelarNovoModeloBtn) {
     cancelarNovoModeloBtn.addEventListener('click', function() {
-        conteudoModeloLista.style.display = 'block';
+        conteudoModeloLista.style.display = 'flex';
         conteudoModeloForm.style.display = 'none';
         document.getElementById('novoModeloNome').value = '';
     });
@@ -618,7 +618,7 @@ if (formMarca) {
                 document.getElementById('previewMarcaLogo').style.display = 'none';
                 imagemConvertidaBlob = null;
                 conteudoMarcaForm.style.display = 'none';
-                conteudoMarcaLista.style.display = 'block';
+                conteudoMarcaLista.style.display = 'flex';
 
                 // 11. Marca o item como selecionado na lista
                 const itens = listaMarcas.querySelectorAll('.item-lista');
@@ -716,7 +716,7 @@ if (formModelo) {
                 // 10. Limpa formulário e volta para a lista
                 document.getElementById('novoModeloNome').value = '';
                 conteudoModeloForm.style.display = 'none';
-                conteudoModeloLista.style.display = 'block';
+                conteudoModeloLista.style.display = 'flex';
 
                 // 11. Marca o item como selecionado na lista
                 const itens = listaModelos.querySelectorAll('.item-lista');
