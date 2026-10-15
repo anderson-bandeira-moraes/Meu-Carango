@@ -713,13 +713,13 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- ETAPA: DIMENSÕES, PESO, VOLUME, PORTAS E ASSENTOS            -->
+<!-- ETAPA: DIMENSÕES, PESO, VOLUME, PORTAS E LUGARES            -->
 <!-- ============================================================ -->
 <div class="wizard-step" data-step="dimensoes" data-label="Dimensões">
 
     <!-- Título da etapa (canto superior direito) -->
     <div class="d-flex justify-content-end mb-4">
-        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Dimensões, Portas e Assentos</span>
+        <span class="badge bg-success fs-5"><i class="bi bi-bookmarks-fill me-2"></i>Dimensões, Portas e Lugares</span>
     </div>
 
     <!-- ===== SEÇÃO 1: DIMENSÕES EXTERNAS ===== -->
@@ -1022,7 +1022,7 @@
                     <option value="">Selecione</option>
                     <?php foreach (assentos_list() as $valor): ?>
                         <option value="<?= $valor ?>" <?= selected($old['numero_assentos'] ?? $veiculo['numero_assentos'] ?? '', $valor) ?>>
-                            <?= $valor ?> assentos
+                            <?= $valor ?> lugares
                         </option>
                     <?php endforeach; ?>
                 </select>

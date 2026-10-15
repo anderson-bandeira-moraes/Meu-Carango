@@ -2,10 +2,10 @@
 <!-- CHECK-IN: Confirmação do cadastro (Combustão)                -->
 <!-- ============================================================ -->
 <div class="modal fade" id="checkinModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirme os dados do veículo</h5>
+                <h5 class="modal-title fw-bold">Confirme os dados do veículo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body checkin-modal">
@@ -68,7 +68,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" id="checkinEditarBtn">
+                <button type="button" class="btn btn-warning" id="checkinEditarBtn">
                     <i class="bi bi-pencil me-1"></i>Editar
                 </button>
                 <button type="button" class="btn btn-success" id="checkinConfirmarBtn">

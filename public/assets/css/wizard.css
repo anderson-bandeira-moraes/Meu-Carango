@@ -353,3 +353,7 @@
     font-weight: 600;
     text-align: right;
 }
+
+#checkinModal .modal-content {
+    height: 100%;
+}
