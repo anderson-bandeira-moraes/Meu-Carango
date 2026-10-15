@@ -338,11 +338,6 @@
     display: flex;
     justify-content: space-between;
     padding: 0.35rem 0;
-    border-bottom: 1px dashed #f1f3f5;
-}
-
-.checkin-item:last-child {
-    border-bottom: none;
 }
 
 .checkin-label {

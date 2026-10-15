@@ -1470,6 +1470,7 @@ function preencherCheckin() {
     const getSelectLabel = (id) => {
         const sel = document.getElementById(id);
         if (!sel) return '';
+        if (!sel.value) return '';  // value vazio = placeholder "Selecione"
         const opt = sel.options[sel.selectedIndex];
         return opt ? opt.textContent.trim() : '';
     };
@@ -1491,6 +1492,12 @@ function preencherCheckin() {
         if (el) el.textContent = (texto && String(texto).trim()) || '—';
     };
 
+    // Helper: mostra/esconde uma linha condicional inteira
+    const setLinha = (itemId, mostrar) => {
+        const el = document.getElementById(itemId);
+        if (el) el.classList.toggle('d-none', !mostrar);
+    };
+
     // ===== Grupo 1: Identificação =====
     const marcaId = document.getElementById('marca_id')?.value;
     const marca = marcaId ? marcasData.find(m => m.id == marcaId) : null;
@@ -1507,6 +1514,9 @@ function preencherCheckin() {
     setTexto('checkin-carroceria', getComOutro('carroceria', 'carroceria_outro'));
     setTexto('checkin-ano-modelo', document.getElementById('ano_modelo')?.value || '');
 
+    const quilometragemVisual = document.getElementById('quilometragem_visual')?.value.trim() || '';
+    setTexto('checkin-quilometragem', quilometragemVisual ? quilometragemVisual + ' km' : '');
+
     // Cor: lê o input visível; se for "Outro (digitar)", lê o _outro
     const corInput = document.getElementById('corInput');
     const corFinal = (corInput?.value === 'Outro (digitar)')
@@ -1514,17 +1524,51 @@ function preencherCheckin() {
         : (corInput?.value || '');
     setTexto('checkin-cor', corFinal);
 
-    setTexto('checkin-lugares', getSelectLabel('numero_assentos'));
+    // Placa (condicional: só aparece se preenchida)
+    const placa = document.getElementById('placa')?.value.trim() || '';
+    setTexto('checkin-placa', placa);
+    setLinha('checkin-item-placa', placa !== '');
 
-    // ===== Grupo 2: Motorização =====
+    // ===== Grupo 2: Motorização, Desempenho e Consumo =====
+    const combustivel = document.getElementById('combustivel')?.value || '';
     setTexto('checkin-combustivel', getSelectLabel('combustivel'));
     setTexto('checkin-motorizacao', getComOutro('motor_tipo', 'motor_tipo_outro'));
 
-    // ===== Grupo 3: Transmissão =====
+    const potencia = document.getElementById('potencia_cv')?.value.trim() || '';
+    setTexto('checkin-potencia', potencia ? potencia + ' cv' : '');
+
+    const consumoCidade = document.getElementById('consumo_cidade_kml')?.value.trim() || '';
+    setTexto('checkin-consumo-cidade', consumoCidade ? consumoCidade + ' km/l' : '');
+
+    const consumoEstrada = document.getElementById('consumo_estrada_kml')?.value.trim() || '';
+    setTexto('checkin-consumo-estrada', consumoEstrada ? consumoEstrada + ' km/l' : '');
+
+    // Consumos com álcool (condicionais: só aparecem se combustível for flex)
+    const isFlex = combustivel === 'flex';
+
+    const consumoCidadeAlcool = document.getElementById('consumo_cidade_etanol_kml')?.value.trim() || '';
+    setTexto('checkin-consumo-cidade-alcool', consumoCidadeAlcool ? consumoCidadeAlcool + ' km/l' : '');
+    setLinha('checkin-item-consumo-cidade-alcool', isFlex);
+
+    const consumoEstradaAlcool = document.getElementById('consumo_estrada_etanol_kml')?.value.trim() || '';
+    setTexto('checkin-consumo-estrada-alcool', consumoEstradaAlcool ? consumoEstradaAlcool + ' km/l' : '');
+    setLinha('checkin-item-consumo-estrada-alcool', isFlex);
+
+    // ===== Grupo 3: Transmissão, Suspensão e Rodas =====
     setTexto('checkin-tipo-direcao', getSelectLabel('tipo_direcao'));
+    setTexto('checkin-tipo-tracao', getSelectLabel('tracao_tipo'));
     setTexto('checkin-tipo-transmissao', getSelectLabel('transmissao_tipo'));
 
-    // ===== Grupo 4: Extras =====
+    // Número de marchas (condicional: só aparece se preenchido)
+    const numeroMarchas = getSelectLabel('numero_marchas');
+    setTexto('checkin-numero-marchas', numeroMarchas);
+    setLinha('checkin-item-numero-marchas', numeroMarchas !== '');
+
+    // ===== Grupo 4: Dimensões, Portas e Lugares =====
+    setTexto('checkin-portas', getSelectLabel('numero_portas'));
+    setTexto('checkin-lugares', getSelectLabel('numero_assentos'));
+
+    // ===== Grupo 5: GNV =====
     const gnv = document.getElementById('gnv_instalado')?.value;
     setTexto('checkin-gnv', gnv === '1' ? 'Sim' : gnv === '0' ? 'Não' : '');
 }
