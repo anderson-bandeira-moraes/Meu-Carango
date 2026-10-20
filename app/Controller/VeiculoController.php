@@ -735,7 +735,7 @@ class VeiculoController
         }
         $this->session->set('flash_veiculo_error', implode("\n", $errorMessages));
 
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos'));
+        header('Location: ' . $this->getSafeRedirect());
         exit;
     }
 
@@ -755,9 +755,90 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_error', $message);
-        $url = $redirectTo ?? ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos');
-        header('Location: ' . $url);
+        header('Location: ' . $this->getSafeRedirect($redirectTo));
         exit;
+    }
+
+    /**
+     * Retorna uma URL interna segura para redirect, evitando open redirect.
+     *
+     * Extrai apenas o path do Referer (descartando host/scheme/autoridade),
+     * aplicando guardas contra vetores conhecidos de bypass:
+     *   - protocol-relative (//)
+     *   - backslash (\)
+     *   - caracteres de controle (\x00-\x1F, \x7F)
+     *   - path > 2000 bytes
+     *
+     * Se o Referer for ausente, inválido ou suspeito, retorna o fallback.
+     * O valor retornado é sempre um path interno encoded (começa com "/",
+     * nunca "//"), impossível de escapar do domínio por construção.
+     *
+     * @param string|null $explicitUrl URL explícita fornecida pelo caller interno.
+     *                                 Quando não-nula e não-vazia, é retornada
+     *                                 diretamente, sem passar por guardas ou cap
+     *                                 (confiança estrutural).
+     * @param string $fallback Destino padrão quando o Referer não é confiável.
+     * @return string Path interno seguro.
+     */
+    private function getSafeRedirect(?string $explicitUrl = null, string $fallback = '/lojista/veiculos'): string
+    {
+        // 1. Override confiado: $explicitUrl bypassa tudo após checagem de null/''
+        if ($explicitUrl !== null && $explicitUrl !== '') {
+            return $explicitUrl;
+        }
+
+        // 2. Referer vazio → fallback
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        if ($referer === '') {
+            return $fallback;
+        }
+
+        // 2.1. Guarda de host: Referer de domínio externo → fallback
+        //        Se o Referer tem host e ele difere do host atual (ignorando
+        //        porta e case), trata como suspeito. Referer sem host
+        //        (path-only) segue para a validação estrutural do path.
+        $refererHost = parse_url($referer, PHP_URL_HOST);
+        if (is_string($refererHost) && $refererHost !== '') {
+            $currentHost = $_SERVER['HTTP_HOST'] ?? '';
+            $refererHostNorm = strtolower($refererHost);
+            $currentHostNorm = strtolower((string) preg_replace('/:\d+$/', '', $currentHost));
+            if ($refererHostNorm !== $currentHostNorm) {
+                return $fallback;
+            }
+        }
+
+        // 3. Extrair path
+        $path = parse_url($referer, PHP_URL_PATH);
+        if (!is_string($path) || $path === '' || $path[0] !== '/') {
+            return $fallback;
+        }
+
+        // 4. Guardas sobre a forma decodificada
+        $decoded = rawurldecode($path);
+        if (
+            str_starts_with($decoded, '//')
+            || str_contains($decoded, '\\')
+            || preg_match('/[\x00-\x1F\x7F]/', $decoded)
+        ) {
+            return $fallback;
+        }
+
+        // 5. Query string (validar control chars, depois anexar)
+        $query = parse_url($referer, PHP_URL_QUERY);
+        if (is_string($query) && $query !== '') {
+            if (preg_match('/[\x00-\x1F\x7F]/', $query)) {
+                return $fallback;
+            }
+            $path .= '?' . $query;
+        }
+
+        // 6. Cap de tamanho (valor final = path + query, em bytes)
+        if (strlen($path) > 2000) {
+            return $fallback;
+        }
+
+        // 7. Retornar path encoded original (não decodificado)
+        return $path;
     }
 
     /**
@@ -800,7 +881,7 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_success', 'Imagem removida com sucesso.');
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos/editar/' . $veiculoId));
+        header('Location: ' . $this->getSafeRedirect(null, '/lojista/veiculos/editar/' . $veiculoId));
         exit;
     }
     
