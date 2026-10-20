@@ -3,7 +3,7 @@
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center rounded-top-4">
                 <h4 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Dashboard - Lojista</h4>
-                <a href="/logista/logout" class="btn btn-outline-light btn-sm">
+                <a href="/lojista/logout" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-box-arrow-right me-1"></i> Sair
                 </a>
             </div>
@@ -19,7 +19,7 @@
                 <div class="row g-4 mb-4">
                     <!-- Card 1: Total de Veículos -->
                     <div class="col-xl-2 col-lg-4 col-md-6">
-                        <a href="/logista/veiculos" class="text-decoration-none text-reset d-block">
+                        <a href="/lojista/veiculos" class="text-decoration-none text-reset d-block">
                             <div class="card border-2 shadow h-100 card-zoom">
                                 <div class="card-body text-center">
                                     <div class="bg-primary shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
@@ -37,7 +37,7 @@
 
                     <!-- Card 2: Na Vitrine -->
                     <div class="col-xl-2 col-lg-4 col-md-6">
-                        <a href="/logista/veiculos?filtro=vitrine" class="text-decoration-none text-reset d-block">
+                        <a href="/lojista/veiculos?filtro=vitrine" class="text-decoration-none text-reset d-block">
                             <div class="card border-2 shadow h-100 card-zoom">
                                 <div class="card-body text-center">
                                     <div class="bg-warning shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
@@ -55,7 +55,7 @@
 
                     <!-- Card 3: Vendidos -->
                     <div class="col-xl-2 col-lg-4 col-md-6">
-                        <a href="/logista/veiculos?filtro=vendidos" class="text-decoration-none text-reset d-block">
+                        <a href="/lojista/veiculos?filtro=vendidos" class="text-decoration-none text-reset d-block">
                             <div class="card border-2 shadow h-100 card-zoom">
                                 <div class="card-body text-center">
                                     <div class="bg-success shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
@@ -73,7 +73,7 @@
 
                     <!-- Card 4: Reservados -->
                     <div class="col-xl-2 col-lg-4 col-md-6">
-                        <a href="/logista/veiculos?filtro=reservados" class="text-decoration-none text-reset d-block">
+                        <a href="/lojista/veiculos?filtro=reservados" class="text-decoration-none text-reset d-block">
                             <div class="card border-2 shadow h-100 card-zoom">
                                 <div class="card-body text-center">
                                     <div class="bg-danger shadow rounded-1 py-2 px-2 d-block w-100 mb-3">
@@ -91,7 +91,7 @@
 
                     <!-- Card 5: Em Estoque -->
                     <div class="col-xl-2 col-lg-4 col-md-6">
-                        <a href="/logista/veiculos?filtro=estoque" class="text-decoration-none text-reset d-block">
+                        <a href="/lojista/veiculos?filtro=estoque" class="text-decoration-none text-reset d-block">
                             <div class="card border-2 shadow h-100 card-zoom">
                                 <div class="card-body text-center">
                                     <div class="bg-info shadow rounded-1 py-2 px-2 d-block w-100 mb-3">

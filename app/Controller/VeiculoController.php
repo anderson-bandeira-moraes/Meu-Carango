@@ -61,7 +61,7 @@ class VeiculoController
         $error = $this->getFlash('flash_veiculo_error');
 
         return $this->view->renderWithLayout(
-            'logista/veiculos/index',
+            'lojista/veiculos/index',
             [
                 'veiculos'      => $veiculos['veiculos'],
                 'total'         => $veiculos['total'],
@@ -93,7 +93,7 @@ class VeiculoController
         $error = $this->getFlash('flash_veiculo_error');
 
         return $this->view->renderWithLayout(
-            'logista/veiculos/trash',
+            'lojista/veiculos/trash',
             [
                 'veiculos'      => $veiculos['veiculos'],
                 'total'         => $veiculos['total'],
@@ -141,7 +141,7 @@ class VeiculoController
         }
 
         return $this->view->renderWithLayout(
-            'logista/veiculos/form',
+            'lojista/veiculos/form',
             [
                 'veiculo'          => null,
                 'tipo'             => null,
@@ -204,7 +204,7 @@ class VeiculoController
         }
 
         return $this->view->renderWithLayout(
-            'logista/veiculos/form',
+            'lojista/veiculos/form',
             [
                 'veiculo'          => $dadosEdicao['veiculo'],
                 'tipo'             => $dadosEdicao['tipo'],
@@ -264,7 +264,7 @@ class VeiculoController
 
         // 5. Renderiza a view específica para o tipo
         return $this->view->renderWithLayout(
-            'logista/veiculos/etapas/combustao',
+            'lojista/veiculos/etapas/combustao',
             [
                 'veiculo' => null,
                 'complemento' => null,
@@ -278,7 +278,7 @@ class VeiculoController
                 'tipo' => $tipo,
                 // Dados para o layout
                 'title' => 'Cadastrar ' . ($tiposLabel[$tipo] ?? ucfirst($tipo)),
-                'action' => '/logista/veiculos/salvar',
+                'action' => '/lojista/veiculos/salvar',
                 'error' => $error,
             ],
             'layouts/etapas', 
@@ -288,7 +288,7 @@ class VeiculoController
                 'modelos' => $modelosData,
                 'isEdit' => false,        
                 'tipo' => $tipo,          
-                'action' => '/logista/veiculos/salvar',
+                'action' => '/lojista/veiculos/salvar',
                 'error' => $error,
                 'isReturnFromError' => !empty($old),
             ]
@@ -339,7 +339,7 @@ class VeiculoController
         }
 
         return $this->view->renderWithLayout(
-            'logista/veiculos/form-wizard',  // <-- ÚNICA MUDANÇA: nome da view
+            'lojista/veiculos/form-wizard',  // <-- ÚNICA MUDANÇA: nome da view
             [
                 'veiculo'          => $dadosEdicao['veiculo'],
                 'tipo'             => $dadosEdicao['tipo'],
@@ -467,7 +467,7 @@ class VeiculoController
 
         // 10. Sucesso
         $this->session->set('flash_veiculo_success', 'Veículo criado com sucesso!');
-        header('Location: /logista/veiculos');
+        header('Location: /lojista/veiculos');
         exit;
     }
 
@@ -585,7 +585,7 @@ class VeiculoController
 
         // 9. Sucesso
         $this->session->set('flash_veiculo_success', 'Veículo atualizado com sucesso!');
-        header('Location: /logista/veiculos');
+        header('Location: /lojista/veiculos');
         exit;
     }
 
@@ -615,7 +615,7 @@ class VeiculoController
             echo json_encode(['sucesso' => true]);
             exit;
         }
-        header('Location: /logista/veiculos');
+        header('Location: /lojista/veiculos');
         exit;
     }
 
@@ -634,7 +634,7 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_success', 'Veículo restaurado com sucesso!');
-        header('Location: /logista/veiculos/lixeira');
+        header('Location: /lojista/veiculos/lixeira');
         exit;
     }
 
@@ -675,7 +675,7 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_success', 'Status da vitrine alterado.');
-        header('Location: /logista/veiculos');
+        header('Location: /lojista/veiculos');
         exit;
     }
 
@@ -735,7 +735,7 @@ class VeiculoController
         }
         $this->session->set('flash_veiculo_error', implode("\n", $errorMessages));
 
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos'));
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos'));
         exit;
     }
 
@@ -755,7 +755,7 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_error', $message);
-        $url = $redirectTo ?? ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos');
+        $url = $redirectTo ?? ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos');
         header('Location: ' . $url);
         exit;
     }
@@ -800,7 +800,7 @@ class VeiculoController
         }
 
         $this->session->set('flash_veiculo_success', 'Imagem removida com sucesso.');
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/logista/veiculos/editar/' . $veiculoId));
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/lojista/veiculos/editar/' . $veiculoId));
         exit;
     }
     

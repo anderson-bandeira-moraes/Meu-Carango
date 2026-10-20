@@ -33,7 +33,7 @@ class AuthMiddleware
                 'uri' => $request->getPath(),
                 'ip'  => $request->getClientIp(),
             ]);
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 
@@ -55,7 +55,7 @@ class AuthMiddleware
             $this->session->delete('2fa_verified_user');
 
             $this->session->set('flash_user_error', 'Sua conta está inativa. Entre em contato com o suporte.');
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 

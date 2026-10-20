@@ -16,7 +16,7 @@
                 </div>
 
                 <!-- Formulário único (usado para ambos os modos) -->
-                <form id="loginForm" method="POST" action="/logista/login">
+                <form id="loginForm" method="POST" action="/lojista/login">
                     <!-- Token CSRF (sempre enviado) -->
                     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                     
@@ -145,7 +145,7 @@
             submitBtn.disabled = true;
 
             // Envia requisição AJAX
-            fetch('/logista/login', {
+            fetch('/lojista/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -163,7 +163,7 @@
 
                 if (status === 200 && data.sucesso) {
                     // Redireciona para o dashboard
-                    window.location.href = data.redirect || '/logista/dashboard';
+                    window.location.href = data.redirect || '/lojista/dashboard';
                 } else if (status === 403) {
                     // Token inválido (CSRF)
                     showMessage('Token CSRF inválido. Recarregue a página e tente novamente.', 'danger');

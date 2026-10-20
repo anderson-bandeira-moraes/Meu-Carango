@@ -1,4 +1,4 @@
-<!-- views/logista/veiculos/index.php -->
+<!-- views/lojista/veiculos/index.php -->
 <?php
 // Define o título com base no filtro
 $titulo = match ($filtro ?? null) {
@@ -10,7 +10,7 @@ $titulo = match ($filtro ?? null) {
 };
 
 // Define a URL base para os links de paginação (mantendo o filtro)
-$baseUrl = '/logista/veiculos';
+$baseUrl = '/lojista/veiculos';
 if (!empty($filtro)) {
     $baseUrl .= '?filtro=' . urlencode($filtro);
 }
@@ -50,7 +50,7 @@ if (!empty($filtro)) {
                 <i class="bi bi-funnel me-1"></i> Filtro ativo: 
                 <strong><?= htmlspecialchars($titulo) ?></strong>
             </span>
-            <a href="/logista/veiculos" class="btn btn-outline-secondary btn-sm ms-2">
+            <a href="/lojista/veiculos" class="btn btn-outline-secondary btn-sm ms-2">
                 <i class="bi bi-x-lg"></i> Limpar filtro
             </a>
         </div>
@@ -63,7 +63,7 @@ if (!empty($filtro)) {
                 <i class="bi bi-car-front display-1 text-muted"></i>
                 <h4 class="mt-3">Nenhum veículo encontrado</h4>
                 <p class="text-muted">Comece adicionando seu primeiro veículo.</p>
-                <a href="/logista/veiculos/criar" class="btn btn-primary">
+                <a href="/lojista/veiculos/criar" class="btn btn-primary">
                     <i class="bi bi-plus-lg"></i> Adicionar Veículo
                 </a>
             </div>
@@ -131,7 +131,7 @@ if (!empty($filtro)) {
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm" role="group">
                                             <!-- Editar -->
-                                            <a href="/logista/veiculos/editar/<?= $veiculo['id'] ?>" 
+                                            <a href="/lojista/veiculos/editar/<?= $veiculo['id'] ?>" 
                                                class="btn btn-outline-primary" 
                                                title="Editar">
                                                 <i class="bi bi-pencil"></i>
@@ -145,7 +145,7 @@ if (!empty($filtro)) {
                                                 <i class="bi bi-<?= ($veiculo['status_vitrine'] ?? 'inativo') === 'ativo' ? 'eye-slash' : 'eye' ?>"></i>
                                             </a>
                                             <form id="toggle-vitrine-<?= $veiculo['id'] ?>" 
-                                                  action="/logista/veiculos/toggle-vitrine/<?= $veiculo['id'] ?>" 
+                                                  action="/lojista/veiculos/toggle-vitrine/<?= $veiculo['id'] ?>" 
                                                   method="POST" 
                                                   style="display: none;">
                                             </form>
@@ -158,7 +158,7 @@ if (!empty($filtro)) {
                                                 <i class="bi bi-trash"></i>
                                             </a>
                                             <form id="delete-<?= $veiculo['id'] ?>" 
-                                                  action="/logista/veiculos/deletar/<?= $veiculo['id'] ?>" 
+                                                  action="/lojista/veiculos/deletar/<?= $veiculo['id'] ?>" 
                                                   method="POST" 
                                                   style="display: none;">
                                             </form>
@@ -210,21 +210,21 @@ if (!empty($filtro)) {
                     <p class="mb-4">Escolha o tipo de veículo que deseja cadastrar. Esta ação é obrigatória.</p>
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
-                            <a href="/logista/veiculos/criar/combustao" class="btn btn-outline-dark w-100 py-3">
+                            <a href="/lojista/veiculos/criar/combustao" class="btn btn-outline-dark w-100 py-3">
                                 <i class="bi bi-fuel-pump fs-1 d-block mb-2"></i>
                                 <strong>Combustão</strong>
                                 <small class="d-block text-muted">Flex, Diesel, Gasolina</small>
                             </a>
                         </div>
                         <div class="col-12 col-md-4">
-                            <a href="/logista/veiculos/criar/eletrico" class="btn btn-outline-dark w-100 py-3">
+                            <a href="/lojista/veiculos/criar/eletrico" class="btn btn-outline-dark w-100 py-3">
                                 <i class="bi bi-battery-charging fs-1 d-block mb-2"></i>
                                 <strong>Elétrico</strong>
                                 <small class="d-block text-muted">100% BEV</small>
                             </a>
                         </div>
                         <div class="col-12 col-md-4">
-                            <a href="/logista/veiculos/criar/hibrido" class="btn btn-outline-dark w-100 py-3">
+                            <a href="/lojista/veiculos/criar/hibrido" class="btn btn-outline-dark w-100 py-3">
                                 <i class="bi bi-ev-front fs-1 d-block mb-2"></i>
                                 <strong>Híbrido</strong>
                                 <small class="d-block text-muted">HEV, MHEV, PHEV</small>

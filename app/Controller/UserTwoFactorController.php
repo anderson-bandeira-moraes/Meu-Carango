@@ -33,7 +33,7 @@ class UserTwoFactorController
     {
         // Se já estiver logado e com 2FA verificado, redireciona para dashboard
         if ($this->session->has('user_id') && $this->session->get('2fa_verified_user') === true) {
-            header('Location: /logista/dashboard');
+            header('Location: /lojista/dashboard');
             exit;
         }
 
@@ -41,7 +41,7 @@ class UserTwoFactorController
         $email = $this->session->get('pending_user_email');
         if (!$email) {
             $this->session->set('flash_user_2fa_error', 'Sessão expirada. Faça login novamente.');
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 
@@ -72,7 +72,7 @@ class UserTwoFactorController
         $resendBlocked = $this->twoFactorService->isResendBlocked($email);
 
         return $this->view->renderWithLayout(
-            'logista/2fa',
+            'lojista/2fa',
             [
                 'email'         => $email,
                 'erro'          => $erro,
@@ -98,7 +98,7 @@ class UserTwoFactorController
         $email = $this->session->get('pending_user_email');
         if (!$email) {
             $this->session->set('flash_user_2fa_error', 'Sessão expirada. Faça login novamente.');
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 
@@ -106,7 +106,7 @@ class UserTwoFactorController
         if (!$this->twoFactorRequest->validate()) {
             $errors = $this->twoFactorRequest->getErrors();
             $this->session->set('flash_user_2fa_error', implode('<br>', $errors['code'] ?? []) ?: 'Código inválido.');
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
         }
 
@@ -120,14 +120,14 @@ class UserTwoFactorController
             if (!$record) {
                 // Registro não existe (já foi removido ou nunca foi criado)
                 $this->session->set('flash_user_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
-                header('Location: /logista/2fa');
+                header('Location: /lojista/2fa');
                 exit;
             }
 
             if (strtotime($record['expires_at']) < time()) {
                 // Código expirado - não remove pendências
                 $this->session->set('flash_user_2fa_error', 'Código expirado. Clique em "Reenviar" para obter um novo.');
-                header('Location: /logista/2fa');
+                header('Location: /lojista/2fa');
                 exit;
             }
 
@@ -158,14 +158,14 @@ class UserTwoFactorController
                 $this->session->set('2fa_verified_user', true);
 
                 $this->session->set('flash_user_2fa_success', 'Verificação concluída com sucesso!');
-                header('Location: /logista/dashboard');
+                header('Location: /lojista/dashboard');
                 exit;
             }
 
             // --- Falha na verificação (código inválido) com tentativas restantes ---
             if (isset($result['attempts_left']) && $result['attempts_left'] > 0) {
                 $this->session->set('flash_user_2fa_error', "Código inválido. Você tem {$result['attempts_left']} tentativa(s) restante(s).");
-                header('Location: /logista/2fa');
+                header('Location: /lojista/2fa');
                 exit;
             }
 
@@ -180,7 +180,7 @@ class UserTwoFactorController
                 }
                 // NÃO limpa pendências – mantém o usuário na página 2FA
                 $this->session->set('flash_user_2fa_error', $mensagem);
-                header('Location: /logista/2fa');
+                header('Location: /lojista/2fa');
                 exit;
             }
 
@@ -192,12 +192,12 @@ class UserTwoFactorController
             } else {
                 $this->clearPendingSession();
             }
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
 
         } catch (\Throwable $e) {
             $this->session->set('flash_user_2fa_error', 'Erro interno ao verificar código. Tente novamente.');
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
         }
     }
@@ -213,7 +213,7 @@ class UserTwoFactorController
         $email = $this->session->get('pending_user_email');
         if (!$email) {
             $this->session->set('flash_user_2fa_error', 'Sessão expirada. Faça login novamente.');
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 
@@ -233,12 +233,12 @@ class UserTwoFactorController
                 }
             }
 
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
 
         } catch (\Throwable $e) {
             $this->session->set('flash_user_2fa_error', 'Erro interno ao reenviar código. Tente novamente.');
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
         }
     }

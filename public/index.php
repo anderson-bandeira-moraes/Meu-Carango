@@ -574,7 +574,7 @@ $router->group('/admin', function(Router $router) use ($container) {
 // ============== ROTAS LOJISTA ==============
 
 // Rotas de login (públicas, com CSRF)
-$router->group('/logista/login', function(Router $router) use ($container) {
+$router->group('/lojista/login', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfTokenMiddleware::class));
     $router->middleware($container->get(CsrfValidationMiddleware::class));
     $router->get('', 'AuthController@formLogin');
@@ -582,14 +582,14 @@ $router->group('/logista/login', function(Router $router) use ($container) {
 });
 
 // Logout (GET, sem CSRF)
-$router->get('/logista/logout', 'AuthController@logout');
+$router->get('/lojista/logout', 'AuthController@logout');
 
 // ============== ROTAS 2FA LOJISTA ==============
 // GET sem CSRF (apenas exibição)
-$router->get('/logista/2fa', 'UserTwoFactorController@form');
+$router->get('/lojista/2fa', 'UserTwoFactorController@form');
 
 // POST com CSRF
-$router->group('/logista/2fa', function(Router $router) use ($container) {
+$router->group('/lojista/2fa', function(Router $router) use ($container) {
     $router->middleware($container->get(CsrfValidationMiddleware::class));
     $router->post('/verify', 'UserTwoFactorController@verify');
     $router->post('/resend', 'UserTwoFactorController@resend');
@@ -597,7 +597,7 @@ $router->group('/logista/2fa', function(Router $router) use ($container) {
 
 // ============== ROTAS DE VEÍCULOS (LOJISTA) ==============
 // Todas as rotas protegidas por autenticação, 2FA e CSRF
-$router->group('/logista', function(Router $router) use ($container) {
+$router->group('/lojista', function(Router $router) use ($container) {
     // Middlewares aplicados a todas as rotas deste grupo
     $router->middleware($container->get(CsrfTokenMiddleware::class));
     $router->middleware($container->get(AuthMiddleware::class));

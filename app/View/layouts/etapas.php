@@ -78,15 +78,15 @@
             </div>
         </form>
 
-        <?php include VIEW_DIR . '/logista/veiculos/etapas/_modal_marca_modelo.php'; ?>
+        <?php include VIEW_DIR . '/lojista/veiculos/etapas/_modal_marca_modelo.php'; ?>
 
         <?php
             // Inclui o partial de check-in específico do tipo ($tipo).
-            // Convenção: _checkin_{tipo}.php em logista/veiculos/etapas/.
+            // Convenção: _checkin_{tipo}.php em lojista/veiculos/etapas/.
             // Allowlist local como segunda camada de defesa (além da validação do controller).
             $tiposComCheckin = ['combustao', 'eletrico', 'hibrido'];
             if (in_array($tipo, $tiposComCheckin, true)) {
-                $checkinFile = VIEW_DIR . '/logista/veiculos/etapas/_checkin_' . $tipo . '.php';
+                $checkinFile = VIEW_DIR . '/lojista/veiculos/etapas/_checkin_' . $tipo . '.php';
                 if (file_exists($checkinFile)) {
                     include $checkinFile;
                 }

@@ -1,4 +1,4 @@
-<!-- app/View/logista/veiculos/etapas/_basico.php -->
+<!-- app/View/lojista/veiculos/etapas/_basico.php -->
 
 <!-- ============================================================ -->
 <!-- ETAPA: BÁSICO                                                -->

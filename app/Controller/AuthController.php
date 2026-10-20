@@ -33,7 +33,7 @@ class AuthController
     {
         // Se já estiver logado, redireciona para o dashboard
         if ($this->authService->check()) {
-            header('Location: /logista/dashboard');
+            header('Location: /lojista/dashboard');
             exit;
         }
 
@@ -46,7 +46,7 @@ class AuthController
         $this->session->delete('old_user_input');
 
         return $this->view->renderWithLayout(
-            'logista/login',
+            'lojista/login',
             [
                 'erro' => $erro,
                 'old'  => $old,
@@ -85,9 +85,9 @@ class AuthController
         $resultado = $this->authService->login($email, $senha, $clientIp);
 
         if ($resultado['sucesso']) {
-            // Se 2FA for necessário, redireciona para /logista/2fa
+            // Se 2FA for necessário, redireciona para /lojista/2fa
             if (isset($resultado['2fa_required']) && $resultado['2fa_required'] === true) {
-                $redirectTo = $resultado['redirect'] ?? '/logista/2fa';
+                $redirectTo = $resultado['redirect'] ?? '/lojista/2fa';
                 if ($this->loginRequest->isAjax()) {
                     header('Content-Type: application/json');
                     echo json_encode([
@@ -104,10 +104,10 @@ class AuthController
             // Login completo (sem 2FA)
             if ($this->loginRequest->isAjax()) {
                 header('Content-Type: application/json');
-                echo json_encode(['sucesso' => true, 'redirect' => '/logista/dashboard']);
+                echo json_encode(['sucesso' => true, 'redirect' => '/lojista/dashboard']);
                 exit;
             }
-            header('Location: /logista/dashboard');
+            header('Location: /lojista/dashboard');
             exit;
         }
 
@@ -128,7 +128,7 @@ class AuthController
     {
         $clientIp = $this->loginRequest->getClientIp(); // usa a FormRequest para obter o IP
         $this->authService->logout($clientIp);
-        header('Location: /logista/login');
+        header('Location: /lojista/login');
         exit;
     }
 
@@ -143,7 +143,7 @@ class AuthController
         $user = $this->authService->getCurrentUser();
 
         return $this->view->renderWithLayout(
-            'logista/dashboard',
+            'lojista/dashboard',
             ['user' => $user],
             'layouts/main',
             ['title' => 'Dashboard - Meu Carango']
@@ -175,7 +175,7 @@ class AuthController
         }
 
         $this->session->set('flash_user_error', $error);
-        header('Location: /logista/login');
+        header('Location: /lojista/login');
         exit;
     }
 }

@@ -1,4 +1,4 @@
-<!-- views/logista/veiculos/form.php -->
+<!-- views/lojista/veiculos/form.php -->
 <?php
 /**
  * @var bool $isEdit
@@ -71,7 +71,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
     <!-- Título -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0"><?= htmlspecialchars($titulo) ?></h1>
-        <a href="/logista/veiculos" class="btn btn-outline-secondary">
+        <a href="/lojista/veiculos" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Voltar
         </a>
     </div>
@@ -125,7 +125,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
     <?php endif; ?>
 
     <!-- ========== FORMULÁRIO ========== -->
-    <form id="veiculoForm" action="<?= $isEdit ? "/logista/veiculos/atualizar/{$veiculo['id']}" : '/logista/veiculos/salvar' ?>" method="POST" enctype="multipart/form-data" novalidate class="needs-validation">
+    <form id="veiculoForm" action="<?= $isEdit ? "/lojista/veiculos/atualizar/{$veiculo['id']}" : '/lojista/veiculos/salvar' ?>" method="POST" enctype="multipart/form-data" novalidate class="needs-validation">
         <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
 
         <!-- Tipo de veículo (hidden) -->
@@ -3722,7 +3722,7 @@ $tipoSelecionado = $isEdit ? $tipoAtual : null;
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-check-lg me-1"></i> <?= $isEdit ? 'Atualizar' : 'Salvar' ?>
             </button>
-            <a href="/logista/veiculos" class="btn btn-outline-secondary">Cancelar</a>
+            <a href="/lojista/veiculos" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
 

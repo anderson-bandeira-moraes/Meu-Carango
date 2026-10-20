@@ -15,9 +15,9 @@ use Psr\Log\LoggerInterface;
 class UserTwoFactorMiddleware
 {
     private array $ignorePaths = [
-        '/logista/login',
-        '/logista/logout',
-        '/logista/2fa',
+        '/lojista/login',
+        '/lojista/logout',
+        '/lojista/2fa',
     ];
 
     public function __construct(
@@ -44,7 +44,7 @@ class UserTwoFactorMiddleware
         // Verifica se o lojista está logado
         if (!$this->session->has('user_id')) {
             $this->logger->warning('Acesso negado: lojista não logado', ['uri' => $uri]);
-            header('Location: /logista/login');
+            header('Location: /lojista/login');
             exit;
         }
 
@@ -67,7 +67,7 @@ class UserTwoFactorMiddleware
                 $this->session->delete('2fa_verified_user');
 
                 $this->session->set('flash_user_error', 'Sua conta está inativa. Entre em contato com o suporte.');
-                header('Location: /logista/login');
+                header('Location: /lojista/login');
                 exit;
         }
 
@@ -79,7 +79,7 @@ class UserTwoFactorMiddleware
                 'uri' => $uri,
                 'user_id' => $userId,
             ]);
-            header('Location: /logista/2fa');
+            header('Location: /lojista/2fa');
             exit;
         }
 

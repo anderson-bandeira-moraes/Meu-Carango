@@ -167,7 +167,7 @@ class AuthService
         return [
             'sucesso'       => true,
             '2fa_required'  => true,
-            'redirect'      => '/logista/2fa',
+            'redirect'      => '/lojista/2fa',
         ];
     }
 

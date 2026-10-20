@@ -40,7 +40,7 @@
                 <?php endif; ?>
 
                 <!-- Formulário de verificação -->
-                <form method="POST" action="/logista/2fa/verify" id="verifyForm">
+                <form method="POST" action="/lojista/2fa/verify" id="verifyForm">
                     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
 
                     <div class="mb-3">
@@ -79,14 +79,14 @@
 
                 <!-- Reenvio e ações secundárias -->
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <form method="POST" action="/logista/2fa/resend" id="resendForm" class="d-inline">
+                    <form method="POST" action="/lojista/2fa/resend" id="resendForm" class="d-inline">
                         <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                         <button type="submit" class="btn btn-link p-0 text-decoration-none" id="resendBtn">
                             <i class="bi bi-arrow-clockwise me-1"></i>Reenviar código
                         </button>
                     </form>
 
-                    <a href="/logista/logout" class="btn btn-primary" onclick="return confirm('Deseja voltar à página de login?');">
+                    <a href="/lojista/logout" class="btn btn-primary" onclick="return confirm('Deseja voltar à página de login?');">
                         <i class="bi bi-box-arrow-left me-1"></i>Login
                     </a>
                 </div>
@@ -146,7 +146,7 @@
                         }
                         if (seconds <= 0) {
                             clearInterval(interval);
-                            window.location.href = '/logista/login';
+                            window.location.href = '/lojista/login';
                         }
                     }, 1000);
 
