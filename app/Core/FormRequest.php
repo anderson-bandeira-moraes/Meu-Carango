@@ -172,6 +172,40 @@ abstract class FormRequest extends Request
     }
 
     /**
+     * Declara os campos sensíveis deste FormRequest que NUNCA devem
+     * ser armazenados como old input (repopulação de formulário).
+     *
+     * Subclasses devem sobrescrever para incluir senhas, tokens de uso
+     * único, códigos 2FA e qualquer outro campo que não deva sobreviver
+     * ao ciclo de vida da requisição.
+     *
+     * O csrf_token é removido automaticamente em forOldInput(), sem
+     * necessidade de declará-lo aqui.
+     *
+     * @return array<string>
+     */
+    protected function sensitiveFields(): array
+    {
+        return [];
+    }
+
+    /**
+     * Retorna os dados da requisição prontos para armazenamento como
+     * "old input" na sessão, excluindo automaticamente:
+     *   - csrf_token (regenerado a cada GET; nunca útil em old input)
+     *   - campos declarados em sensitiveFields()
+     *
+     * Use este método sempre que for gravar dados submetidos na sessão
+     * para repopular o formulário. NUNCA use all() para isso.
+     *
+     * @return array<string, mixed>
+     */
+    public function forOldInput(): array
+    {
+        return $this->except(array_merge(['csrf_token'], $this->sensitiveFields()));
+    }
+
+    /**
      * Retorna os erros de validação.
      *
      * @return array<string, array<string>>

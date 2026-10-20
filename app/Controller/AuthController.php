@@ -166,7 +166,7 @@ class AuthController
      */
     private function handleLoginFailure(string $error, bool $isAjax): void
     {
-        $this->session->set('old_user_input', $this->loginRequest->all());
+        $this->session->set('old_user_input', $this->loginRequest->forOldInput());
 
         if ($isAjax) {
             header('Content-Type: application/json');

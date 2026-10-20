@@ -367,7 +367,7 @@ class VeiculoController
     public function store(Request $request): void
     {
         // Captura TODOS os dados enviados (principais + complementos + GNV + opcionais)
-        $allData = $request->all();
+        $allData = $this->veiculoRequest->forOldInput();
 
         // 1. Valida dados comuns
         if (!$this->veiculoRequest->validate()) {
@@ -481,7 +481,7 @@ class VeiculoController
     public function update(Request $request, int $id): void
     {
         // Captura TODOS os dados enviados (principais + complementos + GNV + opcionais)
-        $allData = $request->all();
+        $allData = $this->veiculoRequest->forOldInput();
 
         // Verifica se o veículo existe e pertence ao lojista (opcional, mas seguro)
         $dadosEdicao = $this->veiculoService->buscarParaEdicao($id);
@@ -726,8 +726,8 @@ class VeiculoController
         }
 
         // Salva old input
-        $this->session->set('old_veiculo_input', $old ?? $this->veiculoRequest->all());
-
+        $this->session->set('old_veiculo_input', $old ?? $this->veiculoRequest->forOldInput());
+        
         // Converte erros em string
         $errorMessages = [];
         foreach ($errors as $field => $msgs) {

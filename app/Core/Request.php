@@ -149,6 +149,29 @@ class Request
     }
 
     /**
+     * Retorna todos os dados da requisição exceto as chaves especificadas.
+     * Utilitário inverso ao only().
+     *
+     * Diferente de only(), que usa get() (apenas post e query),
+     * este método usa all() e portanto também cobre o JSON body
+     * de requisições AJAX.
+     *
+     * Útil para construir payloads que não devem conter campos sensíveis
+     * (ex.: senha, csrf_token) antes de persistir em algum destino.
+     *
+     * @param array $keys Lista de chaves a serem removidas.
+     * @return array
+     */
+    public function except(array $keys): array
+    {
+        $data = $this->all();
+        foreach ($keys as $key) {
+            unset($data[$key]);
+        }
+        return $data;
+    }
+
+    /**
      * Retorna todos os dados da requisição (GET + POST + JSON, se AJAX).
      *
      * Em requisições AJAX que enviam JSON no corpo da requisição,

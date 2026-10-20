@@ -68,4 +68,16 @@ class TwoFactorRequest extends FormRequest
 
         return $data;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * O código 2FA é de uso único e expira em poucos minutos.
+     * Nunca deve ser repopulado no formulário, nem armazenado
+     * na sessão como old input.
+     */
+    protected function sensitiveFields(): array
+    {
+        return ['code'];
+    }
 }

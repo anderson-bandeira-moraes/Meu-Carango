@@ -74,4 +74,15 @@ class LoginRequest extends FormRequest
 
         return $data;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * A senha nunca deve ser repopulada no formulário de login,
+     * nem armazenada na sessão como old input.
+     */
+    protected function sensitiveFields(): array
+    {
+        return ['senha'];
+    }
 }
