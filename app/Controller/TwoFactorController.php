@@ -97,6 +97,21 @@ class TwoFactorController
     {
         $email = $this->session->get('pending_admin_email');
         if (!$email) {
+            $this->session->regenerate();
+            $this->session->set('flash_2fa_error', 'Sessão expirada. Faça login novamente.');
+            header('Location: /admin/login');
+            exit;
+        }
+
+        // Valida integridade do pending_admin_id (fail-fast contra sessão inconsistente)
+        $pendingId = filter_var(
+            $this->session->get('pending_admin_id'),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+        if ($pendingId === false) {
+            $this->clearPendingSession();
+            $this->session->regenerate();
             $this->session->set('flash_2fa_error', 'Sessão expirada. Faça login novamente.');
             header('Location: /admin/login');
             exit;
@@ -135,7 +150,7 @@ class TwoFactorController
 
             if ($result['success']) {
                 // --- Sucesso: conclui o login ---
-                $adminId = (int) $this->session->get('pending_admin_id');
+                $adminId = $pendingId;
                 $adminNome = $this->session->get('pending_admin_nome');
                 $adminEmail = $this->session->get('pending_admin_email');
 

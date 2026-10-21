@@ -97,6 +97,21 @@ class UserTwoFactorController
     {
         $email = $this->session->get('pending_user_email');
         if (!$email) {
+            $this->session->regenerate();
+            $this->session->set('flash_user_2fa_error', 'Sessão expirada. Faça login novamente.');
+            header('Location: /lojista/login');
+            exit;
+        }
+
+        // Valida integridade do pending_user_id (fail-fast contra sessão inconsistente)
+        $pendingId = filter_var(
+            $this->session->get('pending_user_id'),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+        if ($pendingId === false) {
+            $this->clearPendingSession();
+            $this->session->regenerate();
             $this->session->set('flash_user_2fa_error', 'Sessão expirada. Faça login novamente.');
             header('Location: /lojista/login');
             exit;
@@ -135,7 +150,7 @@ class UserTwoFactorController
 
             if ($result['success']) {
                 // --- Sucesso: conclui o login ---
-                $userId = (int) $this->session->get('pending_user_id');
+                $userId = $pendingId;
                 $userNome = $this->session->get('pending_user_nome');
                 $userEmail = $this->session->get('pending_user_email');
                 $userSlug = $this->session->get('pending_user_slug');
